@@ -1,9 +1,10 @@
-// Natal chart calculator
-// TODO: Replace mock data with real ephemeris API call when backend is connected
+// Natal chart calculator — calls the backend edge function
+
+import { supabase } from "@/integrations/supabase/client";
 
 /**
- * Calculates a natal chart from birth data.
- * Currently returns mock data — will be replaced with a real backend API call.
+ * Calculates a natal chart from birth data using the Free Astrology API
+ * via a backend function.
  *
  * @param {{ year: number, month: number, day: number, hour: number, minute: number, city: string, nation: string }} birthData
  * @returns {Promise<object>} Natal chart data
@@ -16,7 +17,6 @@ export async function calculateNatalChart(birthData) {
       throw new Error("Missing required birth data fields: year, month, day, city, and nation are required.");
     }
 
-    // Format payload for future API call
     const payload = {
       year: Number(year),
       month: Number(month),
@@ -27,30 +27,23 @@ export async function calculateNatalChart(birthData) {
       nation,
     };
 
-    console.log("[chartCalculator] Prepared API payload:", payload);
+    console.log("[chartCalculator] Calling natal chart API with:", payload);
 
-    // TODO: Replace with actual API call, e.g.:
-    // const response = await fetch('/api/natal-chart', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(payload),
-    // });
-    // return await response.json();
+    const { data, error } = await supabase.functions.invoke("calculate-natal-chart", {
+      body: payload,
+    });
 
-    // --- MOCK DATA (remove when API is connected) ---
-    await new Promise((resolve) => setTimeout(resolve, 1200));
+    if (error) {
+      console.error("[chartCalculator] Edge function error:", error);
+      throw new Error(error.message || "Failed to calculate natal chart");
+    }
 
-    return {
-      sun: { sign: "Leo", house: 5, degree: 15 },
-      moon: { sign: "Pisces", house: 12, degree: 22 },
-      rising: "Virgo",
-      venus: { sign: "Libra", house: 7 },
-      mars: { sign: "Capricorn", house: 10 },
-      mercury: { sign: "Leo", house: 5 },
-      jupiter: { sign: "Sagittarius", house: 9 },
-      element_balance: { Fire: 3, Water: 4, Earth: 2, Air: 1 },
-      aspects: [],
-    };
+    if (data?.error) {
+      throw new Error(data.error);
+    }
+
+    console.log("[chartCalculator] Chart received:", data);
+    return data;
   } catch (error) {
     console.error("[chartCalculator] Failed to calculate natal chart:", error);
     throw error;
