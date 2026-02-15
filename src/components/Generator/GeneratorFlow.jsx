@@ -2,41 +2,53 @@ import { useState } from "react";
 import BirthDataFormJsx from "./BirthDataForm.jsx";
 import { calculateNatalChart } from "@/lib/astrology/chartCalculator.js";
 import { buildCanonicalPrompt } from "@/lib/prompts/promptBuilder.js";
+import { generateImage } from "@/lib/api/replicateClient";
 
 const GeneratorFlowJsx = () => {
   const [step, setStep] = useState("input");
   const [chartData, setChartData] = useState(null);
   const [generatedImage, setGeneratedImage] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [generationProgress, setGenerationProgress] = useState("");
 
   const handleFormSubmit = async (formData) => {
-    console.log("[GeneratorFlow] Form submitted:", formData);
-    setError(null);
-    setStep("generating");
-    setLoading(true);
-
     try {
+      setError(null);
+      setStep("generating");
+
+      // Step 1: Calculate natal chart
+      setGenerationProgress("Calculating your birth chart...");
+      console.log("📋 Form submitted:", formData);
+
       const chart = await calculateNatalChart(formData);
-      console.log("[GeneratorFlow] Chart calculated:", chart);
       setChartData(chart);
+      console.log("✅ Chart calculated:", chart);
 
+      // Step 2: Build canonical prompt with zodiac symbolism
+      setGenerationProgress("Building your personalized artwork prompt...");
       const prompt = buildCanonicalPrompt(chart);
-      console.log("[GeneratorFlow] Generated prompt:\n", prompt);
+      console.log("📝 Prompt built (first 200 chars):", prompt.substring(0, 200) + "...");
+      console.log("📏 Full prompt length:", prompt.length, "characters");
 
-      // TODO: Call image generation API with prompt
+      // Step 3: Generate image using Replicate API
+      setGenerationProgress("Generating your magical pink watercolor artwork... (this takes 30-60 seconds)");
+      console.log("🎨 Calling Replicate API...");
+
+      const imageUrl = await generateImage(prompt, { aspectRatio: "3:4" });
+      console.log("✅ Image generated:", imageUrl);
+
+      setGeneratedImage(imageUrl);
       setStep("explaining");
     } catch (err) {
-      console.error("[GeneratorFlow] Generation failed:", err);
-      setError(err.message || "Something went wrong. Please try again.");
+      console.error("❌ Generation error:", err);
+      setError(err.message);
       setStep("input");
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleRetry = () => {
     setError(null);
+    setGeneratedImage(null);
     setStep("input");
   };
 
@@ -70,13 +82,14 @@ const GeneratorFlowJsx = () => {
         </div>
 
         {error && (
-          <div className="max-w-md mx-auto mb-8 bg-destructive/10 border border-destructive/30 rounded-lg p-4 text-center">
-            <p className="text-destructive text-sm mb-3">{error}</p>
+          <div className="max-w-md mx-auto mb-8 bg-destructive/10 border border-destructive/30 rounded-lg p-6 text-center">
+            <p className="text-destructive font-display text-lg mb-2">⚠️ Generation Failed</p>
+            <p className="text-destructive/80 text-sm mb-4 font-body">{error}</p>
             <button
               onClick={handleRetry}
-              className="text-sm text-primary hover:text-primary/80 transition-colors font-body tracking-wide uppercase"
+              className="bg-destructive text-destructive-foreground px-6 py-2 rounded-lg hover:bg-destructive/90 transition-colors font-body text-sm tracking-wide"
             >
-              ← Try Again
+              Try Again
             </button>
           </div>
         )}
@@ -109,37 +122,74 @@ const GeneratorFlowJsx = () => {
             </div>
             <div className="text-center">
               <p className="text-foreground font-display text-lg tracking-wide mb-2">
-                Generating your personalized birth chart artwork…
+                Creating Your Artwork...
               </p>
-              <p className="text-muted-foreground text-sm font-body">
-                This takes about 30 seconds
+              <p className="text-primary text-sm font-body mb-1">
+                {generationProgress}
+              </p>
+              <p className="text-muted-foreground text-xs font-body">
+                This usually takes 30-60 seconds
               </p>
             </div>
           </div>
         )}
 
-        {step === "explaining" && chartData && (
-          <div className="max-w-2xl mx-auto space-y-10 animate-fade-in">
-            <div className="bg-secondary/30 border border-border rounded-lg p-12 text-center">
-              <p className="text-muted-foreground font-display text-lg tracking-wide">
-                Artwork will appear here
+        {step === "explaining" && chartData && generatedImage && (
+          <div className="max-w-2xl mx-auto space-y-8 animate-fade-in">
+            <div className="text-center">
+              <p className="text-muted-foreground font-body text-xs tracking-widest uppercase mb-2">
+                Your Personalized Birth Chart Artwork
               </p>
-              <p className="text-muted-foreground/60 text-xs font-body mt-2">
-                Sun: {chartData.sun?.sign} · Moon: {chartData.moon?.sign} · Rising: {chartData.rising}
+              <p className="text-muted-foreground/60 text-xs font-body">
+                ☀️ {chartData.sun?.sign} · 🌙 {chartData.moon?.sign} · ⬆️ {chartData.rising} Rising
               </p>
             </div>
 
-            <div className="text-center">
+            <div className="bg-secondary/20 border border-border rounded-lg overflow-hidden shadow-lg">
+              <img
+                src={generatedImage}
+                alt={`Birth chart artwork for Sun in ${chartData.sun?.sign}, Moon in ${chartData.moon?.sign}, ${chartData.rising} Rising`}
+                className="w-full h-auto"
+              />
+            </div>
+
+            <div className="flex justify-center gap-4">
+              <a
+                href={generatedImage}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-primary hover:text-primary/80 transition-colors font-body tracking-wide uppercase"
+              >
+                View Full Size ↗
+              </a>
               <button
                 onClick={handleRetry}
                 className="text-sm text-muted-foreground hover:text-primary transition-colors font-body tracking-wide uppercase"
               >
-                ← Start Over
+                ← Generate Another
               </button>
             </div>
           </div>
         )}
       </div>
+
+      {/* Test button for quick testing */}
+      <button
+        onClick={() =>
+          handleFormSubmit({
+            year: 1995,
+            month: 3,
+            day: 21,
+            hour: 14,
+            minute: 30,
+            city: "Los Angeles",
+            nation: "US",
+          })
+        }
+        className="fixed bottom-4 right-4 bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm shadow-lg hover:bg-accent/90 transition-colors z-50 font-body"
+      >
+        🧪 Test Generation
+      </button>
     </div>
   );
 };
