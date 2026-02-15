@@ -2,7 +2,7 @@ import { useState } from "react";
 import BirthDataFormJsx from "./BirthDataForm.jsx";
 import { calculateNatalChart } from "@/lib/astrology/chartCalculator.js";
 import { buildCanonicalPrompt } from "@/lib/prompts/promptBuilder.js";
-import { generateImage } from "@/lib/api/replicateClient";
+import { generateImage, testConnection } from "@/lib/api/replicateClient";
 
 const GeneratorFlowJsx = () => {
   const [step, setStep] = useState("input");
@@ -96,6 +96,22 @@ const GeneratorFlowJsx = () => {
 
         {step === "input" && (
           <div className="max-w-2xl mx-auto animate-fade-in">
+            <div className="text-center mb-4">
+              <button
+                onClick={async () => {
+                  console.log("🔌 Testing Replicate API connection...");
+                  const result = await testConnection();
+                  if (result.success) {
+                    alert("✅ API Connection Successful!\n\nYour Replicate API is working correctly.");
+                  } else {
+                    alert("❌ API Connection Failed\n\n" + result.error);
+                  }
+                }}
+                className="text-xs text-muted-foreground hover:text-primary transition-colors font-body tracking-wide uppercase border border-border rounded px-3 py-1"
+              >
+                🔌 Test API Connection
+              </button>
+            </div>
             <BirthDataFormJsx onSubmit={handleFormSubmit} />
           </div>
         )}
