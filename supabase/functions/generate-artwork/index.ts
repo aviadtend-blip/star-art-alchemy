@@ -17,7 +17,7 @@ serve(async (req) => {
       throw new Error('REPLICATE_API_TOKEN is not configured');
     }
 
-    const { prompt, predictionId, width = 768, height = 1024 } = await req.json();
+    const { prompt, predictionId, width = 768, height = 1024, aspectRatio } = await req.json();
 
     // --- Poll mode: check status of an existing prediction ---
     if (predictionId) {
@@ -69,14 +69,15 @@ serve(async (req) => {
         'Prefer': 'wait',
       },
       body: JSON.stringify({
-        version: 'db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf',
+        version: '7f84b4df7d58f1a406097da9cf729e4e3f8840f0e51657137da9956e1fa1362a',
         input: {
           prompt,
-          width,
-          height,
+          aspect_ratio: aspectRatio || '3:4',
           num_outputs: 1,
-          guidance_scale: 7.5,
-          num_inference_steps: 50,
+          num_inference_steps: 28,
+          guidance_scale: 3.5,
+          output_format: 'png',
+          output_quality: 90,
         },
       }),
     });
