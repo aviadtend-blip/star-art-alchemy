@@ -5,24 +5,30 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-const ASTROLOGY_API_URL = "https://json.freeastrologyapi.com";
+const PROKERALA_TOKEN_URL = "https://api.prokerala.com/token";
+const PROKERALA_API_URL = "https://api.prokerala.com/v2/astrology";
 
-// Map zodiac degree ranges to sign names
 const ZODIAC_SIGNS = [
   "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
   "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
 ];
 
-function getSignFromDegree(fullDegree: number): string {
-  const signIndex = Math.floor(fullDegree / 30) % 12;
-  return ZODIAC_SIGNS[signIndex];
+// Approximate Lahiri ayanamsha for a given year (accurate to ~0.1°)
+function getAyanamsha(year: number): number {
+  // Lahiri ayanamsha is roughly 23.85° in 2000 and increases ~50.3" per year
+  return 23.85 + (year - 2000) * (50.3 / 3600);
 }
 
-function getDegreeInSign(fullDegree: number): number {
-  return Math.round((fullDegree % 30) * 100) / 100;
+function getSignFromTropicalDegree(tropicalLongitude: number): string {
+  const normalized = ((tropicalLongitude % 360) + 360) % 360;
+  return ZODIAC_SIGNS[Math.floor(normalized / 30)];
 }
 
-// Get element for a zodiac sign
+function getDegreeInSign(tropicalLongitude: number): number {
+  const normalized = ((tropicalLongitude % 360) + 360) % 360;
+  return Math.round((normalized % 30) * 100) / 100;
+}
+
 function getElement(sign: string): string {
   const elements: Record<string, string> = {
     Aries: "Fire", Leo: "Fire", Sagittarius: "Fire",
@@ -33,7 +39,24 @@ function getElement(sign: string): string {
   return elements[sign] || "Unknown";
 }
 
-// Geocode city/nation to lat/lng using Nominatim (free, no key needed)
+async function getAccessToken(clientId: string, clientSecret: string): Promise<string> {
+  const res = await fetch(PROKERALA_TOKEN_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "client_credentials",
+      client_id: clientId,
+      client_secret: clientSecret,
+    }),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Prokerala OAuth failed [${res.status}]: ${text}`);
+  }
+  const data = await res.json();
+  return data.access_token;
+}
+
 async function geocode(city: string, nation: string): Promise<{ lat: number; lng: number }> {
   const query = encodeURIComponent(`${city}, ${nation}`);
   const res = await fetch(
@@ -51,7 +74,6 @@ async function geocode(city: string, nation: string): Promise<{ lat: number; lng
   return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
 }
 
-// Get timezone offset for a location and date using TimeAPI (free, no key)
 async function getTimezoneOffset(lat: number, lng: number): Promise<number> {
   try {
     const res = await fetch(
@@ -59,20 +81,32 @@ async function getTimezoneOffset(lat: number, lng: number): Promise<number> {
     );
     if (res.ok) {
       const data = await res.json();
-      // currentUtcOffset is like "+05:30" or "-08:00"
-      if (data.currentUtcOffset) {
-        const match = data.currentUtcOffset.match(/^([+-])(\d{2}):(\d{2})$/);
+      const offset = data.currentUtcOffset;
+      if (offset && typeof offset === 'object') {
+        return (offset.hours ?? 0) + (offset.minutes ?? 0) / 60;
+      } else if (typeof offset === 'string') {
+        const match = offset.match(/^([+-])(\d{2}):(\d{2})$/);
         if (match) {
-          const sign = match[1] === '+' ? 1 : -1;
-          return sign * (parseInt(match[2]) + parseInt(match[3]) / 60);
+          return (match[1] === '+' ? 1 : -1) * (parseInt(match[2]) + parseInt(match[3]) / 60);
         }
+      } else if (typeof offset === 'number') {
+        return offset;
       }
+    } else {
+      await res.text();
     }
-    await res.text(); // consume body
   } catch (e) {
-    console.warn("[calculate-natal-chart] Timezone lookup failed, using UTC:", e);
+    console.warn("[calculate-natal-chart] Timezone lookup failed:", e);
   }
-  return 0; // fallback to UTC
+  return 0;
+}
+
+function formatTzOffset(offset: number): string {
+  const sign = offset >= 0 ? "+" : "-";
+  const abs = Math.abs(offset);
+  const hours = Math.floor(abs);
+  const minutes = Math.round((abs - hours) * 60);
+  return `${sign}${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
 
 serve(async (req) => {
@@ -81,13 +115,12 @@ serve(async (req) => {
   }
 
   try {
-    const API_KEY = Deno.env.get('FREE_ASTROLOGY_API_KEY');
-    if (!API_KEY) {
-      throw new Error('FREE_ASTROLOGY_API_KEY is not configured');
-    }
+    const CLIENT_ID = Deno.env.get('PROKERALA_CLIENT_ID');
+    if (!CLIENT_ID) throw new Error('PROKERALA_CLIENT_ID is not configured');
+    const CLIENT_SECRET = Deno.env.get('PROKERALA_CLIENT_SECRET');
+    if (!CLIENT_SECRET) throw new Error('PROKERALA_CLIENT_SECRET is not configured');
 
     const { year, month, day, hour, minute, city, nation } = await req.json();
-
     if (!year || !month || !day || !city || !nation) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields: year, month, day, city, nation' }),
@@ -95,141 +128,80 @@ serve(async (req) => {
       );
     }
 
-    console.log(`[calculate-natal-chart] Request: ${year}-${month}-${day} ${hour}:${minute} in ${city}, ${nation}`);
+    console.log(`[calculate-natal-chart] ${year}-${month}-${day} ${hour}:${minute} in ${city}, ${nation}`);
 
-    // Step 1: Geocode city
+    // Geocode + timezone
     const { lat, lng } = await geocode(city, nation);
-    console.log(`[calculate-natal-chart] Geocoded to lat=${lat}, lng=${lng}`);
-
-    // Step 2: Get timezone offset
     const tzOffset = await getTimezoneOffset(lat, lng);
-    console.log(`[calculate-natal-chart] Timezone offset: ${tzOffset}`);
+    console.log(`[calculate-natal-chart] coords=${lat},${lng} tz=${tzOffset}`);
 
-    const requestBody = {
-      year: Number(year),
-      month: Number(month),
-      date: Number(day),
-      hours: Number(hour ?? 12),
-      minutes: Number(minute ?? 0),
-      seconds: 0,
-      latitude: lat,
-      longitude: lng,
-      timezone: tzOffset,
-      settings: {
-        observation_point: "geocentric",
-        ayanamsha: "tropical",
-        language: "en",
-      },
-    };
+    // OAuth token
+    const accessToken = await getAccessToken(CLIENT_ID, CLIENT_SECRET);
 
-    // Step 3: Fetch planets
-    const planetsRes = await fetch(`${ASTROLOGY_API_URL}/western/planets`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': API_KEY,
-      },
-      body: JSON.stringify(requestBody),
+    // Build datetime in ISO 8601
+    const h = Number(hour ?? 12);
+    const m = Number(minute ?? 0);
+    const datetime = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00${formatTzOffset(tzOffset)}`;
+    const coordinates = `${lat},${lng}`;
+
+    // Call Prokerala planet-position API
+    const params = new URLSearchParams({
+      ayanamsa: "1",
+      coordinates,
+      datetime,
     });
 
-    if (!planetsRes.ok) {
-      const errorText = await planetsRes.text();
-      console.error('[calculate-natal-chart] Planets API error:', planetsRes.status, errorText);
-      throw new Error(`Astrology API planets error [${planetsRes.status}]: ${errorText}`);
-    }
-
-    const planetsData = await planetsRes.json();
-    console.log('[calculate-natal-chart] Planets response received');
-
-    // Step 4: Fetch houses
-    const housesBody = {
-      ...requestBody,
-      settings: {
-        ...requestBody.settings,
-        house_system: "Placidus",
-      },
-    };
-
-    const housesRes = await fetch(`${ASTROLOGY_API_URL}/western/houses`, {
-      method: 'POST',
+    const planetRes = await fetch(`${PROKERALA_API_URL}/planet-position?${params}`, {
       headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': API_KEY,
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
       },
-      body: JSON.stringify(housesBody),
     });
 
-    let housesData = null;
-    if (housesRes.ok) {
-      housesData = await housesRes.json();
-      console.log('[calculate-natal-chart] Houses response received');
-    } else {
-      const houseErr = await housesRes.text();
-      console.warn('[calculate-natal-chart] Houses API error (non-fatal):', houseErr);
+    if (!planetRes.ok) {
+      const errText = await planetRes.text();
+      throw new Error(`Prokerala API error [${planetRes.status}]: ${errText}`);
     }
 
-    // Step 5: Parse into our canonical format
-    const planets = planetsData.output || [];
+    const planetData = await planetRes.json();
+    const positions = planetData.data?.planet_position || [];
     
-    // Find specific planets
-    const findPlanet = (name: string) => {
-      return planets.find((p: any) => 
-        p.planet?.en?.toLowerCase() === name.toLowerCase()
-      );
-    };
+    // Ayanamsha to convert sidereal → tropical
+    const ayanamsha = getAyanamsha(Number(year));
+    console.log(`[calculate-natal-chart] Ayanamsha for ${year}: ${ayanamsha.toFixed(2)}°`);
 
-    const sunData = findPlanet("Sun");
-    const moonData = findPlanet("Moon");
-    const ascendantData = findPlanet("Ascendant");
-    const venusData = findPlanet("Venus");
-    const marsData = findPlanet("Mars");
-    const mercuryData = findPlanet("Mercury");
-    const jupiterData = findPlanet("Jupiter");
-    const saturnData = findPlanet("Saturn");
+    const findPlanet = (name: string) =>
+      positions.find((p: any) => p.name?.toLowerCase() === name.toLowerCase());
 
-    // Determine houses for planets based on house cusps
-    const houseCusps: number[] = [];
-    if (housesData?.output) {
-      for (const h of housesData.output) {
-        houseCusps.push(h.fullDegree || 0);
-      }
-    }
-
-    function getHouse(fullDegree: number): number {
-      if (houseCusps.length < 12) return 1;
-      for (let i = 0; i < 12; i++) {
-        const nextI = (i + 1) % 12;
-        let start = houseCusps[i];
-        let end = houseCusps[nextI];
-        if (end < start) end += 360;
-        let deg = fullDegree;
-        if (deg < start) deg += 360;
-        if (deg >= start && deg < end) return i + 1;
-      }
-      return 1;
-    }
-
-    const makePlacement = (data: any) => {
-      if (!data) return null;
-      const deg = data.fullDegree || 0;
+    const makePlacement = (planet: any) => {
+      if (!planet) return null;
+      const sidereal = planet.longitude || 0;
+      const tropical = sidereal + ayanamsha;
       return {
-        sign: getSignFromDegree(deg),
-        house: getHouse(deg),
-        degree: getDegreeInSign(deg),
-        isRetrograde: data.isRetro === "true" || data.isRetro === true,
+        sign: getSignFromTropicalDegree(tropical),
+        house: planet.position || 1,
+        degree: getDegreeInSign(tropical),
+        isRetrograde: planet.is_retrograde || false,
       };
     };
 
-    const sun = makePlacement(sunData) || { sign: "Aries", house: 1, degree: 0 };
-    const moon = makePlacement(moonData) || { sign: "Aries", house: 1, degree: 0 };
-    const rising = ascendantData ? getSignFromDegree(ascendantData.fullDegree || 0) : "Aries";
-    const venus = makePlacement(venusData);
-    const mars = makePlacement(marsData);
-    const mercury = makePlacement(mercuryData);
-    const jupiter = makePlacement(jupiterData);
-    const saturn = makePlacement(saturnData);
+    const sun = makePlacement(findPlanet("Sun")) || { sign: "Aries", house: 1, degree: 0 };
+    const moon = makePlacement(findPlanet("Moon")) || { sign: "Aries", house: 1, degree: 0 };
+    const venus = makePlacement(findPlanet("Venus"));
+    const mars = makePlacement(findPlanet("Mars"));
+    const mercury = makePlacement(findPlanet("Mercury"));
+    const jupiter = makePlacement(findPlanet("Jupiter"));
+    const saturn = makePlacement(findPlanet("Saturn"));
 
-    // Calculate element balance from main placements
+    // Ascendant — check if it's in the planet positions
+    let rising = "Aries";
+    const ascData = findPlanet("Ascendant");
+    if (ascData) {
+      const tropical = (ascData.longitude || 0) + ayanamsha;
+      rising = getSignFromTropicalDegree(tropical);
+    }
+
+    // Element balance
     const elementBalance: Record<string, number> = { Fire: 0, Water: 0, Earth: 0, Air: 0 };
     [sun, moon, { sign: rising }, venus, mars, mercury, jupiter, saturn]
       .filter(Boolean)
@@ -239,29 +211,17 @@ serve(async (req) => {
       });
 
     const result = {
-      sun,
-      moon,
-      rising,
-      venus,
-      mars,
-      mercury,
-      jupiter,
-      saturn,
+      sun, moon, rising, venus, mars, mercury, jupiter, saturn,
       element_balance: elementBalance,
       aspects: [],
-      _meta: {
-        source: "freeastrologyapi.com",
-        coordinates: { lat, lng },
-        timezone: tzOffset,
-      },
+      _meta: { source: "prokerala.com", coordinates: { lat, lng }, timezone: tzOffset },
     };
 
-    console.log('[calculate-natal-chart] Chart calculated successfully');
+    console.log("[calculate-natal-chart] Success:", JSON.stringify({ sun: result.sun, moon: result.moon, rising: result.rising }));
 
-    return new Response(
-      JSON.stringify(result),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify(result), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
 
   } catch (error) {
     console.error('[calculate-natal-chart] Error:', error);
