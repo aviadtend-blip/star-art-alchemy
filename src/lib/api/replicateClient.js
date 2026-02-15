@@ -14,13 +14,13 @@ const FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate
  * @returns {Promise<string>} The generated image URL
  */
 export async function generateImage(prompt, options = {}) {
-  const width = options.width || 768;
-  const height = options.height || 1024;
+  const aspectRatio = options.aspectRatio || '3:4';
 
-  console.log('🎨 Starting image generation...');
+  console.log('🎨 Starting image generation with magical-pink LoRA...');
   console.log('Model:', API_CONFIG.loraModel);
   console.log('Trigger word:', API_CONFIG.triggerWord);
   console.log('Prompt length:', prompt.length);
+  console.log('Prompt preview:', prompt.substring(0, 100) + '...');
 
   const response = await fetch(FUNCTION_URL, {
     method: 'POST',
@@ -28,7 +28,7 @@ export async function generateImage(prompt, options = {}) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
     },
-    body: JSON.stringify({ prompt, width, height }),
+    body: JSON.stringify({ prompt, aspectRatio }),
   });
 
   if (!response.ok) {
