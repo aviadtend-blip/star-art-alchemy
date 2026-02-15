@@ -1,5 +1,6 @@
 import { useState } from "react";
 import BirthDataFormJsx from "./BirthDataForm.jsx";
+import { ChartExplanation } from "../Explanation/ChartExplanation";
 import { calculateNatalChart } from "@/lib/astrology/chartCalculator.js";
 import { buildCanonicalPrompt } from "@/lib/prompts/promptBuilder.js";
 import { generateImage, testConnection } from "@/lib/api/replicateClient";
@@ -151,33 +152,12 @@ const GeneratorFlowJsx = () => {
         )}
 
         {step === "explaining" && chartData && generatedImage && (
-          <div className="max-w-2xl mx-auto space-y-8 animate-fade-in">
-            <div className="text-center">
-              <p className="text-muted-foreground font-body text-xs tracking-widest uppercase mb-2">
-                Your Personalized Birth Chart Artwork
-              </p>
-              <p className="text-muted-foreground/60 text-xs font-body">
-                ☀️ {chartData.sun?.sign} · 🌙 {chartData.moon?.sign} · ⬆️ {chartData.rising} Rising
-              </p>
-            </div>
-
-            <div className="bg-secondary/20 border border-border rounded-lg overflow-hidden shadow-lg">
-              <img
-                src={generatedImage}
-                alt={`Birth chart artwork for Sun in ${chartData.sun?.sign}, Moon in ${chartData.moon?.sign}, ${chartData.rising} Rising`}
-                className="w-full h-auto"
-              />
-            </div>
-
-            <div className="flex justify-center gap-4">
-              <a
-                href={generatedImage}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-primary hover:text-primary/80 transition-colors font-body tracking-wide uppercase"
-              >
-                View Full Size ↗
-              </a>
+          <div className="animate-fade-in">
+            <ChartExplanation
+              chartData={chartData}
+              selectedImage={generatedImage}
+            />
+            <div className="flex justify-center gap-4 mt-6">
               <button
                 onClick={handleRetry}
                 className="text-sm text-muted-foreground hover:text-primary transition-colors font-body tracking-wide uppercase"
