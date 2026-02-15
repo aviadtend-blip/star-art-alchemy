@@ -16,8 +16,41 @@ serve(async (req) => {
       throw new Error('REPLICATE_API_TOKEN is not configured');
     }
 
-    const { prompt, width = 768, height = 1024 } = await req.json();
+    const { prompt, predictionId, width = 768, height = 1024 } = await req.json();
 
+    // --- Poll mode: check status of an existing prediction ---
+    if (predictionId) {
+      console.log('[generate-artwork] Polling prediction:', predictionId);
+      const pollResponse = await fetch(
+        `https://api.replicate.com/v1/predictions/${predictionId}`,
+        { headers: { 'Authorization': `Bearer ${REPLICATE_API_TOKEN}` } }
+      );
+
+      if (!pollResponse.ok) {
+        const errorText = await pollResponse.text();
+        console.error('[generate-artwork] Poll error:', pollResponse.status, errorText);
+        return new Response(
+          JSON.stringify({ error: `Replicate poll error: ${pollResponse.status}` }),
+          { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      const prediction = await pollResponse.json();
+      if (prediction.status === 'succeeded' && prediction.output) {
+        const imageUrl = Array.isArray(prediction.output) ? prediction.output[0] : prediction.output;
+        return new Response(
+          JSON.stringify({ imageUrl, status: 'succeeded' }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      return new Response(
+        JSON.stringify({ predictionId: prediction.id, status: prediction.status, error: prediction.error }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // --- Create mode: start a new prediction ---
     if (!prompt) {
       return new Response(
         JSON.stringify({ error: 'Prompt is required' }),
@@ -27,7 +60,6 @@ serve(async (req) => {
 
     console.log('[generate-artwork] Starting prediction with prompt length:', prompt.length);
 
-    // Create a prediction
     const createResponse = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
@@ -60,7 +92,6 @@ serve(async (req) => {
     const prediction = await createResponse.json();
     console.log('[generate-artwork] Prediction status:', prediction.status);
 
-    // If using Prefer: wait, the prediction should be completed
     if (prediction.status === 'succeeded' && prediction.output) {
       const imageUrl = Array.isArray(prediction.output) ? prediction.output[0] : prediction.output;
       return new Response(
@@ -69,7 +100,6 @@ serve(async (req) => {
       );
     }
 
-    // If not yet complete, return the prediction ID for polling
     return new Response(
       JSON.stringify({ predictionId: prediction.id, status: prediction.status }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
