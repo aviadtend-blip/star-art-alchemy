@@ -1,7 +1,31 @@
 import { useState } from "react";
 import BirthDataForm from "./BirthDataForm";
 import ChartExplanation from "@/components/Explanation/ChartExplanation";
-import { calculateChart, type BirthData, type ChartData } from "@/lib/astrology/chartCalculator";
+import { calculateNatalChart } from "@/lib/astrology/chartCalculator";
+
+interface BirthData {
+  name: string;
+  date: string;
+  time: string;
+  location: string;
+}
+
+interface ChartData {
+  sun: { sign: string; house: number; degree: number };
+  moon: { sign: string; house: number; degree: number };
+  rising: string;
+  venus: { sign: string; house: number };
+  mars: { sign: string; house: number };
+  mercury: { sign: string; house: number };
+  jupiter: { sign: string; house: number };
+  element_balance: Record<string, number>;
+  aspects: Array<any>;
+  sunSign: string;
+  moonSign: string;
+  risingSign: string;
+  dominantElement: string;
+  planets: Record<string, { sign: string; house: number; degree: number }>;
+}
 import { buildArtworkPrompt } from "@/lib/prompts/promptBuilder";
 
 type FlowStep = "input" | "calculating" | "result";
@@ -14,7 +38,33 @@ const GeneratorFlow = () => {
   const handleSubmit = async (birthData: BirthData) => {
     setStep("calculating");
     try {
-      const chart = await calculateChart(birthData);
+      const natalData = await calculateNatalChart({
+        year: parseInt(birthData.date.split('-')[0]),
+        month: parseInt(birthData.date.split('-')[1]),
+        day: parseInt(birthData.date.split('-')[2]),
+        hour: parseInt(birthData.time.split(':')[0]),
+        minute: parseInt(birthData.time.split(':')[1]),
+        city: birthData.location.split(',')[0]?.trim() || birthData.location,
+        nation: birthData.location.split(',')[1]?.trim() || '',
+      });
+      // Map natal data to ChartData shape for prompt builder
+      const dominantElement = Object.entries(natalData.element_balance)
+        .sort(([,a]: any, [,b]: any) => b - a)[0][0].toLowerCase();
+      const chart: ChartData = {
+        ...natalData,
+        sunSign: natalData.sun.sign.toLowerCase(),
+        moonSign: natalData.moon.sign.toLowerCase(),
+        risingSign: natalData.rising.toLowerCase(),
+        dominantElement,
+        planets: {
+          sun: natalData.sun,
+          moon: natalData.moon,
+          mercury: { ...natalData.mercury, degree: 0 },
+          venus: { ...natalData.venus, degree: 0 },
+          mars: { ...natalData.mars, degree: 0 },
+          jupiter: { ...natalData.jupiter, degree: 0 },
+        },
+      };
       const prompt = buildArtworkPrompt(chart);
       setChartData(chart);
       setArtworkPrompt(prompt);
