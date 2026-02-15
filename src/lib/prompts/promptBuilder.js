@@ -64,6 +64,7 @@ export function buildCanonicalPrompt(chartData) {
   sections.push(
     `PRIMARY ELEMENT (Sun in ${chartData.sun.sign}):`,
     sunDef?.description ?? 'A radiant celestial sun.',
+    sunDef?.zodiacSymbolism ?? '',
     `Colors: Core ${sunDef?.colorCore ?? '#FFD700'}, Rays ${sunDef?.colorRays ?? '#FFA500'}`,
     ''
   );
@@ -72,6 +73,7 @@ export function buildCanonicalPrompt(chartData) {
   sections.push(
     `SECONDARY ELEMENT (Moon in ${chartData.moon.sign}):`,
     moonDef?.description ?? 'A luminous celestial moon.',
+    moonDef?.zodiacSymbolism ?? '',
     `Colors: Surface ${moonDef?.colorSurface ?? '#F0F8FF'}, Glow ${moonDef?.colorGlow ?? '#E6E6FA'}`,
     ''
   );
@@ -80,6 +82,7 @@ export function buildCanonicalPrompt(chartData) {
   sections.push(
     `DETAIL AESTHETIC (${chartData.rising} Rising):`,
     risingDef?.detailStyle ?? 'Elegant decorative details.',
+    risingDef?.zodiacSymbolism ?? '',
     `Line work: ${risingDef?.lineWorkSpecifics ?? 'Fine, considered lines.'}`,
     ''
   );
