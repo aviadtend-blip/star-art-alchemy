@@ -3,6 +3,7 @@
 // using canonical visual definitions for each astrological placement.
 
 import { SUN_CANONICAL, MOON_CANONICAL, RISING_AESTHETIC, ELEMENTAL_PALETTE } from '@/data/canonicalDefinitions';
+import { API_CONFIG } from '@/config/api';
 
 /**
  * Returns the element with the highest count from the element balance object.
@@ -114,5 +115,6 @@ export function buildCanonicalPrompt(chartData) {
     'Vertical portrait orientation, 3:4 aspect ratio, high detail, museum quality aesthetic.'
   );
 
-  return sections.join('\n');
+  console.log('🎯 Trigger word used:', API_CONFIG.triggerWord);
+  return `${API_CONFIG.triggerWord} ${sections.join('\n')}`;
 }
