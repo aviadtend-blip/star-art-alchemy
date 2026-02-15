@@ -1,7 +1,7 @@
-import GeneratorFlow from "@/components/Generator/GeneratorFlow";
+import GeneratorFlowJsx from "@/components/Generator/GeneratorFlow.jsx";
 
 const Index = () => {
-  return <GeneratorFlow />;
+  return <GeneratorFlowJsx />;
 };
 
 export default Index;
