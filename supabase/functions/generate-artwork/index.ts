@@ -12,6 +12,7 @@ serve(async (req) => {
 
   try {
     const REPLICATE_API_TOKEN = Deno.env.get('REPLICATE_API_TOKEN');
+    console.log('[generate-artwork] Token present:', !!REPLICATE_API_TOKEN, 'Length:', REPLICATE_API_TOKEN?.length, 'Starts with:', REPLICATE_API_TOKEN?.substring(0, 4));
     if (!REPLICATE_API_TOKEN) {
       throw new Error('REPLICATE_API_TOKEN is not configured');
     }
