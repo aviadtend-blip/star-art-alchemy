@@ -15,6 +15,39 @@ export function ChartExplanation({ chartData, selectedImage }) {
         </p>
       </div>
 
+      {/* Quick Reference */}
+      <div className="bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-amber-500/10 rounded-xl p-6 mb-12">
+        <h3 className="text-center font-semibold text-foreground mb-4">Your Birth Chart Summary</h3>
+        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="bg-card/60 border border-border rounded-lg p-4 text-center shadow-sm">
+            <div className="text-3xl mb-2">☀️</div>
+            <div className="font-bold text-foreground">Sun in {chartData.sun.sign}</div>
+            <div className="text-sm text-muted-foreground">House {chartData.sun.house}</div>
+          </div>
+          <div className="bg-card/60 border border-border rounded-lg p-4 text-center shadow-sm">
+            <div className="text-3xl mb-2">🌙</div>
+            <div className="font-bold text-foreground">Moon in {chartData.moon.sign}</div>
+            <div className="text-sm text-muted-foreground">House {chartData.moon.house}</div>
+          </div>
+          <div className="bg-card/60 border border-border rounded-lg p-4 text-center shadow-sm">
+            <div className="text-3xl mb-2">⬆️</div>
+            <div className="font-bold text-foreground">{chartData.rising} Rising</div>
+            <div className="text-sm text-muted-foreground">Your Ascendant</div>
+          </div>
+        </div>
+
+        {/* Element Balance */}
+        <div className="mt-6 text-center">
+          <p className="text-sm font-medium text-muted-foreground mb-2">Elemental Balance:</p>
+          <div className="flex justify-center gap-4 text-sm text-foreground">
+            <span>🔥 Fire: {chartData.element_balance.Fire}</span>
+            <span>💧 Water: {chartData.element_balance.Water}</span>
+            <span>🌍 Earth: {chartData.element_balance.Earth}</span>
+            <span>💨 Air: {chartData.element_balance.Air}</span>
+          </div>
+        </div>
+      </div>
+
       {/* Main Grid: Image + Explanation Side by Side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
         {/* Left: Image */}
