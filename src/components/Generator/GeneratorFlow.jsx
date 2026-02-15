@@ -17,19 +17,14 @@ const GeneratorFlowJsx = () => {
     setLoading(true);
 
     try {
-      // 1. Calculate natal chart from birth data
       const chart = await calculateNatalChart(formData);
       console.log("[GeneratorFlow] Chart calculated:", chart);
       setChartData(chart);
 
-      // 2. Build AI prompt from chart data
       const prompt = buildCanonicalPrompt(chart);
       console.log("[GeneratorFlow] Generated prompt:\n", prompt);
 
-      // TODO: 3. Call image generation API with prompt
-      // const image = await generateImage(prompt);
-      // setGeneratedImage(image);
-
+      // TODO: Call image generation API with prompt
       setStep("explaining");
     } catch (err) {
       console.error("[GeneratorFlow] Generation failed:", err);
@@ -65,7 +60,6 @@ const GeneratorFlowJsx = () => {
       </div>
 
       <div className="relative z-10">
-        {/* Header */}
         <div className="text-center mb-12">
           <h1 className="font-display text-5xl md:text-6xl font-light text-foreground tracking-wide mb-3">
             Celestial <span className="text-primary text-glow">Canvas</span>
@@ -75,7 +69,6 @@ const GeneratorFlowJsx = () => {
           </p>
         </div>
 
-        {/* Error message */}
         {error && (
           <div className="max-w-md mx-auto mb-8 bg-destructive/10 border border-destructive/30 rounded-lg p-4 text-center">
             <p className="text-destructive text-sm mb-3">{error}</p>
@@ -88,14 +81,12 @@ const GeneratorFlowJsx = () => {
           </div>
         )}
 
-        {/* Step: Input */}
         {step === "input" && (
           <div className="max-w-2xl mx-auto animate-fade-in">
             <BirthDataFormJsx onSubmit={handleFormSubmit} />
           </div>
         )}
 
-        {/* Step: Generating */}
         {step === "generating" && (
           <div className="flex flex-col items-center justify-center gap-6 py-24 animate-fade-in">
             <div className="relative w-20 h-20">
@@ -117,10 +108,8 @@ const GeneratorFlowJsx = () => {
           </div>
         )}
 
-        {/* Step: Explaining */}
         {step === "explaining" && chartData && (
           <div className="max-w-2xl mx-auto space-y-10 animate-fade-in">
-            {/* Placeholder for artwork */}
             <div className="bg-secondary/30 border border-border rounded-lg p-12 text-center">
               <p className="text-muted-foreground font-display text-lg tracking-wide">
                 Artwork will appear here
@@ -130,7 +119,6 @@ const GeneratorFlowJsx = () => {
               </p>
             </div>
 
-            {/* Start over */}
             <div className="text-center">
               <button
                 onClick={handleRetry}
