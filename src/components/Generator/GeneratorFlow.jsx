@@ -89,6 +89,16 @@ const GeneratorFlowJsx = () => {
 
         {step === "generating" && (
           <div className="flex flex-col items-center justify-center gap-6 py-24 animate-fade-in">
+            {chartData && (
+              <div className="text-center mb-6 p-4 bg-secondary/30 border border-border rounded-lg">
+                <h3 className="font-display text-foreground mb-2">Your Astrological Placements:</h3>
+                <div className="flex justify-center gap-6 text-sm text-muted-foreground">
+                  <div>☀️ Sun in {chartData.sun.sign}</div>
+                  <div>🌙 Moon in {chartData.moon.sign}</div>
+                  <div>⬆️ {chartData.rising} Rising</div>
+                </div>
+              </div>
+            )}
             <div className="relative w-20 h-20">
               <div className="absolute inset-0 border-2 border-primary/20 rounded-full" />
               <div className="absolute inset-0 border-2 border-transparent border-t-primary rounded-full animate-spin" />
