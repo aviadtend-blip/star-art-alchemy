@@ -2,3 +2,6 @@ project_id = "zuzbwklzmcrszdjyepqe"
 
 [functions.generate-artwork]
 verify_jwt = false
+
+[functions.calculate-natal-chart]
+verify_jwt = false
