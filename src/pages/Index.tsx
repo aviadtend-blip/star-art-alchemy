@@ -1,7 +1,7 @@
-import GeneratorFlowJsx from "@/components/Generator/GeneratorFlow.jsx";
+import LandingPage from "@/components/Landing/LandingPage";
 
 const Index = () => {
-  return <GeneratorFlowJsx />;
+  return <LandingPage />;
 };
 
 export default Index;

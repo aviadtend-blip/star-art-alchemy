@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import BirthDataFormJsx from "./BirthDataForm.jsx";
 import { ChartExplanation } from "../Explanation/ChartExplanation";
 import { ProductCustomization } from "../Purchase/ProductCustomization";
@@ -9,6 +10,7 @@ import { generateImage, testConnection } from "@/lib/api/replicateClient";
 import { supabase } from "@/integrations/supabase/client";
 
 const GeneratorFlowJsx = () => {
+  const [searchParams] = useSearchParams();
   const [step, setStep] = useState("input");
   const [chartData, setChartData] = useState(null);
   const [generatedImage, setGeneratedImage] = useState(null);
@@ -16,6 +18,29 @@ const GeneratorFlowJsx = () => {
   const [generationProgress, setGenerationProgress] = useState("");
   const [orderDetails, setOrderDetails] = useState(null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const autoSubmitted = useRef(false);
+
+  // Auto-submit if query params are present from landing page
+  useEffect(() => {
+    if (autoSubmitted.current) return;
+    const month = searchParams.get("month");
+    const day = searchParams.get("day");
+    const year = searchParams.get("year");
+    const city = searchParams.get("city");
+    if (month && day && year && city) {
+      autoSubmitted.current = true;
+      handleFormSubmit({
+        name: searchParams.get("name") || "",
+        month: Number(month),
+        day: Number(day),
+        year: Number(year),
+        hour: Number(searchParams.get("hour") || "12"),
+        minute: Number(searchParams.get("minute") || "0"),
+        city,
+        nation: searchParams.get("nation") || "US",
+      });
+    }
+  }, [searchParams]);
 
   const handleFormSubmit = async (formData) => {
     try {
