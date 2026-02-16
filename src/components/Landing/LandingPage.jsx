@@ -108,8 +108,30 @@ export default function LandingPage() {
     document.getElementById("birth-form")?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const fillTestData = () => {
+    setFormData({
+      name: "Sarah",
+      birthMonth: "6",
+      birthDay: "15",
+      birthYear: "1995",
+      birthHour: "3",
+      birthMinute: "30",
+      birthPeriod: "PM",
+      birthCity: "New York",
+      birthCountry: "US",
+    });
+    document.getElementById("birth-form")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <div className="min-h-screen bg-white">
+      {/* DEV: Auto-fill test button */}
+      <button
+        onClick={fillTestData}
+        className="fixed bottom-4 right-4 z-50 bg-gray-900 text-white px-4 py-2 rounded-full text-sm shadow-lg hover:bg-gray-700 transition opacity-70 hover:opacity-100"
+      >
+        🧪 Fill Test Data
+      </button>
       {/* NAVIGATION */}
       <nav className="py-6 px-4 md:px-8 flex items-center justify-between border-b border-gray-100">
         <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
