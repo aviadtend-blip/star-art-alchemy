@@ -16,7 +16,7 @@ export function generateChartExplanation(chartData) {
         title: `Sun in ${chartData.sun.sign}`,
         subtitle: "Your Core Identity & Life Force",
         icon: "☀️",
-        explanation: `The ${getSunVisualDescription(chartData.sun.sign)} represents your Sun in ${chartData.sun.sign}. This placement shapes your core identity and creative life force. ${sunDef.energy}.`,
+        explanation: `The ${getSunVisualDescription(chartData.sun.sign)} represents your Sun in ${chartData.sun.sign}. This placement shapes your core identity and creative life force. ${sunDef.description || 'Core identity expression'}.`,
         visualCues: [
           getSunVisualCue(chartData.sun.sign),
           getSunSymbolicCue(chartData.sun.sign)
@@ -27,7 +27,7 @@ export function generateChartExplanation(chartData) {
         title: `Moon in ${chartData.moon.sign}`,
         subtitle: "Your Emotional Nature & Inner World",
         icon: "🌙",
-        explanation: `The ${getMoonVisualDescription(chartData.moon.sign)} represents your Moon in ${chartData.moon.sign}. This governs your emotional nature and subconscious patterns. ${moonDef.emotionalResonance}.`,
+        explanation: `The ${getMoonVisualDescription(chartData.moon.sign)} represents your Moon in ${chartData.moon.sign}. This governs your emotional nature and subconscious patterns. ${moonDef.description || 'Emotional processing'}.`,
         visualCues: [
           getMoonVisualCue(chartData.moon.sign),
           getMoonSymbolicCue(chartData.moon.sign)
