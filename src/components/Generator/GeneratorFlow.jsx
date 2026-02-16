@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import BirthDataFormJsx from "./BirthDataForm.jsx";
 import StyleSelection from "./StyleSelection.jsx";
 import { ChartExplanation } from "../Explanation/ChartExplanation";
@@ -13,6 +13,7 @@ import { getStyleById } from "@/config/artStyles";
 
 const GeneratorFlowJsx = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [step, setStep] = useState("input");
   const [chartData, setChartData] = useState(null);
   const [formData, setFormData] = useState(null);
@@ -176,6 +177,12 @@ const GeneratorFlowJsx = () => {
           </div>
 
           <div className="relative z-10">
+            <button
+              onClick={() => navigate("/")}
+              className="absolute top-0 left-0 text-sm text-muted-foreground hover:text-primary transition-colors font-body tracking-wide"
+            >
+              ← Back to Home
+            </button>
             <div className="text-center mb-12">
               <h1 className="font-display text-5xl md:text-6xl font-light text-foreground tracking-wide mb-3">
                 Celestial <span className="text-primary text-glow">Canvas</span>
