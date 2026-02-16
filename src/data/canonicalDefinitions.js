@@ -81,8 +81,8 @@ export const SUN_CANONICAL = {
   },
 
   "Pisces": {
-    description: "A mystical sun appearing beneath water, creating diffused, iridescent rays.",
-    zodiacSymbolism: "GEOMETRIC SYMBOLISM: Two opposing curved forms creating infinity symbol (∞) through precise mathematical curves - two circles meeting or vesica piscis. Dual spiral patterns (one clockwise, one counterclockwise) forming yin-yang circular geometry. Wave functions as sine/cosine curves with mathematical precision. Mirrored architectural arcs creating circular flow pattern. Neptune's trident as three vertical lines or triangular trinity geometry. Fibonacci spirals (both left and right-handed) representing oceanic dual flow. Overlapping circles or lemniscate curves showing boundary dissolution through geometric intersection.",
+    description: "A mystical sun appearing beneath water, creating diffused, iridescent rays, framed by dual fish forms.",
+    zodiacSymbolism: "GEOMETRIC SYMBOLISM - CRITICAL: Sun MUST be integrated with INFINITY SYMBOL (∞) - horizontal figure-8 shape with sun at center crossing point or as underlying compositional structure. TWO CLEARLY DISTINCT FISH-SHAPED FORMS swimming in opposite circular directions - one fish form (curved teardrop/almond shape with pointed tail) swimming upward/clockwise on LEFT side, second fish form (mirrored curved shape) swimming downward/counterclockwise on RIGHT side. Fish shapes should be unmistakable - curved body tapering to pointed tail. Dual opposing spirals creating yin-yang circular flow pattern - one left-handed fibonacci spiral, one right-handed fibonacci spiral, both clearly visible. Overlapping circles (two circles intersecting, vesica piscis geometry) showing boundary dissolution through geometric intersection - sun positioned at intersection point. Wave functions rendered as multiple parallel sine curves creating water effect. Neptune's trident as THREE VERTICAL PARALLEL LINES or upward-pointing triangular trinity symbol prominently placed. Lemniscate (figure-8) must be primary compositional element - cannot be missed.",
     colorCore: "#FFFACD",
     colorRays: "#E6E6FA to #AFEEEE"
   }
@@ -178,9 +178,9 @@ export const MOON_CANONICAL = {
   },
 
   "Pisces": {
-    description: "A mystical moon merging with water and spiritual mist.",
-    zodiacSymbolism: "EMOTIONAL SYMBOLISM: Two opposing curved forms creating infinity symbol (∞) around or integrated with moon. Dual spirals (left-handed and right-handed fibonacci spirals) flowing in opposite directions. Overlapping circles or vesica piscis showing boundary dissolution. Wave functions as precise sine curves. Neptune's trident as three vertical lines or triangular trinity. Yin-yang circular geometry within moon. Lemniscate curve (figure-8) geometric pattern.",
-    form: "Dissolved in mist",
+    description: "A mystical moon merging with water and spiritual mist, integrated with dual fish forms.",
+    zodiacSymbolism: "EMOTIONAL SYMBOLISM - CRITICAL: Moon MUST be framed by or contain INFINITY SYMBOL (∞) as primary geometric element - figure-8 shape with moon at center crossing point. TWO DISTINCT FISH FORMS swimming in opposite directions - one fish-shaped curved form swimming clockwise (right), one fish-shaped curved form swimming counterclockwise (left), creating circular yin-yang pattern around moon. Fish forms should be clearly recognizable as curved teardrop or almond shapes with pointed tail ends. Dual opposing fibonacci spirals (one left-handed spiral, one right-handed spiral) creating visual flow. Overlapping circles (vesica piscis) showing boundary dissolution - two circles intersecting with moon at intersection. Wave functions as precise sine/cosine curves flowing horizontally. Neptune's trident rendered as THREE PARALLEL VERTICAL LINES or upward-pointing triangular trinity positioned near moon. Lemniscate curve (horizontal figure-8/infinity symbol) must be prominent and clearly visible.",
+    form: "Moon at center of infinity symbol with dual fish",
     colorSurface: "#F0F8FF",
     colorGlow: "#E6E6FA"
   }
@@ -265,9 +265,9 @@ export const RISING_AESTHETIC = {
   },
 
   "Pisces": {
-    description: "Mystical, ethereal presentation with soft boundaries.",
-    zodiacSymbolism: "PRESENTATION SYMBOLISM: Infinity symbol (∞) as primary frame element or underlying structure. Two fish forms as opposing curved elements creating circular yin-yang flow in borders. Dual spirals (clockwise and counterclockwise fibonacci spirals) in corners. Wave functions as precise sine curves forming frame boundaries. Neptune's trident as three vertical lines or triangular trinity in composition. Overlapping circles or lemniscate curves showing boundary dissolution. Vesica piscis (overlapping circles) creating transcendent geometry.",
-    detailStyle: "Flowing curved lines. Overlapping transparent circles. Dual spiral patterns. Wave geometry.",
+    description: "Mystical, ethereal presentation with soft boundaries and transcendent quality.",
+    zodiacSymbolism: "PRESENTATION SYMBOLISM - CRITICAL: INFINITY SYMBOL (∞) as PRIMARY FRAME ELEMENT - horizontal figure-8 lemniscate curve forming the main border or underlying structural framework (cannot be subtle - must be obvious). TWO FISH FORMS clearly visible in border composition - one fish-shaped curved element flowing in upper border (swimming right/clockwise), one fish-shaped curved element in lower border (swimming left/counterclockwise), creating opposing circular flow. Fish should be recognizable curved teardrop shapes with pointed tails. Dual fibonacci spirals (one clockwise in upper left corner, one counterclockwise in lower right corner) prominently displayed. Wave functions forming frame boundaries - multiple parallel sine curves creating water-like border effect. Neptune's trident as THREE PARALLEL VERTICAL LINES prominently placed at top or bottom of composition. Overlapping circles (vesica piscis) in corners - two circles intersecting creating transcendent geometry. Lemniscate curve (figure-8 infinity symbol) MUST be unmistakable as primary compositional structure. Yin-yang circular dual flow pattern clearly visible in overall frame design.",
+    detailStyle: "Flowing curved lines. Infinity symbol frame structure. Dual opposing fish forms. Wave sine curves. Overlapping transparent circles.",
     energy: "Mystical, dreamy, transcendent, boundless"
   }
 };
