@@ -4,6 +4,7 @@
 
 import { SUN_CANONICAL, MOON_CANONICAL, RISING_AESTHETIC, ELEMENTAL_PALETTE } from '@/data/canonicalDefinitions';
 import { API_CONFIG } from '@/config/api';
+import { getStyleById } from '@/config/artStyles';
 
 /**
  * Returns the element with the highest count from the element balance object.
@@ -45,9 +46,11 @@ export function combineEnergies(sunDef, moonDef, risingDef) {
  * can parse compositional intent, color guidance, and stylistic direction.
  *
  * @param {{ sun: { sign: string }, moon: { sign: string }, rising: string, element_balance: object }} chartData
+ * @param {object} [style] - Art style from artStyles config. Falls back to API_CONFIG defaults.
  * @returns {string} Complete generation prompt
  */
-export function buildCanonicalPrompt(chartData) {
+export function buildCanonicalPrompt(chartData, style) {
+  const triggerWord = style?.triggerWord ?? API_CONFIG.triggerWord;
   // --- Look up canonical definitions for each placement ---
   const sunDef = SUN_CANONICAL[chartData.sun.sign];
   const moonDef = MOON_CANONICAL[chartData.moon.sign];
@@ -115,6 +118,6 @@ export function buildCanonicalPrompt(chartData) {
     'Vertical portrait orientation, 3:4 aspect ratio, high detail, museum quality aesthetic.'
   );
 
-  console.log('🎯 Trigger word used:', API_CONFIG.triggerWord);
-  return `${API_CONFIG.triggerWord} ${sections.join('\n')}`;
+  console.log('🎯 Trigger word used:', triggerWord);
+  return `${triggerWord} ${sections.join('\n')}`;
 }

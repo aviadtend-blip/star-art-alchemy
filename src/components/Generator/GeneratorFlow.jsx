@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import BirthDataFormJsx from "./BirthDataForm.jsx";
+import StyleSelection from "./StyleSelection.jsx";
 import { ChartExplanation } from "../Explanation/ChartExplanation";
 import { ProductCustomization } from "../Purchase/ProductCustomization";
 import { OrderConfirmation } from "../Purchase/OrderConfirmation";
@@ -8,11 +9,14 @@ import { calculateNatalChart } from "@/lib/astrology/chartCalculator.js";
 import { buildCanonicalPrompt } from "@/lib/prompts/promptBuilder.js";
 import { generateImage, testConnection } from "@/lib/api/replicateClient";
 import { supabase } from "@/integrations/supabase/client";
+import { getStyleById } from "@/config/artStyles";
 
 const GeneratorFlowJsx = () => {
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState("input");
   const [chartData, setChartData] = useState(null);
+  const [formData, setFormData] = useState(null);
+  const [selectedStyle, setSelectedStyle] = useState(null);
   const [generatedImage, setGeneratedImage] = useState(null);
   const [error, setError] = useState(null);
   const [generationProgress, setGenerationProgress] = useState("");
@@ -42,26 +46,44 @@ const GeneratorFlowJsx = () => {
     }
   }, [searchParams]);
 
-  const handleFormSubmit = async (formData) => {
+  const handleFormSubmit = async (data) => {
     try {
       setError(null);
-      setStep("generating");
+      setFormData(data);
 
       setGenerationProgress("Calculating your birth chart...");
-      console.log("📋 Form submitted:", formData);
+      console.log("📋 Form submitted:", data);
 
-      const chart = await calculateNatalChart(formData);
+      const chart = await calculateNatalChart(data);
       setChartData(chart);
       console.log("✅ Chart calculated:", chart);
 
+      // Go to style selection instead of generating immediately
+      setStep("style");
+    } catch (err) {
+      console.error("❌ Chart calculation error:", err);
+      setError(err.message);
+      setStep("input");
+    }
+  };
+
+  const handleStyleSelect = async (styleId) => {
+    const style = getStyleById(styleId);
+    setSelectedStyle(style);
+    setStep("generating");
+
+    try {
       setGenerationProgress("Building your personalized artwork prompt...");
-      const prompt = buildCanonicalPrompt(chart);
+      const prompt = buildCanonicalPrompt(chartData, style);
       console.log("📝 Prompt built (first 200 chars):", prompt.substring(0, 200) + "...");
 
-      setGenerationProgress("Generating your magical pink watercolor artwork... (this takes 30-60 seconds)");
-      console.log("🎨 Calling Replicate API...");
+      setGenerationProgress(`Generating your ${style.name} artwork... (this takes 30-60 seconds)`);
+      console.log("🎨 Calling Replicate API with style:", style.name);
 
-      const imageUrl = await generateImage(prompt, { aspectRatio: "3:4" });
+      const imageUrl = await generateImage(prompt, {
+        aspectRatio: "3:4",
+        version: style.version,
+      });
       console.log("✅ Image generated:", imageUrl);
 
       setGeneratedImage(imageUrl);
@@ -69,14 +91,20 @@ const GeneratorFlowJsx = () => {
     } catch (err) {
       console.error("❌ Generation error:", err);
       setError(err.message);
-      setStep("input");
+      setStep("style");
     }
   };
 
   const handleRetry = () => {
     setError(null);
     setGeneratedImage(null);
+    setSelectedStyle(null);
     setStep("input");
+  };
+
+  const handleBackToStyle = () => {
+    setError(null);
+    setStep("style");
   };
 
   const handleGetFramed = () => {
@@ -100,7 +128,6 @@ const GeneratorFlowJsx = () => {
       if (data?.error) throw new Error(data.error);
       if (!data?.url) throw new Error('No checkout URL returned');
 
-      // Redirect to Stripe Checkout
       window.location.href = data.url;
     } catch (err) {
       console.error("❌ Checkout error:", err);
@@ -117,7 +144,6 @@ const GeneratorFlowJsx = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const sessionId = urlParams.get('session_id');
   if (sessionId && step !== "confirmed") {
-    // Show confirmation
     return (
       <OrderConfirmation
         chartData={chartData}
@@ -177,36 +203,36 @@ const GeneratorFlowJsx = () => {
 
       {step === "input" && (
         <div className="max-w-2xl mx-auto animate-fade-in relative z-10" style={{ maxWidth: '42rem' }}>
-          <div className="text-center mb-4">
-            <button
-              onClick={async () => {
-                console.log("🔌 Testing Replicate API connection...");
-                const result = await testConnection();
-                if (result.success) {
-                  alert("✅ API Connection Successful!");
-                } else {
-                  alert("❌ API Connection Failed\n\n" + result.error);
-                }
-              }}
-              className="text-xs text-muted-foreground hover:text-primary transition-colors font-body tracking-wide uppercase border border-border rounded px-3 py-1"
-            >
-              🔌 Test API Connection
-            </button>
-          </div>
           <BirthDataFormJsx onSubmit={handleFormSubmit} />
+        </div>
+      )}
+
+      {step === "style" && chartData && (
+        <div className="animate-fade-in">
+          {/* Show chart summary */}
+          <div className="text-center mb-8 p-4 bg-secondary/30 border border-border rounded-lg max-w-md mx-auto relative z-10">
+            <h3 className="font-display text-foreground mb-2">Your Astrological Placements:</h3>
+            <div className="flex justify-center gap-6 text-sm text-muted-foreground">
+              <div>☀️ Sun in {chartData.sun.sign}</div>
+              <div>🌙 Moon in {chartData.moon.sign}</div>
+              <div>⬆️ {chartData.rising} Rising</div>
+            </div>
+          </div>
+          <StyleSelection onSelect={handleStyleSelect} onBack={handleRetry} />
         </div>
       )}
 
       {step === "generating" && (
         <div className="flex flex-col items-center justify-center gap-6 py-24 animate-fade-in relative z-10">
-          {chartData && (
+          {chartData && selectedStyle && (
             <div className="text-center mb-6 p-4 bg-secondary/30 border border-border rounded-lg">
               <h3 className="font-display text-foreground mb-2">Your Astrological Placements:</h3>
-              <div className="flex justify-center gap-6 text-sm text-muted-foreground">
+              <div className="flex justify-center gap-6 text-sm text-muted-foreground mb-2">
                 <div>☀️ Sun in {chartData.sun.sign}</div>
                 <div>🌙 Moon in {chartData.moon.sign}</div>
                 <div>⬆️ {chartData.rising} Rising</div>
               </div>
+              <div className="text-xs text-primary font-body">Style: {selectedStyle.name}</div>
             </div>
           )}
           <div className="relative w-20 h-20">
@@ -234,10 +260,16 @@ const GeneratorFlowJsx = () => {
           />
           <div className="flex justify-center gap-4 mt-6">
             <button
+              onClick={handleBackToStyle}
+              className="text-sm text-muted-foreground hover:text-primary transition-colors font-body tracking-wide uppercase"
+            >
+              ← Try Different Style
+            </button>
+            <button
               onClick={handleRetry}
               className="text-sm text-muted-foreground hover:text-primary transition-colors font-body tracking-wide uppercase"
             >
-              ← Generate Another
+              ← Start Over
             </button>
           </div>
         </div>
@@ -250,20 +282,6 @@ const GeneratorFlowJsx = () => {
           onCheckout={handleCheckout}
           onBack={handleBackToExplanation}
         />
-      )}
-
-      {/* Test button */}
-      {step === "input" && (
-        <button
-          onClick={() =>
-            handleFormSubmit({
-              year: 1995, month: 3, day: 21, hour: 14, minute: 30, city: "Los Angeles", nation: "US",
-            })
-          }
-          className="fixed bottom-4 right-4 bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm shadow-lg hover:bg-accent/90 transition-colors z-50 font-body"
-        >
-          🧪 Test Generation
-        </button>
       )}
 
       {isCheckingOut && (

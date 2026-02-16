@@ -15,12 +15,15 @@ const FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate
  */
 export async function generateImage(prompt, options = {}) {
   const aspectRatio = options.aspectRatio || '3:4';
+  const version = options.version || null;
 
-  console.log('🎨 Starting image generation with magical-pink LoRA...');
-  console.log('Model:', API_CONFIG.loraModel);
-  console.log('Trigger word:', API_CONFIG.triggerWord);
+  console.log('🎨 Starting image generation...');
   console.log('Prompt length:', prompt.length);
+  console.log('Version override:', version ? 'yes' : 'using default');
   console.log('Prompt preview:', prompt.substring(0, 100) + '...');
+
+  const body = { prompt, aspectRatio };
+  if (version) body.version = version;
 
   const response = await fetch(FUNCTION_URL, {
     method: 'POST',
@@ -28,7 +31,7 @@ export async function generateImage(prompt, options = {}) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
     },
-    body: JSON.stringify({ prompt, aspectRatio }),
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {

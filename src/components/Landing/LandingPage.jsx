@@ -260,20 +260,21 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-4">How It Works</h2>
           <p className="text-xl text-gray-600 text-center mb-16 max-w-2xl mx-auto">
-            From your birth data to personalized artwork in 3 simple steps
+            From your birth data to personalized artwork in 4 simple steps
           </p>
-          <div className="grid md:grid-cols-3 gap-12 mb-12">
+          <div className="grid md:grid-cols-4 gap-10 mb-12">
             {[
               { n: "1", title: "Enter Your Birth Data", desc: "Provide your birth date, time, and location. We calculate your complete natal chart." },
-              { n: "2", title: "AI Creates Your Artwork", desc: "Our system generates unique artwork incorporating your zodiac symbols and cosmic blueprint." },
-              { n: "3", title: "Get It Framed & Shipped", desc: "Love it? Choose your size and frame. We'll ship it professionally framed to your door." },
+              { n: "2", title: "Choose Your Style", desc: "Pick from multiple artistic styles—each transforms your chart into a different visual experience." },
+              { n: "3", title: "AI Creates Your Artwork", desc: "Our system generates unique artwork incorporating your zodiac symbols and cosmic blueprint." },
+              { n: "4", title: "Get It Framed & Shipped", desc: "Love it? Choose your size and frame. We'll ship it professionally framed to your door." },
             ].map((s) => (
               <div key={s.n} className="text-center">
                 <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center text-4xl font-bold text-purple-600 mx-auto mb-6">
                   {s.n}
                 </div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-3">{s.title}</h3>
-                <p className="text-gray-600 text-lg">{s.desc}</p>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">{s.title}</h3>
+                <p className="text-gray-600">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -281,6 +282,38 @@ export default function LandingPage() {
             <button onClick={scrollToForm} className="bg-purple-600 text-white px-10 py-4 rounded-xl font-semibold text-lg hover:bg-purple-700 transition-all transform hover:scale-105 shadow-lg">
               Generate My Free Preview →
             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ART STYLES */}
+      <section className="py-20">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-4">5 Unique Art Styles</h2>
+          <p className="text-xl text-gray-600 text-center mb-16 max-w-2xl mx-auto">
+            Each style reimagines your birth chart through a different artistic lens
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            {[
+              { emoji: '🎀', name: 'Magical Pink', desc: 'Ethereal pink watercolor with dreamy celestial details', color: 'from-pink-400 to-rose-500' },
+              { emoji: '🗺️', name: 'Neo Topograph', desc: 'Modern cartographic linework with layered contours', color: 'from-emerald-400 to-teal-500' },
+              { emoji: '🖋️', name: 'Celestial Ink', desc: 'Bold ink illustration with gold cosmic motifs', color: 'from-amber-400 to-yellow-500', soon: true },
+              { emoji: '🌈', name: 'Vapor Dream', desc: 'Retro-futuristic neon gradients and surreal geometry', color: 'from-violet-400 to-fuchsia-500', soon: true },
+              { emoji: '🔮', name: 'Sacred Geometry', desc: 'Fibonacci spirals and golden ratio compositions', color: 'from-cyan-400 to-blue-500', soon: true },
+            ].map((s) => (
+              <div key={s.name} className="relative bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center group hover:shadow-lg transition">
+                {s.soon && (
+                  <span className="absolute top-3 right-3 text-[10px] font-semibold uppercase tracking-wider text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                    Soon
+                  </span>
+                )}
+                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center text-3xl mx-auto mb-4 shadow-sm`}>
+                  {s.emoji}
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{s.name}</h3>
+                <p className="text-sm text-gray-600">{s.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
