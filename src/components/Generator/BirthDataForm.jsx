@@ -73,7 +73,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
     }`;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-md mx-auto">
+    <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-md mx-auto" style={{ maxWidth: '28rem' }}>
       {/* Header */}
       <div className="text-center mb-8">
         <h2 className="font-display text-2xl text-foreground tracking-wide mb-2">

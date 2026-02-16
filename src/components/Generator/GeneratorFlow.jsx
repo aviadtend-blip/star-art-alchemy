@@ -151,7 +151,7 @@ const GeneratorFlowJsx = () => {
       )}
 
       {step === "input" && (
-        <div className="max-w-2xl mx-auto animate-fade-in relative z-10">
+        <div className="max-w-2xl mx-auto animate-fade-in relative z-10" style={{ maxWidth: '42rem' }}>
           <div className="text-center mb-4">
             <button
               onClick={async () => {
