@@ -120,7 +120,7 @@ serve(async (req) => {
     const CLIENT_SECRET = Deno.env.get('PROKERALA_CLIENT_SECRET');
     if (!CLIENT_SECRET) throw new Error('PROKERALA_CLIENT_SECRET is not configured');
 
-    const { year, month, day, hour, minute, city, nation } = await req.json();
+    const { year, month, day, hour, minute, city, nation, lat: preLat, lng: preLng } = await req.json();
     if (!year || !month || !day || !city || !nation) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields: year, month, day, city, nation' }),
@@ -130,8 +130,10 @@ serve(async (req) => {
 
     console.log(`[calculate-natal-chart] ${year}-${month}-${day} ${hour}:${minute} in ${city}, ${nation}`);
 
-    // Geocode + timezone
-    const { lat, lng } = await geocode(city, nation);
+    // Use pre-resolved coordinates from Google Places if available, otherwise geocode
+    const { lat, lng } = (preLat != null && preLng != null)
+      ? { lat: preLat, lng: preLng }
+      : await geocode(city, nation);
     const tzOffset = await getTimezoneOffset(lat, lng);
     console.log(`[calculate-natal-chart] coords=${lat},${lng} tz=${tzOffset}`);
 
