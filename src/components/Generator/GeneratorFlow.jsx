@@ -6,7 +6,7 @@ import { ChartExplanation } from "../Explanation/ChartExplanation";
 import { ProductCustomization } from "../Purchase/ProductCustomization";
 import { OrderConfirmation } from "../Purchase/OrderConfirmation";
 import { calculateNatalChart } from "@/lib/astrology/chartCalculator.js";
-import { buildCanonicalPrompt } from "@/lib/prompts/promptBuilder.js";
+import { buildConcretePrompt } from "@/lib/prompts/promptBuilder.js";
 import { generateImage, testConnection } from "@/lib/api/replicateClient";
 import { supabase } from "@/integrations/supabase/client";
 import { getStyleById } from "@/config/artStyles";
@@ -75,8 +75,8 @@ const GeneratorFlowJsx = () => {
 
     try {
       setGenerationProgress("Building your personalized artwork prompt...");
-      const prompt = buildCanonicalPrompt(chartData, style);
-      console.log("📝 Prompt built (first 200 chars):", prompt.substring(0, 200) + "...");
+      const prompt = buildConcretePrompt(chartData, style);
+      console.log("📝 Concrete prompt built:", prompt.substring(0, 200) + "...");
 
       setGenerationProgress(`Generating your ${style.name} artwork... (this takes 30-60 seconds)`);
       console.log("🎨 Calling Replicate API with style:", style.name);

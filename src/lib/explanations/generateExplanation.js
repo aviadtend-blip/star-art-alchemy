@@ -1,24 +1,24 @@
-import { SUN_CANONICAL, MOON_CANONICAL, RISING_AESTHETIC, ELEMENTAL_PALETTE } from '@/data/canonicalDefinitions';
+import { CONCRETE_SUN_VISUALS, CONCRETE_MOON_VISUALS, CONCRETE_RISING_VISUALS, CONCRETE_ELEMENT_PALETTES } from '@/data/concreteVisualPrompts';
 
 export function generateChartExplanation(chartData) {
-  const sunDef = SUN_CANONICAL[chartData.sun.sign];
-  const moonDef = MOON_CANONICAL[chartData.moon.sign];
-  const risingDef = RISING_AESTHETIC[chartData.rising];
-  
+  const sunVisuals = CONCRETE_SUN_VISUALS[chartData.sun.sign];
+  const moonVisuals = CONCRETE_MOON_VISUALS[chartData.moon.sign];
+  const risingVisuals = CONCRETE_RISING_VISUALS[chartData.rising];
+
   const dominantElement = getDominantElement(chartData.element_balance);
-  const palette = ELEMENTAL_PALETTE[dominantElement + '-dominant'];
-  
+  const palette = CONCRETE_ELEMENT_PALETTES[dominantElement + '-dominant'];
+
   return {
     overview: `Your birth chart artwork is uniquely designed based on your specific astrological placements. Every element you see was carefully chosen to represent your cosmic blueprint.`,
-    
+
     elements: [
       {
         title: `Sun in ${chartData.sun.sign}`,
         subtitle: "Your Core Identity & Life Force",
         icon: "☀️",
-        explanation: `The ${getSunVisualDescription(chartData.sun.sign)} represents your Sun in ${chartData.sun.sign}. This placement shapes your core identity and creative life force. ${sunDef.description || 'Core identity expression'}.`,
+        explanation: `The ${getSunVisualDescription(chartData.sun.sign)} represents your Sun in ${chartData.sun.sign}. This placement shapes your core identity and creative life force.`,
         visualCues: [
-          getSunVisualCue(chartData.sun.sign),
+          `${sunVisuals.circleDescription}. Botanical elements: ${sunVisuals.botanicals}`,
           getSunSymbolicCue(chartData.sun.sign)
         ],
         meaning: `Sun in ${chartData.sun.sign} means you express your identity through ${getSunMeaning(chartData.sun.sign)}.`
@@ -27,9 +27,9 @@ export function generateChartExplanation(chartData) {
         title: `Moon in ${chartData.moon.sign}`,
         subtitle: "Your Emotional Nature & Inner World",
         icon: "🌙",
-        explanation: `The ${getMoonVisualDescription(chartData.moon.sign)} represents your Moon in ${chartData.moon.sign}. This governs your emotional nature and subconscious patterns. ${moonDef.description || 'Emotional processing'}.`,
+        explanation: `The ${getMoonVisualDescription(chartData.moon.sign)} represents your Moon in ${chartData.moon.sign}. This governs your emotional nature and subconscious patterns.`,
         visualCues: [
-          getMoonVisualCue(chartData.moon.sign),
+          `${moonVisuals.circleDescription}. Atmospheric quality: ${moonVisuals.atmosphere}`,
           getMoonSymbolicCue(chartData.moon.sign)
         ],
         meaning: `Moon in ${chartData.moon.sign} means you process emotions through ${getMoonMeaning(chartData.moon.sign)}.`
@@ -38,7 +38,7 @@ export function generateChartExplanation(chartData) {
         title: `${chartData.rising} Rising`,
         subtitle: "Your Outer Presentation & First Impression",
         icon: "⬆️",
-        explanation: `The overall aesthetic and detail style reflects your ${chartData.rising} rising sign. ${risingDef.energy}. Your rising sign influences how you present yourself to the world.`,
+        explanation: `The overall aesthetic and detail style reflects your ${chartData.rising} rising sign. ${risingVisuals.overallEnergy}. Your rising sign influences how you present yourself to the world.`,
         visualCues: [
           getRisingVisualCue(chartData.rising),
           getRisingSymbolicCue(chartData.rising)
@@ -49,10 +49,10 @@ export function generateChartExplanation(chartData) {
         title: `${dominantElement} Dominant`,
         subtitle: "Your Elemental Energy",
         icon: getElementIcon(dominantElement),
-        explanation: `Your chart is ${dominantElement}-dominant with ${chartData.element_balance[dominantElement]} placements. This influences the overall color palette and energy of your artwork. ${palette.energy}.`,
+        explanation: `Your chart is ${dominantElement}-dominant with ${chartData.element_balance[dominantElement]} placements. This influences the overall color palette and energy of your artwork.`,
         visualCues: [
           getElementalVisualCue(chartData.element_balance, dominantElement),
-          `Overall atmosphere: ${palette.energy}`
+          `Overall atmosphere: ${palette.description}`
         ],
         meaning: `${dominantElement} dominance means you approach life through ${getElementalMeaning(dominantElement)}.`
       }
@@ -61,7 +61,7 @@ export function generateChartExplanation(chartData) {
 }
 
 function getDominantElement(elementBalance) {
-  return Object.keys(elementBalance).reduce((a, b) => 
+  return Object.keys(elementBalance).reduce((a, b) =>
     elementBalance[a] > elementBalance[b] ? a : b
   );
 }
@@ -87,24 +87,6 @@ function getSunVisualDescription(sign) {
     'Pisces': 'ethereal sun glowing through water or mist'
   };
   return descriptions[sign] || 'radiant sun';
-}
-
-function getSunVisualCue(sign) {
-  const cues = {
-    'Aries': 'Sharp, angular rays with fiery red-orange tones thrusting forward',
-    'Taurus': 'Thick, substantial rays with honey-gold coloring and botanical elements',
-    'Gemini': 'Varied ray lengths creating dynamic patterns, possibly dual suns',
-    'Cancer': 'Soft, curved rays with silvery undertones in protective arrangement',
-    'Leo': 'Long flowing rays forming a magnificent mane-like corona',
-    'Virgo': 'Perfectly symmetrical rays with delicate botanical details',
-    'Libra': 'Balanced, mirrored rays in rose-gold tones',
-    'Scorpio': 'Deep gold rays with burgundy undertones and magnetic pull',
-    'Sagittarius': 'Far-reaching rays pointing toward distant horizons',
-    'Capricorn': 'Geometric, structured rays in cool platinum-gold',
-    'Aquarius': 'Unconventional ray patterns with aqua hints',
-    'Pisces': 'Diffused, iridescent rays dissolving into atmosphere'
-  };
-  return cues[sign] || 'Radiant golden rays';
 }
 
 function getSunSymbolicCue(sign) {
@@ -159,24 +141,6 @@ function getMoonVisualDescription(sign) {
     'Pisces': 'dissolving moon merging with water'
   };
   return descriptions[sign] || 'luminous moon';
-}
-
-function getMoonVisualCue(sign) {
-  const cues = {
-    'Aries': 'Sharp crescent with red-orange glow and flame-like aura',
-    'Taurus': 'Full moon with honeyed warmth and botanical growth',
-    'Gemini': 'Multiple crescents or changing phases, communication symbols',
-    'Cancer': 'Large, luminous full moon with tidal influence and protective shells',
-    'Leo': 'Moon with warm golden-silver coloring and heart-centered glow',
-    'Virgo': 'Clearly defined moon with botanical elements and precise details',
-    'Libra': 'Balanced moon in rose-silver tones with partnership imagery',
-    'Scorpio': 'Dark moon with burgundy undertones and transformative shadows',
-    'Sagittarius': 'Rising or traveling moon with adventurous positioning',
-    'Capricorn': 'Moon with crystalline facets and mountain imagery',
-    'Aquarius': 'Moon in geometric patterns with electric aqua tints',
-    'Pisces': 'Iridescent moon blending with water and spiritual mist'
-  };
-  return cues[sign] || 'Luminous silver moon';
 }
 
 function getMoonSymbolicCue(sign) {
@@ -273,7 +237,7 @@ function getElementalVisualCue(elementBalance, dominantElement) {
   const balance = Object.entries(elementBalance)
     .map(([el, count]) => `${el}: ${count}`)
     .join(', ');
-    
+
   const cues = {
     'Fire': `Warm reds, oranges, and golds dominate throughout (${balance})`,
     'Water': `Cool blues, purples, and teals flow throughout (${balance})`,
