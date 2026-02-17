@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const BirthDataFormJsx = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -10,10 +11,87 @@ const BirthDataFormJsx = ({ onSubmit }) => {
     minute: "0",
     city: "",
     nation: "US",
+    lat: null,
+    lng: null,
   });
 
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
+
+  // City autocomplete state
+  const [cityQuery, setCityQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const debounceRef = useRef(null);
+  const wrapperRef = useRef(null);
+
+  // Close suggestions on outside click
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  // Fetch autocomplete suggestions
+  useEffect(() => {
+    if (cityQuery.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      setLoadingSuggestions(true);
+      try {
+        const { data, error } = await supabase.functions.invoke("google-places-autocomplete", {
+          body: { input: cityQuery },
+        });
+        if (!error && data?.predictions) {
+          setSuggestions(data.predictions);
+          setShowSuggestions(true);
+        }
+      } catch (e) {
+        console.error("[BirthDataForm] Autocomplete error:", e);
+      } finally {
+        setLoadingSuggestions(false);
+      }
+    }, 300);
+  }, [cityQuery]);
+
+  const handleSelectCity = async (prediction) => {
+    setShowSuggestions(false);
+    setCityQuery(prediction.description);
+    setLoadingSuggestions(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("google-places-detail", {
+        body: { place_id: prediction.place_id },
+      });
+      if (!error && data) {
+        setFormData((prev) => ({
+          ...prev,
+          city: data.city || prediction.description,
+          nation: data.nation || prev.nation,
+          lat: data.lat,
+          lng: data.lng,
+        }));
+        setCityQuery(data.formatted_address || prediction.description);
+        // Clear city error
+        setErrors((prev) => {
+          const next = { ...prev };
+          delete next.city;
+          return next;
+        });
+      }
+    } catch (e) {
+      console.error("[BirthDataForm] Place detail error:", e);
+    } finally {
+      setLoadingSuggestions(false);
+    }
+  };
 
   const validate = (data) => {
     const errs = {};
@@ -61,6 +139,8 @@ const BirthDataFormJsx = ({ onSubmit }) => {
         minute: Number(formData.minute),
         city: formData.city.trim(),
         nation: formData.nation.trim() || "US",
+        lat: formData.lat,
+        lng: formData.lng,
       });
     }
   };
@@ -161,26 +241,54 @@ const BirthDataFormJsx = ({ onSubmit }) => {
         </p>
       </div>
 
-      {/* City */}
-      <div>
+      {/* City — with Google Places Autocomplete */}
+      <div ref={wrapperRef} className="relative">
         <label className="block text-sm font-medium text-muted-foreground mb-2 font-body uppercase tracking-wide">
           Birth City
         </label>
         <input
           type="text"
-          value={formData.city}
-          onChange={(e) => handleChange("city", e.target.value)}
+          value={cityQuery}
+          onChange={(e) => {
+            setCityQuery(e.target.value);
+            // Clear resolved location when user edits
+            setFormData((prev) => ({ ...prev, city: "", lat: null, lng: null }));
+          }}
           onBlur={() => handleBlur("city")}
-          placeholder="City name"
+          placeholder="Start typing a city name..."
           className={inputClass("city")}
           maxLength={200}
+          autoComplete="off"
         />
+        {loadingSuggestions && (
+          <div className="absolute right-3 top-[38px]">
+            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
+        {showSuggestions && suggestions.length > 0 && (
+          <ul className="absolute z-50 w-full mt-1 bg-background border border-border rounded-lg shadow-lg max-h-48 overflow-y-auto">
+            {suggestions.map((s) => (
+              <li
+                key={s.place_id}
+                onClick={() => handleSelectCity(s)}
+                className="px-4 py-3 text-sm text-foreground hover:bg-accent cursor-pointer transition-colors"
+              >
+                {s.description}
+              </li>
+            ))}
+          </ul>
+        )}
         {errors.city && touched.city && (
           <p className="text-destructive text-xs mt-1">{errors.city}</p>
         )}
+        {formData.lat && (
+          <p className="text-muted-foreground/60 text-xs mt-1 font-body">
+            📍 {formData.city}, {formData.nation}
+          </p>
+        )}
       </div>
 
-      {/* Country */}
+      {/* Country — auto-filled from Places but still editable */}
       <div>
         <label className="block text-sm font-medium text-muted-foreground mb-2 font-body uppercase tracking-wide">
           Country

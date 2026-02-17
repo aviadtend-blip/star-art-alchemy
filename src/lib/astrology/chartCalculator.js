@@ -25,6 +25,7 @@ export async function calculateNatalChart(birthData) {
       minute: Number(minute ?? 0),
       city,
       nation,
+      ...(birthData.lat != null && birthData.lng != null ? { lat: birthData.lat, lng: birthData.lng } : {}),
     };
 
     console.log("[chartCalculator] Calling natal chart API with:", payload);
