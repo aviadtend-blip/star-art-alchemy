@@ -1,123 +1,191 @@
-// Prompt Builder
-// Constructs structured AI image generation prompts from natal chart data
-// using canonical visual definitions for each astrological placement.
+import { CONCRETE_SUN_VISUALS, CONCRETE_MOON_VISUALS, CONCRETE_RISING_VISUALS, CONCRETE_ELEMENT_PALETTES } from '@/data/concreteVisualPrompts';
 
-import { SUN_CANONICAL, MOON_CANONICAL, RISING_AESTHETIC, ELEMENTAL_PALETTE } from '@/data/canonicalDefinitions';
-import { API_CONFIG } from '@/config/api';
-import { getStyleById } from '@/config/artStyles';
+export function buildConcretePrompt(chartData, style) {
+  const triggerWord = style?.triggerWord ?? 'magicalpink';
+  const sunVisuals = CONCRETE_SUN_VISUALS[chartData.sun.sign];
+  const moonVisuals = CONCRETE_MOON_VISUALS[chartData.moon.sign];
+  const risingVisuals = CONCRETE_RISING_VISUALS[chartData.rising];
 
-/**
- * Returns the element with the highest count from the element balance object.
- * @param {{ Fire: number, Water: number, Earth: number, Air: number }} elementBalance
- * @returns {string} e.g. "Fire"
- */
-export function getDominantElement(elementBalance) {
-  let dominant = null;
-  let max = -1;
-  for (const [element, count] of Object.entries(elementBalance)) {
-    if (count > max) {
-      max = count;
-      dominant = element;
-    }
-  }
-  return dominant;
+  const dominantElement = Object.keys(chartData.element_balance).reduce((a, b) =>
+    chartData.element_balance[a] > chartData.element_balance[b] ? a : b
+  );
+  const paletteVisuals = CONCRETE_ELEMENT_PALETTES[dominantElement + '-dominant'];
+
+  const prompt = `${triggerWord}
+
+MAIN CIRCULAR FORMS:
+
+SUN ELEMENT (${chartData.sun.sign} Sun):
+${sunVisuals.circleDescription}
+Colors: ${sunVisuals.circleColors}
+${sunVisuals.additionalElements}
+
+MOON ELEMENT (${chartData.moon.sign} Moon):
+${moonVisuals.circleDescription}
+Colors: ${moonVisuals.circleColors}
+${moonVisuals.atmosphere}
+
+BOTANICAL DETAILS:
+${sunVisuals.botanicals}
+Colors: ${sunVisuals.botanicalColors}
+Positioning: ${sunVisuals.positioning}
+
+LANDSCAPE/BACKGROUND ELEMENTS (${chartData.rising} Rising):
+${risingVisuals.compositionalStyle}
+${risingVisuals.borderElements}
+
+COMPOSITION STRUCTURE:
+- Overall ${getOverallShape(chartData.rising)}
+- ${getLayoutDescription(chartData.sun.sign, chartData.moon.sign)}
+- ${risingVisuals.overallEnergy} aesthetic throughout
+
+COLOR PALETTE (${dominantElement}-dominant chart):
+Primary colors: ${paletteVisuals.description}
+${paletteVisuals.percentageGuideline}
+Specific color zones:
+${getColorZones(chartData.sun.sign, chartData.moon.sign, dominantElement)}
+
+SPECIFIC OBJECTS CHECKLIST:
+${getObjectChecklist(sunVisuals, moonVisuals, risingVisuals)}
+
+SPATIAL ARRANGEMENT:
+${getSpatialArrangement(chartData.sun.sign, chartData.moon.sign, chartData.rising)}`;
+
+  console.log('🎨 Built concrete visual prompt for:', {
+    sun: chartData.sun.sign,
+    moon: chartData.moon.sign,
+    rising: chartData.rising,
+    element: dominantElement
+  });
+
+  return prompt;
 }
 
-/**
- * Combines the energy/emotional quality strings from sun, moon, and rising definitions
- * into a single cohesive energy description.
- * @param {object} sunDef - Entry from SUN_CANONICAL
- * @param {object} moonDef - Entry from MOON_CANONICAL
- * @param {object} risingDef - Entry from RISING_AESTHETIC
- * @returns {string} Combined energy description
- */
-export function combineEnergies(sunDef, moonDef, risingDef) {
-  const parts = [];
-  if (sunDef?.energy) parts.push(`Core energy: ${sunDef.energy}`);
-  if (moonDef?.emotionalResonance) parts.push(`Emotional undercurrent: ${moonDef.emotionalResonance}`);
-  if (risingDef?.energy) parts.push(`Presentation style: ${risingDef.energy}`);
-  return parts.join('. ');
+// Keep backward-compatible export name
+export const buildCanonicalPrompt = buildConcretePrompt;
+
+// Helper functions
+
+function getSunPercentage(sunSign) {
+  const percentages = {
+    'Leo': 40, 'Aries': 35, 'Sagittarius': 32,
+    'Taurus': 30, 'Cancer': 30, 'Libra': 30,
+    'Gemini': 28, 'Capricorn': 28, 'Scorpio': 25,
+    'Virgo': 25, 'Pisces': 25, 'Aquarius': 24
+  };
+  return percentages[sunSign] || 30;
 }
 
-/**
- * Builds a structured AI art generation prompt from natal chart data.
- *
- * The prompt is divided into clearly labeled sections so the AI model
- * can parse compositional intent, color guidance, and stylistic direction.
- *
- * @param {{ sun: { sign: string }, moon: { sign: string }, rising: string, element_balance: object }} chartData
- * @param {object} [style] - Art style from artStyles config. Falls back to API_CONFIG defaults.
- * @returns {string} Complete generation prompt
- */
-export function buildCanonicalPrompt(chartData, style) {
-  const triggerWord = style?.triggerWord ?? API_CONFIG.triggerWord;
-  // --- Look up canonical definitions for each placement ---
-  const sunDef = SUN_CANONICAL[chartData.sun.sign];
-  const moonDef = MOON_CANONICAL[chartData.moon.sign];
-  const risingDef = RISING_AESTHETIC[chartData.rising];
+function getMoonPercentage(moonSign) {
+  const percentages = {
+    'Cancer': 28, 'Leo': 25, 'Pisces': 24, 'Scorpio': 24,
+    'Taurus': 22, 'Libra': 22, 'Sagittarius': 22, 'Aquarius': 22,
+    'Aries': 20, 'Capricorn': 20, 'Virgo': 20, 'Gemini': 22
+  };
+  return percentages[moonSign] || 20;
+}
 
-  // --- Determine the dominant element and its palette ---
-  const dominantElement = getDominantElement(chartData.element_balance);
-  const paletteDef = ELEMENTAL_PALETTE[`${dominantElement}-dominant`];
+function getOverallShape(rising) {
+  const shapes = {
+    'Aries': 'dynamic asymmetrical shape',
+    'Taurus': 'solid circular or square-based shape',
+    'Gemini': 'irregular or dual-part shape',
+    'Cancer': 'soft circular or oval shape with curved borders',
+    'Leo': 'circular or radial mandala-like shape',
+    'Virgo': 'precisely defined geometric shape',
+    'Libra': 'perfectly symmetrical oval or circle',
+    'Scorpio': 'irregular layered shape with hidden sections',
+    'Sagittarius': 'expansive rectangular or wide oval shape',
+    'Capricorn': 'vertical rectangular or pyramid-like shape',
+    'Aquarius': 'unconventional asymmetrical or polygonal shape',
+    'Pisces': 'soft irregular shape with flowing boundaries'
+  };
+  return shapes[rising] || 'oval shape';
+}
 
-  // --- Assemble the prompt in clearly labeled sections ---
+function getLayoutDescription(sunSign, moonSign) {
+  return `Sun positioned ${getSunPosition(sunSign)}, moon positioned ${getMoonPosition(moonSign)}`;
+}
 
-  const sections = [];
+function getSunPosition(sunSign) {
+  const positions = {
+    'Aries': 'upper center area commanding attention',
+    'Taurus': 'upper left creating grounded anchor',
+    'Gemini': 'upper section in dual placement',
+    'Cancer': 'center with nurturing presence',
+    'Leo': 'center stage dominating composition',
+    'Virgo': 'center-left with refined precision',
+    'Libra': 'center-top in balanced harmony',
+    'Scorpio': 'center-right with intense presence',
+    'Sagittarius': 'upper section with expansive quality',
+    'Capricorn': 'upper center elevated like summit',
+    'Aquarius': 'asymmetrically placed breaking norms',
+    'Pisces': 'soft placement with dissolving edges'
+  };
+  return positions[sunSign] || 'upper section';
+}
 
-  // 1. Primary visual element — the Sun placement drives the main focal point
-  sections.push(
-    `PRIMARY ELEMENT (Sun in ${chartData.sun.sign}):`,
-    sunDef?.description ?? 'A radiant celestial sun.',
-    sunDef?.zodiacSymbolism ?? '',
-    `Colors: Core ${sunDef?.colorCore ?? '#FFD700'}, Rays ${sunDef?.colorRays ?? '#FFA500'}`,
-    ''
-  );
+function getMoonPosition(moonSign) {
+  const positions = {
+    'Aries': 'dynamically with movement quality',
+    'Taurus': 'lower section grounded and stable',
+    'Gemini': 'in dual or changing aspect',
+    'Cancer': 'prominently with protective elements',
+    'Leo': 'with regal dramatic presence',
+    'Virgo': 'precisely with clean execution',
+    'Libra': 'in balanced symmetrical placement',
+    'Scorpio': 'in shadowy lower-right section',
+    'Sagittarius': 'upper section near horizons',
+    'Capricorn': 'elevated with structured framing',
+    'Aquarius': 'unconventionally or asymmetrically',
+    'Pisces': 'softly with dissolved boundaries'
+  };
+  return positions[moonSign] || 'lower section';
+}
 
-  // 2. Secondary visual element — the Moon adds emotional depth and atmosphere
-  sections.push(
-    `SECONDARY ELEMENT (Moon in ${chartData.moon.sign}):`,
-    moonDef?.description ?? 'A luminous celestial moon.',
-    moonDef?.zodiacSymbolism ?? '',
-    `Colors: Surface ${moonDef?.colorSurface ?? '#F0F8FF'}, Glow ${moonDef?.colorGlow ?? '#E6E6FA'}`,
-    ''
-  );
+function getColorZones(sunSign, moonSign, element) {
+  const sunColors = CONCRETE_SUN_VISUALS[sunSign].botanicalColors;
+  const moonColors = CONCRETE_MOON_VISUALS[moonSign].circleColors;
 
-  // 3. Detail aesthetic — the Rising sign defines decorative style and line work
-  sections.push(
-    `DETAIL AESTHETIC (${chartData.rising} Rising):`,
-    risingDef?.detailStyle ?? 'Elegant decorative details.',
-    risingDef?.zodiacSymbolism ?? '',
-    `Line work: ${risingDef?.lineWorkSpecifics ?? 'Fine, considered lines.'}`,
-    ''
-  );
+  return `- Sun area (${getSunPosition(sunSign)}): ${sunColors}
+- Moon area (${getMoonPosition(moonSign)}): ${moonColors}
+- Background/borders: ${CONCRETE_ELEMENT_PALETTES[element + '-dominant'].description}`;
+}
 
-  // 4. Color palette — driven by the dominant element in the chart
-  sections.push(
-    `COLOR PALETTE (${dominantElement}-dominant):`,
-    paletteDef?.primaryColors?.join(', ') ?? '#FFD700, #DC143C, #FF4500',
-    ''
-  );
+function getObjectChecklist(sunVisuals, moonVisuals, risingVisuals) {
+  return `✓ 1 main sun circle as described above
+✓ 1 main moon circle as described above
+✓ Botanical elements as specified for sun sign
+✓ Rising sign compositional elements
+✓ Landscape or background elements if specified
+✓ All elements positioned as described in spatial arrangement`;
+}
 
-  // 5. Overall energy — a synthesis of all three placements
-  sections.push(
-    'OVERALL ENERGY:',
-    combineEnergies(sunDef, moonDef, risingDef),
-    ''
-  );
+function getSpatialArrangement(sunSign, moonSign, rising) {
+  const sunArea = getSunPercentage(sunSign);
+  const moonArea = getMoonPercentage(moonSign);
+  const risingImpact = getRisingImpact(rising);
 
-  // 6. Style direction — consistent across all charts
-  sections.push(
-    'STYLE:',
-    'Mystical watercolor artwork with ethereal dreamy atmosphere. Soft edges on watercolor with fine line details overlaid. Professional illustration quality suitable for framed wall art. Avoid literal zodiac symbols - work with abstract symbolic representations.',
-    ''
-  );
+  return `Sun area occupies approximately ${sunArea}% of composition
+Moon area occupies approximately ${moonArea}% of composition
+${risingImpact}
+Clear visual hierarchy with sun as primary focal point`;
+}
 
-  // 7. Technical specs — ensures consistent output dimensions and quality
-  sections.push(
-    'TECHNICAL SPECS:',
-    'Vertical portrait orientation, 3:4 aspect ratio, high detail, museum quality aesthetic.'
-  );
-
-  console.log('🎯 Trigger word used:', triggerWord);
-  return `${triggerWord} ${sections.join('\n')}`;
+function getRisingImpact(rising) {
+  const impacts = {
+    'Aries': 'Dynamic asymmetrical layout breaking traditional structure',
+    'Taurus': 'Botanical elements frame and ground entire composition',
+    'Gemini': 'Dual perspective creates conversational layout',
+    'Cancer': 'Protective circular forms embrace main elements',
+    'Leo': 'Regal radial structure commands attention',
+    'Virgo': 'Precise geometric grid underlies entire composition',
+    'Libra': 'Perfect bilateral symmetry structures everything',
+    'Scorpio': 'Layered depth with mysterious shadowy sections',
+    'Sagittarius': 'Expansive depth from foreground to distant horizons',
+    'Capricorn': 'Vertical hierarchy with structured elevation',
+    'Aquarius': 'Innovative unconventional spatial relationships',
+    'Pisces': 'Soft flowing boundaries throughout'
+  };
+  return impacts[rising] || 'Balanced compositional structure';
 }
