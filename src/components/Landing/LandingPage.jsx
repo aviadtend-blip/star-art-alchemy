@@ -319,8 +319,6 @@ export default function LandingPage() {
                   <p className="text-xs text-gray-500 mt-1">📍 {formData.birthCity}, {formData.birthCountry}</p>
                 )}
               </div>
-                </div>
-              </div>
 
               {/* Submit */}
               <button
