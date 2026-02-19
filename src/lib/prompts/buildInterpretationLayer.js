@@ -29,7 +29,7 @@ export default function buildInterpretationLayer(chartData) {
     else if (aspect.orb <= 3) priority = 'high';
     else if (aspect.orb <= 5) priority = 'medium';
     else priority = 'ignore';
-    return { ...aspect, priority };
+    return { ...aspect, type: aspect.type || aspect.aspect, priority };
   });
 
   // 2. STELLIUM DETECTION
@@ -40,6 +40,8 @@ export default function buildInterpretationLayer(chartData) {
   } else if (chartData.dominant_signature) {
     const { element, modality } = chartData.dominant_signature;
     interpretation.dominantFeature = `${element}-${modality} dominant chart — ${element} energy filters all expression`;
+  } else if (chartData.dominant_element) {
+    interpretation.dominantFeature = `${chartData.dominant_element}-${chartData.dominant_modality || 'Mixed'} dominant chart — ${chartData.dominant_element} energy filters all expression`;
   }
 
   // 3. CORE PARADOX
@@ -48,11 +50,20 @@ export default function buildInterpretationLayer(chartData) {
 
   // 4. DIGNITY FLAGS
   interpretation.dignityFlags = [];
-  const planets = chartData.planets || [];
-  const planetList = Array.isArray(planets) ? planets : Object.values(planets);
+  // Build planet list from either array format or top-level keys
+  const planetNames = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn'];
+  let planetList = [];
+  if (Array.isArray(chartData.planets) && chartData.planets.length > 0) {
+    planetList = chartData.planets;
+  } else {
+    planetList = planetNames
+      .filter(name => chartData[name] && typeof chartData[name] === 'object')
+      .map(name => ({ planet: name.charAt(0).toUpperCase() + name.slice(1), ...chartData[name] }));
+  }
   for (const data of planetList) {
     const name = data.planet || data.name || 'Unknown';
-    if (data.dignity === 'fall' || data.dignity === 'detriment') {
+    const dignity = (data.dignity || '').toLowerCase();
+    if (dignity === 'fall' || dignity === 'detriment') {
       interpretation.dignityFlags.push({
         planet: name,
         dignity: data.dignity,
