@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ART_STYLES } from '@/config/artStyles';
 
-export default function StyleSelection({ onSelect, onBack }) {
+export default function StyleSelection({ onSelect, onBack, chartData }) {
   const [selected, setSelected] = useState(null);
 
   const handleContinue = () => {
@@ -18,6 +18,46 @@ export default function StyleSelection({ onSelect, onBack }) {
           Select an artistic style for your birth chart artwork
         </p>
       </div>
+
+      {/* Natal Chart Summary */}
+      {chartData && (
+        <div className="mb-10 bg-secondary/30 border border-border rounded-xl p-6 max-w-2xl mx-auto">
+          <h3 className="font-display text-xl text-foreground text-center mb-4">
+            Your Celestial Blueprint
+          </h3>
+          <div className="grid grid-cols-3 gap-4 text-center mb-5">
+            <div className="bg-card/60 border border-border rounded-lg p-3">
+              <div className="text-2xl mb-1">☀️</div>
+              <span className="text-xs text-muted-foreground uppercase tracking-widest font-body">Sun</span>
+              <span className="block text-sm text-foreground capitalize font-display mt-0.5">{chartData.sun.sign}</span>
+              <span className="text-xs text-muted-foreground">House {chartData.sun.house}</span>
+            </div>
+            <div className="bg-card/60 border border-border rounded-lg p-3">
+              <div className="text-2xl mb-1">🌙</div>
+              <span className="text-xs text-muted-foreground uppercase tracking-widest font-body">Moon</span>
+              <span className="block text-sm text-foreground capitalize font-display mt-0.5">{chartData.moon.sign}</span>
+              <span className="text-xs text-muted-foreground">House {chartData.moon.house}</span>
+            </div>
+            <div className="bg-card/60 border border-border rounded-lg p-3">
+              <div className="text-2xl mb-1">⬆️</div>
+              <span className="text-xs text-muted-foreground uppercase tracking-widest font-body">Rising</span>
+              <span className="block text-sm text-foreground capitalize font-display mt-0.5">{chartData.rising}</span>
+              <span className="text-xs text-muted-foreground">Ascendant</span>
+            </div>
+          </div>
+          {chartData.element_balance && (
+            <div className="text-center">
+              <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">Elemental Balance</p>
+              <div className="flex justify-center gap-4 text-xs text-foreground">
+                <span>🔥 Fire: {chartData.element_balance.Fire}</span>
+                <span>💧 Water: {chartData.element_balance.Water}</span>
+                <span>🌍 Earth: {chartData.element_balance.Earth}</span>
+                <span>💨 Air: {chartData.element_balance.Air}</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-10">
         {ART_STYLES.map((style) => {

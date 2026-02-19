@@ -225,7 +225,7 @@ const GeneratorFlowJsx = () => {
               <div>⬆️ {chartData.rising} Rising</div>
             </div>
           </div>
-          <StyleSelection onSelect={handleStyleSelect} onBack={handleRetry} />
+          <StyleSelection onSelect={handleStyleSelect} onBack={handleRetry} chartData={chartData} />
         </div>
       )}
 
