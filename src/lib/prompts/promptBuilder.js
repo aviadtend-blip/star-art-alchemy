@@ -1,6 +1,8 @@
 import { CONCRETE_SUN_VISUALS, CONCRETE_MOON_VISUALS, CONCRETE_RISING_VISUALS, CONCRETE_ELEMENT_PALETTES } from '@/data/concreteVisualPrompts.js';
+import buildInterpretationLayer from './buildInterpretationLayer.js';
 
 export function buildConcretePrompt(chartData, style) {
+  chartData = buildInterpretationLayer(chartData);
   const triggerWord = style?.triggerWord ?? 'magicalpink';
   const sunVisuals = CONCRETE_SUN_VISUALS[chartData.sun.sign];
   const moonVisuals = CONCRETE_MOON_VISUALS[chartData.moon.sign];
@@ -49,7 +51,22 @@ SPECIFIC OBJECTS CHECKLIST:
 ${getObjectChecklist(sunVisuals, moonVisuals, risingVisuals)}
 
 SPATIAL ARRANGEMENT:
-${getSpatialArrangement(chartData.sun.sign, chartData.moon.sign, chartData.rising)}`;
+${getSpatialArrangement(chartData.sun.sign, chartData.moon.sign, chartData.rising)}
+
+PERSONALITY EMPHASIS (weight these heavily in visual storytelling):
+
+Dominant feature: ${chartData.interpretation.dominantFeature}
+
+Core paradox: ${chartData.interpretation.coreParadox}
+
+${chartData.interpretation.aspectWeights
+  .filter(a => a.priority === 'critical' || a.priority === 'high')
+  .map(a => `- ${a.planet1} ${a.type} ${a.planet2} (${a.orb}° orb, ${a.priority} — emphasize this tension visually)`)
+  .join('\n')}
+
+${chartData.interpretation.dignityFlags.length > 0
+  ? 'Dignity tensions: ' + chartData.interpretation.dignityFlags.map(d => d.impact).join('; ')
+  : ''}`;
 
   console.log('🎨 Built concrete visual prompt for:', {
     sun: chartData.sun.sign,
