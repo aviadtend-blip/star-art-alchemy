@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import heroImg from "@/assets/gallery/example-1.jpg";
 import gallery2 from "@/assets/gallery/example-2.jpg";
 import gallery3 from "@/assets/gallery/example-3.jpg";
@@ -80,7 +81,78 @@ export default function LandingPage() {
     birthPeriod: "PM",
     birthCity: "",
     birthCountry: "US",
+    lat: null,
+    lng: null,
   });
+
+  // City autocomplete state
+  const [cityQuery, setCityQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const debounceRef = useRef(null);
+  const wrapperRef = useRef(null);
+
+  // Close suggestions on outside click
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  // Fetch autocomplete suggestions
+  useEffect(() => {
+    if (cityQuery.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      setLoadingSuggestions(true);
+      try {
+        const { data, error } = await supabase.functions.invoke("google-places-autocomplete", {
+          body: { input: cityQuery },
+        });
+        if (!error && data?.predictions) {
+          setSuggestions(data.predictions);
+          setShowSuggestions(true);
+        }
+      } catch (e) {
+        console.error("[LandingPage] Autocomplete error:", e);
+      } finally {
+        setLoadingSuggestions(false);
+      }
+    }, 300);
+  }, [cityQuery]);
+
+  const handleSelectCity = async (prediction) => {
+    setShowSuggestions(false);
+    setCityQuery(prediction.description);
+    setLoadingSuggestions(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("google-places-detail", {
+        body: { place_id: prediction.place_id },
+      });
+      if (!error && data) {
+        setFormData((prev) => ({
+          ...prev,
+          birthCity: data.city || prediction.description,
+          birthCountry: data.nation || prev.birthCountry,
+          lat: data.lat,
+          lng: data.lng,
+        }));
+        setCityQuery(data.formatted_address || prediction.description);
+      }
+    } catch (e) {
+      console.error("[LandingPage] Place detail error:", e);
+    } finally {
+      setLoadingSuggestions(false);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -98,6 +170,8 @@ export default function LandingPage() {
       minute: formData.birthMinute,
       city: formData.birthCity,
       nation: formData.birthCountry,
+      ...(formData.lat != null ? { lat: String(formData.lat) } : {}),
+      ...(formData.lng != null ? { lng: String(formData.lng) } : {}),
     });
     navigate(`/generate?${params.toString()}`);
   };
@@ -119,7 +193,10 @@ export default function LandingPage() {
       birthPeriod: "PM",
       birthCity: "New York",
       birthCountry: "US",
+      lat: null,
+      lng: null,
     });
+    setCityQuery("New York");
     document.getElementById("birth-form")?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -204,22 +281,44 @@ export default function LandingPage() {
               </div>
 
               {/* Birth Location */}
-              <div>
+              <div ref={wrapperRef} className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Birth Location</label>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="relative">
                   <input
                     type="text"
                     required
-                    value={formData.birthCity}
-                    onChange={(e) => set("birthCity", e.target.value)}
-                    placeholder="City"
-                    className="col-span-2 border-2 border-gray-200 rounded-xl px-4 py-3 text-lg focus:border-purple-600 focus:ring-4 focus:ring-purple-100 transition outline-none"
+                    value={cityQuery}
+                    onChange={(e) => {
+                      setCityQuery(e.target.value);
+                      setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null }));
+                    }}
+                    placeholder="Start typing a city name..."
+                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-lg focus:border-purple-600 focus:ring-4 focus:ring-purple-100 transition outline-none"
+                    autoComplete="off"
                   />
-                  <select value={formData.birthCountry} onChange={(e) => set("birthCountry", e.target.value)} className={inputClass}>
-                    {["US", "GB", "CA", "AU", "DE", "FR", "ES", "IT", "JP", "BR", "MX", "IN"].map((c) => (
-                      <option key={c} value={c}>{c}</option>
+                  {loadingSuggestions && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <div className="w-5 h-5 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  )}
+                </div>
+                {showSuggestions && suggestions.length > 0 && (
+                  <ul className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto">
+                    {suggestions.map((s) => (
+                      <li
+                        key={s.place_id}
+                        onClick={() => handleSelectCity(s)}
+                        className="px-4 py-3 text-sm text-gray-700 hover:bg-purple-50 cursor-pointer transition-colors"
+                      >
+                        {s.description}
+                      </li>
                     ))}
-                  </select>
+                  </ul>
+                )}
+                {formData.lat && (
+                  <p className="text-xs text-gray-500 mt-1">📍 {formData.birthCity}, {formData.birthCountry}</p>
+                )}
+              </div>
                 </div>
               </div>
 
