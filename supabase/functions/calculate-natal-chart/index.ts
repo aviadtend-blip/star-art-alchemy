@@ -325,6 +325,27 @@ serve(async (req) => {
     const aspects = calculateAspects(planetLongitudes);
     console.log(`[calculate-natal-chart] Found ${aspects.length} aspects`);
 
+    // Stellium detection: 3+ planets in the same sign
+    const planetSignMap: Record<string, { name: string; house: number }[]> = {};
+    const namedPlacements = [
+      { name: "Sun", data: sun }, { name: "Moon", data: moon },
+      { name: "Mercury", data: mercury }, { name: "Venus", data: venus },
+      { name: "Mars", data: mars }, { name: "Jupiter", data: jupiter },
+      { name: "Saturn", data: saturn },
+    ];
+    for (const { name, data } of namedPlacements) {
+      if (!data) continue;
+      if (!planetSignMap[data.sign]) planetSignMap[data.sign] = [];
+      planetSignMap[data.sign].push({ name, house: data.house });
+    }
+    const stelliums = Object.entries(planetSignMap)
+      .filter(([_, planets]) => planets.length >= 3)
+      .map(([sign, planets]) => ({
+        sign,
+        house: planets[0].house,
+        planets: planets.map(p => p.name),
+      }));
+
     const result = {
       sun, moon, rising, venus, mars, mercury, jupiter, saturn,
       element_balance: elementBalance,
@@ -332,6 +353,7 @@ serve(async (req) => {
       dominant_element: dominantElement,
       dominant_modality: dominantModality,
       aspects,
+      stelliums,
       _meta: { source: "prokerala.com", coordinates: { lat, lng }, timezone: tzOffset },
     };
 
