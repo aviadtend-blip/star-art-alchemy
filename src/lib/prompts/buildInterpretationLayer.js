@@ -48,8 +48,10 @@ export default function buildInterpretationLayer(chartData) {
 
   // 4. DIGNITY FLAGS
   interpretation.dignityFlags = [];
-  const planets = chartData.planets || {};
-  for (const [name, data] of Object.entries(planets)) {
+  const planets = chartData.planets || [];
+  const planetList = Array.isArray(planets) ? planets : Object.values(planets);
+  for (const data of planetList) {
+    const name = data.planet || data.name || 'Unknown';
     if (data.dignity === 'fall' || data.dignity === 'detriment') {
       interpretation.dignityFlags.push({
         planet: name,
