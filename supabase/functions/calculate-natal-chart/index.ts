@@ -13,9 +13,7 @@ const ZODIAC_SIGNS = [
   "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
 ];
 
-// Approximate Lahiri ayanamsha for a given year (accurate to ~0.1°)
 function getAyanamsha(year: number): number {
-  // Lahiri ayanamsha is roughly 23.85° in 2000 and increases ~50.3" per year
   return 23.85 + (year - 2000) * (50.3 / 3600);
 }
 
@@ -37,6 +35,36 @@ function getElement(sign: string): string {
     Cancer: "Water", Scorpio: "Water", Pisces: "Water",
   };
   return elements[sign] || "Unknown";
+}
+
+function getModality(sign: string): string {
+  const modalities: Record<string, string> = {
+    Aries: "Cardinal", Cancer: "Cardinal", Libra: "Cardinal", Capricorn: "Cardinal",
+    Taurus: "Fixed", Leo: "Fixed", Scorpio: "Fixed", Aquarius: "Fixed",
+    Gemini: "Mutable", Virgo: "Mutable", Sagittarius: "Mutable", Pisces: "Mutable",
+  };
+  return modalities[sign] || "Unknown";
+}
+
+// Planetary dignities: domicile, exaltation, detriment, fall
+const DIGNITIES: Record<string, { domicile: string[]; exaltation: string[]; detriment: string[]; fall: string[] }> = {
+  Sun:     { domicile: ["Leo"], exaltation: ["Aries"], detriment: ["Aquarius"], fall: ["Libra"] },
+  Moon:    { domicile: ["Cancer"], exaltation: ["Taurus"], detriment: ["Capricorn"], fall: ["Scorpio"] },
+  Mercury: { domicile: ["Gemini", "Virgo"], exaltation: ["Virgo"], detriment: ["Sagittarius", "Pisces"], fall: ["Pisces"] },
+  Venus:   { domicile: ["Taurus", "Libra"], exaltation: ["Pisces"], detriment: ["Aries", "Scorpio"], fall: ["Virgo"] },
+  Mars:    { domicile: ["Aries", "Scorpio"], exaltation: ["Capricorn"], detriment: ["Taurus", "Libra"], fall: ["Cancer"] },
+  Jupiter: { domicile: ["Sagittarius", "Pisces"], exaltation: ["Cancer"], detriment: ["Gemini", "Virgo"], fall: ["Capricorn"] },
+  Saturn:  { domicile: ["Capricorn", "Aquarius"], exaltation: ["Libra"], detriment: ["Cancer", "Leo"], fall: ["Aries"] },
+};
+
+function getDignity(planetName: string, sign: string): string | null {
+  const d = DIGNITIES[planetName];
+  if (!d) return null;
+  if (d.domicile.includes(sign)) return "Domicile";
+  if (d.exaltation.includes(sign)) return "Exaltation";
+  if (d.detriment.includes(sign)) return "Detriment";
+  if (d.fall.includes(sign)) return "Fall";
+  return null;
 }
 
 async function getAccessToken(clientId: string, clientSecret: string): Promise<string> {
@@ -109,6 +137,41 @@ function formatTzOffset(offset: number): string {
   return `${sign}${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
 
+// Calculate aspects between planets based on angular distance
+function calculateAspects(placements: { name: string; longitude: number }[]): any[] {
+  const ASPECT_TYPES = [
+    { name: "Conjunction", angle: 0, orb: 8, symbol: "☌" },
+    { name: "Sextile", angle: 60, orb: 6, symbol: "⚹" },
+    { name: "Square", angle: 90, orb: 7, symbol: "□" },
+    { name: "Trine", angle: 120, orb: 8, symbol: "△" },
+    { name: "Opposition", angle: 180, orb: 8, symbol: "☍" },
+  ];
+
+  const aspects: any[] = [];
+  for (let i = 0; i < placements.length; i++) {
+    for (let j = i + 1; j < placements.length; j++) {
+      const diff = Math.abs(placements[i].longitude - placements[j].longitude);
+      const angle = diff > 180 ? 360 - diff : diff;
+
+      for (const aspect of ASPECT_TYPES) {
+        const orbActual = Math.abs(angle - aspect.angle);
+        if (orbActual <= aspect.orb) {
+          aspects.push({
+            planet1: placements[i].name,
+            planet2: placements[j].name,
+            aspect: aspect.name,
+            symbol: aspect.symbol,
+            angle: Math.round(angle * 100) / 100,
+            orb: Math.round(orbActual * 100) / 100,
+          });
+          break;
+        }
+      }
+    }
+  }
+  return aspects;
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -130,23 +193,19 @@ serve(async (req) => {
 
     console.log(`[calculate-natal-chart] ${year}-${month}-${day} ${hour}:${minute} in ${city}, ${nation}`);
 
-    // Use pre-resolved coordinates from Google Places if available, otherwise geocode
     const { lat, lng } = (preLat != null && preLng != null)
       ? { lat: preLat, lng: preLng }
       : await geocode(city, nation);
     const tzOffset = await getTimezoneOffset(lat, lng);
     console.log(`[calculate-natal-chart] coords=${lat},${lng} tz=${tzOffset}`);
 
-    // OAuth token
     const accessToken = await getAccessToken(CLIENT_ID, CLIENT_SECRET);
 
-    // Build datetime in ISO 8601
     const h = Number(hour ?? 12);
     const m = Number(minute ?? 0);
     const datetime = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00${formatTzOffset(tzOffset)}`;
     const coordinates = `${lat},${lng}`;
 
-    // Call Prokerala planet-position API
     const params = new URLSearchParams({
       ayanamsa: "1",
       coordinates,
@@ -168,34 +227,35 @@ serve(async (req) => {
     const planetData = await planetRes.json();
     const positions = planetData.data?.planet_position || [];
     
-    // Ayanamsha to convert sidereal → tropical
     const ayanamsha = getAyanamsha(Number(year));
     console.log(`[calculate-natal-chart] Ayanamsha for ${year}: ${ayanamsha.toFixed(2)}°`);
 
     const findPlanet = (name: string) =>
       positions.find((p: any) => p.name?.toLowerCase() === name.toLowerCase());
 
-    const makePlacement = (planet: any) => {
+    const makePlacement = (planet: any, planetName: string) => {
       if (!planet) return null;
       const sidereal = planet.longitude || 0;
       const tropical = sidereal + ayanamsha;
+      const sign = getSignFromTropicalDegree(tropical);
       return {
-        sign: getSignFromTropicalDegree(tropical),
+        sign,
         house: planet.position || 1,
         degree: getDegreeInSign(tropical),
         isRetrograde: planet.is_retrograde || false,
+        dignity: getDignity(planetName, sign),
       };
     };
 
-    const sun = makePlacement(findPlanet("Sun")) || { sign: "Aries", house: 1, degree: 0 };
-    const moon = makePlacement(findPlanet("Moon")) || { sign: "Aries", house: 1, degree: 0 };
-    const venus = makePlacement(findPlanet("Venus"));
-    const mars = makePlacement(findPlanet("Mars"));
-    const mercury = makePlacement(findPlanet("Mercury"));
-    const jupiter = makePlacement(findPlanet("Jupiter"));
-    const saturn = makePlacement(findPlanet("Saturn"));
+    const sun = makePlacement(findPlanet("Sun"), "Sun") || { sign: "Aries", house: 1, degree: 0, isRetrograde: false, dignity: null };
+    const moon = makePlacement(findPlanet("Moon"), "Moon") || { sign: "Aries", house: 1, degree: 0, isRetrograde: false, dignity: null };
+    const venus = makePlacement(findPlanet("Venus"), "Venus");
+    const mars = makePlacement(findPlanet("Mars"), "Mars");
+    const mercury = makePlacement(findPlanet("Mercury"), "Mercury");
+    const jupiter = makePlacement(findPlanet("Jupiter"), "Jupiter");
+    const saturn = makePlacement(findPlanet("Saturn"), "Saturn");
 
-    // Ascendant — check if it's in the planet positions
+    // Ascendant
     let rising = "Aries";
     const ascData = findPlanet("Ascendant");
     if (ascData) {
@@ -204,18 +264,43 @@ serve(async (req) => {
     }
 
     // Element balance
+    const allPlacements = [sun, moon, { sign: rising }, venus, mars, mercury, jupiter, saturn].filter(Boolean) as any[];
     const elementBalance: Record<string, number> = { Fire: 0, Water: 0, Earth: 0, Air: 0 };
-    [sun, moon, { sign: rising }, venus, mars, mercury, jupiter, saturn]
-      .filter(Boolean)
-      .forEach((p: any) => {
-        const el = getElement(p.sign);
-        if (el in elementBalance) elementBalance[el]++;
-      });
+    allPlacements.forEach((p) => {
+      const el = getElement(p.sign);
+      if (el in elementBalance) elementBalance[el]++;
+    });
+
+    // Modality balance
+    const modalityBalance: Record<string, number> = { Cardinal: 0, Fixed: 0, Mutable: 0 };
+    allPlacements.forEach((p) => {
+      const mod = getModality(p.sign);
+      if (mod in modalityBalance) modalityBalance[mod]++;
+    });
+
+    // Dominant element & modality
+    const dominantElement = Object.entries(elementBalance).sort((a, b) => b[1] - a[1])[0][0];
+    const dominantModality = Object.entries(modalityBalance).sort((a, b) => b[1] - a[1])[0][0];
+
+    // Calculate aspects from tropical longitudes
+    const planetLongitudes: { name: string; longitude: number }[] = [];
+    const planetNames = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
+    for (const name of planetNames) {
+      const p = findPlanet(name);
+      if (p) {
+        planetLongitudes.push({ name, longitude: (p.longitude || 0) + ayanamsha });
+      }
+    }
+    const aspects = calculateAspects(planetLongitudes);
+    console.log(`[calculate-natal-chart] Found ${aspects.length} aspects`);
 
     const result = {
       sun, moon, rising, venus, mars, mercury, jupiter, saturn,
       element_balance: elementBalance,
-      aspects: [],
+      modality_balance: modalityBalance,
+      dominant_element: dominantElement,
+      dominant_modality: dominantModality,
+      aspects,
       _meta: { source: "prokerala.com", coordinates: { lat, lng }, timezone: tzOffset },
     };
 

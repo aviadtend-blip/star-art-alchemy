@@ -68,25 +68,85 @@ export default function StyleSelection({ onSelect, onBack, chartData }) {
                     H{planet.house} · {planet.degree}°
                     {planet.isRetrograde && <span className="text-primary ml-0.5">℞</span>}
                   </span>
+                  {planet.dignity && (
+                    <span className={`block text-[9px] mt-0.5 font-body tracking-wide ${
+                      planet.dignity === 'Domicile' || planet.dignity === 'Exaltation'
+                        ? 'text-primary'
+                        : 'text-destructive/70'
+                    }`}>
+                      {planet.dignity === 'Domicile' ? '🏠' : planet.dignity === 'Exaltation' ? '⬆' : planet.dignity === 'Detriment' ? '⬇' : '🔻'} {planet.dignity}
+                    </span>
+                  )}
                 </div>
               );
             })}
           </div>
 
-          {/* Elemental Balance */}
-          {chartData.element_balance && (
-            <div className="text-center pt-4 border-t border-border/50">
-              <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">Elemental Balance</p>
-              <div className="flex justify-center gap-4 text-xs text-foreground">
-                <span>🔥 Fire: {chartData.element_balance.Fire}</span>
-                <span>💧 Water: {chartData.element_balance.Water}</span>
-                <span>🌍 Earth: {chartData.element_balance.Earth}</span>
-                <span>💨 Air: {chartData.element_balance.Air}</span>
+          {/* Dignities for Big Three */}
+          <div className="flex justify-center gap-4 mb-6 text-[10px] text-muted-foreground font-body">
+            {chartData.sun.dignity && (
+              <span>☀️ Sun: <span className={chartData.sun.dignity === 'Domicile' || chartData.sun.dignity === 'Exaltation' ? 'text-primary' : 'text-destructive/70'}>{chartData.sun.dignity}</span></span>
+            )}
+            {chartData.moon.dignity && (
+              <span>🌙 Moon: <span className={chartData.moon.dignity === 'Domicile' || chartData.moon.dignity === 'Exaltation' ? 'text-primary' : 'text-destructive/70'}>{chartData.moon.dignity}</span></span>
+            )}
+          </div>
+
+          {/* Elemental & Modality Balance */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-border/50 mb-4">
+            {chartData.element_balance && (
+              <div className="text-center">
+                <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">Elemental Balance</p>
+                <div className="flex justify-center gap-3 text-xs text-foreground flex-wrap">
+                  <span>🔥 Fire: {chartData.element_balance.Fire}</span>
+                  <span>💧 Water: {chartData.element_balance.Water}</span>
+                  <span>🌍 Earth: {chartData.element_balance.Earth}</span>
+                  <span>💨 Air: {chartData.element_balance.Air}</span>
+                </div>
+              </div>
+            )}
+            {chartData.modality_balance && (
+              <div className="text-center">
+                <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">Modality Balance</p>
+                <div className="flex justify-center gap-3 text-xs text-foreground">
+                  <span>⚡ Cardinal: {chartData.modality_balance.Cardinal}</span>
+                  <span>🔒 Fixed: {chartData.modality_balance.Fixed}</span>
+                  <span>🔄 Mutable: {chartData.modality_balance.Mutable}</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Dominant Element & Modality */}
+          {(chartData.dominant_element || chartData.dominant_modality) && (
+            <div className="text-center mb-4">
+              <p className="text-xs font-medium text-muted-foreground mb-1 uppercase tracking-wider">Dominant Signature</p>
+              <p className="text-sm text-primary font-display">
+                {chartData.dominant_element && <span>{chartData.dominant_element}</span>}
+                {chartData.dominant_element && chartData.dominant_modality && <span className="text-muted-foreground"> · </span>}
+                {chartData.dominant_modality && <span>{chartData.dominant_modality}</span>}
+              </p>
+            </div>
+          )}
+
+          {/* Aspects */}
+          {chartData.aspects && chartData.aspects.length > 0 && (
+            <div className="pt-4 border-t border-border/50">
+              <p className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider text-center">Planetary Aspects</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {chartData.aspects.map((aspect, i) => (
+                  <div key={i} className="bg-card/40 border border-border/40 rounded-md px-3 py-2 text-center">
+                    <span className="text-xs text-foreground font-body">
+                      {aspect.planet1} <span className="text-primary mx-1">{aspect.symbol}</span> {aspect.planet2}
+                    </span>
+                    <span className="block text-[10px] text-muted-foreground">
+                      {aspect.aspect} ({aspect.orb}° orb)
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
           )}
-        </div>
-      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-10">
         {ART_STYLES.map((style) => {
