@@ -21,22 +21,24 @@ export default function StyleSelection({ onSelect, onBack, chartData }) {
 
       {/* Natal Chart Summary */}
       {chartData && (
-        <div className="mb-10 bg-secondary/30 border border-border rounded-xl p-6 max-w-2xl mx-auto">
-          <h3 className="font-display text-xl text-foreground text-center mb-4">
+        <div className="mb-10 bg-secondary/30 border border-border rounded-xl p-6 max-w-3xl mx-auto">
+          <h3 className="font-display text-xl text-foreground text-center mb-5">
             Your Celestial Blueprint
           </h3>
-          <div className="grid grid-cols-3 gap-4 text-center mb-5">
+
+          {/* Big Three */}
+          <div className="grid grid-cols-3 gap-4 text-center mb-6">
             <div className="bg-card/60 border border-border rounded-lg p-3">
               <div className="text-2xl mb-1">☀️</div>
               <span className="text-xs text-muted-foreground uppercase tracking-widest font-body">Sun</span>
               <span className="block text-sm text-foreground capitalize font-display mt-0.5">{chartData.sun.sign}</span>
-              <span className="text-xs text-muted-foreground">House {chartData.sun.house}</span>
+              <span className="text-xs text-muted-foreground">House {chartData.sun.house} · {chartData.sun.degree}°</span>
             </div>
             <div className="bg-card/60 border border-border rounded-lg p-3">
               <div className="text-2xl mb-1">🌙</div>
               <span className="text-xs text-muted-foreground uppercase tracking-widest font-body">Moon</span>
               <span className="block text-sm text-foreground capitalize font-display mt-0.5">{chartData.moon.sign}</span>
-              <span className="text-xs text-muted-foreground">House {chartData.moon.house}</span>
+              <span className="text-xs text-muted-foreground">House {chartData.moon.house} · {chartData.moon.degree}°</span>
             </div>
             <div className="bg-card/60 border border-border rounded-lg p-3">
               <div className="text-2xl mb-1">⬆️</div>
@@ -45,8 +47,35 @@ export default function StyleSelection({ onSelect, onBack, chartData }) {
               <span className="text-xs text-muted-foreground">Ascendant</span>
             </div>
           </div>
+
+          {/* Planets */}
+          <div className="grid grid-cols-5 gap-3 text-center mb-6">
+            {[
+              { key: 'mercury', icon: '☿', label: 'Mercury' },
+              { key: 'venus', icon: '♀', label: 'Venus' },
+              { key: 'mars', icon: '♂', label: 'Mars' },
+              { key: 'jupiter', icon: '♃', label: 'Jupiter' },
+              { key: 'saturn', icon: '♄', label: 'Saturn' },
+            ].map(({ key, icon, label }) => {
+              const planet = chartData[key];
+              if (!planet) return null;
+              return (
+                <div key={key} className="bg-card/40 border border-border/60 rounded-lg p-2.5">
+                  <div className="text-lg mb-0.5 text-primary">{icon}</div>
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-body">{label}</span>
+                  <span className="block text-xs text-foreground capitalize font-display mt-0.5">{planet.sign}</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    H{planet.house} · {planet.degree}°
+                    {planet.isRetrograde && <span className="text-primary ml-0.5">℞</span>}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Elemental Balance */}
           {chartData.element_balance && (
-            <div className="text-center">
+            <div className="text-center pt-4 border-t border-border/50">
               <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">Elemental Balance</p>
               <div className="flex justify-center gap-4 text-xs text-foreground">
                 <span>🔥 Fire: {chartData.element_balance.Fire}</span>
