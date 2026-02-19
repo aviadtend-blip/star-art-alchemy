@@ -102,7 +102,38 @@ async function geocode(city: string, nation: string): Promise<{ lat: number; lng
   return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
 }
 
-async function getTimezoneOffset(lat: number, lng: number): Promise<number> {
+async function getTimezoneOffset(lat: number, lng: number, year: number, month: number, day: number, hour: number, minute: number): Promise<number> {
+  // Build a UTC timestamp for the birth date to get historical timezone
+  const utcDate = new Date(Date.UTC(year, month - 1, day, hour, minute, 0));
+  const timestamp = Math.floor(utcDate.getTime() / 1000);
+
+  // Try Google Maps Time Zone API first (accurate historical offsets)
+  const googleApiKey = Deno.env.get('GOOGLE_MAPS_API_KEY');
+  if (googleApiKey) {
+    try {
+      const url = `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${timestamp}&key=${googleApiKey}`;
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.status === 'OK') {
+          // Google returns rawOffset + dstOffset in seconds
+          const totalOffsetSeconds = (data.rawOffset || 0) + (data.dstOffset || 0);
+          const totalOffsetHours = totalOffsetSeconds / 3600;
+          console.log(`[calculate-natal-chart] Google TZ: raw=${data.rawOffset}s dst=${data.dstOffset}s total=${totalOffsetHours}h (${data.timeZoneId})`);
+          return totalOffsetHours;
+        } else {
+          console.warn(`[calculate-natal-chart] Google TZ API status: ${data.status} - ${data.errorMessage || ''}`);
+        }
+      } else {
+        const text = await res.text();
+        console.warn(`[calculate-natal-chart] Google TZ API HTTP ${res.status}: ${text}`);
+      }
+    } catch (e) {
+      console.warn("[calculate-natal-chart] Google TZ lookup failed:", e);
+    }
+  }
+
+  // Fallback to timeapi.io (current offset only, less accurate for historical dates)
   try {
     const res = await fetch(
       `https://timeapi.io/api/timezone/coordinate?latitude=${lat}&longitude=${lng}`
@@ -196,13 +227,13 @@ serve(async (req) => {
     const { lat, lng } = (preLat != null && preLng != null)
       ? { lat: preLat, lng: preLng }
       : await geocode(city, nation);
-    const tzOffset = await getTimezoneOffset(lat, lng);
+    const h = Number(hour ?? 12);
+    const m = Number(minute ?? 0);
+    const tzOffset = await getTimezoneOffset(lat, lng, Number(year), Number(month), Number(day), h, m);
     console.log(`[calculate-natal-chart] coords=${lat},${lng} tz=${tzOffset}`);
 
     const accessToken = await getAccessToken(CLIENT_ID, CLIENT_SECRET);
 
-    const h = Number(hour ?? 12);
-    const m = Number(minute ?? 0);
     const datetime = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00${formatTzOffset(tzOffset)}`;
     const coordinates = `${lat},${lng}`;
 
