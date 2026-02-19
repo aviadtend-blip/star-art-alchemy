@@ -75,6 +75,8 @@ ${chartData.interpretation.dignityFlags.length > 0
     element: dominantElement
   });
 
+  console.log('📝 FINAL PROMPT:', prompt);
+
   return prompt;
 }
 
