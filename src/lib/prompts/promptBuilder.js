@@ -3,6 +3,7 @@ import buildInterpretationLayer from './buildInterpretationLayer.js';
 
 export function buildConcretePrompt(chartData, style) {
   chartData = buildInterpretationLayer(chartData);
+  console.log('🔍 INTERPRETATION LAYER:', JSON.stringify(chartData.interpretation, null, 2));
   const triggerWord = style?.triggerWord ?? 'magicalpink';
   const sunVisuals = CONCRETE_SUN_VISUALS[chartData.sun.sign];
   const moonVisuals = CONCRETE_MOON_VISUALS[chartData.moon.sign];
