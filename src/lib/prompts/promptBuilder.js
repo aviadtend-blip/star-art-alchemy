@@ -3,14 +3,6 @@ import buildInterpretationLayer from './buildInterpretationLayer.js';
 
 export function buildConcretePrompt(chartData, style) {
   chartData = buildInterpretationLayer(chartData);
-  console.log('RAW CHART FIELDS:', JSON.stringify({
-    hasStelliums: !!chartData.stelliums,
-    stelliumsValue: chartData.stelliums,
-    firstAspect: chartData.aspects?.[0],
-    risingValue: chartData.rising,
-    sunSign: chartData.sun?.sign,
-    moonSign: chartData.moon?.sign
-  }, null, 2));
   const triggerWord = style?.triggerWord ?? 'magicalpink';
   const sunVisuals = CONCRETE_SUN_VISUALS[chartData.sun.sign];
   const moonVisuals = CONCRETE_MOON_VISUALS[chartData.moon.sign];
@@ -83,7 +75,6 @@ ${chartData.interpretation.dignityFlags.length > 0
     element: dominantElement
   });
 
-  console.log('📝 FINAL PROMPT:', prompt);
 
   return prompt;
 }
