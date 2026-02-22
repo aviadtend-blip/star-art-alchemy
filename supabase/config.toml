@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.calculate-natal-chart]
 verify_jwt = false
+
+[functions.ai-interpret]
+verify_jwt = false
