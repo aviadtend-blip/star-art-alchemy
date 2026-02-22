@@ -36,27 +36,25 @@ serve(async (req) => {
             .join(", ")
         : "none";
 
-    const prompt = `You are an astrologer writing visual art direction for a personalized abstract collage artwork.
+    const prompt = `You are writing visual art direction for an abstract collage artwork. Use only concrete nouns, textures, materials, and spatial relationships. No abstract concepts, emotions, or psychological language.
 
-Given this natal chart, write exactly 4 sentences describing who this person is at their core and how that should manifest visually. Be specific to this exact chart combination — avoid generic zodiac descriptions.
+Write exactly 3 sentences:
+Sentence 1: How the dominant chart feature should control the overall composition — describe it as objects, shapes, and materials.
+Sentence 2: Translate the single tightest aspect into one specific visual contrast, object detail, or material juxtaposition.
+Sentence 3: One visual instruction for a tension that the sun, moon, and rising placements alone don't capture.
 
-Sentence 1: Their dominant personality pattern and how it should dominate the composition.
-Sentence 2: Their central inner tension and how to show it as visual contrast or conflict in the artwork.
-Sentence 3: How their emotional nature (moon) sits underneath their outer presentation (rising).
-Sentence 4: One specific visual instruction that captures their most unique chart feature.
+Forbidden words: hyper, vibrant, intricate, tapestry, struggle, journey, energy, essence, dynamic, balance, harmony, represent, symbolize.
+Only use: concrete nouns, textures, materials, spatial relationships, physical states (fraying, cracking, dissolving, pressing, cutting).
 
 Chart facts:
 - Dominant feature: ${interpretation.dominantFeature}
-- Core pattern: ${interpretation.coreParadox}
-- Tight aspects (these shape personality most): ${highPriorityAspects || "none"}
+- Tightest aspects: ${highPriorityAspects}
 - Dignity tensions: ${dignityText}
-- Sun: ${chartData.sun?.sign} in House ${chartData.sun?.house}
-- Moon: ${chartData.moon?.sign} in House ${chartData.moon?.house}
+- Sun: ${chartData.sun?.sign} House ${chartData.sun?.house}
+- Moon: ${chartData.moon?.sign} House ${chartData.moon?.house}
 - Rising: ${chartData.rising}
 
-Be concise. Avoid repeating adjectives. Each sentence should contain one clear visual instruction.
-
-Output only the 4 sentences. No headers, no preamble, no bullet points.`;
+Output only the 3 sentences. No headers, no preamble.`;
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
