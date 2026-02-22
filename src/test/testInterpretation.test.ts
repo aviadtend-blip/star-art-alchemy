@@ -1,5 +1,12 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { buildConcretePrompt } from '@/lib/prompts/promptBuilder.js';
+
+// Mock the AI interpretation to avoid network calls in tests
+vi.mock('@/lib/prompts/getAIInterpretation.js', () => ({
+  default: vi.fn().mockResolvedValue(
+    'This chart is dominated by a Virgo stellium radiating analytical beauty. The Mercury-Saturn opposition creates visual tension between precision and restriction. Beneath the Scorpio mask lies restless Gemini emotional agitation. The Venus-Jupiter conjunction at 0.18° should appear as a singular golden seal of compromised abundance.'
+  ),
+}));
 
 const testChartData = {
   sun: { sign: "Virgo", house: 5, degree: 0.5 },
@@ -27,15 +34,15 @@ const testChartData = {
   element_balance: { Fire: 1, Water: 1, Earth: 3, Air: 3 },
 };
 
-describe('buildConcretePrompt with interpretation layer', () => {
-  it('produces the full prompt string', () => {
-    const result = buildConcretePrompt(testChartData, { triggerWord: 'magicalpink' });
+describe('buildConcretePrompt with AI interpretation layer', () => {
+  it('produces prompt with AI narrative in WHO THIS PERSON IS section', async () => {
+    const result = await buildConcretePrompt(testChartData, { triggerWord: 'magicalpink' });
     console.log('=== FULL PROMPT OUTPUT ===');
     console.log(result);
     console.log('=== END PROMPT ===');
-    expect(result).toContain('PERSONALITY EMPHASIS');
-    expect(result).toContain('Sun + Venus + Jupiter stellium in Virgo');
-    expect(result).toContain('Scorpio Rising intensity');
-    expect(result).toContain('Venus Conjunction Jupiter');
+    expect(result).toContain('WHO THIS PERSON IS');
+    expect(result).toContain('Virgo stellium');
+    expect(result).toContain('SUN (Virgo)');
+    expect(result).toContain('RISING (Scorpio)');
   });
 });

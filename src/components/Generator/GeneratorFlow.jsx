@@ -75,7 +75,7 @@ const GeneratorFlowJsx = () => {
 
     try {
       setGenerationProgress("Building your personalized artwork prompt...");
-      const prompt = buildConcretePrompt(chartData, style);
+      const prompt = await buildConcretePrompt(chartData, style);
       console.log("📝 Concrete prompt built:", prompt.substring(0, 200) + "...");
 
       setGenerationProgress(`Generating your ${style.name} artwork... (this takes 30-60 seconds)`);
