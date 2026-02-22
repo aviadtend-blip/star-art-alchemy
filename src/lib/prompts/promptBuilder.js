@@ -1,4 +1,4 @@
-import { CONCRETE_SUN_VISUALS, CONCRETE_MOON_VISUALS, CONCRETE_RISING_VISUALS, CONCRETE_ELEMENT_PALETTES } from '@/data/concreteVisualPrompts.js';
+import { CONCRETE_SUN_VISUALS, CONCRETE_MOON_VISUALS, CONCRETE_RISING_VISUALS } from '@/data/concreteVisualPrompts.js';
 import buildInterpretationLayer from './buildInterpretationLayer.js';
 
 export function buildConcretePrompt(chartData, style) {
@@ -8,73 +8,49 @@ export function buildConcretePrompt(chartData, style) {
   const moonVisuals = CONCRETE_MOON_VISUALS[chartData.moon.sign];
   const risingVisuals = CONCRETE_RISING_VISUALS[chartData.rising];
 
-  const dominantElement = Object.keys(chartData.element_balance).reduce((a, b) =>
-    chartData.element_balance[a] > chartData.element_balance[b] ? a : b
-  );
-  const paletteVisuals = CONCRETE_ELEMENT_PALETTES[dominantElement + '-dominant'];
+  const dignityLine = chartData.interpretation.dignityFlags.length > 0
+    ? `\nDignity wounds: ${chartData.interpretation.dignityFlags.map(d => `${d.planet} in ${d.dignity}`).join(', ')} — love and abundance are complicated here`
+    : '';
+
+  const criticalAspects = chartData.interpretation.aspectWeights
+    .filter(a => a.priority === 'critical' || a.priority === 'high')
+    .map(a => `${a.planet1} ${a.type} ${a.planet2} (${a.orb}° orb)`)
+    .join(', ');
 
   const prompt = `${triggerWord}
 
-MAIN CIRCULAR FORMS:
+WHO THIS PERSON IS:
+Dominant: ${chartData.interpretation.dominantFeature}
+Core tension: ${chartData.interpretation.coreParadox}
+Critical aspects: ${criticalAspects}${dignityLine}
 
-SUN ELEMENT (${chartData.sun.sign} Sun):
+SUN (${chartData.sun.sign}):
 ${sunVisuals.circleDescription}
-Colors: ${sunVisuals.circleColors}
 ${sunVisuals.additionalElements}
-
-MOON ELEMENT (${chartData.moon.sign} Moon):
-${moonVisuals.circleDescription}
-Colors: ${moonVisuals.circleColors}
-${moonVisuals.atmosphere}
-
-BOTANICAL DETAILS:
-${sunVisuals.botanicals}
-Colors: ${sunVisuals.botanicalColors}
+Botanicals: ${sunVisuals.botanicals}
 Positioning: ${sunVisuals.positioning}
 
-LANDSCAPE/BACKGROUND ELEMENTS (${chartData.rising} Rising):
+MOON (${chartData.moon.sign}):
+${moonVisuals.circleDescription}
+${moonVisuals.atmosphere}
+
+RISING (${chartData.rising}):
 ${risingVisuals.compositionalStyle}
 ${risingVisuals.borderElements}
 
-COMPOSITION STRUCTURE:
-- Overall ${getOverallShape(chartData.rising)}
-- ${getLayoutDescription(chartData.sun.sign, chartData.moon.sign)}
-- ${risingVisuals.overallEnergy} aesthetic throughout
-
-COLOR PALETTE (${dominantElement}-dominant chart):
-Primary colors: ${paletteVisuals.description}
-${paletteVisuals.percentageGuideline}
-Specific color zones:
-${getColorZones(chartData.sun.sign, chartData.moon.sign, dominantElement)}
-
-SPECIFIC OBJECTS CHECKLIST:
-${getObjectChecklist(sunVisuals, moonVisuals, risingVisuals)}
+COMPOSITION:
+Overall shape: ${getOverallShape(chartData.rising)}
+Layout: ${getLayoutDescription(chartData.sun.sign, chartData.moon.sign)}
+Aesthetic: ${risingVisuals.overallEnergy}
 
 SPATIAL ARRANGEMENT:
-${getSpatialArrangement(chartData.sun.sign, chartData.moon.sign, chartData.rising)}
-
-PERSONALITY EMPHASIS (weight these heavily in visual storytelling):
-
-Dominant feature: ${chartData.interpretation.dominantFeature}
-
-Core paradox: ${chartData.interpretation.coreParadox}
-
-${chartData.interpretation.aspectWeights
-  .filter(a => a.priority === 'critical' || a.priority === 'high')
-  .map(a => `- ${a.planet1} ${a.type} ${a.planet2} (${a.orb}° orb, ${a.priority} — emphasize this tension visually)`)
-  .join('\n')}
-
-${chartData.interpretation.dignityFlags.length > 0
-  ? 'Dignity tensions: ' + chartData.interpretation.dignityFlags.map(d => d.impact).join('; ')
-  : ''}`;
+${getSpatialArrangement(chartData.sun.sign, chartData.moon.sign, chartData.rising)}`;
 
   console.log('🎨 Built concrete visual prompt for:', {
     sun: chartData.sun.sign,
     moon: chartData.moon.sign,
-    rising: chartData.rising,
-    element: dominantElement
+    rising: chartData.rising
   });
-
 
   return prompt;
 }
@@ -83,25 +59,6 @@ ${chartData.interpretation.dignityFlags.length > 0
 export const buildCanonicalPrompt = buildConcretePrompt;
 
 // Helper functions
-
-function getSunPercentage(sunSign) {
-  const percentages = {
-    'Leo': 40, 'Aries': 35, 'Sagittarius': 32,
-    'Taurus': 30, 'Cancer': 30, 'Libra': 30,
-    'Gemini': 28, 'Capricorn': 28, 'Scorpio': 25,
-    'Virgo': 25, 'Pisces': 25, 'Aquarius': 24
-  };
-  return percentages[sunSign] || 30;
-}
-
-function getMoonPercentage(moonSign) {
-  const percentages = {
-    'Cancer': 28, 'Leo': 25, 'Pisces': 24, 'Scorpio': 24,
-    'Taurus': 22, 'Libra': 22, 'Sagittarius': 22, 'Aquarius': 22,
-    'Aries': 20, 'Capricorn': 20, 'Virgo': 20, 'Gemini': 22
-  };
-  return percentages[moonSign] || 20;
-}
 
 function getOverallShape(rising) {
   const shapes = {
@@ -161,32 +118,8 @@ function getMoonPosition(moonSign) {
   return positions[moonSign] || 'lower section';
 }
 
-function getColorZones(sunSign, moonSign, element) {
-  const sunColors = CONCRETE_SUN_VISUALS[sunSign].botanicalColors;
-  const moonColors = CONCRETE_MOON_VISUALS[moonSign].circleColors;
-
-  return `- Sun area (${getSunPosition(sunSign)}): ${sunColors}
-- Moon area (${getMoonPosition(moonSign)}): ${moonColors}
-- Background/borders: ${CONCRETE_ELEMENT_PALETTES[element + '-dominant'].description}`;
-}
-
-function getObjectChecklist(sunVisuals, moonVisuals, risingVisuals) {
-  return `✓ 1 main sun circle as described above
-✓ 1 main moon circle as described above
-✓ Botanical elements as specified for sun sign
-✓ Rising sign compositional elements
-✓ Landscape or background elements if specified
-✓ All elements positioned as described in spatial arrangement`;
-}
-
 function getSpatialArrangement(sunSign, moonSign, rising) {
-  const sunArea = getSunPercentage(sunSign);
-  const moonArea = getMoonPercentage(moonSign);
-  const risingImpact = getRisingImpact(rising);
-
-  return `Sun area occupies approximately ${sunArea}% of composition
-Moon area occupies approximately ${moonArea}% of composition
-${risingImpact}
+  return `${getRisingImpact(rising)}
 Clear visual hierarchy with sun as primary focal point`;
 }
 
