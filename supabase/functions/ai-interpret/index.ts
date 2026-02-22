@@ -54,6 +54,8 @@ Chart facts:
 - Moon: ${chartData.moon?.sign} in House ${chartData.moon?.house}
 - Rising: ${chartData.rising}
 
+Be concise. Avoid repeating adjectives. Each sentence should contain one clear visual instruction.
+
 Output only the 4 sentences. No headers, no preamble, no bullet points.`;
 
     const response = await fetch(
