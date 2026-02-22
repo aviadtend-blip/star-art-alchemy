@@ -1,28 +1,20 @@
 import { CONCRETE_SUN_VISUALS, CONCRETE_MOON_VISUALS, CONCRETE_RISING_VISUALS } from '@/data/concreteVisualPrompts.js';
 import buildInterpretationLayer from './buildInterpretationLayer.js';
+import getAIInterpretation from './getAIInterpretation.js';
 
-export function buildConcretePrompt(chartData, style) {
+export async function buildConcretePrompt(chartData, style) {
   chartData = buildInterpretationLayer(chartData);
   const triggerWord = style?.triggerWord ?? 'magicalpink';
   const sunVisuals = CONCRETE_SUN_VISUALS[chartData.sun.sign];
   const moonVisuals = CONCRETE_MOON_VISUALS[chartData.moon.sign];
   const risingVisuals = CONCRETE_RISING_VISUALS[chartData.rising];
 
-  const dignityLine = chartData.interpretation.dignityFlags.length > 0
-    ? `\nDignity wounds: ${chartData.interpretation.dignityFlags.map(d => `${d.planet} in ${d.dignity}`).join(', ')} — love and abundance are complicated here`
-    : '';
-
-  const criticalAspects = chartData.interpretation.aspectWeights
-    .filter(a => a.priority === 'critical' || a.priority === 'high')
-    .map(a => `${a.planet1} ${a.type} ${a.planet2} (${a.orb}° orb)`)
-    .join(', ');
+  const aiNarrative = await getAIInterpretation(chartData);
 
   const prompt = `${triggerWord}
 
 WHO THIS PERSON IS:
-Dominant: ${chartData.interpretation.dominantFeature}
-Core tension: ${chartData.interpretation.coreParadox}
-Critical aspects: ${criticalAspects}${dignityLine}
+${aiNarrative}
 
 SUN (${chartData.sun.sign}):
 ${sunVisuals.circleDescription}
