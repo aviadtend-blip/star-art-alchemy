@@ -42,10 +42,10 @@ export default function Footer({ onScrollToForm }) {
         <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Policy links — left */}
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-body-sm text-white/70">
-            <Link to="/privacy" className="hover:text-white transition">Privacy Policy</Link>
-            <Link to="/terms" className="hover:text-white transition">Terms and Conditions</Link>
-            <Link to="/returns" className="hover:text-white transition">Returns Policy</Link>
-            <Link to="/shipping" className="hover:text-white transition">Shipping Policy</Link>
+            <Link to="/privacy" onClick={() => window.scrollTo(0, 0)} className="hover:text-white transition">Privacy Policy</Link>
+            <Link to="/terms" onClick={() => window.scrollTo(0, 0)} className="hover:text-white transition">Terms and Conditions</Link>
+            <Link to="/returns" onClick={() => window.scrollTo(0, 0)} className="hover:text-white transition">Returns Policy</Link>
+            <Link to="/shipping" onClick={() => window.scrollTo(0, 0)} className="hover:text-white transition">Shipping Policy</Link>
           </div>
 
           {/* Copyright — center */}
