@@ -516,7 +516,16 @@ export default function LandingPage() {
                 </div>
 
                 <label className="flex items-start gap-3 cursor-pointer">
-                  <input type="checkbox" checked={dontKnowTime} onChange={(e) => setDontKnowTime(e.target.checked)} className="w-5 h-5 mt-0.5 accent-primary rounded" />
+                  <div
+                    className="w-5 h-5 mt-0.5 rounded flex items-center justify-center flex-shrink-0 cursor-pointer border border-white/10"
+                    style={{ backgroundColor: '#2C2C2C' }}
+                    onClick={() => setDontKnowTime(!dontKnowTime)}
+                  >
+                    {dontKnowTime && (
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    )}
+                  </div>
+                  <input type="checkbox" checked={dontKnowTime} onChange={(e) => setDontKnowTime(e.target.checked)} className="sr-only" />
                   <div>
                     <span className="text-body-sm text-foreground">I don't know my birth time</span>
                     {dontKnowTime && (
