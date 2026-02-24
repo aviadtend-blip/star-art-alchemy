@@ -322,7 +322,7 @@ export default function LandingPage() {
           <h2 className="text-a2 text-surface-foreground leading-snug">
             Ready to turn your birth data into some awesome wall art?
           </h2>
-          <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-8 h-12 w-full md:w-auto rounded-full text-a5 hover:opacity-90 transition-all shadow-lg">
+          <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-8 h-12 w-full md:w-auto rounded-full text-a4 hover:opacity-90 transition-all shadow-lg">
             Generate your free preview
           </button>
           <p className="text-body-sm text-surface-muted">Free preview in 60 seconds.</p>
