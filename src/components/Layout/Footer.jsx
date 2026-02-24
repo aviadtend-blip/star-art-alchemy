@@ -8,10 +8,12 @@ import footerDesktop from "@/assets/footer-desktop.webp";
 export default function Footer({ onScrollToForm }) {
   return (
     <footer className="relative bg-card border-t border-border overflow-hidden">
-      {/* Earth background image — responsive */}
+      {/* Background image — responsive */}
       <div className="absolute inset-0 pointer-events-none">
         <img src={footerMobile} alt="" className="md:hidden w-full h-full object-cover" />
         <img src={footerDesktop} alt="" className="hidden md:block w-full h-full object-cover" />
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/20" />
       </div>
 
       <div className="relative z-10 py-10 px-4">
