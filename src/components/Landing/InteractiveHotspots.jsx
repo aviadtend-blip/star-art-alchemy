@@ -147,9 +147,9 @@ export default function InteractiveHotspots({ onScrollToForm }) {
         {/* Mobile: explanation appears below artwork — centered layout matching Figma */}
         <div className="md:hidden mt-10">
           {active ? (
-            <div className="text-center space-y-4 animate-fade-in px-4" key={active.id}>
+            <div className="space-y-4 animate-fade-in px-4" key={active.id}>
               {/* Number + emoji + title */}
-              <div className="flex items-center justify-center gap-3">
+              <div className="flex items-center gap-3">
                 <span className="w-9 h-9 bg-surface-foreground text-surface rounded-full flex items-center justify-center text-sm font-bold">
                   {active.id}
                 </span>
