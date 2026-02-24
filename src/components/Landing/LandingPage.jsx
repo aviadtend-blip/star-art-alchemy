@@ -16,6 +16,8 @@ import InteractiveHotspots from "./InteractiveHotspots";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
+import GalleryTile from "./GalleryTile";
+import Footer from "@/components/Layout/Footer";
 
 /* ─── Static data ─── */
 
@@ -254,33 +256,45 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Gallery cards with hover review popups */}
-          <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory md:grid md:grid-cols-4 md:overflow-visible">
+          {/* Gallery cards */}
+          <div className="flex gap-5 overflow-x-auto pb-2 snap-x snap-mandatory md:flex md:justify-center md:overflow-visible md:flex-wrap">
             {[
-              { img: taurusArtwork, label: "Sarah's chart", sub: "Taurus Sun · Scorpio Moon", review: '"The mountain representing my Capricorn sun is stunning!"', name: "Sarah J." },
-              { img: capricornWall, label: "Simone's chart", sub: "Capricorn Sun · Cancer Moon", review: '"This is the most meaningful piece of art I own."', name: "Simone K." },
-              { img: virgoArtwork, label: "Tyler's chart", sub: "Virgo Sun · Pisces Moon", review: '"Everyone asks about it when they visit!"', name: "Tyler M." },
-              { img: libraWall, label: "Amanda's chart", sub: "Libra Sun · Aquarius Moon", review: '"Bought one for myself and immediately ordered two more as gifts."', name: "Amanda L." },
+              {
+                img: taurusArtwork, name: "Sarah", signs: "Leo Sun, Pisces Moon",
+                explanations: [
+                  { icon: "☀️", title: "Taurus Sun · Grounded", description: "The large golden-orange circular sun represents his Taurus sun—material stability, sensual beauty, and grounded presence." },
+                  { icon: "⬆️", title: "Sagittarius Rising · Abundance", description: "Notice how it's positioned solidly in the upper left, like an anchor, surrounded by lush botanical abundance." },
+                ],
+              },
+              {
+                img: capricornWall, name: "Simone", signs: "Capricorn Sun, Cancer Moon",
+                explanations: [
+                  { icon: "☀️", title: "Capricorn Sun · Ambition", description: "The angular geometric structures represent her Capricorn sun—discipline, structure, and the drive to build something lasting." },
+                  { icon: "🌙", title: "Cancer Moon · Nurture", description: "Soft lunar tones weave through the composition, reflecting her deeply nurturing emotional core." },
+                ],
+              },
+              {
+                img: virgoArtwork, name: "Tyler", signs: "Virgo Sun, Pisces Moon",
+                explanations: [
+                  { icon: "☀️", title: "Virgo Sun · Precision", description: "Intricate linework and precise geometric patterns embody his Virgo sun—analytical, detail-oriented, and purposeful." },
+                  { icon: "🌙", title: "Pisces Moon · Dreaming", description: "Ethereal washes of blue and violet flow beneath the structure, capturing his Pisces moon's boundless imagination." },
+                ],
+              },
+              {
+                img: libraWall, name: "Amanda", signs: "Libra Sun, Aquarius Moon",
+                explanations: [
+                  { icon: "☀️", title: "Libra Sun · Harmony", description: "Balanced, symmetrical composition with elegant curves reflects her Libra sun—beauty, partnership, and aesthetic refinement." },
+                  { icon: "🌙", title: "Aquarius Moon · Vision", description: "Electric accents and unconventional color choices hint at her Aquarius moon's innovative, independent spirit." },
+                ],
+              },
             ].map((item) => (
-              <div key={item.label} className="min-w-[200px] md:min-w-0 snap-start flex-shrink-0 group relative">
-                <div className="rounded-xl overflow-hidden shadow-md border border-surface-border">
-                  <img src={item.img} alt={item.label} className="w-full h-48 md:h-56 object-cover" />
-                </div>
-                <p className="text-a5 text-surface-foreground mt-2">{item.label}</p>
-                <p className="text-body-sm text-surface-muted">{item.sub}</p>
-
-                {/* Hover review popup */}
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-surface-card border border-surface-border rounded-xl p-4 shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-20 hidden md:block">
-                  <div className="flex items-center gap-0.5 mb-2 text-primary text-sm">★★★★★</div>
-                  <p className="text-body-sm text-surface-foreground/80 leading-relaxed mb-3">{item.review}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-body-sm text-surface-foreground">{item.name}</span>
-                    <span className="text-subtitle text-primary">{/* no uppercase needed, text-subtitle handles it */}Verified Buyer</span>
-                  </div>
-                  {/* Arrow */}
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-3 h-3 bg-surface-card border-r border-b border-surface-border rotate-45 -mt-1.5" />
-                </div>
-              </div>
+              <GalleryTile
+                key={item.name}
+                image={item.img}
+                name={item.name}
+                signs={item.signs}
+                explanations={item.explanations}
+              />
             ))}
           </div>
         </div>
