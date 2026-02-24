@@ -448,112 +448,94 @@ export default function LandingPage() {
               minWidth: 320,
             }}
           >
-            <form onSubmit={handleStep1aSubmit} className="flex flex-col gap-[30px]">
-              {/* Birth Date */}
-              <div>
-                <label className="block text-subtitle text-primary/70 tracking-[3px] mb-4">BIRTH DATE</label>
-                <div className="grid grid-cols-3 gap-4">
-                  <input type="number" required value={formData.birthMonth} onChange={(e) => set("birthMonth", e.target.value)} placeholder="Month" min="1" max="12" className={inputClass} />
-                  <input type="number" required value={formData.birthDay} onChange={(e) => set("birthDay", e.target.value)} placeholder="Day" min="1" max="31" className={inputClass} />
-                  <input type="number" required value={formData.birthYear} onChange={(e) => set("birthYear", e.target.value)} placeholder="Year" min="1900" max="2026" className={inputClass} />
+            {!showTimeModal ? (
+              <form onSubmit={handleStep1aSubmit} className="flex flex-col gap-[30px]">
+                {/* Birth Date */}
+                <div>
+                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH DATE</label>
+                  <div className="grid grid-cols-3 gap-4">
+                    <input type="number" required value={formData.birthMonth} onChange={(e) => set("birthMonth", e.target.value)} placeholder="Month" min="1" max="12" className={inputClass} />
+                    <input type="number" required value={formData.birthDay} onChange={(e) => set("birthDay", e.target.value)} placeholder="Day" min="1" max="31" className={inputClass} />
+                    <input type="number" required value={formData.birthYear} onChange={(e) => set("birthYear", e.target.value)} placeholder="Year" min="1900" max="2026" className={inputClass} />
+                  </div>
                 </div>
-              </div>
 
-              {/* Birth Location */}
-              <div ref={wrapperRef} className="relative">
-                <label className="block text-subtitle text-primary/70 tracking-[3px] mb-4">BIRTH LOCATION</label>
-                <div className="relative">
-                  <input
-                    type="text" required value={cityQuery}
-                    onChange={(e) => { setCityQuery(e.target.value); setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null })); }}
-                    placeholder="City"
-                    className={inputClass} autoComplete="off"
-                  />
-                  {loadingSuggestions && (
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2">
-                      <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                {/* Birth Location */}
+                <div ref={wrapperRef} className="relative">
+                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH LOCATION</label>
+                  <div className="relative">
+                    <input
+                      type="text" required value={cityQuery}
+                      onChange={(e) => { setCityQuery(e.target.value); setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null })); }}
+                      placeholder="City"
+                      className={inputClass} autoComplete="off"
+                    />
+                    {loadingSuggestions && (
+                      <div className="absolute right-0 top-1/2 -translate-y-1/2">
+                        <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                      </div>
+                    )}
+                  </div>
+                  {showSuggestions && suggestions.length > 0 && (
+                    <ul className="absolute z-50 w-full mt-1 bg-card border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
+                      {suggestions.map((s) => (
+                        <li key={s.place_id} onClick={() => handleSelectCity(s)} className="px-4 py-3 text-body-sm text-foreground hover:bg-primary/10 cursor-pointer transition-colors">
+                          {s.description}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {formData.lat && <p className="text-body-sm text-muted-foreground mt-2">📍 {formData.birthCity}, {formData.birthCountry}</p>}
+                </div>
+
+                {/* Submit */}
+                <PrimaryButton type="submit" className="w-full mt-2">
+                  Continue
+                </PrimaryButton>
+              </form>
+            ) : (
+              /* Step 1b — Birth Time (inline, replaces step 1) */
+              <div className="flex flex-col gap-[30px]">
+                <div>
+                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH TIME</label>
+                  {!dontKnowTime && (
+                    <div className="grid grid-cols-3 gap-4">
+                      <input type="number" value={birthHour} onChange={(e) => setBirthHour(e.target.value)} placeholder="12" min="1" max="12" className={inputClass} />
+                      <input type="number" value={birthMinute} onChange={(e) => setBirthMinute(e.target.value)} placeholder="00" min="0" max="59" className={inputClass} />
+                      <div className="relative">
+                        <select value={birthPeriod} onChange={(e) => setBirthPeriod(e.target.value)} className="w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-foreground outline-none focus:border-primary transition appearance-none">
+                          <option value="AM" className="bg-card">AM</option>
+                          <option value="PM" className="bg-card">PM</option>
+                        </select>
+                        <span className="absolute right-0 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
+                        </span>
+                      </div>
                     </div>
                   )}
                 </div>
-                {showSuggestions && suggestions.length > 0 && (
-                  <ul className="absolute z-50 w-full mt-1 bg-card border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
-                    {suggestions.map((s) => (
-                      <li key={s.place_id} onClick={() => handleSelectCity(s)} className="px-4 py-3 text-body-sm text-foreground hover:bg-primary/10 cursor-pointer transition-colors">
-                        {s.description}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {formData.lat && <p className="text-body-sm text-muted-foreground mt-2">📍 {formData.birthCity}, {formData.birthCountry}</p>}
-              </div>
 
-              {/* Submit */}
-              <PrimaryButton type="submit" className="w-full mt-2">
-                Continue
-              </PrimaryButton>
-            </form>
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" checked={dontKnowTime} onChange={(e) => setDontKnowTime(e.target.checked)} className="w-5 h-5 mt-0.5 accent-primary rounded" />
+                  <div>
+                    <span className="text-body-sm text-foreground">I don't know my birth time</span>
+                    {dontKnowTime && (
+                      <p className="text-body-sm mt-1" style={{ color: '#6A6A6A' }}>
+                        No worries! Your artwork will still be deeply personal and beautifully accurate.
+                      </p>
+                    )}
+                  </div>
+                </label>
+
+                <PrimaryButton onClick={handleStep1bSubmit} className="w-full mt-2">
+                  Continue
+                </PrimaryButton>
+              </div>
+            )}
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════ BIRTH TIME MODAL (Step 1b) ═══════════════════ */}
-      {showTimeModal && (
-        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center">
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-[hsl(220,15%,12%)] /95 backdrop-blur-sm" onClick={() => setShowTimeModal(false)} />
-          {/* Modal — dark card matching Figma */}
-          <div className="relative w-full md:max-w-md bg-[hsl(220,15%,18%)] rounded-t-2xl md:rounded-2xl p-6 md:p-8 shadow-2xl space-y-6 animate-fade-in">
-            <div>
-              <p className="text-subtitle text-primary tracking-widest mb-3">BIRTH TIME</p>
-            </div>
-
-            {!dontKnowTime && (
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <select value={birthHour} onChange={(e) => setBirthHour(e.target.value)} className="w-full bg-transparent border-b border-muted-foreground/30 text-foreground text-2xl font-body py-2 text-center outline-none focus:border-primary transition-colors appearance-none">
-                    {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
-                      <option key={h} value={h} className="bg-card">{h}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <select value={birthMinute} onChange={(e) => setBirthMinute(e.target.value)} className="w-full bg-transparent border-b border-muted-foreground/30 text-foreground text-2xl font-body py-2 text-center outline-none focus:border-primary transition-colors appearance-none">
-                    {Array.from({ length: 60 }, (_, i) => i).map((m) => (
-                      <option key={m} value={String(m).padStart(2, '0')} className="bg-card">{String(m).padStart(2, '0')}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="relative">
-                  <select value={birthPeriod} onChange={(e) => setBirthPeriod(e.target.value)} className="w-full bg-transparent border-b border-muted-foreground/30 text-foreground text-2xl font-body py-2 text-center outline-none focus:border-primary transition-colors appearance-none pr-6">
-                    <option value="AM" className="bg-card">AM</option>
-                    <option value="PM" className="bg-card">PM</option>
-                  </select>
-                  <span className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground text-xs pointer-events-none">▾</span>
-                </div>
-              </div>
-            )}
-
-            <label className="flex items-center gap-3 cursor-pointer py-2">
-              <input type="checkbox" checked={dontKnowTime} onChange={(e) => setDontKnowTime(e.target.checked)} className="w-5 h-5 accent-primary rounded" />
-              <div>
-                <span className="text-body-sm text-foreground">I don't know my birth time</span>
-                {dontKnowTime && (
-                  <p className="text-body-sm text-muted-foreground/70 mt-1">
-                    No worries! Your artwork will still be deeply personal and beautifully accurate.
-                  </p>
-                )}
-              </div>
-            </label>
-
-            <PrimaryButton
-              onClick={handleStep1bSubmit}
-              className="w-full"
-            >
-              Continue
-            </PrimaryButton>
-          </div>
-        </div>
-      )}
 
       {/* ═══════════════════ FAQ ═══════════════════ */}
       <section className="py-14">
