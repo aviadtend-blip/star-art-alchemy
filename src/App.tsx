@@ -8,6 +8,8 @@ import GeneratePage from "./pages/Generate";
 import NotFound from "./pages/NotFound";
 import OrderConfirmationPage from "./pages/OrderConfirmation";
 import ShippingPolicy from "./pages/ShippingPolicy";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsConditions from "./pages/TermsConditions";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +24,8 @@ const App = () => (
           <Route path="/generate" element={<GeneratePage />} />
           <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
           <Route path="/shipping" element={<ShippingPolicy />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsConditions />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
