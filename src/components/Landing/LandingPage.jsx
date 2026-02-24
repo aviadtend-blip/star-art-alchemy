@@ -405,8 +405,8 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ CUSTOMER GALLERY ═══════════════════ */}
-      <section className="py-14 bg-white text-surface-foreground">
-        <div className="max-w-7xl mx-auto px-4">
+      <section className="py-14 bg-white text-surface-foreground overflow-x-clip lg:overflow-visible">
+        <div className="max-w-7xl mx-auto px-4 md:px-4">
           <p className="text-subtitle text-surface-muted text-center mb-2 tracking-widest">
             REAL HOMES. REAL CUSTOMERS. REAL REACTIONS.
           </p>
@@ -414,8 +414,8 @@ export default function LandingPage() {
             See how customers display<br />their cosmic art
           </h2>
 
-          {/* 4-col, 2-row grid matching Figma: 15px gap, ~169×200 tiles */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-[15px] max-w-[1140px] mx-auto">
+          {/* Desktop: 4-col 2-row grid. Mobile: 2-row horizontal scroll */}
+          <div className="hidden md:grid md:grid-cols-4 gap-[15px] max-w-[1140px] mx-auto">
             {galleryItems.map((item, i) => (
               <div key={i} className="overflow-hidden rounded-[2px]">
                 <img
@@ -427,6 +427,23 @@ export default function LandingPage() {
                 />
               </div>
             ))}
+          </div>
+
+          {/* Mobile: 2-row horizontal scroll */}
+          <div className="md:hidden -mx-4 overflow-x-auto scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <div className="grid grid-rows-2 grid-flow-col gap-[10px] w-max px-4">
+              {galleryItems.map((item, i) => (
+                <div key={i} className="overflow-hidden rounded-[2px] w-[160px]">
+                  <img
+                    src={item.img}
+                    alt={item.label || `Gallery image ${i + 1}`}
+                    className="w-full object-cover"
+                    style={{ aspectRatio: "169 / 200" }}
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
