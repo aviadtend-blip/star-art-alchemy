@@ -406,7 +406,7 @@ export default function LandingPage() {
           <p className="text-subtitle text-surface-muted text-center mb-2 tracking-widest">
             REAL HOMES. REAL CUSTOMERS. REAL REACTIONS.
           </p>
-          <h2 className="text-a2 md:text-5xl text-center text-surface-foreground mb-8">
+          <h2 className="text-a2 text-center text-surface-foreground mb-8">
             See how customers display<br />their cosmic art
           </h2>
 
