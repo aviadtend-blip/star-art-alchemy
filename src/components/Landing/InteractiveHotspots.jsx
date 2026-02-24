@@ -178,7 +178,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
           </p>
           <button
             onClick={onScrollToForm}
-            className="bg-surface-foreground text-surface px-8 py-3 rounded-full text-a5 hover:opacity-90 transition-all"
+            className="bg-surface-foreground text-surface px-8 h-12 w-full md:w-auto rounded-full text-a5 hover:opacity-90 transition-all"
           >
             Generate my free artwork
           </button>
