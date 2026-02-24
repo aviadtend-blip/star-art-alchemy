@@ -163,16 +163,16 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* DEV: Auto-fill test button */}
-      <button onClick={fillTestData} className="fixed bottom-4 right-4 z-50 bg-card text-foreground px-4 py-2 rounded-full text-sm shadow-lg hover:bg-card/80 transition opacity-70 hover:opacity-100 border border-border">
+      <button onClick={fillTestData} className="fixed bottom-4 right-4 z-50 bg-card text-foreground px-4 py-2 rounded-full text-body-sm shadow-lg hover:bg-card/80 transition opacity-70 hover:opacity-100 border border-border">
         🧪 Fill Test Data
       </button>
 
       {/* NAVIGATION */}
       <nav className="absolute top-0 left-0 right-0 z-30 py-5 px-6 md:px-10 flex items-center justify-between">
-        <div className="text-lg font-display font-bold text-foreground tracking-wide">
+        <div className="text-a4 text-foreground">
           Celestial Artworks
         </div>
-        <button className="text-foreground/70 hover:text-foreground transition font-body text-sm">Login</button>
+        <button className="text-foreground/70 hover:text-foreground transition text-body-sm">Login</button>
       </nav>
 
       {/* ═══════════════════ HERO ═══════════════════ */}
@@ -185,7 +185,7 @@ export default function LandingPage() {
           Turn Your Birth Into<br />
           Gallery-Worthy Art
         </h1>
-        <p className="text-base text-muted-foreground text-center mb-6 font-body">
+        <p className="text-body text-muted-foreground text-center mb-6">
           Each piece is uniquely generated for your exact birth moment—no two are ever the same
         </p>
         <div className="text-center mb-6">
@@ -193,7 +193,7 @@ export default function LandingPage() {
             Show me my artwork
           </PrimaryButton>
         </div>
-        <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground font-body flex-wrap">
+        <div className="flex items-center justify-center gap-4 text-body-sm text-muted-foreground flex-wrap">
           <span>🔒 Secure Payment</span>
           <span className="text-border">|</span>
           <span>📦 Free Shipping</span>
@@ -226,7 +226,7 @@ export default function LandingPage() {
               Turn Your Birth<br />
               Into Gallery-Worthy Art
             </h1>
-            <p className="text-base text-foreground/70 mb-7 font-body max-w-md leading-relaxed">
+            <p className="text-body text-foreground/70 mb-7 max-w-md">
               Every element in your artwork corresponds to a specific<br className="hidden lg:block" />
               astrological placement.
             </p>
@@ -238,7 +238,7 @@ export default function LandingPage() {
       </section>
 
       {/* Trust badges strip */}
-      <div className="hidden md:flex items-center justify-center gap-6 py-3.5 border-t border-b border-border text-sm text-foreground/60 font-body" style={{ backgroundColor: '#F2F1EF' }}>
+      <div className="hidden md:flex items-center justify-center gap-6 py-3.5 border-t border-b border-border text-body-sm text-foreground/60" style={{ backgroundColor: '#F2F1EF' }}>
         <span>🔒 Secure Payment</span>
         <span className="text-border">|</span>
         <span>📦 Free Shipping</span>
@@ -251,20 +251,20 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 mb-14 text-center">
             <div>
-              <div className="text-3xl md:text-4xl lg:text-5xl font-display font-medium text-surface-foreground mb-2">2,000+</div>
-              <div className="text-surface-muted font-body text-sm">Artworks Created</div>
+              <div className="text-a1 md:text-4xl lg:text-5xl text-surface-foreground mb-2">2,000+</div>
+              <div className="text-body-sm text-surface-muted">Artworks Created</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl lg:text-5xl font-display font-medium text-surface-foreground mb-2">4.9 <span className="inline-block align-middle text-[0.7em] opacity-60">☆</span></div>
-              <div className="text-surface-muted font-body text-sm">Average Rating</div>
+              <div className="text-a1 md:text-4xl lg:text-5xl text-surface-foreground mb-2">4.9 <span className="inline-block align-middle text-[0.7em] opacity-60">☆</span></div>
+              <div className="text-body-sm text-surface-muted">Average Rating</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl lg:text-5xl font-display font-medium text-surface-foreground mb-2">98%</div>
-              <div className="text-surface-muted font-body text-sm">Display It Proudly</div>
+              <div className="text-a1 md:text-4xl lg:text-5xl text-surface-foreground mb-2">98%</div>
+              <div className="text-body-sm text-surface-muted">Display It Proudly</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl lg:text-5xl font-display font-medium text-surface-foreground mb-2">23</div>
-              <div className="text-surface-muted font-body text-sm">Countries Shipped</div>
+              <div className="text-a1 md:text-4xl lg:text-5xl text-surface-foreground mb-2">23</div>
+              <div className="text-body-sm text-surface-muted">Countries Shipped</div>
             </div>
           </div>
 
@@ -280,16 +280,16 @@ export default function LandingPage() {
                 <div className="rounded-xl overflow-hidden shadow-md border border-surface-border">
                   <img src={item.img} alt={item.label} className="w-full h-48 md:h-56 object-cover" />
                 </div>
-                <p className="font-display font-medium text-surface-foreground text-sm mt-2">{item.label}</p>
-                <p className="font-body text-surface-muted text-xs">{item.sub}</p>
+                <p className="text-a5 text-surface-foreground mt-2">{item.label}</p>
+                <p className="text-body-sm text-surface-muted">{item.sub}</p>
 
                 {/* Hover review popup */}
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-surface-card border border-surface-border rounded-xl p-4 shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-20 hidden md:block">
                   <div className="flex items-center gap-0.5 mb-2 text-primary text-sm">★★★★★</div>
-                  <p className="text-surface-foreground/80 font-body text-xs leading-relaxed mb-3">{item.review}</p>
+                  <p className="text-body-sm text-surface-foreground/80 leading-relaxed mb-3">{item.review}</p>
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-surface-foreground font-body text-xs">{item.name}</span>
-                    <span className="text-xs text-primary font-body">Verified Buyer</span>
+                    <span className="text-body-sm text-surface-foreground">{item.name}</span>
+                    <span className="text-subtitle text-primary">{/* no uppercase needed, text-subtitle handles it */}Verified Buyer</span>
                   </div>
                   {/* Arrow */}
                   <div className="absolute top-full left-1/2 -translate-x-1/2 w-3 h-3 bg-surface-card border-r border-b border-surface-border rotate-45 -mt-1.5" />
@@ -303,13 +303,13 @@ export default function LandingPage() {
       {/* ═══════════════════ CTA BREAK ═══════════════════ */}
       <section className="py-12 px-4 bg-surface text-surface-foreground">
         <div className="max-w-lg mx-auto text-center space-y-6">
-          <h2 className="text-2xl md:text-4xl font-display font-medium text-surface-foreground leading-snug">
+          <h2 className="text-a2 md:text-4xl text-surface-foreground leading-snug">
             Ready to turn your birth data into some awesome wall art?
           </h2>
-          <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-8 py-3.5 rounded-full font-body font-semibold text-sm hover:opacity-90 transition-all shadow-lg">
+          <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-8 py-3.5 rounded-full text-a5 hover:opacity-90 transition-all shadow-lg">
             Show me my artwork →
           </button>
-          <p className="text-xs text-surface-muted font-body">Free preview. No credit card required.</p>
+          <p className="text-body-sm text-surface-muted">Free preview. No credit card required.</p>
         </div>
       </section>
 
@@ -319,10 +319,10 @@ export default function LandingPage() {
       {/* ═══════════════════ 4 SIMPLE STEPS ═══════════════════ */}
       <section className="py-14 px-4 bg-surface text-surface-foreground">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-5xl font-display font-medium text-center text-surface-foreground mb-2">
+          <h2 className="text-a2 md:text-5xl text-center text-surface-foreground mb-2">
             Your custom artwork<br />in 4 simple steps
           </h2>
-          <p className="text-sm text-surface-muted text-center mb-10 font-body">
+          <p className="text-body-sm text-surface-muted text-center mb-10">
             From your birth data to gallery-worthy art
           </p>
 
@@ -334,12 +334,12 @@ export default function LandingPage() {
               { n: "4", title: "Get it framed & shipped", desc: "Love it? Choose your canvas size. We'll print and ship museum-quality canvas to your door." },
             ].map((s) => (
               <div key={s.n} className="flex items-start gap-4 md:flex-col md:items-center md:text-center">
-                <div className="w-12 h-12 md:w-20 md:h-20 bg-primary/10 rounded-full flex items-center justify-center text-xl md:text-4xl font-medium text-primary flex-shrink-0 font-display">
+                <div className="w-12 h-12 md:w-20 md:h-20 bg-primary/10 rounded-full flex items-center justify-center text-xl md:text-4xl text-primary flex-shrink-0 font-display font-medium">
                   {s.n}
                 </div>
                 <div>
-                  <h3 className="text-lg font-display font-medium text-surface-foreground mb-1">{s.title}</h3>
-                  <p className="text-sm text-surface-muted font-body">{s.desc}</p>
+                  <h3 className="text-a4 text-surface-foreground mb-1">{s.title}</h3>
+                  <p className="text-body-sm text-surface-muted">{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -355,11 +355,11 @@ export default function LandingPage() {
               <img src={womanHolding} alt="Happy customer holding her framed birth chart artwork" className="w-full rounded-2xl shadow-lg" />
             </div>
             <div className="mt-8 md:mt-0">
-              <h2 className="text-2xl md:text-4xl font-display font-medium text-surface-foreground leading-snug mb-3">
+              <h2 className="text-a2 md:text-4xl text-surface-foreground leading-snug mb-3">
                 Impossible to Duplicate.
                 <span className="text-primary"> Impossible to Forget.</span>
               </h2>
-              <p className="text-sm text-surface-muted font-body mb-5">
+              <p className="text-body-sm text-surface-muted mb-5">
                 The perfect gift for birthdays, anniversaries, new homes, or anyone who deserves something truly one-of-a-kind.
               </p>
               <div className="space-y-3 mb-6">
@@ -370,11 +370,11 @@ export default function LandingPage() {
                 ].map((item) => (
                   <div key={item.text} className="flex items-center gap-3">
                     <span className="text-lg">{item.icon}</span>
-                    <span className="text-surface-foreground/80 font-body text-sm">{item.text}</span>
+                    <span className="text-body-sm text-surface-foreground/80">{item.text}</span>
                   </div>
                 ))}
               </div>
-              <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-8 py-3 rounded-full font-body font-semibold hover:opacity-90 transition-all text-sm">
+              <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-8 py-3 rounded-full text-a5 hover:opacity-90 transition-all">
                 Create a gift →
               </button>
             </div>
@@ -390,10 +390,10 @@ export default function LandingPage() {
               <img src={saturnPlanet} alt="Saturn — representing museum-quality craftsmanship" className="w-full rounded-2xl shadow-lg" />
             </div>
             <div className="mt-8 md:mt-0">
-              <h2 className="text-2xl md:text-4xl font-display font-medium text-surface-foreground mb-3">
+              <h2 className="text-a2 md:text-4xl text-surface-foreground mb-3">
                 Materials to Grace<br />Museums like Them
               </h2>
-              <p className="text-sm text-surface-muted font-body mb-6">
+              <p className="text-body-sm text-surface-muted mb-6">
                 Every print is crafted to gallery standards
               </p>
               <div className="grid grid-cols-2 gap-3">
@@ -405,13 +405,13 @@ export default function LandingPage() {
                 ].map((item) => (
                   <div key={item.title} className="bg-surface-card border border-surface-border rounded-xl p-3 space-y-1">
                     <div className="text-xl">{item.icon}</div>
-                    <h3 className="font-display text-sm text-surface-foreground font-medium">{item.title}</h3>
-                    <p className="text-xs text-surface-muted font-body">{item.desc}</p>
+                    <h3 className="text-a5 text-surface-foreground">{item.title}</h3>
+                    <p className="text-body-sm text-surface-muted">{item.desc}</p>
                   </div>
                 ))}
               </div>
               <div className="mt-5">
-                <button onClick={scrollToForm} className="text-surface-foreground/70 hover:text-surface-foreground font-body text-sm underline underline-offset-4 transition-colors">
+                <button onClick={scrollToForm} className="text-surface-foreground/70 hover:text-surface-foreground text-body-sm underline underline-offset-4 transition-colors">
                   Generate my free artwork →
                 </button>
               </div>
@@ -423,10 +423,10 @@ export default function LandingPage() {
       {/* ═══════════════════ CUSTOMER GALLERY ═══════════════════ */}
       <section className="py-14 bg-surface text-surface-foreground">
         <div className="max-w-7xl mx-auto px-4">
-          <p className="text-xs text-surface-muted font-body tracking-widest uppercase text-center mb-2">
+          <p className="text-subtitle text-surface-muted text-center mb-2 tracking-widest">
             REAL HOMES. REAL CUSTOMERS. REAL REACTIONS.
           </p>
-          <h2 className="text-2xl md:text-5xl font-display font-medium text-center text-surface-foreground mb-8">
+          <h2 className="text-a2 md:text-5xl text-center text-surface-foreground mb-8">
             See how customers display<br />their cosmic art
           </h2>
 
@@ -437,7 +437,7 @@ export default function LandingPage() {
                 <div className="bg-surface-card rounded-xl overflow-hidden shadow-md border border-surface-border">
                   <img src={item.img} alt={`Customer artwork ${i + 1}`} className="w-full h-64 md:h-80 object-cover" />
                   <div className="p-3">
-                    <div className="font-medium text-surface-foreground font-body text-xs">{item.label}</div>
+                    <div className="text-body-sm text-surface-foreground">{item.label}</div>
                   </div>
                 </div>
               </div>
@@ -466,21 +466,21 @@ export default function LandingPage() {
           <ProgressBar currentStep={1} />
           <div className="bg-card rounded-2xl shadow-2xl p-5 md:p-10 border border-border mt-4">
             <div className="text-center mb-6">
-              <h2 className="font-display text-2xl md:text-3xl text-foreground mb-1">
+              <h2 className="text-a2 text-foreground mb-1">
                 See your birth chart art<br />in 60 seconds
               </h2>
-              <p className="text-muted-foreground font-body text-xs">We'll use this to create your personalized artwork</p>
+              <p className="text-body-sm text-muted-foreground">We'll use this to create your personalized artwork</p>
             </div>
             <form onSubmit={handleStep1aSubmit} className="space-y-4">
               {/* Name */}
               <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1 font-body">Your Name <span className="text-muted-foreground/50">(Optional)</span></label>
+                <label className="block text-subtitle text-muted-foreground mb-1">Your Name <span className="text-muted-foreground/50">(Optional)</span></label>
                 <input type="text" value={formData.name} onChange={(e) => set("name", e.target.value)} placeholder="Sarah" className={inputClass} />
               </div>
 
               {/* Birth Date */}
               <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1 font-body">Birth Date</label>
+                <label className="block text-subtitle text-muted-foreground mb-1">Birth Date</label>
                 <div className="grid grid-cols-3 gap-2">
                   <input type="number" required value={formData.birthMonth} onChange={(e) => set("birthMonth", e.target.value)} placeholder="MM" min="1" max="12" className={inputClass} />
                   <input type="number" required value={formData.birthDay} onChange={(e) => set("birthDay", e.target.value)} placeholder="DD" min="1" max="31" className={inputClass} />
@@ -490,7 +490,7 @@ export default function LandingPage() {
 
               {/* Birth Location */}
               <div ref={wrapperRef} className="relative">
-                <label className="block text-xs font-medium text-muted-foreground mb-1 font-body">Birth Location</label>
+                <label className="block text-subtitle text-muted-foreground mb-1">Birth Location</label>
                 <div className="relative">
                   <input
                     type="text" required value={cityQuery}
@@ -507,13 +507,13 @@ export default function LandingPage() {
                 {showSuggestions && suggestions.length > 0 && (
                   <ul className="absolute z-50 w-full mt-1 bg-card border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
                     {suggestions.map((s) => (
-                      <li key={s.place_id} onClick={() => handleSelectCity(s)} className="px-4 py-3 text-sm text-foreground hover:bg-primary/10 cursor-pointer transition-colors font-body">
+                      <li key={s.place_id} onClick={() => handleSelectCity(s)} className="px-4 py-3 text-body-sm text-foreground hover:bg-primary/10 cursor-pointer transition-colors">
                         {s.description}
                       </li>
                     ))}
                   </ul>
                 )}
-                {formData.lat && <p className="text-xs text-muted-foreground mt-1 font-body">📍 {formData.birthCity}, {formData.birthCountry}</p>}
+                {formData.lat && <p className="text-body-sm text-muted-foreground mt-1">📍 {formData.birthCity}, {formData.birthCountry}</p>}
               </div>
 
               {/* Submit */}
@@ -521,8 +521,8 @@ export default function LandingPage() {
                 Continue
               </PrimaryButton>
               <div className="space-y-1 text-center">
-                <p className="text-xs text-muted-foreground font-body">✨ Free preview • No credit card required</p>
-                <p className="text-xs text-muted-foreground/60 font-body">🔒 Your data is secure and never shared</p>
+                <p className="text-body-sm text-muted-foreground">✨ Free preview • No credit card required</p>
+                <p className="text-body-sm text-muted-foreground/60">🔒 Your data is secure and never shared</p>
               </div>
             </form>
           </div>
@@ -537,7 +537,7 @@ export default function LandingPage() {
           {/* Modal — dark card matching Figma */}
           <div className="relative w-full md:max-w-md bg-[hsl(220,15%,18%)] rounded-t-2xl md:rounded-2xl p-6 md:p-8 shadow-2xl space-y-6 animate-fade-in">
             <div>
-              <p className="text-primary font-body text-xs tracking-widest uppercase mb-3">BIRTH TIME</p>
+              <p className="text-subtitle text-primary tracking-widest mb-3">BIRTH TIME</p>
             </div>
 
             {!dontKnowTime && (
@@ -569,9 +569,9 @@ export default function LandingPage() {
             <label className="flex items-center gap-3 cursor-pointer py-2">
               <input type="checkbox" checked={dontKnowTime} onChange={(e) => setDontKnowTime(e.target.checked)} className="w-5 h-5 accent-primary rounded" />
               <div>
-                <span className="text-foreground font-body text-sm font-medium">I don't know my birth time</span>
+                <span className="text-body-sm text-foreground">I don't know my birth time</span>
                 {dontKnowTime && (
-                  <p className="text-xs text-muted-foreground/70 font-body mt-1">
+                  <p className="text-body-sm text-muted-foreground/70 mt-1">
                     No worries! Your artwork will still be deeply personal and beautifully accurate.
                   </p>
                 )}
@@ -591,15 +591,15 @@ export default function LandingPage() {
       {/* ═══════════════════ FAQ ═══════════════════ */}
       <section className="py-14">
         <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-2xl md:text-5xl font-display font-medium text-center text-foreground mb-8">Frequently asked questions</h2>
+          <h2 className="text-a2 md:text-5xl text-center text-foreground mb-8">Frequently asked questions</h2>
           <div className="space-y-3">
             {faqs.map((faq) => (
               <details key={faq.q} className="bg-card rounded-xl p-4 md:p-6 shadow-sm cursor-pointer group border border-border">
-                <summary className="font-medium text-foreground text-sm md:text-lg list-none flex items-center justify-between font-display">
+                <summary className="text-a4 text-foreground list-none flex items-center justify-between">
                   <span>{faq.q}</span>
                   <span className="text-primary group-open:rotate-180 transition text-sm">▼</span>
                 </summary>
-                <p className="text-muted-foreground mt-3 text-sm font-body">{faq.a}</p>
+                <p className="text-body text-muted-foreground mt-3">{faq.a}</p>
               </details>
             ))}
           </div>
@@ -617,25 +617,25 @@ export default function LandingPage() {
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-8 mb-8">
               <div className="col-span-2 md:col-span-1">
-                <div className="text-xl font-display font-bold text-primary text-glow mb-3">
+                <div className="text-a4 text-primary text-glow mb-3">
                   Celestial Artworks
                 </div>
-                <p className="text-xs text-muted-foreground font-body mb-2">Transforming birth charts into personalized artwork.</p>
-                <p className="text-xs text-muted-foreground font-body">📧 hello@celestialartworks.com</p>
-                <p className="text-xs text-muted-foreground font-body">📞 (555) 123-4567</p>
-                <p className="text-xs text-muted-foreground/60 font-body mt-1">Mon-Fri 9am-6pm EST</p>
+                <p className="text-body-sm text-muted-foreground mb-2">Transforming birth charts into personalized artwork.</p>
+                <p className="text-body-sm text-muted-foreground">📧 hello@celestialartworks.com</p>
+                <p className="text-body-sm text-muted-foreground">📞 (555) 123-4567</p>
+                <p className="text-body-sm text-muted-foreground/60 mt-1">Mon-Fri 9am-6pm EST</p>
               </div>
               <div>
-                <h3 className="text-foreground font-display font-semibold mb-3 text-sm">Product</h3>
-                <ul className="space-y-1.5 text-xs text-muted-foreground font-body">
+                <h3 className="text-subtitle text-foreground mb-3">Product</h3>
+                <ul className="space-y-1.5 text-body-sm text-muted-foreground">
                   <li><button onClick={scrollToForm} className="hover:text-foreground transition">Create Artwork</button></li>
                   <li><a href="#gallery" className="hover:text-foreground transition">Gallery</a></li>
                   <li><a href="#faq" className="hover:text-foreground transition">FAQ</a></li>
                 </ul>
               </div>
               <div>
-                <h3 className="text-foreground font-display font-semibold mb-3 text-sm">Policies</h3>
-                <ul className="space-y-1.5 text-xs text-muted-foreground font-body">
+                <h3 className="text-subtitle text-foreground mb-3">Policies</h3>
+                <ul className="space-y-1.5 text-body-sm text-muted-foreground">
                   <li><a href="/privacy" className="hover:text-foreground transition">Privacy Policy</a></li>
                   <li><a href="/terms" className="hover:text-foreground transition">Terms and Conditions</a></li>
                   <li><a href="/returns" className="hover:text-foreground transition">Returns Policy</a></li>
@@ -643,7 +643,7 @@ export default function LandingPage() {
                 </ul>
               </div>
               <div className="md:block">
-                <h3 className="text-foreground font-display font-semibold mb-3 text-sm">Connect</h3>
+                <h3 className="text-subtitle text-foreground mb-3">Connect</h3>
                 <div className="flex gap-3 text-muted-foreground">
                   <a href="#" className="hover:text-foreground transition text-base">𝕏</a>
                   <a href="#" className="hover:text-foreground transition text-base">📷</a>
@@ -652,7 +652,7 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-            <div className="border-t border-border pt-6 text-xs text-center text-muted-foreground font-body">© 2026 Celestial Artworks. All rights reserved.</div>
+            <div className="border-t border-border pt-6 text-body-sm text-center text-muted-foreground">© 2026 Celestial Artworks. All rights reserved.</div>
           </div>
         </div>
       </footer>
