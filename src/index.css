@@ -134,7 +134,50 @@
     font-weight: 400;
     font-size: 32px;
     line-height: 32px;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.96px;
+  }
+  .text-a2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 120%;
+    letter-spacing: -0.48px;
+  }
+  .text-a4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 14px;
+    letter-spacing: -0.48px;
+  }
+  .text-a5 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 113%;
+    letter-spacing: -0.26px;
+  }
+  .text-subtitle {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 113%;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+  .text-body {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: -0.32px;
+  }
+  .text-body-sm {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 113%;
+    letter-spacing: -0.42px;
   }
   .text-glow {
     text-shadow: 0 0 20px hsl(45 80% 65% / 0.3);
