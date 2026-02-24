@@ -315,15 +315,15 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ CTA BREAK ═══════════════════ */}
-      <section className="py-12 px-4 bg-surface text-surface-foreground">
-        <div className="max-w-lg mx-auto text-center space-y-6">
+      <section className="py-[60px] px-4 bg-surface text-surface-foreground">
+        <div className="max-w-lg mx-auto text-center flex flex-col items-center gap-5">
           <h2 className="text-a2 text-surface-foreground leading-snug">
             Ready to turn your birth data into some awesome wall art?
           </h2>
           <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-8 py-3.5 rounded-full text-a5 hover:opacity-90 transition-all shadow-lg">
-            Show me my artwork →
+            Generate your free preview
           </button>
-          <p className="text-body-sm text-surface-muted">Free preview. No credit card required.</p>
+          <p className="text-body-sm text-surface-muted">Free preview in 60 seconds.</p>
         </div>
       </section>
 
