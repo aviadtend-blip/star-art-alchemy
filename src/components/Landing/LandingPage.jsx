@@ -2,6 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import heroFramed from "@/assets/gallery/hero-framed.jpg";
+import heroGalleryWall from "@/assets/gallery/hero-gallery-wall.jpg";
+import capricornGallery from "@/assets/gallery/capricorn-gallery.jpg";
+import ariesGallery from "@/assets/gallery/aries-gallery.jpg";
 import capricornWall from "@/assets/gallery/capricorn-wall.jpg";
 import taurusArtwork from "@/assets/gallery/taurus-artwork.jpg";
 import womanHolding from "@/assets/gallery/woman-holding.jpg";
@@ -13,6 +16,7 @@ import virgoArtwork from "@/assets/gallery/virgo-artwork.jpg";
 import gallery2 from "@/assets/gallery/example-2.jpg";
 import gallery3 from "@/assets/gallery/example-3.jpg";
 import ProgressBar from "@/components/ui/ProgressBar";
+import InteractiveHotspots from "./InteractiveHotspots";
 
 /* ─── Static data ─── */
 
@@ -171,35 +175,67 @@ export default function LandingPage() {
       </nav>
 
       {/* ═══════════════════ HERO ═══════════════════ */}
-      <section className="pt-8 pb-10 px-4">
-        <div className="max-w-7xl mx-auto">
-          {/* Framed artwork hero image */}
-          <div className="max-w-sm mx-auto mb-8">
-            <img src={heroFramed} alt="Framed birth chart artwork — Pisces Sun" className="w-full rounded-lg shadow-2xl" />
+      {/* Mobile hero */}
+      <section className="md:hidden pt-8 pb-10 px-4">
+        <div className="max-w-sm mx-auto mb-8">
+          <img src={heroFramed} alt="Framed birth chart artwork — Pisces Sun" className="w-full rounded-lg shadow-2xl" />
+        </div>
+        <h1 className="text-3xl font-display font-bold text-foreground text-center mb-4 leading-tight">
+          Turn Your Birth Into<br />
+          <span className="text-primary text-glow">Gallery-Worthy Art</span>
+        </h1>
+        <p className="text-base text-muted-foreground text-center mb-6 font-body">
+          Each piece is uniquely generated for your exact birth moment—no two are ever the same
+        </p>
+        <div className="text-center mb-6">
+          <button onClick={scrollToForm} className="bg-primary text-primary-foreground px-8 py-3.5 rounded-xl font-display font-semibold text-base hover:bg-primary/90 transition-all shadow-lg border-glow">
+            Show me my artwork →
+          </button>
+        </div>
+        <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground font-body flex-wrap">
+          <span>🔒 Secure Payment</span>
+          <span className="text-border">|</span>
+          <span>📦 Free Shipping</span>
+          <span className="text-border">|</span>
+          <span>↩️ 30-Day Guarantee</span>
+        </div>
+      </section>
+
+      {/* Desktop hero — gallery wall */}
+      <section className="hidden md:block relative min-h-[600px] overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background z-10" />
+          <div className="grid grid-cols-3 gap-6 p-8 h-full">
+            <div className="flex items-end justify-center">
+              <img src={heroFramed} alt="Pisces artwork" className="w-full max-w-xs rounded-lg shadow-2xl" />
+            </div>
+            <div className="flex items-center justify-center">
+              <img src={capricornGallery} alt="Capricorn artwork on gallery wall" className="w-full max-w-sm rounded-lg shadow-2xl" />
+            </div>
+            <div className="flex items-start justify-center pt-12">
+              <img src={ariesGallery} alt="Aries artwork framed" className="w-full max-w-xs rounded-lg shadow-2xl" />
+            </div>
           </div>
-
-          <h1 className="text-3xl md:text-6xl font-display font-bold text-foreground text-center mb-4 leading-tight">
-            Turn Your Birth Into
-            <br />
-            <span className="text-primary text-glow">Gallery-Worthy Art</span>
-          </h1>
-          <p className="text-base md:text-xl text-muted-foreground text-center mb-6 max-w-3xl mx-auto font-body">
-            Each piece is uniquely generated for your exact birth moment—no two are ever the same
-          </p>
-
-          <div className="text-center mb-6">
-            <button onClick={scrollToForm} className="bg-primary text-primary-foreground px-8 py-3.5 rounded-xl font-display font-semibold text-base hover:bg-primary/90 transition-all transform hover:scale-105 shadow-lg border-glow">
+        </div>
+        <div className="relative z-20 flex items-end min-h-[600px] pb-16 px-8">
+          <div className="max-w-2xl">
+            <h1 className="text-6xl font-display font-bold text-foreground mb-4 leading-tight">
+              Turn Your Birth Into<br />
+              <span className="text-primary text-glow">Gallery-Worthy Art</span>
+            </h1>
+            <p className="text-xl text-muted-foreground mb-6 font-body max-w-lg">
+              Each piece is uniquely generated for your exact birth moment—no two are ever the same
+            </p>
+            <button onClick={scrollToForm} className="bg-primary text-primary-foreground px-10 py-4 rounded-xl font-display font-semibold text-lg hover:bg-primary/90 transition-all shadow-lg border-glow">
               Show me my artwork →
             </button>
-          </div>
-
-          {/* Trust bar */}
-          <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground font-body flex-wrap">
-            <span>🔒 Secure Payment</span>
-            <span className="text-border">|</span>
-            <span>📦 Free Shipping</span>
-            <span className="text-border">|</span>
-            <span>↩️ 30-Day Guarantee</span>
+            <div className="flex items-center gap-4 mt-6 text-xs text-muted-foreground font-body">
+              <span>🔒 Secure Payment</span>
+              <span className="text-border">|</span>
+              <span>📦 Free Shipping</span>
+              <span className="text-border">|</span>
+              <span>↩️ 30-Day Guarantee</span>
+            </div>
           </div>
         </div>
       </section>
@@ -260,44 +296,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══════════════════ EVERY SYMBOL HAS MEANING ═══════════════════ */}
-      <section className="py-12 bg-secondary/30">
-        <div className="max-w-6xl mx-auto px-4">
-          <p className="text-xs text-muted-foreground font-body tracking-widest uppercase text-center mb-2">EVERY SYMBOL HAS MEANING</p>
-          <h2 className="text-2xl md:text-4xl font-display font-bold text-center text-foreground mb-3">
-            See how it all happens
-          </h2>
-          <p className="text-sm text-muted-foreground text-center font-body mb-8 max-w-xl mx-auto">
-            We calculate your exact planetary positions and FLUX them into a one-of-a-kind art piece. Every color, shape, and symbol is tied to your birth chart.
-          </p>
-
-          {/* Example artwork with hotspot */}
-          <div className="max-w-sm mx-auto mb-6 relative">
-            <img src={taurusArtwork} alt="Example — Taurus Sun artwork with labeled hotspots" className="w-full rounded-xl shadow-lg" />
-            {/* Hotspot marker ① */}
-            <div className="absolute top-[18%] left-[22%] w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-lg border-2 border-background">
-              1
-            </div>
-          </div>
-
-          {/* Hotspot explanation card */}
-          <div className="max-w-sm mx-auto bg-card border border-border rounded-xl p-5 space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold">1</span>
-              <span className="text-foreground font-display font-semibold">Sun in Taurus</span>
-            </div>
-            <p className="text-sm text-muted-foreground font-body leading-relaxed">
-              <span className="text-foreground font-medium">Creativity & Self-Expression</span> — The bold, overlapping circles represent your Taurus Sun's grounded energy and love of beauty. Warm earth tones and floral motifs reflect your connection to nature and material comforts.
-            </p>
-          </div>
-
-          <div className="text-center mt-8">
-            <button onClick={scrollToForm} className="text-primary hover:text-primary/80 font-body text-sm underline underline-offset-4 transition-colors">
-              Generate my free artwork →
-            </button>
-          </div>
-        </div>
-      </section>
+      {/* ═══════════════════ EVERY SYMBOL HAS MEANING (Interactive) ═══════════════════ */}
+      <InteractiveHotspots onScrollToForm={scrollToForm} />
 
       {/* ═══════════════════ 4 SIMPLE STEPS ═══════════════════ */}
       <section className="py-14 px-4">
@@ -330,75 +330,70 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══════════════════ THE PERFECT GIFT ═══════════════════ */}
+      {/* ═══════════════════ GIFT + MATERIALS (side-by-side on desktop) ═══════════════════ */}
       <section className="py-14 bg-secondary/30">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="md:grid md:grid-cols-2 md:gap-16 md:items-center">
-            <div className="mb-8 md:mb-0">
-              <img src={womanHolding} alt="Happy customer holding her framed birth chart artwork" className="w-full rounded-2xl shadow-2xl" />
-            </div>
-            <div className="space-y-5">
-              <h2 className="text-2xl md:text-5xl font-display font-bold text-foreground leading-snug">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="md:grid md:grid-cols-2 md:gap-12">
+            {/* THE PERFECT GIFT */}
+            <div className="mb-12 md:mb-0">
+              <div className="mb-6">
+                <img src={womanHolding} alt="Happy customer holding her framed birth chart artwork" className="w-full rounded-2xl shadow-2xl" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground leading-snug mb-3">
                 Impossible to Duplicate.
-                <br />
-                <span className="text-primary text-glow">Impossible to Forget.</span>
+                <span className="text-primary text-glow"> Impossible to Forget.</span>
               </h2>
-              <p className="text-base text-muted-foreground font-body">
+              <p className="text-sm text-muted-foreground font-body mb-4">
                 The perfect gift for birthdays, anniversaries, new homes, or anyone who deserves something truly one-of-a-kind.
               </p>
-              <div className="space-y-3">
+              <div className="space-y-2 mb-5">
                 {[
                   { icon: "🎁", text: "Deeply personal — based on their exact birth moment" },
                   { icon: "🎨", text: "Museum-quality canvas — built to last 100+ years" },
                   { icon: "💫", text: "Every symbol has meaning — a visual story of who they are" },
                 ].map((item) => (
                   <div key={item.text} className="flex items-center gap-3">
-                    <span className="text-xl">{item.icon}</span>
+                    <span className="text-lg">{item.icon}</span>
                     <span className="text-foreground/80 font-body text-sm">{item.text}</span>
                   </div>
                 ))}
               </div>
-              <button onClick={scrollToForm} className="bg-primary text-primary-foreground px-8 py-3 rounded-xl font-display font-semibold hover:bg-primary/90 transition-all border-glow">
+              <button onClick={scrollToForm} className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-display font-semibold hover:bg-primary/90 transition-all border-glow text-sm">
                 Create a gift →
               </button>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* ═══════════════════ MUSEUM-QUALITY MATERIALS ═══════════════════ */}
-      <section className="py-14">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <h2 className="text-2xl md:text-5xl font-display font-bold text-foreground mb-2">
-            Materials to Grace<br />Museums like Them
-          </h2>
-          <p className="text-sm text-muted-foreground font-body mb-8 max-w-2xl mx-auto">
-            Every print is crafted to gallery standards
-          </p>
-
-          {/* Saturn image */}
-          <div className="max-w-sm mx-auto mb-8">
-            <img src={saturnPlanet} alt="Saturn — representing museum-quality craftsmanship" className="w-full rounded-xl shadow-lg" />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            {[
-              { icon: "📜", title: "Archival Canvas", desc: "100+ years of vibrant color" },
-              { icon: "🖼️", title: "Solid Wood Frames", desc: "Handcrafted, ready to hang" },
-              { icon: "🎨", title: "12-Color Process", desc: "Giclée with unmatched depth" },
-              { icon: "✅", title: "Fine Art Certified", desc: "Fine Art Trade Guild certified" },
-            ].map((item) => (
-              <div key={item.title} className="bg-card border border-border rounded-xl p-4 space-y-2">
-                <div className="text-2xl">{item.icon}</div>
-                <h3 className="font-display text-sm text-foreground font-semibold">{item.title}</h3>
-                <p className="text-xs text-muted-foreground font-body">{item.desc}</p>
+            {/* MUSEUM-QUALITY MATERIALS */}
+            <div>
+              <div className="mb-6">
+                <img src={saturnPlanet} alt="Saturn — representing museum-quality craftsmanship" className="w-full rounded-2xl shadow-2xl" />
               </div>
-            ))}
-          </div>
-          <div className="mt-8">
-            <button onClick={scrollToForm} className="text-primary hover:text-primary/80 font-body text-sm underline underline-offset-4 transition-colors">
-              Generate my free artwork →
-            </button>
+              <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-3">
+                Materials to Grace<br />Museums like Them
+              </h2>
+              <p className="text-sm text-muted-foreground font-body mb-6">
+                Every print is crafted to gallery standards
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { icon: "📜", title: "Archival Canvas", desc: "100+ years of vibrant color" },
+                  { icon: "🖼️", title: "Solid Wood Frames", desc: "Handcrafted, ready to hang" },
+                  { icon: "🎨", title: "12-Color Process", desc: "Giclée with unmatched depth" },
+                  { icon: "✅", title: "Fine Art Certified", desc: "Fine Art Trade Guild certified" },
+                ].map((item) => (
+                  <div key={item.title} className="bg-card border border-border rounded-xl p-3 space-y-1">
+                    <div className="text-xl">{item.icon}</div>
+                    <h3 className="font-display text-sm text-foreground font-semibold">{item.title}</h3>
+                    <p className="text-xs text-muted-foreground font-body">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5">
+                <button onClick={scrollToForm} className="text-primary hover:text-primary/80 font-body text-sm underline underline-offset-4 transition-colors">
+                  Generate my free artwork →
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -500,61 +495,59 @@ export default function LandingPage() {
 
       {/* ═══════════════════ BIRTH TIME MODAL (Step 1b) ═══════════════════ */}
       {showTimeModal && (
-        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center px-4">
-          <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-5 animate-fade-in">
-            <div className="text-center">
-              <h3 className="font-display text-xl text-foreground mb-1">What time were you born?</h3>
-              <p className="text-muted-foreground font-body text-xs">This helps us calculate your rising sign and house placements</p>
+        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center">
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-[hsl(220,15%,12%)] /95 backdrop-blur-sm" onClick={() => setShowTimeModal(false)} />
+          {/* Modal — dark card matching Figma */}
+          <div className="relative w-full md:max-w-md bg-[hsl(220,15%,18%)] rounded-t-2xl md:rounded-2xl p-6 md:p-8 shadow-2xl space-y-6 animate-fade-in">
+            <div>
+              <p className="text-primary font-body text-xs tracking-widest uppercase mb-3">BIRTH TIME</p>
             </div>
 
             {!dontKnowTime && (
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs text-muted-foreground mb-1 font-body text-center">Hour</label>
-                  <select value={birthHour} onChange={(e) => setBirthHour(e.target.value)} className={inputClass}>
+                  <select value={birthHour} onChange={(e) => setBirthHour(e.target.value)} className="w-full bg-transparent border-b border-muted-foreground/30 text-foreground text-2xl font-body py-2 text-center outline-none focus:border-primary transition-colors appearance-none">
                     {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
-                      <option key={h} value={h}>{h}</option>
+                      <option key={h} value={h} className="bg-card">{h}</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs text-muted-foreground mb-1 font-body text-center">Minute</label>
-                  <select value={birthMinute} onChange={(e) => setBirthMinute(e.target.value)} className={inputClass}>
+                  <select value={birthMinute} onChange={(e) => setBirthMinute(e.target.value)} className="w-full bg-transparent border-b border-muted-foreground/30 text-foreground text-2xl font-body py-2 text-center outline-none focus:border-primary transition-colors appearance-none">
                     {Array.from({ length: 60 }, (_, i) => i).map((m) => (
-                      <option key={m} value={String(m).padStart(2, '0')}>{String(m).padStart(2, '0')}</option>
+                      <option key={m} value={String(m).padStart(2, '0')} className="bg-card">{String(m).padStart(2, '0')}</option>
                     ))}
                   </select>
                 </div>
-                <div>
-                  <label className="block text-xs text-muted-foreground mb-1 font-body text-center">AM/PM</label>
-                  <select value={birthPeriod} onChange={(e) => setBirthPeriod(e.target.value)} className={inputClass}>
-                    <option value="AM">AM</option>
-                    <option value="PM">PM</option>
+                <div className="relative">
+                  <select value={birthPeriod} onChange={(e) => setBirthPeriod(e.target.value)} className="w-full bg-transparent border-b border-muted-foreground/30 text-foreground text-2xl font-body py-2 text-center outline-none focus:border-primary transition-colors appearance-none pr-6">
+                    <option value="AM" className="bg-card">AM</option>
+                    <option value="PM" className="bg-card">PM</option>
                   </select>
+                  <span className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground text-xs pointer-events-none">▾</span>
                 </div>
               </div>
             )}
 
-            <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-secondary/50 transition-colors">
-              <input type="checkbox" checked={dontKnowTime} onChange={(e) => setDontKnowTime(e.target.checked)} className="w-5 h-5 accent-primary" />
+            <label className="flex items-center gap-3 cursor-pointer py-2">
+              <input type="checkbox" checked={dontKnowTime} onChange={(e) => setDontKnowTime(e.target.checked)} className="w-5 h-5 accent-primary rounded" />
               <div>
                 <span className="text-foreground font-body text-sm font-medium">I don't know my birth time</span>
                 {dontKnowTime && (
-                  <p className="text-xs text-muted-foreground font-body mt-1">
+                  <p className="text-xs text-muted-foreground/70 font-body mt-1">
                     No worries! Your artwork will still be deeply personal and beautifully accurate.
                   </p>
                 )}
               </div>
             </label>
 
-            <div className="flex gap-3">
-              <button onClick={() => setShowTimeModal(false)} className="flex-1 border border-border text-muted-foreground py-3 rounded-xl font-body hover:text-foreground transition-colors">
-                Back
-              </button>
-              <button onClick={handleStep1bSubmit} className="flex-1 bg-primary text-primary-foreground py-3 rounded-xl font-display font-semibold hover:bg-primary/90 transition-all border-glow">
-                Continue →
-              </button>
-            </div>
+            <button
+              onClick={handleStep1bSubmit}
+              className="w-full bg-primary text-primary-foreground py-4 rounded-full font-display font-semibold text-lg hover:bg-primary/90 transition-all shadow-lg"
+            >
+              Continue
+            </button>
           </div>
         </div>
       )}
