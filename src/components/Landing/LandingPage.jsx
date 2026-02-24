@@ -17,7 +17,6 @@ import PrimaryButton from "@/components/ui/PrimaryButton";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 import GalleryTile from "./GalleryTile";
-import Footer from "@/components/Layout/Footer";
 
 /* ─── Static data ─── */
 
