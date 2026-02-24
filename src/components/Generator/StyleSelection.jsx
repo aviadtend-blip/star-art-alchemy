@@ -1,7 +1,18 @@
 import { useState } from 'react';
+import { Search } from 'lucide-react';
 import { ART_STYLES } from '@/config/artStyles';
-import ProgressBar from '@/components/ui/ProgressBar';
+import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
+
+import boldImg from '@/assets/gallery/taurus-artwork.jpg';
+import minimalImg from '@/assets/gallery/capricorn-gallery.jpg';
+import organicImg from '@/assets/gallery/virgo-artwork.jpg';
+
+const STYLE_IMAGES = {
+  'bold-vibrant': boldImg,
+  'minimal-architectural': minimalImg,
+  'organic-flowing': organicImg,
+};
 
 export default function StyleSelection({ onSelect, onBack, chartData, formData, onEditBirthData }) {
   const [selected, setSelected] = useState(null);
@@ -11,7 +22,6 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
   };
 
   const handleSurpriseMe = () => {
-    // Auto-select based on dominant element or default to first
     const dominantElement = chartData?.dominant_element;
     let autoId = ART_STYLES[0].id;
     if (dominantElement === 'Water' || dominantElement === 'Earth') {
@@ -25,21 +35,25 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
   };
 
   return (
-    <div className="relative z-10">
-      <ProgressBar currentStep={2} />
-      <BirthDataBar formData={formData} onEdit={onEditBirthData} />
+    <div className="min-h-screen bg-surface">
+      {/* Progress bar */}
+      <div className="bg-surface border-b border-surface-border">
+        <StepProgressBar currentStep={2} />
+      </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* Main content */}
+      <div className="max-w-5xl mx-auto px-4 py-10 md:py-14">
         <div className="text-center mb-10">
-          <h2 className="font-display text-3xl md:text-4xl font-light text-foreground tracking-wide mb-3">
-            Choose your <span className="text-primary text-glow">artistic expression</span>
+          <h2 className="font-display text-3xl md:text-5xl font-medium text-surface-foreground tracking-tight mb-3">
+            Choose your artistic expression
           </h2>
-          <p className="text-muted-foreground font-body text-sm">
+          <p className="text-surface-muted font-body text-sm max-w-md mx-auto">
             Each style reveals your cosmic blueprint differently. Pick the one that resonates.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-10">
+        {/* Style cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 md:gap-6 mb-10">
           {ART_STYLES.map((style) => {
             const isSelected = selected === style.id;
 
@@ -48,28 +62,45 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
                 key={style.id}
                 onClick={() => setSelected(style.id)}
                 className={`
-                  relative text-left rounded-xl border-2 p-5 transition-all duration-200 group cursor-pointer
+                  relative text-left rounded-2xl overflow-hidden transition-all duration-200 group cursor-pointer border-2
                   ${isSelected
-                    ? 'border-primary bg-primary/10 shadow-lg shadow-primary/10'
-                    : 'border-border bg-secondary/30 hover:border-primary/50 hover:bg-secondary/50'
+                    ? 'border-primary shadow-lg shadow-primary/15 ring-1 ring-primary/30'
+                    : 'border-surface-border hover:border-surface-muted/50 shadow-md'
                   }
+                  bg-surface-card
                 `}
               >
+                {/* Badge */}
                 {style.popular && (
-                  <span className="absolute -top-2 right-3 bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full font-body font-medium">
+                  <span className="absolute top-3 left-3 z-10 bg-primary text-primary-foreground text-[10px] px-2.5 py-0.5 rounded-full font-body font-semibold tracking-wide uppercase">
                     Most popular
                   </span>
                 )}
 
-                <div className="text-4xl mb-3">{style.preview}</div>
-                <h3 className="font-display text-xl text-foreground mb-1">{style.name}</h3>
-                <p className="text-muted-foreground font-body text-sm leading-relaxed">
-                  {style.description}
-                </p>
+                {/* Magnifying glass */}
+                <div className="absolute top-3 right-3 z-10 w-8 h-8 bg-surface-card/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Search className="w-4 h-4 text-surface-foreground" />
+                </div>
 
+                {/* Image */}
+                <div className="aspect-[3/4] overflow-hidden">
+                  <img
+                    src={STYLE_IMAGES[style.id]}
+                    alt={style.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+
+                {/* Label */}
+                <div className="p-4">
+                  <h3 className="font-display text-base font-medium text-surface-foreground mb-0.5">{style.name}</h3>
+                  <p className="text-surface-muted font-body text-xs leading-relaxed">{style.description}</p>
+                </div>
+
+                {/* Selected check */}
                 {isSelected && (
-                  <div className="absolute top-3 right-3 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                    <svg className="w-3.5 h-3.5 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <div className="absolute top-3 right-3 z-20 w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
@@ -79,12 +110,13 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
           })}
         </div>
 
+        {/* CTAs */}
         <div className="text-center space-y-4">
-          <p className="text-xs text-muted-foreground font-body">Can't decide? Let us choose the best style based on your chart</p>
+          <p className="text-xs text-surface-muted font-body">Can't decide? Let us choose the best style based on your chart</p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <button
               onClick={handleSurpriseMe}
-              className="px-8 py-3 rounded-xl font-body text-sm tracking-wide bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg transition-all border-glow"
+              className="px-8 py-3 rounded-full font-body text-sm font-semibold bg-surface-foreground text-surface hover:opacity-90 shadow-md transition-all"
             >
               Surprise me ✨
             </button>
@@ -92,22 +124,22 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
               onClick={handleContinue}
               disabled={!selected}
               className={`
-                px-8 py-3 rounded-xl font-body text-sm tracking-wide transition-all border
+                px-8 py-3 rounded-full font-body text-sm font-semibold transition-all border-2
                 ${selected
-                  ? 'border-primary text-primary hover:bg-primary/10'
-                  : 'border-border text-muted-foreground cursor-not-allowed'
+                  ? 'border-primary bg-primary text-primary-foreground hover:bg-primary/90 shadow-md'
+                  : 'border-surface-border text-surface-muted cursor-not-allowed'
                 }
               `}
             >
               Select Style →
             </button>
           </div>
-          <p className="text-xs text-muted-foreground font-body mt-2">💡 You'll see your preview before committing.</p>
-          <button onClick={onBack} className="text-sm text-muted-foreground hover:text-primary transition-colors font-body tracking-wide mt-4">
-            ← Back
-          </button>
+          <p className="text-xs text-surface-muted font-body mt-2">💡 You'll see your preview before committing.</p>
         </div>
       </div>
+
+      {/* Birth data bar at bottom */}
+      <BirthDataBar formData={formData} onEdit={onEditBirthData} />
     </div>
   );
 }
