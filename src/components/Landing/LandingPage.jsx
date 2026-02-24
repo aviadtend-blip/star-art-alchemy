@@ -317,7 +317,7 @@ export default function LandingPage() {
 
       {/* ═══════════════════ 4 SIMPLE STEPS ═══════════════════ */}
       <section className="py-[85px]" style={{ backgroundColor: '#FFFFFF' }}>
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="mx-auto px-4" style={{ maxWidth: 880 }}>
           <h2 className="text-a2 text-center text-surface-foreground mb-10 md:whitespace-nowrap">
             Your custom artwork in 4 simple steps
           </h2>
@@ -325,7 +325,7 @@ export default function LandingPage() {
 
         {/* Horizontal scroll on mobile, grid on desktop */}
         <div className="overflow-x-auto md:overflow-visible" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-          <div className="relative flex gap-6 pl-6 pr-6 md:px-0 md:grid md:grid-cols-4 md:gap-10 w-max md:w-full md:max-w-6xl md:mx-auto">
+          <div className="relative flex gap-6 pl-6 pr-6 md:px-0 md:grid md:grid-cols-4 md:gap-10 w-max md:w-full md:mx-auto" style={{ maxWidth: 880 }}>
             {/* Connecting line through circles */}
             <div className="absolute top-6 md:top-7 h-px bg-surface-border" style={{ left: 100, right: 100 }} />
             <div className="hidden md:block absolute top-7 left-[12.5%] right-[12.5%] h-px bg-surface-border" />
