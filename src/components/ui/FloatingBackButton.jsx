@@ -21,11 +21,11 @@ export default function FloatingBackButton() {
     <div className="fixed bottom-0 left-0 right-0 z-50 p-4 flex justify-center pointer-events-none">
       <button
         onClick={handleBack}
-        className="pointer-events-auto h-12 w-full md:w-auto px-10 rounded-full text-a4 text-surface-foreground hover:opacity-80 transition-all"
+        className="pointer-events-auto h-12 w-full md:w-auto px-10 rounded-full text-a4 text-surface-foreground border border-surface-border hover:opacity-80 transition-all"
         style={{
           backgroundColor: "rgba(255, 255, 255, 0.3)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
+          backdropFilter: "blur(4px)",
+          WebkitBackdropFilter: "blur(4px)",
         }}
       >
         ← Back
