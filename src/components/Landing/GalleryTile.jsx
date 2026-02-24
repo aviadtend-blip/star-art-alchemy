@@ -19,7 +19,7 @@ export default function GalleryTile({ image, name, signs, explanations = [] }) {
   const handleTap = () => setTapped((prev) => !prev);
 
   return (
-    <div className="flex flex-col items-start w-full" style={{ maxWidth: 281 }}>
+    <div className="flex flex-col items-center w-full" style={{ maxWidth: 281 }}>
       {/* Image container */}
       <div
         className="relative w-full overflow-hidden cursor-pointer group"
@@ -75,8 +75,10 @@ export default function GalleryTile({ image, name, signs, explanations = [] }) {
       </div>
 
       {/* Label below image */}
-      <p className="text-a5 mt-2" style={{ color: '#000000' }}>{name.toUpperCase()}'S CHART</p>
-      <p className="text-body-sm" style={{ color: '#727272' }}>{signs}</p>
+      <div className="w-full text-center py-[10px]">
+        <p className="text-subtitle text-surface-foreground">{name.toUpperCase()}'S CHART</p>
+        <p className="text-body-sm text-surface-muted">{signs}</p>
+      </div>
     </div>
   );
 }
