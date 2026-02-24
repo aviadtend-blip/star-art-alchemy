@@ -53,13 +53,13 @@ export default function InteractiveHotspots({ onScrollToForm }) {
   return (
     <section className="py-14 bg-surface text-surface-foreground">
       <div className="max-w-6xl mx-auto px-4">
-        <p className="text-xs text-surface-muted font-body tracking-widest uppercase text-center mb-2">
+        <p className="text-subtitle text-surface-muted text-center mb-2 tracking-widest">
           EVERY SYMBOL HAS MEANING
         </p>
-        <h2 className="text-2xl md:text-4xl font-display font-medium text-center text-surface-foreground mb-3">
+        <h2 className="text-a2 md:text-4xl text-center text-surface-foreground mb-3">
           See how it all happens
         </h2>
-        <p className="text-sm text-surface-muted text-center font-body mb-10 max-w-xl mx-auto">
+        <p className="text-body-sm text-surface-muted text-center mb-10 max-w-xl mx-auto">
           Every element in your artwork corresponds to a specific astrological placement.
         </p>
 
@@ -98,7 +98,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
           <div className="hidden md:flex md:flex-col md:justify-between md:min-h-[500px]">
             {/* Example Natal Map */}
             <div>
-            <p className="text-xs text-surface-muted font-body tracking-widest uppercase mb-3">
+              <p className="text-subtitle text-surface-muted tracking-widest mb-3">
                 EXAMPLE NATAL MAP
               </p>
               <div className="space-y-4 mb-8">
@@ -106,11 +106,11 @@ export default function InteractiveHotspots({ onScrollToForm }) {
                   <div key={item.label}>
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-lg">{item.emoji}</span>
-                      <span className="text-surface-foreground font-display font-medium text-base">{item.label}</span>
+                      <span className="text-a4 text-surface-foreground">{item.label}</span>
                       <span className="text-surface-muted">·</span>
-                      <span className="text-surface-foreground/70 font-display text-sm">{item.theme}</span>
+                      <span className="text-a5 text-surface-foreground/70">{item.theme}</span>
                     </div>
-                    <p className="text-surface-muted font-body text-xs leading-relaxed pl-8">{item.desc}</p>
+                    <p className="text-body-sm text-surface-muted leading-relaxed pl-8">{item.desc}</p>
                   </div>
                 ))}
               </div>
@@ -125,17 +125,17 @@ export default function InteractiveHotspots({ onScrollToForm }) {
                       {active.id}
                     </span>
                     <span className="text-lg">{active.emoji}</span>
-                    <span className="text-surface-foreground font-display font-medium">{active.label}</span>
+                    <span className="text-a4 text-surface-foreground">{active.label}</span>
                     <span className="text-surface-muted">·</span>
-                    <span className="text-surface-foreground font-display font-medium">{active.theme}</span>
+                    <span className="text-a4 text-surface-foreground">{active.theme}</span>
                   </div>
-                  <p className="text-surface-muted font-body text-sm leading-relaxed">{active.para1}</p>
-                  <p className="text-surface-muted font-body text-sm leading-relaxed">{active.para2}</p>
+                  <p className="text-body text-surface-muted">{active.para1}</p>
+                  <p className="text-body text-surface-muted">{active.para2}</p>
                 </div>
               ) : (
                 <div className="flex items-center gap-3 text-surface-muted">
                   <span className="text-2xl">👆</span>
-                  <p className="font-body text-sm">
+                  <p className="text-body">
                     Hover over the numbers to explore how this chart was personalized.
                   </p>
                 </div>
@@ -153,28 +153,28 @@ export default function InteractiveHotspots({ onScrollToForm }) {
                   {active.id}
                 </span>
                 <span className="text-lg">{active.emoji}</span>
-                <span className="text-surface-foreground font-display font-medium text-sm">{active.label}</span>
+                <span className="text-a5 text-surface-foreground">{active.label}</span>
               </div>
-              <p className="text-surface-foreground font-display font-medium text-sm">{active.theme}</p>
-              <p className="text-sm text-surface-muted font-body leading-relaxed">{active.para1}</p>
-              <p className="text-sm text-surface-muted font-body leading-relaxed">{active.para2}</p>
+              <p className="text-a5 text-surface-foreground">{active.theme}</p>
+              <p className="text-body-sm text-surface-muted leading-relaxed">{active.para1}</p>
+              <p className="text-body-sm text-surface-muted leading-relaxed">{active.para2}</p>
             </div>
           ) : (
             <div className="flex items-center gap-3 text-surface-muted justify-center">
               <span className="text-xl">👆</span>
-              <p className="font-body text-sm">Tap a number to explore how this chart was personalized.</p>
+              <p className="text-body-sm">Tap a number to explore how this chart was personalized.</p>
             </div>
           )}
         </div>
 
         {/* CTA */}
         <div className="text-center mt-10 space-y-3">
-          <p className="text-surface-muted font-body text-sm">
+          <p className="text-body-sm text-surface-muted">
             Want to see what symbols appear in YOUR chart?
           </p>
           <button
             onClick={onScrollToForm}
-            className="bg-surface-foreground text-surface px-8 py-3 rounded-full font-body font-semibold text-sm hover:opacity-90 transition-all"
+            className="bg-surface-foreground text-surface px-8 py-3 rounded-full text-a5 hover:opacity-90 transition-all"
           >
             Generate my free artwork
           </button>
