@@ -233,10 +233,10 @@ export default function LandingPage() {
       </div>
 
       {/* ═══════════════════ SOCIAL PROOF STATS ═══════════════════ */}
-      <section className="py-16 md:py-20 bg-surface text-surface-foreground">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 mb-14 text-center">
-            <div>
+      <section className="bg-surface text-surface-foreground py-[60px] px-6 md:py-[85px] md:px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 text-center" style={{ gap: '30px', marginBottom: '60px' }}>
+            <div className="md:py-[85px] md:py-0">
               <div className="text-a1 md:text-4xl lg:text-5xl text-surface-foreground mb-2">2,000+</div>
               <div className="text-body-sm text-surface-muted">Artworks Created</div>
             </div>
