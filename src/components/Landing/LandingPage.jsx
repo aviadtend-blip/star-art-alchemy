@@ -6,6 +6,7 @@ import heroDesktop from "@/assets/hero-desktop.webp";
 import capricornWall from "@/assets/gallery/capricorn-wall.jpg";
 import taurusArtwork from "@/assets/gallery/taurus-artwork.jpg";
 import womanHolding from "@/assets/gallery/woman-holding.jpg";
+import galaxyBg from "@/assets/galaxy-bg.jpg";
 import saturnPlanet from "@/assets/gallery/saturn-planet.jpg";
 import canvasDetail from "@/assets/gallery/canvas-detail.jpg";
 import libraWall from "@/assets/gallery/libra-wall.jpg";
@@ -164,7 +165,7 @@ export default function LandingPage() {
     document.getElementById("birth-form")?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const inputClass = "w-full border-2 border-border rounded-xl px-4 py-3 text-lg text-center bg-background text-foreground focus:border-primary focus:ring-4 focus:ring-primary/20 transition outline-none";
+  const inputClass = "w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-left text-foreground placeholder:text-white/40 focus:border-primary focus:ring-0 transition outline-none";
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -420,59 +421,56 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ BIRTH DATA FORM (Step 1a) ═══════════════════ */}
-      <section className="py-14 relative overflow-hidden" id="birth-form">
-        {/* Starfield texture */}
-        <div className="absolute inset-0 bg-cosmic" />
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(1px 1px at 10% 20%, hsl(0 0% 80% / 0.4) 0%, transparent 100%),
-            radial-gradient(1px 1px at 30% 60%, hsl(0 0% 70% / 0.3) 0%, transparent 100%),
-            radial-gradient(1.5px 1.5px at 50% 10%, hsl(45 80% 65% / 0.2) 0%, transparent 100%),
-            radial-gradient(1px 1px at 70% 40%, hsl(0 0% 80% / 0.35) 0%, transparent 100%),
-            radial-gradient(1px 1px at 90% 70%, hsl(0 0% 75% / 0.25) 0%, transparent 100%),
-            radial-gradient(1.5px 1.5px at 20% 80%, hsl(260 40% 70% / 0.2) 0%, transparent 100%),
-            radial-gradient(1px 1px at 60% 85%, hsl(0 0% 80% / 0.3) 0%, transparent 100%),
-            radial-gradient(1px 1px at 85% 15%, hsl(0 0% 70% / 0.25) 0%, transparent 100%),
-            radial-gradient(1.5px 1.5px at 40% 35%, hsl(45 60% 70% / 0.15) 0%, transparent 100%),
-            radial-gradient(1px 1px at 15% 50%, hsl(0 0% 80% / 0.3) 0%, transparent 100%)`,
-        }} />
-        <div className="relative z-10 max-w-lg mx-auto px-4">
-          <ProgressBar currentStep={1} />
-          <div className="bg-card rounded-2xl shadow-2xl p-5 md:p-10 border border-border mt-4">
-            <div className="text-center mb-6">
-              <h2 className="text-a2 text-foreground mb-1">
-                See your birth chart art<br />in 60 seconds
-              </h2>
-              <p className="text-body-sm text-muted-foreground">We'll use this to create your personalized artwork</p>
-            </div>
-            <form onSubmit={handleStep1aSubmit} className="space-y-4">
-              {/* Name */}
-              <div>
-                <label className="block text-subtitle text-muted-foreground mb-1">Your Name <span className="text-muted-foreground/50">(Optional)</span></label>
-                <input type="text" value={formData.name} onChange={(e) => set("name", e.target.value)} placeholder="Sarah" className={inputClass} />
-              </div>
+      <section className="py-24 md:py-32 relative overflow-hidden" id="birth-form">
+        {/* Galaxy background image */}
+        <img src={galaxyBg} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
+        <div className="absolute inset-0 bg-black/30" />
 
+        <div className="relative z-10 max-w-[566px] mx-auto px-4">
+          <div className="text-center mb-10">
+            <h2 className="text-a1 text-foreground">
+              See your birth chart art<br />in 60 seconds
+            </h2>
+            <div className="flex justify-center mt-3">
+              <div className="w-6 h-[3px] bg-primary rounded-full" />
+            </div>
+          </div>
+
+          {/* Glass card — rgba(17,17,17,0.70) + blur(17px) */}
+          <div
+            className="flex flex-col items-stretch rounded-[2px]"
+            style={{
+              background: 'rgba(17, 17, 17, 0.70)',
+              backdropFilter: 'blur(17px)',
+              WebkitBackdropFilter: 'blur(17px)',
+              padding: 48,
+              gap: 30,
+              minWidth: 320,
+            }}
+          >
+            <form onSubmit={handleStep1aSubmit} className="flex flex-col gap-[30px]">
               {/* Birth Date */}
               <div>
-                <label className="block text-subtitle text-muted-foreground mb-1">Birth Date</label>
-                <div className="grid grid-cols-3 gap-2">
-                  <input type="number" required value={formData.birthMonth} onChange={(e) => set("birthMonth", e.target.value)} placeholder="MM" min="1" max="12" className={inputClass} />
-                  <input type="number" required value={formData.birthDay} onChange={(e) => set("birthDay", e.target.value)} placeholder="DD" min="1" max="31" className={inputClass} />
-                  <input type="number" required value={formData.birthYear} onChange={(e) => set("birthYear", e.target.value)} placeholder="YYYY" min="1900" max="2026" className={inputClass} />
+                <label className="block text-subtitle text-primary/70 tracking-[3px] mb-4">BIRTH DATE</label>
+                <div className="grid grid-cols-3 gap-4">
+                  <input type="number" required value={formData.birthMonth} onChange={(e) => set("birthMonth", e.target.value)} placeholder="Month" min="1" max="12" className={inputClass} />
+                  <input type="number" required value={formData.birthDay} onChange={(e) => set("birthDay", e.target.value)} placeholder="Day" min="1" max="31" className={inputClass} />
+                  <input type="number" required value={formData.birthYear} onChange={(e) => set("birthYear", e.target.value)} placeholder="Year" min="1900" max="2026" className={inputClass} />
                 </div>
               </div>
 
               {/* Birth Location */}
               <div ref={wrapperRef} className="relative">
-                <label className="block text-subtitle text-muted-foreground mb-1">Birth Location</label>
+                <label className="block text-subtitle text-primary/70 tracking-[3px] mb-4">BIRTH LOCATION</label>
                 <div className="relative">
                   <input
                     type="text" required value={cityQuery}
                     onChange={(e) => { setCityQuery(e.target.value); setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null })); }}
-                    placeholder="Start typing a city name..."
+                    placeholder="City"
                     className={inputClass} autoComplete="off"
                   />
                   {loadingSuggestions && (
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2">
                       <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                     </div>
                   )}
@@ -486,17 +484,13 @@ export default function LandingPage() {
                     ))}
                   </ul>
                 )}
-                {formData.lat && <p className="text-body-sm text-muted-foreground mt-1">📍 {formData.birthCity}, {formData.birthCountry}</p>}
+                {formData.lat && <p className="text-body-sm text-muted-foreground mt-2">📍 {formData.birthCity}, {formData.birthCountry}</p>}
               </div>
 
               {/* Submit */}
-              <PrimaryButton type="submit" className="w-full">
+              <PrimaryButton type="submit" className="w-full mt-2">
                 Continue
               </PrimaryButton>
-              <div className="space-y-1 text-center">
-                <p className="text-body-sm text-muted-foreground">✨ Free preview • No credit card required</p>
-                <p className="text-body-sm text-muted-foreground/60">🔒 Your data is secure and never shared</p>
-              </div>
             </form>
           </div>
         </div>
