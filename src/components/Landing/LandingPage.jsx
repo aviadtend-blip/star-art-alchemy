@@ -241,58 +241,79 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ SOCIAL PROOF STATS ═══════════════════ */}
-      <section className="py-10 bg-secondary/30">
+      <section className="py-10 bg-surface text-surface-foreground">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-2 gap-6 mb-10 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10 text-center">
             <div>
-              <div className="text-3xl md:text-5xl font-display font-bold text-primary mb-1">2,000+</div>
-              <div className="text-muted-foreground font-body text-xs">Artworks Created</div>
+              <div className="text-3xl md:text-5xl font-display font-medium text-surface-foreground mb-1">2,000+</div>
+              <div className="text-surface-muted font-body text-xs">Artworks Created</div>
             </div>
             <div>
-              <div className="text-3xl md:text-5xl font-display font-bold text-primary mb-1">4.9★</div>
-              <div className="text-muted-foreground font-body text-xs">Average Rating</div>
+              <div className="text-3xl md:text-5xl font-display font-medium text-surface-foreground mb-1">4.9★</div>
+              <div className="text-surface-muted font-body text-xs">Average Rating</div>
             </div>
             <div>
-              <div className="text-3xl md:text-5xl font-display font-bold text-primary mb-1">98%</div>
-              <div className="text-muted-foreground font-body text-xs">Display It Proudly</div>
+              <div className="text-3xl md:text-5xl font-display font-medium text-surface-foreground mb-1">98%</div>
+              <div className="text-surface-muted font-body text-xs">Display It Proudly</div>
             </div>
             <div>
-              <div className="text-3xl md:text-5xl font-display font-bold text-primary mb-1">23</div>
-              <div className="text-muted-foreground font-body text-xs">Countries Shipped</div>
+              <div className="text-3xl md:text-5xl font-display font-medium text-surface-foreground mb-1">23</div>
+              <div className="text-surface-muted font-body text-xs">Countries Shipped</div>
             </div>
           </div>
 
           {/* Reviews — horizontal scroll on mobile */}
           <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory md:grid md:grid-cols-3 md:overflow-visible">
             {reviews.map((r) => (
-              <div key={r.initials} className="min-w-[280px] md:min-w-0 snap-start bg-card rounded-xl p-5 shadow-sm border border-border flex-shrink-0">
+              <div key={r.initials} className="min-w-[280px] md:min-w-0 snap-start bg-surface-card rounded-xl p-5 shadow-sm border border-surface-border flex-shrink-0">
                 <div className="flex items-center gap-1 mb-2 text-primary text-sm">★★★★★</div>
-                <p className="text-foreground/80 mb-3 font-body text-sm leading-relaxed">{r.text}</p>
+                <p className="text-surface-foreground/80 mb-3 font-body text-sm leading-relaxed">{r.text}</p>
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 bg-primary/20 rounded-full flex items-center justify-center text-primary font-semibold font-body text-sm">
                     {r.initials}
                   </div>
                   <div>
-                    <div className="font-semibold text-foreground font-body text-sm">{r.name}</div>
-                    <div className="text-xs text-muted-foreground font-body">{r.signs}</div>
+                    <div className="font-semibold text-surface-foreground font-body text-sm">{r.name}</div>
+                    <div className="text-xs text-surface-muted font-body">{r.signs}</div>
                     <div className="text-xs text-primary font-body">{r.badge}</div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
+
+          {/* Gallery cards row */}
+          <div className="mt-10">
+            <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory md:grid md:grid-cols-4 md:overflow-visible">
+              {[
+                { img: taurusArtwork, label: "Sarah's chart", sub: "Taurus Sun · Scorpio Moon" },
+                { img: capricornWall, label: "Simone's chart", sub: "Capricorn Sun · Cancer Moon" },
+                { img: virgoArtwork, label: "Tyler's chart", sub: "Virgo Sun · Pisces Moon" },
+                { img: libraWall, label: "Amanda's chart", sub: "Libra Sun · Aquarius Moon" },
+              ].map((item) => (
+                <div key={item.label} className="min-w-[200px] md:min-w-0 snap-start flex-shrink-0">
+                  <div className="rounded-xl overflow-hidden shadow-md border border-surface-border">
+                    <img src={item.img} alt={item.label} className="w-full h-48 md:h-56 object-cover" />
+                  </div>
+                  <p className="font-display font-medium text-surface-foreground text-sm mt-2">{item.label}</p>
+                  <p className="font-body text-surface-muted text-xs">{item.sub}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
       {/* ═══════════════════ CTA BREAK ═══════════════════ */}
-      <section className="py-12 px-4">
+      <section className="py-12 px-4 bg-surface text-surface-foreground">
         <div className="max-w-lg mx-auto text-center space-y-6">
-          <h2 className="text-2xl md:text-4xl font-display font-bold text-foreground leading-snug">
+          <h2 className="text-2xl md:text-4xl font-display font-medium text-surface-foreground leading-snug">
             Ready to turn your birth data into some awesome wall art?
           </h2>
-          <button onClick={scrollToForm} className="bg-primary text-primary-foreground px-8 py-3.5 rounded-xl font-display font-semibold text-base hover:bg-primary/90 transition-all shadow-lg border-glow">
+          <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-8 py-3.5 rounded-full font-body font-semibold text-sm hover:opacity-90 transition-all shadow-lg">
             Show me my artwork →
           </button>
+          <p className="text-xs text-surface-muted font-body">Free preview. No credit card required.</p>
         </div>
       </section>
 
@@ -300,12 +321,12 @@ export default function LandingPage() {
       <InteractiveHotspots onScrollToForm={scrollToForm} />
 
       {/* ═══════════════════ 4 SIMPLE STEPS ═══════════════════ */}
-      <section className="py-14 px-4">
+      <section className="py-14 px-4 bg-surface text-surface-foreground">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-5xl font-display font-bold text-center text-foreground mb-2">
+          <h2 className="text-2xl md:text-5xl font-display font-medium text-center text-surface-foreground mb-2">
             Your custom artwork<br />in 4 simple steps
           </h2>
-          <p className="text-sm text-muted-foreground text-center mb-10 font-body">
+          <p className="text-sm text-surface-muted text-center mb-10 font-body">
             From your birth data to gallery-worthy art
           </p>
 
@@ -317,12 +338,12 @@ export default function LandingPage() {
               { n: "4", title: "Get it framed & shipped", desc: "Love it? Choose your canvas size. We'll print and ship museum-quality canvas to your door." },
             ].map((s) => (
               <div key={s.n} className="flex items-start gap-4 md:flex-col md:items-center md:text-center">
-                <div className="w-12 h-12 md:w-20 md:h-20 bg-primary/20 rounded-full flex items-center justify-center text-xl md:text-4xl font-bold text-primary flex-shrink-0 font-display">
+                <div className="w-12 h-12 md:w-20 md:h-20 bg-primary/10 rounded-full flex items-center justify-center text-xl md:text-4xl font-medium text-primary flex-shrink-0 font-display">
                   {s.n}
                 </div>
                 <div>
-                  <h3 className="text-lg font-display font-semibold text-foreground mb-1">{s.title}</h3>
-                  <p className="text-sm text-muted-foreground font-body">{s.desc}</p>
+                  <h3 className="text-lg font-display font-medium text-surface-foreground mb-1">{s.title}</h3>
+                  <p className="text-sm text-surface-muted font-body">{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -331,19 +352,19 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ GIFT + MATERIALS (side-by-side on desktop) ═══════════════════ */}
-      <section className="py-14 bg-secondary/30">
+      <section className="py-14 bg-surface text-surface-foreground">
         <div className="max-w-7xl mx-auto px-4">
           <div className="md:grid md:grid-cols-2 md:gap-12">
             {/* THE PERFECT GIFT */}
             <div className="mb-12 md:mb-0">
               <div className="mb-6">
-                <img src={womanHolding} alt="Happy customer holding her framed birth chart artwork" className="w-full rounded-2xl shadow-2xl" />
+                <img src={womanHolding} alt="Happy customer holding her framed birth chart artwork" className="w-full rounded-2xl shadow-lg" />
               </div>
-              <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground leading-snug mb-3">
+              <h2 className="text-2xl md:text-3xl font-display font-medium text-surface-foreground leading-snug mb-3">
                 Impossible to Duplicate.
-                <span className="text-primary text-glow"> Impossible to Forget.</span>
+                <span className="text-primary"> Impossible to Forget.</span>
               </h2>
-              <p className="text-sm text-muted-foreground font-body mb-4">
+              <p className="text-sm text-surface-muted font-body mb-4">
                 The perfect gift for birthdays, anniversaries, new homes, or anyone who deserves something truly one-of-a-kind.
               </p>
               <div className="space-y-2 mb-5">
@@ -354,11 +375,11 @@ export default function LandingPage() {
                 ].map((item) => (
                   <div key={item.text} className="flex items-center gap-3">
                     <span className="text-lg">{item.icon}</span>
-                    <span className="text-foreground/80 font-body text-sm">{item.text}</span>
+                    <span className="text-surface-foreground/80 font-body text-sm">{item.text}</span>
                   </div>
                 ))}
               </div>
-              <button onClick={scrollToForm} className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-display font-semibold hover:bg-primary/90 transition-all border-glow text-sm">
+              <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-6 py-2.5 rounded-full font-body font-semibold hover:opacity-90 transition-all text-sm">
                 Create a gift →
               </button>
             </div>
@@ -366,12 +387,12 @@ export default function LandingPage() {
             {/* MUSEUM-QUALITY MATERIALS */}
             <div>
               <div className="mb-6">
-                <img src={saturnPlanet} alt="Saturn — representing museum-quality craftsmanship" className="w-full rounded-2xl shadow-2xl" />
+                <img src={saturnPlanet} alt="Saturn — representing museum-quality craftsmanship" className="w-full rounded-2xl shadow-lg" />
               </div>
-              <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-3">
+              <h2 className="text-2xl md:text-3xl font-display font-medium text-surface-foreground mb-3">
                 Materials to Grace<br />Museums like Them
               </h2>
-              <p className="text-sm text-muted-foreground font-body mb-6">
+              <p className="text-sm text-surface-muted font-body mb-6">
                 Every print is crafted to gallery standards
               </p>
               <div className="grid grid-cols-2 gap-3">
@@ -381,15 +402,15 @@ export default function LandingPage() {
                   { icon: "🎨", title: "12-Color Process", desc: "Giclée with unmatched depth" },
                   { icon: "✅", title: "Fine Art Certified", desc: "Fine Art Trade Guild certified" },
                 ].map((item) => (
-                  <div key={item.title} className="bg-card border border-border rounded-xl p-3 space-y-1">
+                  <div key={item.title} className="bg-surface-card border border-surface-border rounded-xl p-3 space-y-1">
                     <div className="text-xl">{item.icon}</div>
-                    <h3 className="font-display text-sm text-foreground font-semibold">{item.title}</h3>
-                    <p className="text-xs text-muted-foreground font-body">{item.desc}</p>
+                    <h3 className="font-display text-sm text-surface-foreground font-medium">{item.title}</h3>
+                    <p className="text-xs text-surface-muted font-body">{item.desc}</p>
                   </div>
                 ))}
               </div>
               <div className="mt-5">
-                <button onClick={scrollToForm} className="text-primary hover:text-primary/80 font-body text-sm underline underline-offset-4 transition-colors">
+                <button onClick={scrollToForm} className="text-surface-foreground/70 hover:text-surface-foreground font-body text-sm underline underline-offset-4 transition-colors">
                   Generate my free artwork →
                 </button>
               </div>
@@ -399,23 +420,23 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ CUSTOMER GALLERY ═══════════════════ */}
-      <section className="py-14 bg-secondary/30">
+      <section className="py-14 bg-surface text-surface-foreground">
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-2xl md:text-5xl font-display font-bold text-center text-foreground mb-2">
+          <p className="text-xs text-surface-muted font-body tracking-widest uppercase text-center mb-2">
+            REAL HOMES. REAL CUSTOMERS. REAL REACTIONS.
+          </p>
+          <h2 className="text-2xl md:text-5xl font-display font-medium text-center text-surface-foreground mb-8">
             See how customers display<br />their cosmic art
           </h2>
-          <p className="text-sm text-muted-foreground text-center mb-8 font-body">
-            Real homes. Real customers. Real reactions.
-          </p>
 
           {/* Horizontal scroll on mobile, grid on desktop */}
           <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory md:grid md:grid-cols-3 md:overflow-visible">
             {galleryItems.map((item, i) => (
               <div key={i} className="min-w-[260px] md:min-w-0 snap-start flex-shrink-0 group">
-                <div className="bg-card rounded-xl overflow-hidden shadow-lg border border-border">
+                <div className="bg-surface-card rounded-xl overflow-hidden shadow-md border border-surface-border">
                   <img src={item.img} alt={`Customer artwork ${i + 1}`} className="w-full h-64 md:h-80 object-cover" />
                   <div className="p-3">
-                    <div className="font-semibold text-foreground font-body text-xs">{item.label}</div>
+                    <div className="font-medium text-surface-foreground font-body text-xs">{item.label}</div>
                   </div>
                 </div>
               </div>
@@ -553,17 +574,17 @@ export default function LandingPage() {
       )}
 
       {/* ═══════════════════ FAQ ═══════════════════ */}
-      <section className="py-14 bg-secondary/30">
+      <section className="py-14 bg-surface text-surface-foreground">
         <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-2xl md:text-5xl font-display font-bold text-center text-foreground mb-8">Frequently asked questions</h2>
+          <h2 className="text-2xl md:text-5xl font-display font-medium text-center text-surface-foreground mb-8">Frequently asked questions</h2>
           <div className="space-y-3">
             {faqs.map((faq) => (
-              <details key={faq.q} className="bg-card rounded-xl p-4 md:p-6 shadow-sm cursor-pointer group border border-border">
-                <summary className="font-semibold text-foreground text-sm md:text-lg list-none flex items-center justify-between font-display">
+              <details key={faq.q} className="bg-surface-card rounded-xl p-4 md:p-6 shadow-sm cursor-pointer group border border-surface-border">
+                <summary className="font-medium text-surface-foreground text-sm md:text-lg list-none flex items-center justify-between font-display">
                   <span>{faq.q}</span>
                   <span className="text-primary group-open:rotate-180 transition text-sm">▼</span>
                 </summary>
-                <p className="text-muted-foreground mt-3 text-sm font-body">{faq.a}</p>
+                <p className="text-surface-muted mt-3 text-sm font-body">{faq.a}</p>
               </details>
             ))}
           </div>

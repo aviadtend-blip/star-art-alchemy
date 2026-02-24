@@ -99,6 +99,12 @@
     --sidebar-accent-foreground: 0 0% 85%;
     --sidebar-border: 220 15% 18%;
     --sidebar-ring: 45 80% 65%;
+
+    --surface: 30 20% 95%;
+    --surface-foreground: 220 20% 12%;
+    --surface-muted: 220 10% 45%;
+    --surface-border: 30 10% 88%;
+    --surface-card: 0 0% 100%;
   }
 }
 
