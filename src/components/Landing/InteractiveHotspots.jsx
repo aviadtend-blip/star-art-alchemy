@@ -51,15 +51,15 @@ export default function InteractiveHotspots({ onScrollToForm }) {
   const active = HOTSPOTS.find((h) => h.id === activeHotspot);
 
   return (
-    <section className="py-14 bg-secondary/30">
+    <section className="py-14 bg-surface text-surface-foreground">
       <div className="max-w-6xl mx-auto px-4">
-        <p className="text-xs text-muted-foreground font-body tracking-widest uppercase text-center mb-2">
+        <p className="text-xs text-surface-muted font-body tracking-widest uppercase text-center mb-2">
           EVERY SYMBOL HAS MEANING
         </p>
-        <h2 className="text-2xl md:text-4xl font-display font-bold text-center text-foreground mb-3">
+        <h2 className="text-2xl md:text-4xl font-display font-medium text-center text-surface-foreground mb-3">
           See how it all happens
         </h2>
-        <p className="text-sm text-muted-foreground text-center font-body mb-10 max-w-xl mx-auto">
+        <p className="text-sm text-surface-muted text-center font-body mb-10 max-w-xl mx-auto">
           Every element in your artwork corresponds to a specific astrological placement.
         </p>
 
@@ -83,7 +83,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
                   className={`absolute w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-200 cursor-pointer z-10 ${
                     activeHotspot === h.id
                       ? "bg-primary text-primary-foreground scale-125 shadow-lg"
-                      : "bg-foreground/80 text-background hover:bg-primary hover:text-primary-foreground hover:scale-110"
+                      : "bg-surface-foreground/80 text-surface hover:bg-primary hover:text-primary-foreground hover:scale-110"
                   }`}
                   style={{ top: h.top, left: h.left }}
                   aria-label={`Hotspot ${h.id}: ${h.label}`}
@@ -98,14 +98,14 @@ export default function InteractiveHotspots({ onScrollToForm }) {
           <div className="hidden md:flex md:flex-col md:justify-between md:min-h-[500px]">
             {/* Example Natal Map */}
             <div>
-              <p className="text-xs text-muted-foreground font-body tracking-widest uppercase mb-3">
+            <p className="text-xs text-surface-muted font-body tracking-widest uppercase mb-3">
                 EXAMPLE NATAL MAP
               </p>
               <div className="space-y-2 mb-8">
                 {NATAL_MAP.map((item) => (
                   <div key={item.label} className="flex items-center gap-2">
                     <span className="text-lg">{item.emoji}</span>
-                    <span className="text-foreground font-display font-semibold text-base">{item.label}</span>
+                    <span className="text-surface-foreground font-display font-medium text-base">{item.label}</span>
                   </div>
                 ))}
               </div>
@@ -116,19 +116,19 @@ export default function InteractiveHotspots({ onScrollToForm }) {
               {active ? (
                 <div className="space-y-4 animate-fade-in" key={active.id}>
                   <div className="flex items-center gap-3">
-                    <span className="w-9 h-9 bg-primary/20 text-primary rounded-full flex items-center justify-center text-sm font-bold font-body">
+                    <span className="w-9 h-9 bg-primary/10 text-primary rounded-full flex items-center justify-center text-sm font-bold font-body">
                       {active.id}
                     </span>
                     <span className="text-lg">{active.emoji}</span>
-                    <span className="text-foreground font-display font-semibold">{active.label}</span>
-                    <span className="text-muted-foreground">·</span>
-                    <span className="text-foreground font-display font-semibold">{active.theme}</span>
+                    <span className="text-surface-foreground font-display font-medium">{active.label}</span>
+                    <span className="text-surface-muted">·</span>
+                    <span className="text-surface-foreground font-display font-medium">{active.theme}</span>
                   </div>
-                  <p className="text-muted-foreground font-body text-sm leading-relaxed">{active.para1}</p>
-                  <p className="text-muted-foreground font-body text-sm leading-relaxed">{active.para2}</p>
+                  <p className="text-surface-muted font-body text-sm leading-relaxed">{active.para1}</p>
+                  <p className="text-surface-muted font-body text-sm leading-relaxed">{active.para2}</p>
                 </div>
               ) : (
-                <div className="flex items-center gap-3 text-muted-foreground">
+                <div className="flex items-center gap-3 text-surface-muted">
                   <span className="text-2xl">👆</span>
                   <p className="font-body text-sm">
                     Hover over the numbers to explore how this chart was personalized.
@@ -142,20 +142,20 @@ export default function InteractiveHotspots({ onScrollToForm }) {
         {/* Mobile: explanation appears below artwork */}
         <div className="md:hidden mt-6">
           {active ? (
-            <div className="bg-card border border-border rounded-xl p-5 space-y-3 animate-fade-in" key={active.id}>
+            <div className="bg-surface-card border border-surface-border rounded-xl p-5 space-y-3 animate-fade-in" key={active.id}>
               <div className="flex items-center gap-2">
                 <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold">
                   {active.id}
                 </span>
                 <span className="text-lg">{active.emoji}</span>
-                <span className="text-foreground font-display font-semibold text-sm">{active.label}</span>
+                <span className="text-surface-foreground font-display font-medium text-sm">{active.label}</span>
               </div>
-              <p className="text-foreground font-display font-semibold text-sm">{active.theme}</p>
-              <p className="text-sm text-muted-foreground font-body leading-relaxed">{active.para1}</p>
-              <p className="text-sm text-muted-foreground font-body leading-relaxed">{active.para2}</p>
+              <p className="text-surface-foreground font-display font-medium text-sm">{active.theme}</p>
+              <p className="text-sm text-surface-muted font-body leading-relaxed">{active.para1}</p>
+              <p className="text-sm text-surface-muted font-body leading-relaxed">{active.para2}</p>
             </div>
           ) : (
-            <div className="flex items-center gap-3 text-muted-foreground justify-center">
+            <div className="flex items-center gap-3 text-surface-muted justify-center">
               <span className="text-xl">👆</span>
               <p className="font-body text-sm">Tap a number to explore how this chart was personalized.</p>
             </div>
@@ -164,12 +164,12 @@ export default function InteractiveHotspots({ onScrollToForm }) {
 
         {/* CTA */}
         <div className="text-center mt-10 space-y-3">
-          <p className="text-muted-foreground font-body text-sm">
+          <p className="text-surface-muted font-body text-sm">
             Want to see what symbols appear in YOUR chart?
           </p>
           <button
             onClick={onScrollToForm}
-            className="bg-foreground text-background px-8 py-3 rounded-full font-display font-semibold text-base hover:opacity-90 transition-all"
+            className="bg-surface-foreground text-surface px-8 py-3 rounded-full font-body font-semibold text-sm hover:opacity-90 transition-all"
           >
             Generate my free artwork
           </button>
