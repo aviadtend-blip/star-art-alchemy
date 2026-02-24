@@ -51,7 +51,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
   const active = HOTSPOTS.find((h) => h.id === activeHotspot);
 
   return (
-    <section className="py-14 bg-surface text-surface-foreground">
+    <section className="py-[80px] bg-surface text-surface-foreground">
       <div className="max-w-6xl mx-auto px-4">
         <p className="text-subtitle text-surface-muted text-center mb-2 tracking-widest">
           EVERY SYMBOL HAS MEANING
