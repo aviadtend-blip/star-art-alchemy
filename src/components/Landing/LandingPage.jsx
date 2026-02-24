@@ -12,6 +12,10 @@ import libraWall from "@/assets/gallery/libra-wall.jpg";
 import virgoArtwork from "@/assets/gallery/virgo-artwork.jpg";
 import gallery2 from "@/assets/gallery/example-2.jpg";
 import gallery3 from "@/assets/gallery/example-3.jpg";
+import moonSurface from "@/assets/gallery/moon-surface.jpg";
+import earthSpace from "@/assets/gallery/earth-space.jpg";
+import capricornGallery from "@/assets/gallery/capricorn-gallery.jpg";
+import taurusExample from "@/assets/gallery/taurus-example.jpg";
 import ProgressBar from "@/components/ui/ProgressBar";
 import InteractiveHotspots from "./InteractiveHotspots";
 import PrimaryButton from "@/components/ui/PrimaryButton";
@@ -54,11 +58,13 @@ const faqs = [
 
 const galleryItems = [
   { img: taurusArtwork, label: "☀️ Taurus Sun • 🌙 Scorpio Moon" },
-  { img: capricornWall, label: "☀️ Capricorn Sun • 🌙 Cancer Moon" },
-  { img: gallery2, label: "☀️ Leo Sun • 🌙 Sagittarius Moon" },
+  { img: moonSurface, label: "" },
+  { img: capricornGallery, label: "☀️ Capricorn Sun • 🌙 Cancer Moon" },
+  { img: earthSpace, label: "" },
+  { img: taurusExample, label: "☀️ Pisces Sun • 🌙 Aries Moon" },
   { img: virgoArtwork, label: "☀️ Virgo Sun • 🌙 Pisces Moon" },
+  { img: saturnPlanet, label: "" },
   { img: libraWall, label: "☀️ Libra Sun • 🌙 Aquarius Moon" },
-  { img: gallery3, label: "☀️ Pisces Sun • 🌙 Scorpio Moon" },
 ];
 
 /* ─── Component ─── */
@@ -396,16 +402,17 @@ export default function LandingPage() {
             See how customers display<br />their cosmic art
           </h2>
 
-          {/* Horizontal scroll on mobile, grid on desktop */}
-          <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory md:grid md:grid-cols-3 md:overflow-visible">
+          {/* 4-col, 2-row grid matching Figma: 15px gap, ~169×200 tiles */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-[15px] max-w-[1140px] mx-auto">
             {galleryItems.map((item, i) => (
-              <div key={i} className="min-w-[260px] md:min-w-0 snap-start flex-shrink-0 group">
-                <div className="bg-surface-card rounded-xl overflow-hidden shadow-md border border-surface-border">
-                  <img src={item.img} alt={`Customer artwork ${i + 1}`} className="w-full h-64 md:h-80 object-cover" />
-                  <div className="p-3">
-                    <div className="text-body-sm text-surface-foreground">{item.label}</div>
-                  </div>
-                </div>
+              <div key={i} className="overflow-hidden rounded-[2px]">
+                <img
+                  src={item.img}
+                  alt={item.label || `Gallery image ${i + 1}`}
+                  className="w-full object-cover"
+                  style={{ aspectRatio: "169 / 200" }}
+                  loading="lazy"
+                />
               </div>
             ))}
           </div>
