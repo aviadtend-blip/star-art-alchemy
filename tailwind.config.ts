@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['Erode', 'serif'],
+        display: ['TASA Explorer', 'sans-serif'],
         body: ['TASA Explorer', 'sans-serif'],
       },
       colors: {
