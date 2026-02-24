@@ -316,32 +316,35 @@ export default function LandingPage() {
       <InteractiveHotspots onScrollToForm={scrollToForm} />
 
       {/* ═══════════════════ 4 SIMPLE STEPS ═══════════════════ */}
-      <section className="py-[85px] px-4" style={{ backgroundColor: '#FFFFFF' }}>
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-a2 text-center text-surface-foreground mb-10">
-            Your custom artwork<br />in 4 simple steps
+      <section className="py-[85px]" style={{ backgroundColor: '#FFFFFF' }}>
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-a2 text-center text-surface-foreground mb-10 md:whitespace-nowrap">
+            Your custom artwork in 4 simple steps
           </h2>
 
-          <div className="space-y-8 md:grid md:grid-cols-4 md:gap-10 md:space-y-0 relative">
-            {/* Connecting line on desktop */}
-            <div className="hidden md:block absolute top-7 left-[12.5%] right-[12.5%] h-px bg-surface-border" />
+          {/* Mobile: horizontal scroll with connecting line */}
+          <div className="relative">
+            {/* Connecting line through circles */}
+            <div className="absolute top-6 left-[10%] right-[10%] h-px bg-surface-border md:top-7 md:left-[12.5%] md:right-[12.5%]" />
 
-            {[
-              { n: "1", title: "Enter your birth data", desc: "Provide your birth date, time, and location. We calculate your complete natal chart." },
-              { n: "2", title: "Choose your style", desc: "Pick from multiple artistic styles — each transforms your chart into a different visual experience." },
-              { n: "3", title: "We create your artwork", desc: "Our system generates unique artwork incorporating your zodiac symbols and cosmic blueprint." },
-              { n: "4", title: "Get it framed & shipped", desc: "Love it? Choose your canvas size. We'll print and ship museum-quality canvas to your door." },
-            ].map((s) => (
-              <div key={s.n} className="flex items-start gap-4 md:flex-col md:items-center md:text-center relative z-10">
-                <div className="w-12 h-12 md:w-14 md:h-14 border border-surface-border bg-white rounded-full flex items-center justify-center text-xl md:text-2xl text-surface-foreground flex-shrink-0 font-display font-medium">
-                  {s.n}
+            <div className="flex gap-6 overflow-x-auto px-6 md:px-0 md:grid md:grid-cols-4 md:gap-10 md:overflow-visible" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              {[
+                { n: "1", title: "Enter your birth data", desc: "Provide your birth date, time, and location. We calculate your complete natal chart." },
+                { n: "2", title: "Choose your style", desc: "Pick from multiple artistic styles — each transforms your chart into a different visual experience." },
+                { n: "3", title: "We create your artwork", desc: "Our system generates unique artwork incorporating your zodiac symbols and cosmic blueprint." },
+                { n: "4", title: "Get it framed & shipped", desc: "Love it? Choose your canvas size. We'll print and ship museum-quality canvas to your door." },
+              ].map((s) => (
+                <div key={s.n} className="flex flex-col items-center text-center flex-shrink-0 w-[200px] md:w-auto relative z-10">
+                  <div className="w-12 h-12 md:w-14 md:h-14 border border-surface-border bg-white rounded-full flex items-center justify-center text-xl md:text-2xl text-surface-foreground flex-shrink-0 font-display font-medium">
+                    {s.n}
+                  </div>
+                  <div className="mt-6">
+                    <h3 className="text-a4 text-surface-foreground mb-1 md:mb-6">{s.title}</h3>
+                    <p className="text-body-sm text-surface-muted">{s.desc}</p>
+                  </div>
                 </div>
-                <div className="md:mt-6">
-                  <h3 className="text-a4 text-surface-foreground mb-1 md:mb-6">{s.title}</h3>
-                  <p className="text-body-sm text-surface-muted">{s.desc}</p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
