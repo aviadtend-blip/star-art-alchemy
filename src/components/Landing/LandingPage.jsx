@@ -374,7 +374,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* The Perfect Gift */}
           <div>
-            <img src={womanHolding} alt="Happy customer holding her framed birth chart artwork" className="w-full object-cover" style={{ height: 406, borderRadius: 2 }} />
+            <img src={womanHolding} alt="Happy customer holding her framed birth chart artwork" className="w-full object-cover self-stretch md:h-[406px]" style={{ borderRadius: 2, aspectRatio: '40/29', height: 'auto' }} />
             <div className="mt-4">
               <p className="text-subtitle text-surface-muted tracking-widest mb-2">THE PERFECT GIFT</p>
               <h3 className="text-a2 text-surface-foreground mb-4">Impossible to Duplicate. Impossible to Forget.</h3>
@@ -389,7 +389,7 @@ export default function LandingPage() {
 
           {/* Museum-Quality Materials */}
           <div>
-            <img src={canvasDetail} alt="Close-up of museum-quality canvas print detail" className="w-full object-cover" style={{ height: 406, borderRadius: 2 }} />
+            <img src={canvasDetail} alt="Close-up of museum-quality canvas print detail" className="w-full object-cover self-stretch md:h-[406px]" style={{ borderRadius: 2, aspectRatio: '40/29', height: 'auto' }} />
             <div className="mt-4">
               <p className="text-subtitle text-surface-muted tracking-widest mb-2">MUSEUM-QUALITY MATERIALS</p>
               <h3 className="text-a2 text-surface-foreground mb-4">Materials So Good, Museums Use Them</h3>
