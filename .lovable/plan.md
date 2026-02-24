@@ -1,6 +1,24 @@
 
 
-# Celestial Artworks MVP Audit and Implementation Plan
+# Celestial Artworks MVP — Implementation Plan
+
+## COMPLETED (Phase 1)
+- ✅ StepProgressBar component (4-step with checkmarks)
+- ✅ BirthDataBar component (persistent birth data context)
+- ✅ Landing page: rebranded to "Celestial Artworks", fixed hero copy, trust bar, social proof stats (2,000+/4.9/98%/23 countries), 4 steps without "AI", "The Perfect Gift" section, "Museum-Quality Materials" section, gallery relabeled, 10 FAQs, footer with contact info/social links
+- ✅ Two-step birth data form: Step 1a (date+location inline), Step 1b (birth time modal with "I don't know" checkbox)
+- ✅ Style Selection: 3 "Cosmic Collage" variants, "Most popular" badge, "Surprise me" CTA
+- ✅ Loading Screen: full-page with Big Three cards, element balance, dominant element callout, rotating fun facts
+- ✅ Size Selection: canvas-only ($79/$119/$179), removed frames/mat/text options
+- ✅ Artwork Reveal: updated headline, CTA banner, testimonials section
+- ✅ Order Confirmation: 4-step timeline, referral program, digital download, social share, post-purchase FAQ
+
+## TODO (Phase 2-5)
+- Phase 3: Supabase session persistence + order tracking tables
+- Phase 4.1: Email capture modal gating "Download Preview"
+- Phase 4.2: Stripe fixed Price IDs
+- Phase 4.3: AI-generated unique hotspot explanations
+- Phase 5: Email service, abandoned cart, new style models
 
 ## PART 1: COMPONENT AUDIT
 
