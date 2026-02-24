@@ -134,6 +134,9 @@ export default function LandingPage() {
 
   const handleStep1aSubmit = (e) => {
     e.preventDefault();
+    if (!formData.lat || !formData.birthCity) {
+      return;
+    }
     setShowTimeModal(true);
   };
 
