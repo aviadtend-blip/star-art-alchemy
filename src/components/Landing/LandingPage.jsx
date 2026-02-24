@@ -17,6 +17,7 @@ import gallery2 from "@/assets/gallery/example-2.jpg";
 import gallery3 from "@/assets/gallery/example-3.jpg";
 import ProgressBar from "@/components/ui/ProgressBar";
 import InteractiveHotspots from "./InteractiveHotspots";
+import PrimaryButton from "@/components/ui/PrimaryButton";
 
 /* ─── Static data ─── */
 
@@ -188,9 +189,9 @@ export default function LandingPage() {
           Each piece is uniquely generated for your exact birth moment—no two are ever the same
         </p>
         <div className="text-center mb-6">
-          <button onClick={scrollToForm} className="bg-primary text-primary-foreground px-8 py-3.5 rounded-xl font-display font-semibold text-base hover:bg-primary/90 transition-all shadow-lg border-glow">
-            Show me my artwork →
-          </button>
+          <PrimaryButton onClick={scrollToForm}>
+            Show me my artwork
+          </PrimaryButton>
         </div>
         <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground font-body flex-wrap">
           <span>🔒 Secure Payment</span>
@@ -229,9 +230,9 @@ export default function LandingPage() {
               Every element in your artwork corresponds to a specific<br className="hidden lg:block" />
               astrological placement.
             </p>
-            <button onClick={scrollToForm} className="bg-primary text-primary-foreground px-8 py-3 rounded-full font-body font-semibold text-sm hover:bg-primary/90 transition-all shadow-lg">
+            <PrimaryButton onClick={scrollToForm}>
               Show me my artwork
-            </button>
+            </PrimaryButton>
           </div>
         </div>
       </section>
@@ -516,9 +517,9 @@ export default function LandingPage() {
               </div>
 
               {/* Submit */}
-              <button type="submit" className="w-full bg-primary text-primary-foreground py-3.5 rounded-xl font-display font-semibold text-base hover:bg-primary/90 transition-all shadow-lg border-glow">
-                Continue →
-              </button>
+              <PrimaryButton type="submit" className="w-full">
+                Continue
+              </PrimaryButton>
               <div className="space-y-1 text-center">
                 <p className="text-xs text-muted-foreground font-body">✨ Free preview • No credit card required</p>
                 <p className="text-xs text-muted-foreground/60 font-body">🔒 Your data is secure and never shared</p>
@@ -577,12 +578,12 @@ export default function LandingPage() {
               </div>
             </label>
 
-            <button
+            <PrimaryButton
               onClick={handleStep1bSubmit}
-              className="w-full bg-primary text-primary-foreground py-4 rounded-full font-display font-semibold text-lg hover:bg-primary/90 transition-all shadow-lg"
+              className="w-full"
             >
               Continue
-            </button>
+            </PrimaryButton>
           </div>
         </div>
       )}
