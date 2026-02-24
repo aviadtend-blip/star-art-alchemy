@@ -1,4 +1,53 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap');
+@font-face {
+  font-family: 'Erode';
+  src: url('/fonts/Erode-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Erode';
+  src: url('/fonts/Erode-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TASA Explorer';
+  src: url('/fonts/TASAExplorer-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'TASA Explorer';
+  src: url('/fonts/TASAExplorer-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'TASA Explorer';
+  src: url('/fonts/TASAExplorer-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'TASA Explorer';
+  src: url('/fonts/TASAExplorer-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'TASA Explorer';
+  src: url('/fonts/TASAExplorer-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
 
 @tailwind base;
 @tailwind components;
@@ -36,8 +85,8 @@
 
     --radius: 0.75rem;
 
-    --font-display: 'Cormorant Garamond', serif;
-    --font-body: 'Inter', sans-serif;
+    --font-display: 'Erode', serif;
+    --font-body: 'TASA Explorer', sans-serif;
 
     --glow-primary: 0 0 40px hsl(45 80% 65% / 0.15);
     --glow-accent: 0 0 60px hsl(260 40% 55% / 0.1);
