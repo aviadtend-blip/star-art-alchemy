@@ -1,4 +1,5 @@
 import Header from "@/components/Layout/Header";
+import Footer from "@/components/Layout/Footer";
 
 const summaryCards = [
   { icon: "🌍", title: "Global Print Network", desc: "Orders are routed to the print facility nearest you for faster delivery" },
@@ -228,16 +229,9 @@ export default function ShippingPolicy() {
           </a>
         </section>
 
-        {/* Footer meta */}
-        <div className="border-t border-surface-border py-8 text-center">
-          <p className="text-[12px] text-surface-muted leading-relaxed">
-            Celestial Artworks · Operated by Human Brand Firm LLC<br />
-            924 N Magnolia Ave, Suite 202 Unit #5014, Orlando, FL 32803<br />
-            <a href="/returns" className="text-primary/80 hover:text-primary transition">Returns Policy</a> · <a href="/terms" className="text-primary/80 hover:text-primary transition">Terms and Conditions</a> · <a href="/privacy" className="text-primary/80 hover:text-primary transition">Privacy Policy</a><br />
-            Last updated February 28, 2026
-          </p>
-        </div>
       </main>
+
+      <Footer />
     </div>
   );
 }
