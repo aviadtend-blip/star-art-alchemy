@@ -15,7 +15,7 @@ export default {
     extend: {
       fontFamily: {
         display: ['TASA Explorer', 'sans-serif'],
-        body: ['TASA Explorer', 'sans-serif'],
+        body: ['Erode', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",

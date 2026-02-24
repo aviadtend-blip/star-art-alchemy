@@ -180,9 +180,9 @@ export default function LandingPage() {
         <div className="max-w-sm mx-auto mb-8">
           <img src={heroFramed} alt="Framed birth chart artwork — Pisces Sun" className="w-full rounded-lg shadow-2xl" />
         </div>
-        <h1 className="text-3xl font-display font-bold text-foreground text-center mb-4 leading-tight">
+        <h1 className="text-a1 text-foreground text-center mb-4">
           Turn Your Birth Into<br />
-          <span className="text-primary text-glow">Gallery-Worthy Art</span>
+          Gallery-Worthy Art
         </h1>
         <p className="text-base text-muted-foreground text-center mb-6 font-body">
           Each piece is uniquely generated for your exact birth moment—no two are ever the same
@@ -221,7 +221,7 @@ export default function LandingPage() {
         {/* Text overlay at bottom-left */}
         <div className="relative z-20 flex items-end min-h-[700px] pb-20 px-10">
           <div className="max-w-xl">
-            <h1 className="text-5xl lg:text-6xl font-display font-medium text-foreground mb-5 leading-[1.15]">
+            <h1 className="text-a1 md:text-5xl lg:text-6xl text-foreground mb-5 leading-[1.05]">
               Turn Your Birth<br />
               Into Gallery-Worthy Art
             </h1>
@@ -237,7 +237,7 @@ export default function LandingPage() {
       </section>
 
       {/* Trust badges strip */}
-      <div className="hidden md:flex items-center justify-center gap-6 py-3.5 bg-foreground/5 border-t border-b border-border text-sm text-foreground/60 font-body">
+      <div className="hidden md:flex items-center justify-center gap-6 py-3.5 border-t border-b border-border text-sm text-foreground/60 font-body" style={{ backgroundColor: '#F2F1EF' }}>
         <span>🔒 Secure Payment</span>
         <span className="text-border">|</span>
         <span>📦 Free Shipping</span>
