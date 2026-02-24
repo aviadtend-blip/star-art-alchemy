@@ -533,11 +533,11 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 mt-2">
+                <div className="flex items-center gap-[30px]">
                   <button
                     type="button"
                     onClick={() => setShowTimeModal(false)}
-                    className="text-a5 text-foreground underline underline-offset-4 hover:opacity-80 transition-opacity"
+                    className="text-a5 text-foreground underline underline-offset-4 hover:opacity-80 transition-opacity py-4"
                   >
                     Back
                   </button>
