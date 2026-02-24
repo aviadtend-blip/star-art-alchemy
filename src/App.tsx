@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import GeneratePage from "./pages/Generate";
 import NotFound from "./pages/NotFound";
 import OrderConfirmationPage from "./pages/OrderConfirmation";
+import ShippingPolicy from "./pages/ShippingPolicy";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/generate" element={<GeneratePage />} />
           <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+          <Route path="/shipping" element={<ShippingPolicy />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
