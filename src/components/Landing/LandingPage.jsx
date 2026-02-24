@@ -551,17 +551,17 @@ export default function LandingPage() {
 
 
       {/* ═══════════════════ FAQ ═══════════════════ */}
-      <section className="py-14">
+      <section className="bg-surface pt-[120px] pb-20">
         <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-a2 md:text-5xl text-center text-foreground mb-8">Frequently asked questions</h2>
-          <div className="space-y-3">
+          <h2 className="text-a2 text-center text-surface-foreground mb-[30px]">Frequently asked questions</h2>
+          <div className="divide-y divide-surface-border">
             {faqs.map((faq) => (
-              <details key={faq.q} className="bg-card rounded-xl p-4 md:p-6 shadow-sm cursor-pointer group border border-border">
-                <summary className="text-a4 text-foreground list-none flex items-center justify-between">
+              <details key={faq.q} open className="group cursor-pointer rounded-[2px]">
+                <summary className="text-a5 text-surface-foreground uppercase tracking-wide list-none flex items-center justify-between py-6">
                   <span>{faq.q}</span>
-                  <span className="text-primary group-open:rotate-180 transition text-sm">▼</span>
+                  <span className="text-surface-muted group-open:rotate-180 transition text-sm">▲</span>
                 </summary>
-                <p className="text-body text-muted-foreground mt-3">{faq.a}</p>
+                <p className="text-body text-surface-muted pb-6 -mt-2">{faq.a}</p>
               </details>
             ))}
           </div>
