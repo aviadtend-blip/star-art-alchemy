@@ -1,5 +1,6 @@
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
+import FloatingBackButton from "@/components/ui/FloatingBackButton";
 
 const sections = [
   {
@@ -324,6 +325,7 @@ export default function TermsConditions() {
       </main>
 
       <Footer />
+      <FloatingBackButton />
     </div>
   );
 }
