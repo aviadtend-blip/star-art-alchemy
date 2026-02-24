@@ -344,7 +344,7 @@ export default function LandingPage() {
         <div className="overflow-x-auto md:overflow-visible -mx-4 md:mx-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           <div className="relative flex gap-6 md:px-0 md:grid md:grid-cols-4 md:gap-10 w-max md:w-full md:mx-auto" style={{ maxWidth: 880 }}>
             {/* Connecting line through circles — mobile: from center of 1st to center of 4th circle */}
-            <div className="md:hidden absolute top-6 h-px bg-surface-border" style={{ left: 'calc(24px + 100px)', right: 'calc(24px + 100px)' }} />
+            <div className="md:hidden absolute top-6 h-px bg-surface-border" style={{ left: 124, right: 124 }} />
             <div className="hidden md:block absolute top-7 left-[12.5%] right-[12.5%] h-px bg-surface-border" />
 
             <div aria-hidden="true" className="w-6 min-w-6 flex-shrink-0 md:hidden" />
