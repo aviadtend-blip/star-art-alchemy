@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import footerBg from "@/assets/footer-bg.jpg";
+import footerMobileBg from "@/assets/footer-mobile-bg.jpg";
 
 /**
  * Reusable site footer matching Figma design.
@@ -10,7 +11,8 @@ export default function Footer({ onScrollToForm }) {
     <footer className="relative bg-black overflow-hidden">
       {/* Background image */}
       <div className="absolute inset-0 pointer-events-none">
-        <img src={footerBg} alt="" className="w-full h-full object-cover" />
+        <img src={footerMobileBg} alt="" className="md:hidden w-full h-full object-cover" />
+        <img src={footerBg} alt="" className="hidden md:block w-full h-full object-cover" />
       </div>
 
       <div className="relative z-10">
