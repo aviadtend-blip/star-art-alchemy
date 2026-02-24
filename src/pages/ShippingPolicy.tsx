@@ -168,7 +168,7 @@ const sections = [
 
 export default function ShippingPolicy() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F2F1EF" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "#FFFFFF" }}>
       <Header />
 
       <main className="max-w-[780px] mx-auto px-6">
