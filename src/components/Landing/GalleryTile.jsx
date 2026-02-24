@@ -19,11 +19,11 @@ export default function GalleryTile({ image, name, signs, explanations = [] }) {
   const handleTap = () => setTapped((prev) => !prev);
 
   return (
-    <div className="flex flex-col items-start w-full">
+    <div className="flex flex-col items-start w-full" style={{ maxWidth: 281 }}>
       {/* Image container */}
       <div
         className="relative w-full overflow-hidden cursor-pointer group"
-        style={{ height: 417, borderRadius: 2 }}
+        style={{ height: 367, borderRadius: 2 }}
         onClick={handleTap}
       >
         <img

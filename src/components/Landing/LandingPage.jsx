@@ -256,7 +256,7 @@ export default function LandingPage() {
           </div>
 
           {/* Gallery cards */}
-          <div className="grid grid-cols-2 gap-[10px] lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-[10px] lg:grid-cols-4 lg:justify-items-center">
             {[
               {
                 img: taurusArtwork, name: "Sarah", signs: "Leo Sun, Pisces Moon",
