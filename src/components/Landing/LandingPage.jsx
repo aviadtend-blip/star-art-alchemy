@@ -253,19 +253,19 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 text-center py-[60px] md:py-[85px]" style={{ gap: '30px' }}>
             <div>
-              <div className="text-a1 md:text-4xl lg:text-5xl text-surface-foreground mb-2">2,000+</div>
+              <div className="text-a1 text-surface-foreground mb-2">2,000+</div>
               <div className="text-body-sm text-surface-muted">Artworks Created</div>
             </div>
             <div>
-              <div className="text-a1 md:text-4xl lg:text-5xl text-surface-foreground mb-2">4.9 <span className="inline-block align-middle text-[0.7em] opacity-60">☆</span></div>
+              <div className="text-a1 text-surface-foreground mb-2">4.9 <span className="inline-block align-middle text-[0.7em] opacity-60">☆</span></div>
               <div className="text-body-sm text-surface-muted">Average Rating</div>
             </div>
             <div>
-              <div className="text-a1 md:text-4xl lg:text-5xl text-surface-foreground mb-2">98%</div>
+              <div className="text-a1 text-surface-foreground mb-2">98%</div>
               <div className="text-body-sm text-surface-muted">Display It Proudly</div>
             </div>
             <div>
-              <div className="text-a1 md:text-4xl lg:text-5xl text-surface-foreground mb-2">23</div>
+              <div className="text-a1 text-surface-foreground mb-2">23</div>
               <div className="text-body-sm text-surface-muted">Countries Shipped</div>
             </div>
           </div>
@@ -317,7 +317,7 @@ export default function LandingPage() {
       {/* ═══════════════════ CTA BREAK ═══════════════════ */}
       <section className="py-12 px-4 bg-surface text-surface-foreground">
         <div className="max-w-lg mx-auto text-center space-y-6">
-          <h2 className="text-a2 md:text-4xl text-surface-foreground leading-snug">
+          <h2 className="text-a2 text-surface-foreground leading-snug">
             Ready to turn your birth data into some awesome wall art?
           </h2>
           <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-8 py-3.5 rounded-full text-a5 hover:opacity-90 transition-all shadow-lg">
