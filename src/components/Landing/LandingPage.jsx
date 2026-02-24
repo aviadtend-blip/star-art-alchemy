@@ -249,7 +249,7 @@ export default function LandingPage() {
       </div>
 
       {/* ═══════════════════ SOCIAL PROOF STATS ═══════════════════ */}
-      <section className="bg-surface text-surface-foreground px-6">
+      <section className="bg-surface text-surface-foreground px-6 overflow-x-clip lg:overflow-visible">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 text-center py-[60px] md:py-[85px]" style={{ gap: '30px' }}>
             <div>
@@ -271,7 +271,7 @@ export default function LandingPage() {
           </div>
 
           {/* Gallery cards */}
-          <div className="flex gap-[10px] overflow-x-auto -mx-6 px-0 lg:mx-0 lg:px-0 scrollbar-hide snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:justify-items-center lg:overflow-visible [&>*:first-child]:ml-6 lg:[&>*:first-child]:ml-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="flex gap-[10px] overflow-x-auto -ml-6 -mr-6 pl-6 lg:ml-0 lg:mr-0 lg:pl-0 scrollbar-hide snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:justify-items-center lg:overflow-visible" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {[
               {
                 img: taurusArtwork, name: "Sarah", signs: "Leo Sun, Pisces Moon",
