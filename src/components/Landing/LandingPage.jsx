@@ -428,12 +428,9 @@ export default function LandingPage() {
 
         <div className="relative z-10 max-w-[566px] mx-auto px-4">
           <div className="text-center mb-10">
-            <h2 className="text-a1 text-foreground">
+            <h2 className="text-a2 text-foreground">
               See your birth chart art<br />in 60 seconds
             </h2>
-            <div className="flex justify-center mt-3">
-              <div className="w-6 h-[3px] bg-primary rounded-full" />
-            </div>
           </div>
 
           {/* Glass card — rgba(17,17,17,0.70) + blur(17px) */}
@@ -513,7 +510,7 @@ export default function LandingPage() {
                     </div>
                 </div>
 
-                <label className="flex items-start gap-3 cursor-pointer">
+                <div className="flex items-start gap-3 min-h-[52px]">
                   <div
                     className="w-5 h-5 mt-0.5 rounded flex items-center justify-center flex-shrink-0 cursor-pointer border border-white/10"
                     style={{ backgroundColor: '#2C2C2C' }}
@@ -532,11 +529,20 @@ export default function LandingPage() {
                       </p>
                     )}
                   </div>
-                </label>
+                </div>
 
-                <PrimaryButton onClick={handleStep1bSubmit} className="w-full mt-2">
-                  Continue
-                </PrimaryButton>
+                <div className="flex items-center gap-4 mt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowTimeModal(false)}
+                    className="text-a5 text-foreground underline underline-offset-4 hover:opacity-80 transition-opacity"
+                  >
+                    Back
+                  </button>
+                  <PrimaryButton onClick={handleStep1bSubmit} className="flex-1">
+                    Choose style
+                  </PrimaryButton>
+                </div>
               </div>
             )}
           </div>
