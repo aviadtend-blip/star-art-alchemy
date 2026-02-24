@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { ChevronUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import heroMobile from "@/assets/hero-mobile.webp";
@@ -556,12 +557,12 @@ export default function LandingPage() {
           <h2 className="text-a2 text-center text-surface-foreground mb-[30px]">Frequently asked questions</h2>
           <div className="divide-y divide-surface-border">
             {faqs.map((faq) => (
-              <details key={faq.q} open className="group cursor-pointer rounded-[2px]">
+              <details key={faq.q} open className="group cursor-pointer rounded-[2px] [&_p]:grid [&_p]:grid-rows-[1fr] [&_p]:transition-[grid-template-rows,opacity] [&_p]:duration-300 [&:not([open])_p]:grid-rows-[0fr] [&:not([open])_p]:opacity-0">
                 <summary className="text-a5 text-surface-foreground uppercase tracking-wide list-none flex items-center justify-between py-6">
                   <span>{faq.q}</span>
-                  <span className="text-surface-muted group-open:rotate-180 transition text-sm">▲</span>
+                  <ChevronUp className="w-5 h-5 text-surface-muted transition-transform duration-300 group-open:rotate-0 rotate-180" />
                 </summary>
-                <p className="text-body text-surface-muted pb-6 -mt-2">{faq.a}</p>
+                <p className="text-body text-surface-muted pb-6 -mt-2 overflow-hidden">{faq.a}</p>
               </details>
             ))}
           </div>
