@@ -334,7 +334,7 @@ export default function LandingPage() {
             {[
               { n: "1", title: "Enter your birth data", desc: "Provide your birth date, time, and location. We calculate your complete natal chart." },
               { n: "2", title: "Choose your style", desc: "Pick from multiple artistic styles — each transforms your chart into a different visual experience." },
-              { n: "3", title: "We create your artwork", desc: "Our system generates unique artwork incorporating your zodiac symbols and cosmic blueprint." },
+              { n: "3", title: "We create your artwork", desc: "We craft unique artwork incorporating your zodiac symbols and cosmic blueprint." },
               { n: "4", title: "Get it framed & shipped", desc: "Love it? Choose your canvas size. We'll print and ship museum-quality canvas to your door." },
             ].map((s) => (
               <div key={s.n} className="flex items-start gap-4 md:flex-col md:items-center md:text-center">
