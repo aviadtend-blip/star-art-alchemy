@@ -1,5 +1,6 @@
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
+import FloatingBackButton from "@/components/ui/FloatingBackButton";
 
 const summaryCards = [
   { icon: "🌍", title: "Global Print Network", desc: "Orders are routed to the print facility nearest you for faster delivery" },
@@ -232,6 +233,7 @@ export default function ShippingPolicy() {
       </main>
 
       <Footer />
+      <FloatingBackButton />
     </div>
   );
 }
