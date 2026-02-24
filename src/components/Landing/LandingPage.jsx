@@ -167,11 +167,11 @@ export default function LandingPage() {
       </button>
 
       {/* NAVIGATION */}
-      <nav className="py-4 px-4 flex items-center justify-between border-b border-border">
-        <div className="text-xl font-display font-bold text-primary text-glow">
+      <nav className="absolute top-0 left-0 right-0 z-30 py-5 px-6 md:px-10 flex items-center justify-between">
+        <div className="text-lg font-display font-bold text-foreground tracking-wide">
           Celestial Artworks
         </div>
-        <button className="text-muted-foreground hover:text-foreground transition font-body text-sm">Login</button>
+        <button className="text-foreground/70 hover:text-foreground transition font-body text-sm">Login</button>
       </nav>
 
       {/* ═══════════════════ HERO ═══════════════════ */}
@@ -202,63 +202,68 @@ export default function LandingPage() {
       </section>
 
       {/* Desktop hero — gallery wall */}
-      <section className="hidden md:block relative min-h-[600px] overflow-hidden">
+      <section className="hidden md:block relative min-h-[700px] overflow-hidden bg-background">
+        {/* Gallery wall images */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background z-10" />
-          <div className="grid grid-cols-3 gap-6 p-8 h-full">
-            <div className="flex items-end justify-center">
-              <img src={heroFramed} alt="Pisces artwork" className="w-full max-w-xs rounded-lg shadow-2xl" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent z-10" />
+          <div className="grid grid-cols-3 h-full">
+            <div className="flex items-start justify-center pt-6">
+              <img src={heroFramed} alt="Pisces artwork" className="w-[85%] max-w-md shadow-2xl" />
             </div>
-            <div className="flex items-center justify-center">
-              <img src={capricornGallery} alt="Capricorn artwork on gallery wall" className="w-full max-w-sm rounded-lg shadow-2xl" />
+            <div className="flex items-start justify-center -mt-4">
+              <img src={capricornGallery} alt="Capricorn artwork on gallery wall" className="w-full max-w-lg shadow-2xl" />
             </div>
-            <div className="flex items-start justify-center pt-12">
-              <img src={ariesGallery} alt="Aries artwork framed" className="w-full max-w-xs rounded-lg shadow-2xl" />
+            <div className="flex items-start justify-end">
+              <img src={ariesGallery} alt="Aries artwork framed" className="w-[90%] max-w-md shadow-2xl" />
             </div>
           </div>
         </div>
-        <div className="relative z-20 flex items-end min-h-[600px] pb-16 px-8">
-          <div className="max-w-2xl">
-            <h1 className="text-6xl font-display font-bold text-foreground mb-4 leading-tight">
-              Turn Your Birth Into<br />
-              <span className="text-primary text-glow">Gallery-Worthy Art</span>
+        {/* Text overlay at bottom-left */}
+        <div className="relative z-20 flex items-end min-h-[700px] pb-20 px-10">
+          <div className="max-w-xl">
+            <h1 className="text-5xl lg:text-6xl font-display font-medium text-foreground mb-5 leading-[1.15]">
+              Turn Your Birth<br />
+              Into Gallery-Worthy Art
             </h1>
-            <p className="text-xl text-muted-foreground mb-6 font-body max-w-lg">
-              Each piece is uniquely generated for your exact birth moment—no two are ever the same
+            <p className="text-base text-foreground/70 mb-7 font-body max-w-md leading-relaxed">
+              Every element in your artwork corresponds to a specific<br className="hidden lg:block" />
+              astrological placement.
             </p>
-            <button onClick={scrollToForm} className="bg-primary text-primary-foreground px-10 py-4 rounded-xl font-display font-semibold text-lg hover:bg-primary/90 transition-all shadow-lg border-glow">
-              Show me my artwork →
+            <button onClick={scrollToForm} className="bg-primary text-primary-foreground px-8 py-3 rounded-full font-body font-semibold text-sm hover:bg-primary/90 transition-all shadow-lg">
+              Show me my artwork
             </button>
-            <div className="flex items-center gap-4 mt-6 text-xs text-muted-foreground font-body">
-              <span>🔒 Secure Payment</span>
-              <span className="text-border">|</span>
-              <span>📦 Free Shipping</span>
-              <span className="text-border">|</span>
-              <span>↩️ 30-Day Guarantee</span>
-            </div>
           </div>
         </div>
       </section>
 
+      {/* Trust badges strip */}
+      <div className="hidden md:flex items-center justify-center gap-6 py-3.5 bg-foreground/5 border-t border-b border-border text-sm text-foreground/60 font-body">
+        <span>🔒 Secure Payment</span>
+        <span className="text-border">|</span>
+        <span>📦 Free Shipping</span>
+        <span className="text-border">|</span>
+        <span>↩️ 30-Day Guarantee</span>
+      </div>
+
       {/* ═══════════════════ SOCIAL PROOF STATS ═══════════════════ */}
-      <section className="py-10 bg-surface text-surface-foreground">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10 text-center">
+      <section className="py-16 md:py-20 bg-surface text-surface-foreground">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 mb-14 text-center">
             <div>
-              <div className="text-3xl md:text-5xl font-display font-medium text-surface-foreground mb-1">2,000+</div>
-              <div className="text-surface-muted font-body text-xs">Artworks Created</div>
+              <div className="text-3xl md:text-4xl lg:text-5xl font-display font-medium text-surface-foreground mb-2">2,000+</div>
+              <div className="text-surface-muted font-body text-sm">Artworks Created</div>
             </div>
             <div>
-              <div className="text-3xl md:text-5xl font-display font-medium text-surface-foreground mb-1">4.9★</div>
-              <div className="text-surface-muted font-body text-xs">Average Rating</div>
+              <div className="text-3xl md:text-4xl lg:text-5xl font-display font-medium text-surface-foreground mb-2">4.9 <span className="inline-block align-middle text-[0.7em] opacity-60">☆</span></div>
+              <div className="text-surface-muted font-body text-sm">Average Rating</div>
             </div>
             <div>
-              <div className="text-3xl md:text-5xl font-display font-medium text-surface-foreground mb-1">98%</div>
-              <div className="text-surface-muted font-body text-xs">Display It Proudly</div>
+              <div className="text-3xl md:text-4xl lg:text-5xl font-display font-medium text-surface-foreground mb-2">98%</div>
+              <div className="text-surface-muted font-body text-sm">Display It Proudly</div>
             </div>
             <div>
-              <div className="text-3xl md:text-5xl font-display font-medium text-surface-foreground mb-1">23</div>
-              <div className="text-surface-muted font-body text-xs">Countries Shipped</div>
+              <div className="text-3xl md:text-4xl lg:text-5xl font-display font-medium text-surface-foreground mb-2">23</div>
+              <div className="text-surface-muted font-body text-sm">Countries Shipped</div>
             </div>
           </div>
 
