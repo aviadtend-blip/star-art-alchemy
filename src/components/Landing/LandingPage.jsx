@@ -86,6 +86,7 @@ export default function LandingPage() {
   const [birthMinute, setBirthMinute] = useState("00");
   const [birthPeriod, setBirthPeriod] = useState("PM");
   const [dontKnowTime, setDontKnowTime] = useState(false);
+  const [locationError, setLocationError] = useState(false);
 
   // City autocomplete
   const [cityQuery, setCityQuery] = useState("");
@@ -135,8 +136,10 @@ export default function LandingPage() {
   const handleStep1aSubmit = (e) => {
     e.preventDefault();
     if (!formData.lat || !formData.birthCity) {
+      setLocationError(true);
       return;
     }
+    setLocationError(false);
     setShowTimeModal(true);
   };
 
@@ -468,9 +471,9 @@ export default function LandingPage() {
                   <div className="relative">
                     <input
                       type="text" required value={cityQuery}
-                      onChange={(e) => { setCityQuery(e.target.value); setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null })); }}
+                      onChange={(e) => { setCityQuery(e.target.value); setLocationError(false); setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null })); }}
                       placeholder="City"
-                      className={inputClass} autoComplete="off"
+                      className={`${inputClass} ${locationError ? 'border-red-500' : ''}`} autoComplete="off"
                     />
                     {loadingSuggestions && (
                       <div className="absolute right-0 top-1/2 -translate-y-1/2">
@@ -487,6 +490,7 @@ export default function LandingPage() {
                       ))}
                     </ul>
                   )}
+                  {locationError && !formData.lat && <p className="text-body-sm text-red-400 mt-2">Please select a city from the dropdown</p>}
                   {formData.lat && <p className="text-body-sm text-muted-foreground mt-2">📍 {formData.birthCity}, {formData.birthCountry}</p>}
                 </div>
 
