@@ -59,7 +59,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
         <h2 className="text-a2 md:text-4xl text-center text-surface-foreground mb-3">
           See how it all happens
         </h2>
-        <p className="text-body-sm text-surface-muted text-center mb-10 max-w-xl mx-auto">
+        <p className="text-body-sm text-surface-muted text-center mb-[80px] max-w-xl mx-auto">
           Every element in your artwork corresponds to a specific astrological placement.
         </p>
 
@@ -168,7 +168,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
         </div>
 
         {/* CTA */}
-        <div className="text-center mt-10 space-y-3">
+        <div className="text-center mt-[80px] space-y-3">
           <p className="text-body-sm text-surface-muted">
             Want to see what symbols appear in YOUR chart?
           </p>
