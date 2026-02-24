@@ -256,7 +256,7 @@ export default function LandingPage() {
           </div>
 
           {/* Gallery cards */}
-          <div className="grid grid-cols-2 gap-[10px] lg:grid-cols-4 lg:justify-items-center">
+          <div className="flex gap-[10px] overflow-x-auto px-6 lg:px-0 scrollbar-hide snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:justify-items-center lg:overflow-visible" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {[
               {
                 img: taurusArtwork, name: "Sarah", signs: "Leo Sun, Pisces Moon",
