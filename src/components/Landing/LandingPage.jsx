@@ -351,23 +351,22 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══════════════════ GIFT + MATERIALS (side-by-side on desktop) ═══════════════════ */}
+      {/* ═══════════════════ THE PERFECT GIFT ═══════════════════ */}
       <section className="py-14 bg-surface text-surface-foreground">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="md:grid md:grid-cols-2 md:gap-12">
-            {/* THE PERFECT GIFT */}
-            <div className="mb-12 md:mb-0">
-              <div className="mb-6">
-                <img src={womanHolding} alt="Happy customer holding her framed birth chart artwork" className="w-full rounded-2xl shadow-lg" />
-              </div>
-              <h2 className="text-2xl md:text-3xl font-display font-medium text-surface-foreground leading-snug mb-3">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="md:grid md:grid-cols-2 md:gap-14 md:items-center">
+            <div>
+              <img src={womanHolding} alt="Happy customer holding her framed birth chart artwork" className="w-full rounded-2xl shadow-lg" />
+            </div>
+            <div className="mt-8 md:mt-0">
+              <h2 className="text-2xl md:text-4xl font-display font-medium text-surface-foreground leading-snug mb-3">
                 Impossible to Duplicate.
                 <span className="text-primary"> Impossible to Forget.</span>
               </h2>
-              <p className="text-sm text-surface-muted font-body mb-4">
+              <p className="text-sm text-surface-muted font-body mb-5">
                 The perfect gift for birthdays, anniversaries, new homes, or anyone who deserves something truly one-of-a-kind.
               </p>
-              <div className="space-y-2 mb-5">
+              <div className="space-y-3 mb-6">
                 {[
                   { icon: "🎁", text: "Deeply personal — based on their exact birth moment" },
                   { icon: "🎨", text: "Museum-quality canvas — built to last 100+ years" },
@@ -379,17 +378,23 @@ export default function LandingPage() {
                   </div>
                 ))}
               </div>
-              <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-6 py-2.5 rounded-full font-body font-semibold hover:opacity-90 transition-all text-sm">
+              <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-8 py-3 rounded-full font-body font-semibold hover:opacity-90 transition-all text-sm">
                 Create a gift →
               </button>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* MUSEUM-QUALITY MATERIALS */}
+      {/* ═══════════════════ MUSEUM-QUALITY MATERIALS ═══════════════════ */}
+      <section className="py-14 bg-surface text-surface-foreground">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="md:grid md:grid-cols-2 md:gap-14 md:items-center">
             <div>
-              <div className="mb-6">
-                <img src={saturnPlanet} alt="Saturn — representing museum-quality craftsmanship" className="w-full rounded-2xl shadow-lg" />
-              </div>
-              <h2 className="text-2xl md:text-3xl font-display font-medium text-surface-foreground mb-3">
+              <img src={saturnPlanet} alt="Saturn — representing museum-quality craftsmanship" className="w-full rounded-2xl shadow-lg" />
+            </div>
+            <div className="mt-8 md:mt-0">
+              <h2 className="text-2xl md:text-4xl font-display font-medium text-surface-foreground mb-3">
                 Materials to Grace<br />Museums like Them
               </h2>
               <p className="text-sm text-surface-muted font-body mb-6">
@@ -574,17 +579,17 @@ export default function LandingPage() {
       )}
 
       {/* ═══════════════════ FAQ ═══════════════════ */}
-      <section className="py-14 bg-surface text-surface-foreground">
+      <section className="py-14">
         <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-2xl md:text-5xl font-display font-medium text-center text-surface-foreground mb-8">Frequently asked questions</h2>
+          <h2 className="text-2xl md:text-5xl font-display font-medium text-center text-foreground mb-8">Frequently asked questions</h2>
           <div className="space-y-3">
             {faqs.map((faq) => (
-              <details key={faq.q} className="bg-surface-card rounded-xl p-4 md:p-6 shadow-sm cursor-pointer group border border-surface-border">
-                <summary className="font-medium text-surface-foreground text-sm md:text-lg list-none flex items-center justify-between font-display">
+              <details key={faq.q} className="bg-card rounded-xl p-4 md:p-6 shadow-sm cursor-pointer group border border-border">
+                <summary className="font-medium text-foreground text-sm md:text-lg list-none flex items-center justify-between font-display">
                   <span>{faq.q}</span>
                   <span className="text-primary group-open:rotate-180 transition text-sm">▼</span>
                 </summary>
-                <p className="text-surface-muted mt-3 text-sm font-body">{faq.a}</p>
+                <p className="text-muted-foreground mt-3 text-sm font-body">{faq.a}</p>
               </details>
             ))}
           </div>
