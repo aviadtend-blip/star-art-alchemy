@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import StepProgressBar from '@/components/ui/StepProgressBar';
+import ProgressBar from '@/components/ui/ProgressBar';
 
 const FUN_FACTS = [
   "Fun fact: Your chart has never been created as artwork before today.",
@@ -35,7 +35,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
 
   return (
     <div className="min-h-screen bg-cosmic flex flex-col">
-      <StepProgressBar currentStep={2} />
+      <ProgressBar currentStep={2} />
 
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-12">
         {/* Headline */}

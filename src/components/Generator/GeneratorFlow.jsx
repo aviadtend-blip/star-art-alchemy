@@ -11,7 +11,7 @@ import { buildConcretePrompt } from "@/lib/prompts/promptBuilder.js";
 import { generateImage } from "@/lib/api/replicateClient";
 import { supabase } from "@/integrations/supabase/client";
 import { getStyleById } from "@/config/artStyles";
-import StepProgressBar from "@/components/ui/StepProgressBar";
+import ProgressBar from '@/components/ui/ProgressBar';
 
 const GeneratorFlowJsx = () => {
   const [searchParams] = useSearchParams();
@@ -178,7 +178,7 @@ const GeneratorFlowJsx = () => {
   return (
     <div className="min-h-screen bg-cosmic">
       {/* Show progress bar for input step */}
-      {step === "input" && <StepProgressBar currentStep={1} />}
+      {step === "input" && <ProgressBar currentStep={1} />}
 
       {/* Decorative stars */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -243,7 +243,7 @@ const GeneratorFlowJsx = () => {
 
         {step === "explaining" && chartData && generatedImage && (
           <div className="animate-fade-in">
-            <StepProgressBar currentStep={3} />
+            <ProgressBar currentStep={3} />
             <ChartExplanation
               chartData={chartData}
               selectedImage={generatedImage}

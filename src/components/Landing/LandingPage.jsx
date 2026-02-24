@@ -8,6 +8,7 @@ import gallery4 from "@/assets/gallery/example-4.jpg";
 import gallery5 from "@/assets/gallery/example-5.jpg";
 import gallery6 from "@/assets/gallery/example-6.jpg";
 import lifestyleImg from "@/assets/gallery/lifestyle.jpg";
+import ProgressBar from "@/components/ui/ProgressBar";
 
 /* ─── Static data ─── */
 
@@ -389,6 +390,7 @@ export default function LandingPage() {
       {/* BIRTH DATA FORM (Step 1a) */}
       <section className="py-20" id="birth-form">
         <div className="max-w-2xl mx-auto px-4">
+          <ProgressBar currentStep={1} />
           <div className="bg-card rounded-2xl shadow-2xl p-6 md:p-10 border border-border">
             <div className="text-center mb-8">
               <h2 className="font-display text-3xl text-foreground mb-2">Enter Your Birth Information</h2>
