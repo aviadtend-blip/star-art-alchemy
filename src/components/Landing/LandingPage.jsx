@@ -333,7 +333,7 @@ export default function LandingPage() {
       <InteractiveHotspots onScrollToForm={scrollToForm} />
 
       {/* ═══════════════════ 4 SIMPLE STEPS ═══════════════════ */}
-      <section className="py-[85px]" style={{ backgroundColor: '#FFFFFF' }}>
+      <section className="py-[85px] overflow-x-clip" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="mx-auto px-4" style={{ maxWidth: 880 }}>
           <h2 className="text-a2 text-center text-surface-foreground mb-10 md:whitespace-nowrap">
             Your custom artwork in 4 simple steps
