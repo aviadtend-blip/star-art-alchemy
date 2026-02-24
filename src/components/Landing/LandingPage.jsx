@@ -262,44 +262,34 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Reviews — horizontal scroll on mobile */}
-          <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory md:grid md:grid-cols-3 md:overflow-visible">
-            {reviews.map((r) => (
-              <div key={r.initials} className="min-w-[280px] md:min-w-0 snap-start bg-surface-card rounded-xl p-5 shadow-sm border border-surface-border flex-shrink-0">
-                <div className="flex items-center gap-1 mb-2 text-primary text-sm">★★★★★</div>
-                <p className="text-surface-foreground/80 mb-3 font-body text-sm leading-relaxed">{r.text}</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-primary/20 rounded-full flex items-center justify-center text-primary font-semibold font-body text-sm">
-                    {r.initials}
+          {/* Gallery cards with hover review popups */}
+          <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory md:grid md:grid-cols-4 md:overflow-visible">
+            {[
+              { img: taurusArtwork, label: "Sarah's chart", sub: "Taurus Sun · Scorpio Moon", review: '"The mountain representing my Capricorn sun is stunning!"', name: "Sarah J." },
+              { img: capricornWall, label: "Simone's chart", sub: "Capricorn Sun · Cancer Moon", review: '"This is the most meaningful piece of art I own."', name: "Simone K." },
+              { img: virgoArtwork, label: "Tyler's chart", sub: "Virgo Sun · Pisces Moon", review: '"Everyone asks about it when they visit!"', name: "Tyler M." },
+              { img: libraWall, label: "Amanda's chart", sub: "Libra Sun · Aquarius Moon", review: '"Bought one for myself and immediately ordered two more as gifts."', name: "Amanda L." },
+            ].map((item) => (
+              <div key={item.label} className="min-w-[200px] md:min-w-0 snap-start flex-shrink-0 group relative">
+                <div className="rounded-xl overflow-hidden shadow-md border border-surface-border">
+                  <img src={item.img} alt={item.label} className="w-full h-48 md:h-56 object-cover" />
+                </div>
+                <p className="font-display font-medium text-surface-foreground text-sm mt-2">{item.label}</p>
+                <p className="font-body text-surface-muted text-xs">{item.sub}</p>
+
+                {/* Hover review popup */}
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-surface-card border border-surface-border rounded-xl p-4 shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-20 hidden md:block">
+                  <div className="flex items-center gap-0.5 mb-2 text-primary text-sm">★★★★★</div>
+                  <p className="text-surface-foreground/80 font-body text-xs leading-relaxed mb-3">{item.review}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-surface-foreground font-body text-xs">{item.name}</span>
+                    <span className="text-xs text-primary font-body">Verified Buyer</span>
                   </div>
-                  <div>
-                    <div className="font-semibold text-surface-foreground font-body text-sm">{r.name}</div>
-                    <div className="text-xs text-surface-muted font-body">{r.signs}</div>
-                    <div className="text-xs text-primary font-body">{r.badge}</div>
-                  </div>
+                  {/* Arrow */}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-3 h-3 bg-surface-card border-r border-b border-surface-border rotate-45 -mt-1.5" />
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Gallery cards row */}
-          <div className="mt-10">
-            <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory md:grid md:grid-cols-4 md:overflow-visible">
-              {[
-                { img: taurusArtwork, label: "Sarah's chart", sub: "Taurus Sun · Scorpio Moon" },
-                { img: capricornWall, label: "Simone's chart", sub: "Capricorn Sun · Cancer Moon" },
-                { img: virgoArtwork, label: "Tyler's chart", sub: "Virgo Sun · Pisces Moon" },
-                { img: libraWall, label: "Amanda's chart", sub: "Libra Sun · Aquarius Moon" },
-              ].map((item) => (
-                <div key={item.label} className="min-w-[200px] md:min-w-0 snap-start flex-shrink-0">
-                  <div className="rounded-xl overflow-hidden shadow-md border border-surface-border">
-                    <img src={item.img} alt={item.label} className="w-full h-48 md:h-56 object-cover" />
-                  </div>
-                  <p className="font-display font-medium text-surface-foreground text-sm mt-2">{item.label}</p>
-                  <p className="font-body text-surface-muted text-xs">{item.sub}</p>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
@@ -451,8 +441,22 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ BIRTH DATA FORM (Step 1a) ═══════════════════ */}
-      <section className="py-14" id="birth-form">
-        <div className="max-w-lg mx-auto px-4">
+      <section className="py-14 relative overflow-hidden" id="birth-form">
+        {/* Starfield texture */}
+        <div className="absolute inset-0 bg-cosmic" />
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(1px 1px at 10% 20%, hsl(0 0% 80% / 0.4) 0%, transparent 100%),
+            radial-gradient(1px 1px at 30% 60%, hsl(0 0% 70% / 0.3) 0%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 50% 10%, hsl(45 80% 65% / 0.2) 0%, transparent 100%),
+            radial-gradient(1px 1px at 70% 40%, hsl(0 0% 80% / 0.35) 0%, transparent 100%),
+            radial-gradient(1px 1px at 90% 70%, hsl(0 0% 75% / 0.25) 0%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 20% 80%, hsl(260 40% 70% / 0.2) 0%, transparent 100%),
+            radial-gradient(1px 1px at 60% 85%, hsl(0 0% 80% / 0.3) 0%, transparent 100%),
+            radial-gradient(1px 1px at 85% 15%, hsl(0 0% 70% / 0.25) 0%, transparent 100%),
+            radial-gradient(1.5px 1.5px at 40% 35%, hsl(45 60% 70% / 0.15) 0%, transparent 100%),
+            radial-gradient(1px 1px at 15% 50%, hsl(0 0% 80% / 0.3) 0%, transparent 100%)`,
+        }} />
+        <div className="relative z-10 max-w-lg mx-auto px-4">
           <ProgressBar currentStep={1} />
           <div className="bg-card rounded-2xl shadow-2xl p-5 md:p-10 border border-border mt-4">
             <div className="text-center mb-6">

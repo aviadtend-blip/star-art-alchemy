@@ -41,9 +41,9 @@ const HOTSPOTS = [
 ];
 
 const NATAL_MAP = [
-  { emoji: "☀️", label: "Taurus Sun" },
-  { emoji: "🌙", label: "Scorpio Moon" },
-  { emoji: "⬆️", label: "Sagittarius Rising" },
+  { emoji: "☀️", label: "Taurus Sun", theme: "Grounded Abundance", desc: "The golden-orange sun anchors the composition — solid, warm, and abundant, just like Taurus energy in the 2nd house of material security." },
+  { emoji: "🌙", label: "Scorpio Moon", theme: "Deep Transformation", desc: "Shadowed magenta flora and dark, layered textures capture the emotional intensity and hidden depths of a Scorpio Moon." },
+  { emoji: "⬆️", label: "Sagittarius Rising", theme: "Expansive Horizons", desc: "Open landscapes stretching toward distant mountains embody the adventurous, optimistic face shown to the world." },
 ];
 
 export default function InteractiveHotspots({ onScrollToForm }) {
@@ -101,11 +101,16 @@ export default function InteractiveHotspots({ onScrollToForm }) {
             <p className="text-xs text-surface-muted font-body tracking-widest uppercase mb-3">
                 EXAMPLE NATAL MAP
               </p>
-              <div className="space-y-2 mb-8">
+              <div className="space-y-4 mb-8">
                 {NATAL_MAP.map((item) => (
-                  <div key={item.label} className="flex items-center gap-2">
-                    <span className="text-lg">{item.emoji}</span>
-                    <span className="text-surface-foreground font-display font-medium text-base">{item.label}</span>
+                  <div key={item.label}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-lg">{item.emoji}</span>
+                      <span className="text-surface-foreground font-display font-medium text-base">{item.label}</span>
+                      <span className="text-surface-muted">·</span>
+                      <span className="text-surface-foreground/70 font-display text-sm">{item.theme}</span>
+                    </div>
+                    <p className="text-surface-muted font-body text-xs leading-relaxed pl-8">{item.desc}</p>
                   </div>
                 ))}
               </div>
