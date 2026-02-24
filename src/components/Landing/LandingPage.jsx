@@ -341,12 +341,13 @@ export default function LandingPage() {
         </div>
 
         {/* Horizontal scroll on mobile, grid on desktop */}
-        <div className="overflow-x-auto md:overflow-visible" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-          <div className="relative flex gap-6 pl-6 pr-6 md:px-0 md:grid md:grid-cols-4 md:gap-10 w-max md:w-full md:mx-auto" style={{ maxWidth: 880 }}>
+        <div className="overflow-x-auto md:overflow-visible -mx-4 md:mx-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="relative flex gap-6 md:px-0 md:grid md:grid-cols-4 md:gap-10 w-max md:w-full md:mx-auto" style={{ maxWidth: 880 }}>
             {/* Connecting line through circles */}
             <div className="absolute top-6 md:top-7 h-px bg-surface-border" style={{ left: 100, right: 100 }} />
             <div className="hidden md:block absolute top-7 left-[12.5%] right-[12.5%] h-px bg-surface-border" />
 
+            <div aria-hidden="true" className="w-6 min-w-6 flex-shrink-0 md:hidden" />
             {[
               { n: "1", title: "Enter your birth data", desc: "Provide your birth date, time, and location. We calculate your complete natal chart." },
               { n: "2", title: "Choose your style", desc: "Pick from multiple artistic styles — each transforms your chart into a different visual experience." },
@@ -363,6 +364,7 @@ export default function LandingPage() {
                 </div>
               </div>
             ))}
+            <div aria-hidden="true" className="w-6 min-w-6 flex-shrink-0 md:hidden" />
           </div>
         </div>
       </section>
