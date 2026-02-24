@@ -498,8 +498,7 @@ export default function LandingPage() {
               <div className="flex flex-col gap-[30px]">
                 <div>
                   <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH TIME</label>
-                  {!dontKnowTime && (
-                    <div className="grid grid-cols-3 gap-4">
+                  <div className={`grid grid-cols-3 gap-4 transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
                       <input type="number" value={birthHour} onChange={(e) => setBirthHour(e.target.value)} placeholder="12" min="1" max="12" className={inputClass} />
                       <input type="number" value={birthMinute} onChange={(e) => setBirthMinute(e.target.value)} placeholder="00" min="0" max="59" className={inputClass} />
                       <div className="relative">
@@ -512,7 +511,6 @@ export default function LandingPage() {
                         </span>
                       </div>
                     </div>
-                  )}
                 </div>
 
                 <label className="flex items-start gap-3 cursor-pointer">
@@ -527,7 +525,7 @@ export default function LandingPage() {
                   </div>
                   <input type="checkbox" checked={dontKnowTime} onChange={(e) => setDontKnowTime(e.target.checked)} className="sr-only" />
                   <div>
-                    <span className="text-body-sm text-foreground">I don't know my birth time</span>
+                    <span className="text-a5 text-foreground">I don't know my birth time</span>
                     {dontKnowTime && (
                       <p className="text-body-sm mt-1" style={{ color: '#6A6A6A' }}>
                         No worries! Your artwork will still be deeply personal and beautifully accurate.
