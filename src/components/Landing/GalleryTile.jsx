@@ -26,7 +26,7 @@ export default function GalleryTile({ image, name, signs, explanations = [] }) {
       {/* Image container */}
       <div
         className="relative w-full overflow-hidden cursor-pointer group"
-        style={{ height: 417, borderRadius: 10 }}
+        style={{ height: 417, borderRadius: 2 }}
         onClick={handleTap}
       >
         <img
@@ -46,16 +46,18 @@ export default function GalleryTile({ image, name, signs, explanations = [] }) {
             background: 'rgba(102, 95, 81, 0.7)',
             backdropFilter: 'blur(7px)',
             WebkitBackdropFilter: 'blur(7px)',
-            borderRadius: 10,
+            borderRadius: 2,
           }}
         >
           {/* Close button (mobile only) */}
           <button
             onClick={(e) => { e.stopPropagation(); setTapped(false); }}
-            className="absolute top-3 right-3 text-white/80 hover:text-white md:hidden text-a5"
+            className="absolute top-5 right-5 md:hidden w-7 h-7 flex items-center justify-center"
             aria-label="Close"
           >
-            ✕
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L15 15M15 1L1 15" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
           </button>
 
           {/* Header */}
