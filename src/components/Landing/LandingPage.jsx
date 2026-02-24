@@ -444,6 +444,7 @@ export default function LandingPage() {
               padding: 48,
               gap: 30,
               minWidth: 320,
+              minHeight: 380,
             }}
           >
             {!showTimeModal ? (
