@@ -217,7 +217,7 @@ export default function LandingPage() {
         {/* Text overlay at bottom-left */}
         <div className="relative z-20 flex items-end min-h-[700px] pb-20 px-10">
           <div className="max-w-xl">
-            <h1 className="text-a1 md:text-5xl lg:text-6xl text-foreground mb-5 leading-[1.05]">
+            <h1 className="text-a1 text-foreground mb-5 leading-[1.05]">
               Turn Your Birth<br />
               Into Gallery-Worthy Art
             </h1>
