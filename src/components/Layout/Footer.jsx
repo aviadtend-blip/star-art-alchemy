@@ -25,7 +25,7 @@ export default function Footer({ onScrollToForm }) {
           </div>
 
           {/* Right — Help */}
-          <div className="text-right">
+          <div>
             <p className="text-subtitle text-white tracking-[2px] mb-4">NEED HELP?</p>
             <p className="text-white/60 mb-3">✦</p>
             <p className="text-body-sm text-white/80 mb-1.5">hello@celestialartworks.com</p>
