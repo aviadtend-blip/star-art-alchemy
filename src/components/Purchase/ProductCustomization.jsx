@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import StepProgressBar from '@/components/ui/StepProgressBar';
+import ProgressBar from '@/components/ui/ProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 
 const SIZE_OPTIONS = [
@@ -29,7 +29,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   return (
     <div className="min-h-screen bg-cosmic">
-      <StepProgressBar currentStep={4} />
+      <ProgressBar currentStep={4} />
       <BirthDataBar formData={formData} onEdit={onEditBirthData} />
 
       <div className="py-8 px-4">

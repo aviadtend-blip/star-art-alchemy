@@ -1,6 +1,7 @@
 import { generateChartExplanation } from '@/lib/explanations/generateExplanation';
 import { useState, useEffect } from 'react';
 import BirthDataBar from '@/components/ui/BirthDataBar';
+import ProgressBar from '@/components/ui/ProgressBar';
 
 export function ChartExplanation({ chartData, selectedImage, onGetFramed, formData, onEditBirthData }) {
   const explanation = generateChartExplanation(chartData);
@@ -24,6 +25,7 @@ export function ChartExplanation({ chartData, selectedImage, onGetFramed, formDa
 
   return (
     <>
+      <ProgressBar currentStep={3} />
       <BirthDataBar formData={formData} onEdit={onEditBirthData} />
 
       <div className="px-4 py-8">

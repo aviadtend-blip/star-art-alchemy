@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ART_STYLES } from '@/config/artStyles';
-import StepProgressBar from '@/components/ui/StepProgressBar';
+import ProgressBar from '@/components/ui/ProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 
 export default function StyleSelection({ onSelect, onBack, chartData, formData, onEditBirthData }) {
@@ -26,7 +26,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
 
   return (
     <div className="relative z-10">
-      <StepProgressBar currentStep={2} />
+      <ProgressBar currentStep={2} />
       <BirthDataBar formData={formData} onEdit={onEditBirthData} />
 
       <div className="max-w-4xl mx-auto px-4 py-8">
