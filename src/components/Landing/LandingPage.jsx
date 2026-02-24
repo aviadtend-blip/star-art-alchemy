@@ -311,6 +311,7 @@ export default function LandingPage() {
                 explanations={item.explanations}
               />
             ))}
+            <div aria-hidden="true" className="w-6 min-w-6 flex-shrink-0 lg:hidden" />
           </div>
         </div>
       </section>
