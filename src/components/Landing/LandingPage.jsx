@@ -249,7 +249,7 @@ export default function LandingPage() {
       </div>
 
       {/* ═══════════════════ SOCIAL PROOF STATS ═══════════════════ */}
-      <section className="bg-surface text-surface-foreground px-6 overflow-x-clip lg:overflow-visible">
+      <section className="bg-white text-surface-foreground px-6 overflow-x-clip lg:overflow-visible">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 text-center py-[60px] md:py-[85px]" style={{ gap: '30px' }}>
             <div>
@@ -317,7 +317,7 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ CTA BREAK ═══════════════════ */}
-      <section className="py-[60px] px-4 bg-surface text-surface-foreground">
+      <section className="py-[60px] px-4 bg-white text-surface-foreground">
         <div className="max-w-lg mx-auto text-center flex flex-col items-center gap-5">
           <h2 className="text-a2 text-surface-foreground leading-snug">
             Ready to turn your birth data into some awesome wall art?
@@ -403,7 +403,7 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ CUSTOMER GALLERY ═══════════════════ */}
-      <section className="py-14 bg-surface text-surface-foreground">
+      <section className="py-14 bg-white text-surface-foreground">
         <div className="max-w-7xl mx-auto px-4">
           <p className="text-subtitle text-surface-muted text-center mb-2 tracking-widest">
             REAL HOMES. REAL CUSTOMERS. REAL REACTIONS.
