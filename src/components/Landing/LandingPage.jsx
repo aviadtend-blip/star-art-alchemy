@@ -323,11 +323,12 @@ export default function LandingPage() {
           </h2>
 
           {/* Mobile: horizontal scroll with connecting line */}
-          <div className="relative">
-            {/* Connecting line through circles */}
-            <div className="absolute top-6 left-[10%] right-[10%] h-px bg-surface-border md:top-7 md:left-[12.5%] md:right-[12.5%]" />
+          <div className="overflow-x-auto md:overflow-visible" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <div className="relative flex gap-6 px-6 md:px-0 md:grid md:grid-cols-4 md:gap-10 w-max md:w-auto">
+              {/* Connecting line through circles — inside scroll container */}
+              <div className="absolute top-6 md:top-7 h-px bg-surface-border" style={{ left: 'calc(100px)', right: 'calc(100px)' }} />
+              <div className="hidden md:block absolute top-7 left-[12.5%] right-[12.5%] h-px bg-surface-border" />
 
-            <div className="flex gap-6 overflow-x-auto px-6 md:px-0 md:grid md:grid-cols-4 md:gap-10 md:overflow-visible" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               {[
                 { n: "1", title: "Enter your birth data", desc: "Provide your birth date, time, and location. We calculate your complete natal chart." },
                 { n: "2", title: "Choose your style", desc: "Pick from multiple artistic styles — each transforms your chart into a different visual experience." },
