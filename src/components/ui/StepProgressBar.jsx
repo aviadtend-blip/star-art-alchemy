@@ -26,7 +26,7 @@ export default function StepProgressBar({ currentStep = 1 }) {
               <div className="flex flex-col items-center">
                 <div
                   className={`
-                    w-9 h-9 rounded-full flex items-center justify-center text-sm font-body font-medium transition-all
+                    w-9 h-9 rounded-full flex items-center justify-center text-a5 transition-all
                     ${isCompleted
                       ? 'bg-primary text-primary-foreground'
                       : isActive
@@ -39,8 +39,8 @@ export default function StepProgressBar({ currentStep = 1 }) {
                 </div>
                 <span
                   className={`
-                    mt-2 text-xs font-body tracking-wide whitespace-nowrap
-                    ${isActive ? 'text-primary font-medium' : isCompleted ? 'text-foreground' : 'text-muted-foreground'}
+                    mt-2 text-subtitle tracking-wide whitespace-nowrap
+                    ${isActive ? 'text-primary' : isCompleted ? 'text-foreground' : 'text-muted-foreground'}
                   `}
                 >
                   {step.label}

@@ -1,16 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import heroFramed from "@/assets/gallery/hero-framed.jpg";
-import heroGalleryWall from "@/assets/gallery/hero-gallery-wall.jpg";
-import capricornGallery from "@/assets/gallery/capricorn-gallery.jpg";
-import ariesGallery from "@/assets/gallery/aries-gallery.jpg";
+import heroMobile from "@/assets/hero-mobile.webp";
+import heroDesktop from "@/assets/hero-desktop.webp";
+import footerMobile from "@/assets/footer-mobile.webp";
+import footerDesktop from "@/assets/footer-desktop.webp";
 import capricornWall from "@/assets/gallery/capricorn-wall.jpg";
 import taurusArtwork from "@/assets/gallery/taurus-artwork.jpg";
 import womanHolding from "@/assets/gallery/woman-holding.jpg";
 import saturnPlanet from "@/assets/gallery/saturn-planet.jpg";
-import earthSpace from "@/assets/gallery/earth-space.jpg";
-import capricornDetail from "@/assets/gallery/capricorn-detail.jpg";
 import libraWall from "@/assets/gallery/libra-wall.jpg";
 import virgoArtwork from "@/assets/gallery/virgo-artwork.jpg";
 import gallery2 from "@/assets/gallery/example-2.jpg";
@@ -177,47 +175,40 @@ export default function LandingPage() {
 
       {/* ═══════════════════ HERO ═══════════════════ */}
       {/* Mobile hero */}
-      <section className="md:hidden pt-8 pb-10 px-4">
-        <div className="max-w-sm mx-auto mb-8">
-          <img src={heroFramed} alt="Framed birth chart artwork — Pisces Sun" className="w-full rounded-lg shadow-2xl" />
+      <section className="md:hidden relative min-h-[80vh] overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={heroMobile} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         </div>
-        <h1 className="text-a1 text-foreground text-center mb-4">
-          Turn Your Birth Into<br />
-          Gallery-Worthy Art
-        </h1>
-        <p className="text-body text-muted-foreground text-center mb-6">
-          Each piece is uniquely generated for your exact birth moment—no two are ever the same
-        </p>
-        <div className="text-center mb-6">
-          <PrimaryButton onClick={scrollToForm}>
-            Show me my artwork
-          </PrimaryButton>
-        </div>
-        <div className="flex items-center justify-center gap-4 text-body-sm text-muted-foreground flex-wrap">
-          <span>🔒 Secure Payment</span>
-          <span className="text-border">|</span>
-          <span>📦 Free Shipping</span>
-          <span className="text-border">|</span>
-          <span>↩️ 30-Day Guarantee</span>
+        <div className="relative z-10 flex flex-col justify-end min-h-[80vh] pb-10 px-4">
+          <h1 className="text-a1 text-foreground text-center mb-4">
+            Turn Your Birth Into<br />
+            Gallery-Worthy Art
+          </h1>
+          <p className="text-body text-muted-foreground text-center mb-6">
+            Each piece is uniquely generated for your exact birth moment—no two are ever the same
+          </p>
+          <div className="text-center mb-6">
+            <PrimaryButton onClick={scrollToForm}>
+              Show me my artwork
+            </PrimaryButton>
+          </div>
+          <div className="flex items-center justify-center gap-4 text-body-sm text-muted-foreground flex-wrap">
+            <span>🔒 Secure Payment</span>
+            <span className="text-border">|</span>
+            <span>📦 Free Shipping</span>
+            <span className="text-border">|</span>
+            <span>↩️ 30-Day Guarantee</span>
+          </div>
         </div>
       </section>
 
       {/* Desktop hero — gallery wall */}
-      <section className="hidden md:block relative min-h-[700px] overflow-hidden bg-background">
-        {/* Gallery wall images */}
+      <section className="hidden md:block relative min-h-[700px] overflow-hidden">
+        {/* Background image */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent z-10" />
-          <div className="grid grid-cols-3 h-full">
-            <div className="flex items-start justify-center pt-6">
-              <img src={heroFramed} alt="Pisces artwork" className="w-[85%] max-w-md shadow-2xl" />
-            </div>
-            <div className="flex items-start justify-center -mt-4">
-              <img src={capricornGallery} alt="Capricorn artwork on gallery wall" className="w-full max-w-lg shadow-2xl" />
-            </div>
-            <div className="flex items-start justify-end">
-              <img src={ariesGallery} alt="Aries artwork framed" className="w-[90%] max-w-md shadow-2xl" />
-            </div>
-          </div>
+          <img src={heroDesktop} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
         </div>
         {/* Text overlay at bottom-left */}
         <div className="relative z-20 flex items-end min-h-[700px] pb-20 px-10">
@@ -608,9 +599,10 @@ export default function LandingPage() {
 
       {/* ═══════════════════ FOOTER ═══════════════════ */}
       <footer className="relative bg-card border-t border-border overflow-hidden">
-        {/* Earth background image */}
-        <div className="absolute inset-0 opacity-30 pointer-events-none">
-          <img src={earthSpace} alt="" className="w-full h-full object-cover object-top" />
+        {/* Earth background image — responsive */}
+        <div className="absolute inset-0 pointer-events-none">
+          <img src={footerMobile} alt="" className="md:hidden w-full h-full object-cover" />
+          <img src={footerDesktop} alt="" className="hidden md:block w-full h-full object-cover" />
         </div>
 
         <div className="relative z-10 py-10 px-4">

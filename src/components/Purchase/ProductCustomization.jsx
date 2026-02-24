@@ -34,7 +34,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
       <div className="py-8 px-4">
         <div className="max-w-6xl mx-auto">
-          <button onClick={onBack} className="text-muted-foreground hover:text-primary transition-colors font-body text-sm mb-6 tracking-wide">
+          <button onClick={onBack} className="text-body-sm text-muted-foreground hover:text-primary transition-colors mb-6 tracking-wide">
             ← Back to artwork
           </button>
 
@@ -46,22 +46,22 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
                   <img src={artworkImage} alt="Your natal chart artwork" className="w-full h-auto" />
                 </div>
                 <div className="text-center space-y-1">
-                  <span className="font-display text-4xl text-primary text-glow">${total}</span>
-                  <p className="text-xs text-muted-foreground font-body">Free shipping • 30-day guarantee</p>
+                  <span className="text-a1 text-primary text-glow">${total}</span>
+                  <p className="text-body-sm text-muted-foreground">Free shipping • 30-day guarantee</p>
                 </div>
                 <div className="text-center space-y-1">
                   <div className="flex items-center justify-center gap-1">
                     <span className="text-primary">⭐⭐⭐⭐⭐</span>
-                    <span className="text-sm text-foreground font-body">4.9/5</span>
+                    <span className="text-body-sm text-foreground">4.9/5</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">287 reviews</p>
+                  <p className="text-body-sm text-muted-foreground">287 reviews</p>
                 </div>
               </div>
             </div>
 
             {/* RIGHT: Size Selection */}
             <div className="space-y-8">
-              <h2 className="font-display text-3xl text-foreground tracking-wide">Choose Your Canvas Size</h2>
+              <h2 className="text-a2 text-foreground tracking-wide">Choose Your Canvas Size</h2>
 
               <div className="space-y-4">
                 <div className="space-y-3">
@@ -75,7 +75,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
                       }`}
                     >
                       {size.popular && (
-                        <span className="absolute -top-2 right-3 bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full font-body font-medium">
+                        <span className="absolute -top-2 right-3 text-subtitle bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
                           Most popular
                         </span>
                       )}
@@ -84,23 +84,23 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
                         <div className="flex items-center gap-3">
                           <div className={`w-4 h-4 rounded-full border-2 ${selectedSize === size.id ? 'border-primary bg-primary' : 'border-muted-foreground'}`} />
                           <div>
-                            <p className="text-foreground font-body font-medium">{size.label}</p>
-                            <p className="text-xs text-muted-foreground font-body">{size.description}</p>
+                            <p className="text-body-sm text-foreground">{size.label}</p>
+                            <p className="text-body-sm text-muted-foreground">{size.description}</p>
                           </div>
                         </div>
-                        <span className="text-foreground font-display text-lg">${size.price}</span>
+                        <span className="text-a4 text-foreground">${size.price}</span>
                       </div>
                     </label>
                   ))}
                 </div>
-                <p className="text-xs text-muted-foreground font-body">💡 Not sure? We recommend 16"×24" for most spaces</p>
+                <p className="text-body-sm text-muted-foreground">💡 Not sure? We recommend 16"×24" for most spaces</p>
               </div>
 
               {/* ORDER SUMMARY */}
               <div className="bg-card border border-border rounded-xl p-6 space-y-4">
-                <h3 className="font-display text-lg text-foreground">Your Selection</h3>
+                <h3 className="text-a4 text-foreground">Your Selection</h3>
 
-                <div className="space-y-2 text-sm font-body">
+                <div className="space-y-2 text-body-sm">
                   <div className="flex justify-between text-muted-foreground">
                     <span>Birth Chart Artwork — {chartData.sun.sign} Sun</span>
                     <span>Included</span>
@@ -112,28 +112,28 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
                 </div>
 
                 <div className="border-t border-border pt-3 space-y-2">
-                  <div className="flex justify-between text-sm text-muted-foreground font-body">
+                  <div className="flex justify-between text-body-sm text-muted-foreground">
                     <span>Subtotal</span>
                     <span>${total}</span>
                   </div>
-                  <div className="flex justify-between text-sm text-primary font-body">
+                  <div className="flex justify-between text-body-sm text-primary">
                     <span>🎉 Free shipping unlocked</span>
                     <span>$0</span>
                   </div>
                   <div className="flex justify-between items-center pt-2 border-t border-border">
-                    <span className="font-display text-lg text-foreground">TOTAL</span>
-                    <span className="font-display text-2xl text-primary text-glow">${total}</span>
+                    <span className="text-a4 text-foreground">TOTAL</span>
+                    <span className="text-a2 text-primary text-glow">${total}</span>
                   </div>
                 </div>
 
                 <button
                   onClick={handleCheckout}
-                  className="w-full bg-primary text-primary-foreground font-display text-lg py-4 rounded-lg hover:opacity-90 transition-opacity tracking-wide border-glow"
+                  className="w-full bg-primary text-primary-foreground text-a4 py-4 rounded-lg hover:opacity-90 transition-opacity tracking-wide border-glow"
                 >
                   Continue to Secure Checkout — ${total}
                 </button>
 
-                <div className="space-y-2 text-xs text-muted-foreground font-body text-center">
+                <div className="space-y-2 text-body-sm text-muted-foreground text-center">
                   <p>↩️ 30-day money-back guarantee. Love it or your money back. No questions asked.</p>
                   <p>🚀 Ships in 2-3 business days. Order by 5pm EST for same-day processing.</p>
                 </div>

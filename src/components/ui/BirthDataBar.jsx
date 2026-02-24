@@ -16,9 +16,9 @@ export default function BirthDataBar({ formData, onEdit }) {
   return (
     <div className="w-full bg-background border-t border-border py-3 px-4">
       <div className="max-w-5xl mx-auto flex items-center justify-between gap-4 flex-wrap">
-        <p className="text-sm text-muted-foreground font-body">
+        <p className="text-body-sm text-muted-foreground">
           Creating artwork for:{' '}
-          <span className="text-foreground font-medium">{name || 'You'}</span>
+          <span className="text-foreground">{name || 'You'}</span>
           {' · '}Born: <span className="text-foreground">{dateStr}</span>
           {' at '}<span className="text-foreground">{timeStr}</span>
           {city && <>{' in '}<span className="text-foreground">{city}</span></>}
@@ -26,7 +26,7 @@ export default function BirthDataBar({ formData, onEdit }) {
         {onEdit && (
           <button
             onClick={onEdit}
-            className="text-xs text-primary hover:text-primary/80 transition-colors font-body tracking-wide"
+            className="text-subtitle text-primary hover:text-primary/80 transition-colors tracking-wide"
           >
             Edit Birth Data
           </button>
