@@ -94,7 +94,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
             </div>
           </div>
 
-          {/* Right panel — Desktop: always visible. Mobile: hidden (explanation shows below artwork) */}
+          {/* Right panel — Desktop only */}
           <div className="hidden md:flex md:flex-col md:justify-between md:min-h-[500px]">
             {/* Example Natal Map */}
             <div>
@@ -144,20 +144,24 @@ export default function InteractiveHotspots({ onScrollToForm }) {
           </div>
         </div>
 
-        {/* Mobile: explanation appears below artwork */}
-        <div className="md:hidden mt-6">
+        {/* Mobile: explanation appears below artwork — centered layout matching Figma */}
+        <div className="md:hidden mt-10">
           {active ? (
-            <div className="bg-surface-card border border-surface-border rounded-xl p-5 space-y-3 animate-fade-in" key={active.id}>
-              <div className="flex items-center gap-2">
-                <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold">
+            <div className="text-center space-y-4 animate-fade-in px-4" key={active.id}>
+              {/* Number + emoji + title */}
+              <div className="flex items-center justify-center gap-3">
+                <span className="w-9 h-9 bg-surface-foreground text-surface rounded-full flex items-center justify-center text-sm font-bold">
                   {active.id}
                 </span>
                 <span className="text-lg">{active.emoji}</span>
-                <span className="text-a5 text-surface-foreground">{active.label}</span>
+                <span className="text-a4 text-surface-foreground leading-tight">
+                  {active.label}<br />{active.theme}
+                </span>
               </div>
-              <p className="text-a5 text-surface-foreground">{active.theme}</p>
-              <p className="text-body-sm text-surface-muted leading-relaxed">{active.para1}</p>
-              <p className="text-body-sm text-surface-muted leading-relaxed">{active.para2}</p>
+
+              {/* Body text */}
+              <p className="text-body text-surface-muted leading-relaxed">{active.para1}</p>
+              <p className="text-body text-surface-muted leading-relaxed">{active.para2}</p>
             </div>
           ) : (
             <div className="flex items-center gap-3 text-surface-muted justify-center">
