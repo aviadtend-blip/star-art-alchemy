@@ -19,7 +19,7 @@ export default function GalleryTile({ image, name, signs, explanations = [] }) {
   const handleTap = () => setTapped((prev) => !prev);
 
   return (
-    <div className="flex flex-col items-center flex-shrink-0 snap-start w-full md:w-[282px] lg:w-full lg:max-w-[281px]">
+    <div className="flex flex-col items-center flex-shrink-0 snap-start w-[282px] lg:w-full lg:max-w-[281px]">
       {/* Image container */}
       <div
         className="relative w-full overflow-hidden cursor-pointer group"
