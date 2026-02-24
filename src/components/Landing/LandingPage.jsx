@@ -7,6 +7,7 @@ import capricornWall from "@/assets/gallery/capricorn-wall.jpg";
 import taurusArtwork from "@/assets/gallery/taurus-artwork.jpg";
 import womanHolding from "@/assets/gallery/woman-holding.jpg";
 import saturnPlanet from "@/assets/gallery/saturn-planet.jpg";
+import canvasDetail from "@/assets/gallery/canvas-detail.jpg";
 import libraWall from "@/assets/gallery/libra-wall.jpg";
 import virgoArtwork from "@/assets/gallery/virgo-artwork.jpg";
 import gallery2 from "@/assets/gallery/example-2.jpg";
@@ -350,74 +351,36 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══════════════════ THE PERFECT GIFT ═══════════════════ */}
-      <section className="py-14 bg-surface text-surface-foreground">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="md:grid md:grid-cols-2 md:gap-14 md:items-center">
-            <div>
-              <img src={womanHolding} alt="Happy customer holding her framed birth chart artwork" className="w-full rounded-2xl shadow-lg" />
-            </div>
-            <div className="mt-8 md:mt-0">
-              <h2 className="text-a2 md:text-4xl text-surface-foreground leading-snug mb-3">
-                Impossible to Duplicate.
-                <span className="text-primary"> Impossible to Forget.</span>
-              </h2>
-              <p className="text-body-sm text-surface-muted mb-5">
-                The perfect gift for birthdays, anniversaries, new homes, or anyone who deserves something truly one-of-a-kind.
+      {/* ═══════════════════ GIFT + MATERIALS TILES ═══════════════════ */}
+      <section className="py-[85px] bg-surface">
+        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-10">
+          {/* The Perfect Gift */}
+          <div>
+            <img src={womanHolding} alt="Happy customer holding her framed birth chart artwork" className="w-full object-cover" style={{ height: 406, borderRadius: 2 }} />
+            <div className="mt-4">
+              <p className="text-subtitle text-surface-muted tracking-widest mb-2">THE PERFECT GIFT</p>
+              <h3 className="text-a2 text-surface-foreground mb-4">Impossible to Duplicate. Impossible to Forget.</h3>
+              <p className="text-body-sm text-surface-muted mb-6">
+                Birthdays. Anniversaries. New homes. Give a gift that's impossible to buy anywhere else—because it's created from their exact birth moment. Every friend who sees it will ask.
               </p>
-              <div className="space-y-3 mb-6">
-                {[
-                  { icon: "🎁", text: "Deeply personal — based on their exact birth moment" },
-                  { icon: "🎨", text: "Museum-quality canvas — built to last 100+ years" },
-                  { icon: "💫", text: "Every symbol has meaning — a visual story of who they are" },
-                ].map((item) => (
-                  <div key={item.text} className="flex items-center gap-3">
-                    <span className="text-lg">{item.icon}</span>
-                    <span className="text-body-sm text-surface-foreground/80">{item.text}</span>
-                  </div>
-                ))}
-              </div>
-              <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-8 py-3 rounded-full text-a5 hover:opacity-90 transition-all">
-                Create a gift →
+              <button onClick={scrollToForm} className="text-surface-foreground text-body-sm underline underline-offset-4 hover:opacity-70 transition-opacity">
+                Create a gift
               </button>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* ═══════════════════ MUSEUM-QUALITY MATERIALS ═══════════════════ */}
-      <section className="py-14 bg-surface text-surface-foreground">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="md:grid md:grid-cols-2 md:gap-14 md:items-center">
-            <div>
-              <img src={saturnPlanet} alt="Saturn — representing museum-quality craftsmanship" className="w-full rounded-2xl shadow-lg" />
-            </div>
-            <div className="mt-8 md:mt-0">
-              <h2 className="text-a2 md:text-4xl text-surface-foreground mb-3">
-                Materials to Grace<br />Museums like Them
-              </h2>
+          {/* Museum-Quality Materials */}
+          <div>
+            <img src={canvasDetail} alt="Close-up of museum-quality canvas print detail" className="w-full object-cover" style={{ height: 406, borderRadius: 2 }} />
+            <div className="mt-4">
+              <p className="text-subtitle text-surface-muted tracking-widest mb-2">MUSEUM-QUALITY MATERIALS</p>
+              <h3 className="text-a2 text-surface-foreground mb-4">Materials So Good, Museums Use Them</h3>
               <p className="text-body-sm text-surface-muted mb-6">
-                Every print is crafted to gallery standards
+                Your artwork arrives ready to hang—printed on museum-grade archival paper in a solid wood frame with anti-reflective glaze. It'll look exactly this good in 100 years.
               </p>
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { icon: "📜", title: "Archival Canvas", desc: "100+ years of vibrant color" },
-                  { icon: "🖼️", title: "Solid Wood Frames", desc: "Handcrafted, ready to hang" },
-                  { icon: "🎨", title: "12-Color Process", desc: "Giclée with unmatched depth" },
-                  { icon: "✅", title: "Fine Art Certified", desc: "Fine Art Trade Guild certified" },
-                ].map((item) => (
-                  <div key={item.title} className="bg-surface-card border border-surface-border rounded-xl p-3 space-y-1">
-                    <div className="text-xl">{item.icon}</div>
-                    <h3 className="text-a5 text-surface-foreground">{item.title}</h3>
-                    <p className="text-body-sm text-surface-muted">{item.desc}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-5">
-                <button onClick={scrollToForm} className="text-surface-foreground/70 hover:text-surface-foreground text-body-sm underline underline-offset-4 transition-colors">
-                  Generate my free artwork →
-                </button>
-              </div>
+              <button onClick={scrollToForm} className="text-surface-foreground text-body-sm underline underline-offset-4 hover:opacity-70 transition-opacity">
+                Generate my free artwork
+              </button>
             </div>
           </div>
         </div>
