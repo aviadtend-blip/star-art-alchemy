@@ -39,10 +39,10 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
 
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-12">
         {/* Headline */}
-        <h2 className="font-display text-3xl md:text-4xl text-foreground text-center mb-2">
+        <h2 className="text-a2 md:text-4xl text-foreground text-center mb-2">
           Calculating planetary positions...
         </h2>
-        <p className="text-muted-foreground font-body text-sm mb-10">Typical generation time: 30-45 seconds</p>
+        <p className="text-body-sm text-muted-foreground mb-10">Typical generation time: 30-45 seconds</p>
 
         {/* Spinner */}
         <div className="relative w-20 h-20 mb-10">
@@ -57,21 +57,21 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
             <div className="grid grid-cols-3 gap-4">
               <div className="bg-card border border-border rounded-xl p-4 text-center">
                 <div className="text-3xl mb-2">☀️</div>
-                <span className="text-xs text-muted-foreground uppercase tracking-widest font-body">Sun</span>
-                <span className="block text-lg text-foreground capitalize font-display mt-1">{chartData.sun.sign}</span>
-                <span className="text-xs text-muted-foreground font-body">House {chartData.sun.house}</span>
+                <span className="text-subtitle text-muted-foreground tracking-widest">Sun</span>
+                <span className="block text-a4 text-foreground capitalize mt-1">{chartData.sun.sign}</span>
+                <span className="text-body-sm text-muted-foreground">House {chartData.sun.house}</span>
               </div>
               <div className="bg-card border border-border rounded-xl p-4 text-center">
                 <div className="text-3xl mb-2">🌙</div>
-                <span className="text-xs text-muted-foreground uppercase tracking-widest font-body">Moon</span>
-                <span className="block text-lg text-foreground capitalize font-display mt-1">{chartData.moon.sign}</span>
-                <span className="text-xs text-muted-foreground font-body">House {chartData.moon.house}</span>
+                <span className="text-subtitle text-muted-foreground tracking-widest">Moon</span>
+                <span className="block text-a4 text-foreground capitalize mt-1">{chartData.moon.sign}</span>
+                <span className="text-body-sm text-muted-foreground">House {chartData.moon.house}</span>
               </div>
               <div className="bg-card border border-border rounded-xl p-4 text-center">
                 <div className="text-3xl mb-2">⬆️</div>
-                <span className="text-xs text-muted-foreground uppercase tracking-widest font-body">Rising</span>
-                <span className="block text-lg text-foreground capitalize font-display mt-1">{chartData.rising}</span>
-                <span className="text-xs text-muted-foreground font-body">Ascendant</span>
+                <span className="text-subtitle text-muted-foreground tracking-widest">Rising</span>
+                <span className="block text-a4 text-foreground capitalize mt-1">{chartData.rising}</span>
+                <span className="text-body-sm text-muted-foreground">Ascendant</span>
               </div>
             </div>
 
@@ -85,8 +85,8 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
               ].map(({ key, icon }) => (
                 <div key={key} className="bg-card border border-border rounded-lg p-3 text-center">
                   <span className="text-lg">{icon}</span>
-                  <span className="block text-xs text-muted-foreground font-body mt-1">{key}</span>
-                  <span className="block text-lg text-foreground font-display">{elements[key] || 0}</span>
+                  <span className="block text-body-sm text-muted-foreground mt-1">{key}</span>
+                  <span className="block text-a4 text-foreground">{elements[key] || 0}</span>
                 </div>
               ))}
             </div>
@@ -94,11 +94,11 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
             {/* Dominant Element Callout */}
             {dominantElements.length > 0 && (
               <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 text-center">
-                <p className="text-sm text-foreground font-body">
+                <p className="text-body-sm text-foreground">
                   Your dominant element{dominantElements.length > 1 ? 's' : ''}:{' '}
                   <span className="text-primary font-semibold">{dominantElements.join(' & ')}</span>
                 </p>
-                <p className="text-xs text-muted-foreground font-body mt-1">
+                <p className="text-body-sm text-muted-foreground mt-1">
                   Expect {dominantElements.map(e => elementDescriptions[e]).join(' blended with ')}
                 </p>
               </div>
@@ -107,11 +107,11 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
         )}
 
         {/* Progress text */}
-        <p className="text-primary text-sm font-body mb-6">{generationProgress}</p>
+        <p className="text-a5 text-primary mb-6">{generationProgress}</p>
 
         {/* Rotating Fun Facts */}
         <div className="bg-accent/10 border border-accent/20 rounded-xl px-6 py-3 max-w-lg transition-all">
-          <p className="text-sm text-foreground/80 font-body text-center">
+          <p className="text-body-sm text-foreground/80 text-center">
             💡 {FUN_FACTS[factIndex]}
           </p>
         </div>

@@ -44,10 +44,10 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
       {/* Main content */}
       <div className="max-w-5xl mx-auto px-4 py-10 md:py-14">
         <div className="text-center mb-10">
-          <h2 className="font-display text-3xl md:text-5xl font-medium text-surface-foreground tracking-tight mb-3">
+          <h2 className="text-a2 md:text-5xl text-surface-foreground tracking-tight mb-3">
             Choose your artistic expression
           </h2>
-          <p className="text-surface-muted font-body text-sm max-w-md mx-auto">
+          <p className="text-body-sm text-surface-muted max-w-md mx-auto">
             Each style reveals your cosmic blueprint differently. Pick the one that resonates.
           </p>
         </div>
@@ -72,7 +72,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
               >
                 {/* Badge */}
                 {style.popular && (
-                  <span className="absolute top-3 left-3 z-10 bg-primary text-primary-foreground text-[10px] px-2.5 py-0.5 rounded-full font-body font-semibold tracking-wide uppercase">
+                  <span className="absolute top-3 left-3 z-10 text-subtitle bg-primary text-primary-foreground px-2.5 py-0.5 rounded-full tracking-wide">
                     Most popular
                   </span>
                 )}
@@ -93,8 +93,8 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
 
                 {/* Label */}
                 <div className="p-4">
-                  <h3 className="font-display text-base font-medium text-surface-foreground mb-0.5">{style.name}</h3>
-                  <p className="text-surface-muted font-body text-xs leading-relaxed">{style.description}</p>
+                  <h3 className="text-a4 text-surface-foreground mb-0.5">{style.name}</h3>
+                  <p className="text-body-sm text-surface-muted leading-relaxed">{style.description}</p>
                 </div>
 
                 {/* Selected check */}
@@ -112,11 +112,11 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
 
         {/* CTAs */}
         <div className="text-center space-y-4">
-          <p className="text-xs text-surface-muted font-body">Can't decide? Let us choose the best style based on your chart</p>
+          <p className="text-body-sm text-surface-muted">Can't decide? Let us choose the best style based on your chart</p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <button
               onClick={handleSurpriseMe}
-              className="px-8 py-3 rounded-full font-body text-sm font-semibold bg-surface-foreground text-surface hover:opacity-90 shadow-md transition-all"
+              className="px-8 py-3 rounded-full text-a5 bg-surface-foreground text-surface hover:opacity-90 shadow-md transition-all"
             >
               Surprise me ✨
             </button>
@@ -124,7 +124,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
               onClick={handleContinue}
               disabled={!selected}
               className={`
-                px-8 py-3 rounded-full font-body text-sm font-semibold transition-all border-2
+                px-8 py-3 rounded-full text-a5 transition-all border-2
                 ${selected
                   ? 'border-primary bg-primary text-primary-foreground hover:bg-primary/90 shadow-md'
                   : 'border-surface-border text-surface-muted cursor-not-allowed'
@@ -134,7 +134,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
               Select Style →
             </button>
           </div>
-          <p className="text-xs text-surface-muted font-body mt-2">💡 You'll see your preview before committing.</p>
+          <p className="text-body-sm text-surface-muted mt-2">💡 You'll see your preview before committing.</p>
         </div>
       </div>
 

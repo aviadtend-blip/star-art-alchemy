@@ -200,24 +200,24 @@ const GeneratorFlowJsx = () => {
       <div className="relative z-10 px-4 py-12">
         <button
           onClick={() => navigate("/")}
-          className="text-sm text-muted-foreground hover:text-primary transition-colors font-body tracking-wide"
+          className="text-body-sm text-muted-foreground hover:text-primary transition-colors tracking-wide"
         >
           ← Back to Home
         </button>
         <div className="text-center mb-12">
-          <h1 className="font-display text-5xl md:text-6xl font-light text-foreground tracking-wide mb-3">
+          <h1 className="text-a1 md:text-5xl lg:text-6xl text-foreground tracking-wide mb-3">
             Celestial <span className="text-primary text-glow">Artworks</span>
           </h1>
-          <p className="text-muted-foreground font-body text-sm tracking-widest uppercase">
+          <p className="text-subtitle text-muted-foreground tracking-widest">
             Your birth chart, reimagined as art
           </p>
         </div>
 
         {error && (
           <div className="max-w-md mx-auto mb-8 bg-destructive/10 border border-destructive/30 rounded-lg p-6 text-center">
-            <p className="text-destructive font-display text-lg mb-2">⚠️ Error</p>
-            <p className="text-destructive/80 text-sm mb-4 font-body">{error}</p>
-            <button onClick={handleRetry} className="bg-destructive text-destructive-foreground px-6 py-2 rounded-lg hover:bg-destructive/90 transition-colors font-body text-sm">
+            <p className="text-a4 text-destructive mb-2">⚠️ Error</p>
+            <p className="text-body-sm text-destructive/80 mb-4">{error}</p>
+            <button onClick={handleRetry} className="bg-destructive text-destructive-foreground px-6 py-2 rounded-lg hover:bg-destructive/90 transition-colors text-a5">
               Try Again
             </button>
           </div>
@@ -252,10 +252,10 @@ const GeneratorFlowJsx = () => {
               onEditBirthData={handleEditBirthData}
             />
             <div className="flex justify-center gap-4 mt-6">
-              <button onClick={handleBackToStyle} className="text-sm text-muted-foreground hover:text-primary transition-colors font-body tracking-wide uppercase">
+              <button onClick={handleBackToStyle} className="text-subtitle text-muted-foreground hover:text-primary transition-colors tracking-wide">
                 ← Try Different Style
               </button>
-              <button onClick={handleRetry} className="text-sm text-muted-foreground hover:text-primary transition-colors font-body tracking-wide uppercase">
+              <button onClick={handleRetry} className="text-subtitle text-muted-foreground hover:text-primary transition-colors tracking-wide">
                 ← Start Over
               </button>
             </div>
@@ -267,7 +267,7 @@ const GeneratorFlowJsx = () => {
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="text-center space-y-4">
             <div className="animate-spin w-12 h-12 border-2 border-transparent border-t-primary rounded-full mx-auto" />
-            <p className="text-foreground font-display text-lg">Redirecting to secure checkout...</p>
+            <p className="text-a4 text-foreground">Redirecting to secure checkout...</p>
           </div>
         </div>
       )}
