@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import heroMobile from "@/assets/hero-mobile.webp";
 import heroDesktop from "@/assets/hero-desktop.webp";
-import footerMobile from "@/assets/footer-mobile.webp";
-import footerDesktop from "@/assets/footer-desktop.webp";
 import capricornWall from "@/assets/gallery/capricorn-wall.jpg";
 import taurusArtwork from "@/assets/gallery/taurus-artwork.jpg";
 import womanHolding from "@/assets/gallery/woman-holding.jpg";
@@ -16,6 +14,8 @@ import gallery3 from "@/assets/gallery/example-3.jpg";
 import ProgressBar from "@/components/ui/ProgressBar";
 import InteractiveHotspots from "./InteractiveHotspots";
 import PrimaryButton from "@/components/ui/PrimaryButton";
+import Header from "@/components/Layout/Header";
+import Footer from "@/components/Layout/Footer";
 
 /* ─── Static data ─── */
 
@@ -166,12 +166,7 @@ export default function LandingPage() {
       </button>
 
       {/* NAVIGATION */}
-      <nav className="absolute top-0 left-0 right-0 z-30 py-5 px-6 md:px-10 flex items-center justify-between">
-        <div className="text-a4 text-foreground">
-          Celestial Artworks
-        </div>
-        <button className="text-foreground/70 hover:text-foreground transition text-body-sm">Login</button>
-      </nav>
+      <Header />
 
       {/* ═══════════════════ HERO ═══════════════════ */}
       {/* Mobile hero */}
@@ -229,11 +224,11 @@ export default function LandingPage() {
       </section>
 
       {/* Trust badges strip */}
-      <div className="hidden md:flex items-center justify-center gap-6 py-3.5 border-t border-b border-border text-body-sm text-foreground/60" style={{ backgroundColor: '#F2F1EF' }}>
+      <div className="hidden md:flex items-center justify-center gap-6 py-3.5 text-body-sm" style={{ backgroundColor: '#F2F1EF', color: '#000000' }}>
         <span>🔒 Secure Payment</span>
-        <span className="text-border">|</span>
+        <span style={{ color: '#00000030' }}>|</span>
         <span>📦 Free Shipping</span>
-        <span className="text-border">|</span>
+        <span style={{ color: '#00000030' }}>|</span>
         <span>↩️ 30-Day Guarantee</span>
       </div>
 
@@ -598,56 +593,7 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ FOOTER ═══════════════════ */}
-      <footer className="relative bg-card border-t border-border overflow-hidden">
-        {/* Earth background image — responsive */}
-        <div className="absolute inset-0 pointer-events-none">
-          <img src={footerMobile} alt="" className="md:hidden w-full h-full object-cover" />
-          <img src={footerDesktop} alt="" className="hidden md:block w-full h-full object-cover" />
-        </div>
-
-        <div className="relative z-10 py-10 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-8 mb-8">
-              <div className="col-span-2 md:col-span-1">
-                <div className="text-a4 text-primary text-glow mb-3">
-                  Celestial Artworks
-                </div>
-                <p className="text-body-sm text-muted-foreground mb-2">Transforming birth charts into personalized artwork.</p>
-                <p className="text-body-sm text-muted-foreground">📧 hello@celestialartworks.com</p>
-                <p className="text-body-sm text-muted-foreground">📞 (555) 123-4567</p>
-                <p className="text-body-sm text-muted-foreground/60 mt-1">Mon-Fri 9am-6pm EST</p>
-              </div>
-              <div>
-                <h3 className="text-subtitle text-foreground mb-3">Product</h3>
-                <ul className="space-y-1.5 text-body-sm text-muted-foreground">
-                  <li><button onClick={scrollToForm} className="hover:text-foreground transition">Create Artwork</button></li>
-                  <li><a href="#gallery" className="hover:text-foreground transition">Gallery</a></li>
-                  <li><a href="#faq" className="hover:text-foreground transition">FAQ</a></li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-subtitle text-foreground mb-3">Policies</h3>
-                <ul className="space-y-1.5 text-body-sm text-muted-foreground">
-                  <li><a href="/privacy" className="hover:text-foreground transition">Privacy Policy</a></li>
-                  <li><a href="/terms" className="hover:text-foreground transition">Terms and Conditions</a></li>
-                  <li><a href="/returns" className="hover:text-foreground transition">Returns Policy</a></li>
-                  <li><a href="/shipping" className="hover:text-foreground transition">Shipping Policy</a></li>
-                </ul>
-              </div>
-              <div className="md:block">
-                <h3 className="text-subtitle text-foreground mb-3">Connect</h3>
-                <div className="flex gap-3 text-muted-foreground">
-                  <a href="#" className="hover:text-foreground transition text-base">𝕏</a>
-                  <a href="#" className="hover:text-foreground transition text-base">📷</a>
-                  <a href="#" className="hover:text-foreground transition text-base">in</a>
-                  <a href="#" className="hover:text-foreground transition text-base">▶️</a>
-                </div>
-              </div>
-            </div>
-            <div className="border-t border-border pt-6 text-body-sm text-center text-muted-foreground">© 2026 Celestial Artworks. All rights reserved.</div>
-          </div>
-        </div>
-      </footer>
+      <Footer onScrollToForm={scrollToForm} />
     </div>
   );
 }
