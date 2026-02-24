@@ -1,11 +1,11 @@
-// Art style definitions for the style selection step.
-// Each style maps to a specific LoRA model on Replicate.
+// Art style definitions — MVP uses 3 "Cosmic Collage" variants.
+// Only "Bold & Vibrant" has a trained LoRA. The other two route to the same model for now.
 
 export const ART_STYLES = [
   {
-    id: 'magical-pink',
-    name: 'Magical Pink',
-    description: 'Ethereal pink watercolor with soft, dreamy atmosphere and delicate celestial details.',
+    id: 'bold-vibrant',
+    name: 'Cosmic Collage — Bold & Vibrant',
+    description: 'Rich, saturated layers of celestial imagery with bold textures and warm, vivid tones.',
     model: 'aviadtend-blip/magical-pink',
     version: '7f84b4df7d58f1a406097da9cf729e4e3f8840f0e51657137da9956e1fa1362a',
     triggerWord: 'magicalpink',
@@ -13,47 +13,25 @@ export const ART_STYLES = [
     accentColor: 'from-pink-400 to-rose-500',
   },
   {
-    id: 'neo-topograph',
-    name: 'Neo Topograph',
-    description: 'Striking topographic linework with modern cartographic precision and layered contours.',
-    model: 'aviadtend-blip/neo_topograph',
-    version: 'a6dcfdf5233512d2c60655f9c08f1dee49356d48a571f60ae0443dd4ce3e99a3',
-    triggerWord: 'neotopo',
-    preview: '🗺️',
-    accentColor: 'from-emerald-400 to-teal-500',
+    id: 'minimal-architectural',
+    name: 'Cosmic Collage — Minimal & Architectural',
+    description: 'Clean lines, structured composition, and restrained palettes with precise geometric forms.',
+    model: 'aviadtend-blip/magical-pink', // routes to same model for MVP
+    version: '7f84b4df7d58f1a406097da9cf729e4e3f8840f0e51657137da9956e1fa1362a',
+    triggerWord: 'magicalpink',
+    preview: '🏛️',
+    accentColor: 'from-slate-400 to-zinc-500',
+    popular: true,
   },
   {
-    id: 'celestial-ink',
-    name: 'Celestial Ink',
-    description: 'Bold ink illustration style with high-contrast black and gold cosmic motifs.',
-    model: null, // placeholder
-    version: null,
-    triggerWord: null,
-    preview: '🖋️',
-    accentColor: 'from-amber-400 to-yellow-500',
-    comingSoon: true,
-  },
-  {
-    id: 'vapor-dream',
-    name: 'Vapor Dream',
-    description: 'Retro-futuristic vaporwave aesthetic with neon gradients and surreal geometry.',
-    model: null, // placeholder
-    version: null,
-    triggerWord: null,
-    preview: '🌈',
-    accentColor: 'from-violet-400 to-fuchsia-500',
-    comingSoon: true,
-  },
-  {
-    id: 'sacred-geometry',
-    name: 'Sacred Geometry',
-    description: 'Precise mathematical patterns with Fibonacci spirals and golden ratio compositions.',
-    model: null, // placeholder
-    version: null,
-    triggerWord: null,
-    preview: '🔮',
-    accentColor: 'from-cyan-400 to-blue-500',
-    comingSoon: true,
+    id: 'organic-flowing',
+    name: 'Cosmic Collage — Organic & Flowing',
+    description: 'Fluid, natural forms with soft gradients and gentle movement inspired by water and growth.',
+    model: 'aviadtend-blip/magical-pink', // routes to same model for MVP
+    version: '7f84b4df7d58f1a406097da9cf729e4e3f8840f0e51657137da9956e1fa1362a',
+    triggerWord: 'magicalpink',
+    preview: '🌊',
+    accentColor: 'from-teal-400 to-cyan-500',
   },
 ];
 
