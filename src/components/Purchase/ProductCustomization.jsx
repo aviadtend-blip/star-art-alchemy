@@ -51,8 +51,8 @@ const MOCKUPS = {
 export function ProductCustomization({ chartData, artworkImage, onCheckout, onBack, formData, onEditBirthData }) {
   const [selectedSize, setSelectedSize] = useState('16x24');
   const [activeThumb, setActiveThumb] = useState(0);
-  const [slideDir, setSlideDir] = useState(0); // -1 left, 1 right, 0 none
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [displayIndex, setDisplayIndex] = useState(0);
+  const [slideDir, setSlideDir] = useState(0); // -1 left, 1 right, 0 settled
   const sizeCarouselRef = useRef(null);
   const isFirstSizeScroll = useRef(true);
 
@@ -66,19 +66,19 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
     touchStartX.current = e.touches[0].clientX;
   }, []);
   const handleSwipe = useCallback((direction) => {
-    if (isTransitioning) return;
+    if (slideDir !== 0) return;
     const next = direction > 0
       ? Math.min(activeThumb + 1, mockups.length - 1)
       : Math.max(activeThumb - 1, 0);
     if (next === activeThumb) return;
     setSlideDir(direction);
-    setIsTransitioning(true);
+    setActiveThumb(next);
+    // After transition ends, settle
     setTimeout(() => {
-      setActiveThumb(next);
+      setDisplayIndex(next);
       setSlideDir(0);
-      setIsTransitioning(false);
-    }, 200);
-  }, [activeThumb, mockups.length, isTransitioning]);
+    }, 300);
+  }, [activeThumb, mockups.length, slideDir]);
 
   const handleTouchEnd = useCallback((e) => {
     if (touchStartX.current === null) return;
@@ -89,7 +89,17 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
     touchStartX.current = null;
   }, [handleSwipe]);
 
-  useEffect(() => {
+  const handleThumbSelect = useCallback((index) => {
+    if (index === activeThumb || slideDir !== 0) return;
+    const dir = index > activeThumb ? 1 : -1;
+    setSlideDir(dir);
+    setActiveThumb(index);
+    setTimeout(() => {
+      setDisplayIndex(index);
+      setSlideDir(0);
+    }, 300);
+  }, [activeThumb, slideDir]);
+
     const carousel = sizeCarouselRef.current;
     if (!carousel || window.innerWidth >= 768) return;
 
@@ -126,33 +136,43 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const ArtworkPanel = ({ className = '' }) => (
     <div className={className}>
       <div
-        className="relative"
+        className="relative overflow-hidden"
         style={{ backgroundColor: '#F5F5F5', touchAction: 'pan-y' }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <div
-          className="w-full overflow-hidden"
+        {/* Outgoing image */}
+        {slideDir !== 0 && (
+          <img
+            src={mockups[displayIndex]}
+            alt=""
+            className="absolute inset-0 w-full object-contain"
+            style={{
+              transform: `translateX(${slideDir > 0 ? '-100%' : '100%'})`,
+              transition: 'transform 0.3s ease-out',
+            }}
+          />
+        )}
+        {/* Current / incoming image */}
+        <img
+          src={mockups[activeThumb]}
+          alt={`Canvas mockup ${activeThumb + 1}`}
+          className="w-full object-contain"
+          loading="lazy"
           style={{
             transform: slideDir !== 0
-              ? `translateX(${slideDir > 0 ? '-8%' : '8%'})`
+              ? 'translateX(0)'
               : 'translateX(0)',
-            opacity: slideDir !== 0 ? 0.3 : 1,
-            transition: 'transform 0.2s ease-out, opacity 0.2s ease-out',
+            ...(slideDir !== 0
+              ? { animation: `slide-in-from-${slideDir > 0 ? 'right' : 'left'} 0.3s ease-out` }
+              : {}),
           }}
-        >
-          <img
-            src={mockups[activeThumb]}
-            alt={`Canvas mockup ${activeThumb + 1}`}
-            className="w-full object-contain"
-            loading="lazy"
-          />
-        </div>
+        />
         <div className="absolute bottom-3 left-0 right-0 flex justify-center px-4">
           <ThumbnailStrip
             images={mockups}
             activeIndex={activeThumb}
-            onSelect={setActiveThumb}
+            onSelect={handleThumbSelect}
             size={30}
           />
         </div>
