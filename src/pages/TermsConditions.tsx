@@ -7,7 +7,7 @@ const sections = [
     num: "01",
     title: "Definitions",
     content: (
-      <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5">
+      <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5">
         <li><strong className="text-surface-foreground font-medium">"Services"</strong> means the website at celestialartworks.com, all features, tools, artwork generation capabilities, and related services.</li>
         <li><strong className="text-surface-foreground font-medium">"Artwork"</strong> means any personalized visual art generated through our Services based on your Birth Data and selected preferences.</li>
         <li><strong className="text-surface-foreground font-medium">"Products"</strong> means any physical products (including framed prints, unframed prints, and other tangible goods) offered for sale.</li>
@@ -29,7 +29,7 @@ const sections = [
     content: (
       <>
         <p className="text-body text-surface-muted mb-4">Certain features may require you to create an account. When creating an account, you agree to:</p>
-        <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5">
+        <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5">
           <li>Provide accurate, current, and complete information</li>
           <li>Maintain and promptly update your account information</li>
           <li>Maintain the security and confidentiality of your login credentials</li>
@@ -45,7 +45,7 @@ const sections = [
     content: (
       <>
         <p className="text-body text-surface-muted mb-4">Celestial Artworks provides a personalized artwork generation service. The process includes:</p>
-        <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5 mb-4">
+        <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5 mb-4">
           <li>You provide your Birth Data through our website</li>
           <li>Our systems calculate your natal chart using astrological algorithms and third-party chart calculation services</li>
           <li>We use artificial intelligence and machine learning systems to interpret your chart data and generate a unique piece of visual artwork</li>
@@ -54,7 +54,7 @@ const sections = [
         </ul>
         <div className="bg-primary/10 border-l-[3px] border-primary rounded-r-[2px] px-6 py-5 my-6">
           <span className="text-a5 text-primary block mb-1.5">Astrological Interpretation Disclaimer</span>
-          <p className="text-body-sm text-surface-foreground">Natal chart interpretations and astrological data used in our Services are provided for artistic and entertainment purposes only. We make no claims regarding the scientific validity, accuracy, or predictive value of astrology. Our Services do not constitute psychological, medical, financial, or professional advice of any kind.</p>
+          <p className="text-body text-surface-foreground">Natal chart interpretations and astrological data used in our Services are provided for artistic and entertainment purposes only. We make no claims regarding the scientific validity, accuracy, or predictive value of astrology. Our Services do not constitute psychological, medical, financial, or professional advice of any kind.</p>
         </div>
       </>
     ),
@@ -87,14 +87,14 @@ const sections = [
     content: (
       <>
         <p className="text-body text-surface-muted mb-4">All Products sold through Celestial Artworks are custom-made, personalized, and produced on demand based on your individual Birth Data and style selections. By placing an order, you acknowledge that:</p>
-        <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5 mb-4">
+        <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5 mb-4">
           <li>Your Product is custom-made and cannot be resold by us to another customer</li>
           <li>Minor variations in color between your screen preview and the physical print are inherent to the printing process</li>
           <li>AI-generated artwork is unique to each generation; regenerated artwork may differ from previous versions</li>
         </ul>
         <div className="bg-primary/10 border-l-[3px] border-primary rounded-r-[2px] px-6 py-5 my-6">
           <span className="text-a5 text-primary block mb-1.5">Right of Withdrawal Exemption</span>
-          <p className="text-body-sm text-surface-foreground">Under applicable consumer protection laws, bespoke and personalized goods are exempt from the standard 14-day right of withdrawal. By confirming your purchase after reviewing the digital preview, you expressly request that production begins immediately and acknowledge that you lose your right of withdrawal once production has commenced.</p>
+          <p className="text-body text-surface-foreground">Under applicable consumer protection laws, bespoke and personalized goods are exempt from the standard 14-day right of withdrawal. By confirming your purchase after reviewing the digital preview, you expressly request that production begins immediately and acknowledge that you lose your right of withdrawal once production has commenced.</p>
         </div>
       </>
     ),
@@ -150,7 +150,7 @@ const sections = [
     num: "10",
     title: "Prohibited Uses",
     content: (
-      <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5">
+      <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5">
         <li>Violate any applicable law, regulation, or these Terms</li>
         <li>Infringe upon the intellectual property or other rights of any third party</li>
         <li>Submit false, misleading, or fraudulent information</li>
@@ -220,7 +220,7 @@ const sections = [
       <>
         <div className="bg-primary/10 border-l-[3px] border-primary rounded-r-[2px] px-6 py-5 my-6">
           <span className="text-a5 text-primary block mb-1.5">Important Notice</span>
-          <p className="text-body-sm text-surface-foreground">This section contains a binding arbitration clause and class action waiver. Please read it carefully, as it affects your legal rights.</p>
+          <p className="text-body text-surface-foreground">This section contains a binding arbitration clause and class action waiver. Please read it carefully, as it affects your legal rights.</p>
         </div>
 
         <h3 className="text-a5 text-surface-foreground mb-3">17.1 Informal Resolution</h3>
@@ -243,7 +243,7 @@ const sections = [
     num: "18",
     title: "General Provisions",
     content: (
-      <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5">
+      <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5">
         <li><strong className="text-surface-foreground font-medium">Entire Agreement:</strong> These Terms, together with our Privacy Policy and Cookie Policy, constitute the entire agreement between you and Celestial Artworks.</li>
         <li><strong className="text-surface-foreground font-medium">Severability:</strong> If any provision is found to be invalid, the remaining provisions continue in full force.</li>
         <li><strong className="text-surface-foreground font-medium">Waiver:</strong> Our failure to enforce any right shall not constitute a waiver.</li>
@@ -269,7 +269,7 @@ const sections = [
         <p className="text-body text-surface-muted mb-2">924 N Magnolia Ave, Suite 202 Unit #5014</p>
         <p className="text-body text-surface-muted mb-2">Orlando, Florida 32803, United States</p>
         <p className="text-body text-surface-muted mb-4">Email: <a href="mailto:hello@celestialartworks.com" className="text-primary hover:underline">hello@celestialartworks.com</a></p>
-        <p className="text-body-sm text-surface-muted">Delaware LLC File Number: 7129998</p>
+        <p className="text-body text-surface-muted">Delaware LLC File Number: 7129998</p>
       </>
     ),
   },
@@ -289,13 +289,13 @@ export default function TermsConditions() {
           <p className="text-body text-surface-muted max-w-[520px] mx-auto">
             Operated by Human Brand Firm LLC, a Delaware Limited Liability Company.
           </p>
-          <p className="text-body-sm text-surface-muted mt-3">Effective Date: February 28, 2026 · Last Updated: February 28, 2026 · Version 2.0</p>
+          <p className="text-body text-surface-muted mt-3">Effective Date: February 28, 2026 · Last Updated: February 28, 2026 · Version 2.0</p>
           <div className="mt-8 text-primary/60 text-sm tracking-[24px]">✦</div>
         </header>
 
         <div className="bg-primary/10 border-l-[3px] border-primary rounded-r-[2px] px-6 py-5 mb-12">
           <span className="text-a5 text-primary block mb-1.5">Please Read Carefully</span>
-          <p className="text-body-sm text-surface-foreground">By accessing our website, placing an order, generating artwork, creating an account, or otherwise using our Services, you agree to be bound by these Terms, our Privacy Policy, and our Cookie Policy. These Terms contain a binding arbitration clause and a class action waiver in Section 17.</p>
+          <p className="text-body text-surface-foreground">By accessing our website, placing an order, generating artwork, creating an account, or otherwise using our Services, you agree to be bound by these Terms, our Privacy Policy, and our Cookie Policy. These Terms contain a binding arbitration clause and a class action waiver in Section 17.</p>
         </div>
 
         {sections.map((s, i) => (
