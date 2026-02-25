@@ -1,207 +1,273 @@
-import { generateChartExplanation } from '@/lib/explanations/generateExplanation';
 import { useState, useEffect } from 'react';
+import { generateChartExplanation } from '@/lib/explanations/generateExplanation';
+import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
-import ProgressBar from '@/components/ui/ProgressBar';
+import Footer from '@/components/Layout/Footer';
+import galaxyBg from '@/assets/galaxy-bg.jpg';
+import womanHolding from '@/assets/gallery/woman-holding.jpg';
+import lifestyleImg from '@/assets/gallery/lifestyle.jpg';
 
-export function ChartExplanation({ chartData, selectedImage, onGetFramed, formData, onEditBirthData }) {
+/**
+ * Hotspot positions on the artwork — will be dynamic later,
+ * but using reasonable defaults for now.
+ */
+const HOTSPOT_POSITIONS = [
+  { top: '15%', left: '25%' },
+  { top: '35%', left: '70%' },
+  { top: '60%', left: '30%' },
+  { top: '78%', left: '65%' },
+];
+
+const TESTIMONIALS = [
+  {
+    img: womanHolding,
+    quote: '"This is the most meaningful piece of art I own"',
+    name: 'SARAH M, VERIFIED BUYER',
+  },
+  {
+    img: lifestyleImg,
+    quote: '"As a Taurus sun it spoke to me instantly. I get compliments every time someone visits asks ab..."',
+    name: 'JENNIFER K, VERIFIED BUYER',
+  },
+];
+
+export function ChartExplanation({
+  chartData,
+  selectedImage,
+  onGetFramed,
+  formData,
+  onEditBirthData,
+  onBackToStyle,
+}) {
   const explanation = generateChartExplanation(chartData);
-  const [showStickyCTA, setShowStickyCTA] = useState(false);
+  const [activeHotspot, setActiveHotspot] = useState(null);
+  const [showEmailModal, setShowEmailModal] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowStickyCTA(window.scrollY > 600);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const hotspots = explanation.elements.map((el, i) => ({
+    ...el,
+    id: i + 1,
+    position: HOTSPOT_POSITIONS[i] || { top: '50%', left: '50%' },
+  }));
 
-  const handleDownload = () => {
-    const a = document.createElement('a');
-    a.href = selectedImage;
-    a.download = `birth-chart-${chartData.sun.sign.toLowerCase()}.png`;
-    a.target = '_blank';
-    a.click();
-  };
+  const active = hotspots.find((h) => h.id === activeHotspot);
 
   return (
-    <>
-      <ProgressBar currentStep={3} />
-      <BirthDataBar formData={formData} onEdit={onEditBirthData} />
-
-      <div className="px-4 py-8">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Header */}
-      <div className="text-center mb-10">
-        <h2 className="text-a2 md:text-4xl text-foreground mb-4">
-          Meet Your Cosmic <span className="text-primary text-glow">Masterpiece</span>
-        </h2>
-        <p className="text-body text-muted-foreground max-w-2xl mx-auto">
-          Every symbol, color, and shape represents your exact planetary positions at birth.
-        </p>
-      </div>
+      <nav
+        className="flex items-center justify-between"
+        style={{ backgroundColor: '#121212', padding: '26px 30px' }}
+      >
+        <div className="text-a4 text-white font-display">Celestial Artworks</div>
+        <button className="text-white/70 hover:text-white transition">
+          <div className="space-y-1.5">
+            <div className="w-6 h-0.5 bg-current" />
+            <div className="w-6 h-0.5 bg-current" />
+          </div>
+        </button>
+      </nav>
 
-      {/* CTA Banner */}
-      <div className="max-w-lg mx-auto mb-12 bg-cosmic border border-primary/20 rounded-xl p-8 text-center space-y-4 border-glow">
-        <h3 className="text-a2 text-foreground">Frame it. Hang it. Treasure it forever.</h3>
-        <p className="text-body-sm text-muted-foreground">
-          Gallery-quality printing. Museum-quality canvas. Ready to hang. Built to last 100 years.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <button
-            onClick={onGetFramed}
-            className="bg-primary text-primary-foreground text-a4 px-8 py-3 rounded-lg hover:opacity-90 transition-opacity tracking-wide border-glow"
-          >
-            Choose Your Size ($79 – $179)
-          </button>
-          <button
-            onClick={handleDownload}
-            className="border border-border text-muted-foreground text-a5 px-6 py-3 rounded-lg hover:border-primary hover:text-primary transition-colors"
-          >
-            Download Preview (Free)
-          </button>
-        </div>
-        <p className="text-body-sm text-muted-foreground">
-          ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
-        </p>
-        <p className="text-body-sm text-primary">🚀 Order by 5pm for same-day processing</p>
-      </div>
+      {/* Progress bar */}
+      <StepProgressBar currentStep={3} />
 
-      {/* Quick Reference */}
-      <div className="bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-amber-500/10 rounded-xl p-6 mb-12">
-        <h3 className="text-a4 text-center text-foreground mb-4">Your Birth Chart Summary</h3>
-        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          <div className="bg-card/60 border border-border rounded-lg p-4 text-center shadow-sm">
-            <div className="text-3xl mb-2">☀️</div>
-            <div className="text-a5 text-foreground">Sun in {chartData.sun.sign}</div>
-            <div className="text-body-sm text-muted-foreground">House {chartData.sun.house}</div>
-          </div>
-          <div className="bg-card/60 border border-border rounded-lg p-4 text-center shadow-sm">
-            <div className="text-3xl mb-2">🌙</div>
-            <div className="text-a5 text-foreground">Moon in {chartData.moon.sign}</div>
-            <div className="text-body-sm text-muted-foreground">House {chartData.moon.house}</div>
-          </div>
-          <div className="bg-card/60 border border-border rounded-lg p-4 text-center shadow-sm">
-            <div className="text-3xl mb-2">⬆️</div>
-            <div className="text-a5 text-foreground">{chartData.rising} Rising</div>
-            <div className="text-body-sm text-muted-foreground">Your Ascendant</div>
-          </div>
-        </div>
-
-        {/* Element Balance */}
-        <div className="mt-6 text-center">
-          <p className="text-subtitle text-muted-foreground mb-2">Elemental Balance:</p>
-          <div className="flex justify-center gap-4 text-body-sm text-foreground">
-            <span>🔥 Fire: {chartData.element_balance.Fire}</span>
-            <span>💧 Water: {chartData.element_balance.Water}</span>
-            <span>🌍 Earth: {chartData.element_balance.Earth}</span>
-            <span>💨 Air: {chartData.element_balance.Air}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Grid: Image + Explanation */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-        <div className="flex flex-col items-center">
-          <div className="rounded-xl overflow-hidden border border-amber-500/20 shadow-[0_0_30px_rgba(245,158,11,0.15)]">
-            <img src={selectedImage} alt="Your natal chart artwork" className="w-full h-auto max-w-md" />
-          </div>
-          <p className="text-body-sm text-muted-foreground mt-3 text-center italic">
-            Generated with magical pink watercolor LoRA based on your unique natal chart
+      {/* Main content */}
+      <div className="flex-1">
+        {/* Hero heading */}
+        <div className="text-center px-6 pt-12 pb-8">
+          <h1 className="text-a1 text-surface-foreground font-display mb-3">
+            Meet Your Cosmic{'\n'}Masterpiece
+          </h1>
+          <p className="text-body font-body text-surface-muted max-w-sm mx-auto">
+            Every symbol, color, and shape represents your exact planetary positions at birth.
           </p>
         </div>
 
-        <div className="space-y-6">
-          <h3 className="text-a4 text-amber-300 mb-4">
-            How Your Chart Influenced This Artwork
-          </h3>
+        {/* Artwork with hotspots */}
+        <div className="px-6 max-w-md mx-auto">
+          <div className="relative">
+            <img
+              src={selectedImage}
+              alt={`Birth chart artwork for ${chartData.sun.sign} Sun`}
+              className="w-full"
+              style={{ borderRadius: '2px' }}
+            />
+            {/* Hotspot markers */}
+            {hotspots.map((h) => (
+              <button
+                key={h.id}
+                onClick={() => setActiveHotspot(activeHotspot === h.id ? null : h.id)}
+                className={`absolute w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold font-display transition-all duration-200 cursor-pointer z-10 ${
+                  activeHotspot === h.id
+                    ? 'bg-white text-surface-foreground scale-110 shadow-lg'
+                    : 'bg-surface-foreground/80 text-white hover:scale-110'
+                }`}
+                style={{ top: h.position.top, left: h.position.left, transform: 'translate(-50%, -50%)' }}
+                aria-label={`Hotspot ${h.id}: ${h.title}`}
+              >
+                {h.id}
+              </button>
+            ))}
+          </div>
 
-          {explanation.elements.map((element, index) => (
-            <div key={index} className="rounded-lg border border-amber-500/10 bg-card/50 backdrop-blur-sm p-5 space-y-3">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">{element.icon}</span>
-                <div>
-                  <h4 className="text-a5 text-foreground">{element.title}</h4>
-                  <p className="text-body-sm text-muted-foreground">{element.subtitle}</p>
+          {/* Hotspot explanation — mobile tap reveal */}
+          <div className="mt-6 min-h-[120px]">
+            {active ? (
+              <div className="animate-fade-in text-center" key={active.id}>
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <span
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold font-display"
+                    style={{ backgroundColor: '#121212', color: '#FFFFFF' }}
+                  >
+                    {active.id}
+                  </span>
+                  <span className="text-lg">{active.icon}</span>
+                  <span className="text-a5 text-surface-foreground font-display">
+                    {active.title}
+                  </span>
                 </div>
+                <p className="text-body font-body text-surface-muted leading-relaxed mb-2">
+                  {active.explanation}
+                </p>
+                <p className="text-body font-body text-surface-muted leading-relaxed">
+                  {active.meaning}
+                </p>
               </div>
-              <p className="text-body text-muted-foreground">{element.explanation}</p>
-              <div className="space-y-1.5">
-                <span className="text-subtitle text-amber-400 tracking-wider">Visual Cues</span>
-                <ul className="space-y-1">
-                  {element.visualCues.map((cue, i) => (
-                    <li key={i} className="text-body-sm text-muted-foreground flex items-start gap-2">
-                      <span className="text-amber-500 mt-0.5">•</span>
-                      <span>{cue}</span>
-                    </li>
-                  ))}
-                </ul>
+            ) : (
+              <div className="flex items-center justify-center gap-2 text-surface-muted">
+                <span className="text-xl">👆</span>
+                <p className="text-body font-body">
+                  Tap a number to explore your chart.
+                </p>
               </div>
-              <p className="text-body-sm italic text-amber-200/60 border-t border-amber-500/10 pt-2">{element.meaning}</p>
-            </div>
-          ))}
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Bottom CTA */}
-      <div className="max-w-lg mx-auto mt-16 text-center space-y-4">
-        <h3 className="text-a2 text-foreground">Ready to own this artwork?</h3>
-        <button
-          onClick={onGetFramed}
-          className="bg-primary text-primary-foreground text-a4 px-10 py-4 rounded-lg hover:opacity-90 transition-opacity tracking-wide border-glow"
+        {/* CTA Banner — dark with starfield */}
+        <div
+          className="mt-12 py-12 px-6 text-center bg-cover bg-center"
+          style={{ backgroundImage: `url(${galaxyBg})`, backgroundColor: '#121212' }}
         >
-          Choose Your Size ($79 – $179)
-        </button>
-      </div>
-
-      {/* Testimonials */}
-      <div className="mt-16 text-center">
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <span className="text-primary">⭐⭐⭐⭐⭐</span>
-          <span className="text-body-sm text-foreground">4.9/5 from 287 customers</span>
+          <div className="max-w-md mx-auto space-y-4">
+            <h2 className="text-a1 text-white font-display">
+              Frame it. Hang it.{'\n'}Treasure it forever
+            </h2>
+            <p className="text-body font-body text-white/70">
+              Gallery-quality printing. Solid wood frames.{'\n'}Ready to hang. Built to last 100 years.
+            </p>
+            <div className="space-y-3 pt-2">
+              <button
+                onClick={onGetFramed}
+                className="btn-base btn-primary w-full"
+              >
+                Select Size Options ($79 - $199)
+              </button>
+              <button
+                onClick={() => setShowEmailModal(true)}
+                className="btn-base w-full"
+                style={{
+                  backgroundColor: '#333333',
+                  color: '#FFFFFF',
+                  border: 'none',
+                }}
+              >
+                Download Preview (Free)
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-          {[
-            { initials: "SJ", name: "Sarah J.", quote: "The symbolism is incredibly accurate. My Capricorn mountain is stunning!", badge: "Verified Buyer" },
-            { initials: "MR", name: "Michael R.", quote: "Most meaningful piece of art I own. Everyone asks about it!", badge: "Verified Buyer" },
-            { initials: "AL", name: "Amanda L.", quote: "Bought one for myself and immediately ordered two more as gifts.", badge: "Verified Buyer" },
-          ].map((r) => (
-            <div key={r.initials} className="bg-card border border-border rounded-xl p-4 text-left">
-              <div className="text-primary text-xs mb-2">★★★★★</div>
-              <p className="text-body-sm text-foreground/80 mb-3">"{r.quote}"</p>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center text-primary text-subtitle">{r.initials}</div>
-                <div>
-                  <p className="text-body-sm text-foreground">{r.name}</p>
-                  <p className="text-subtitle text-primary">{r.badge}</p>
+
+        {/* Trust badges */}
+        <div className="px-6 py-6 text-center space-y-3">
+          <p className="text-body-sm font-body text-surface-foreground">
+            ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
+          </p>
+          <div
+            className="py-3 px-4 text-center"
+            style={{ backgroundColor: '#DAEEFF', borderRadius: '2px' }}
+          >
+            <p className="text-body-sm font-body" style={{ color: '#333333' }}>
+              🚀 Order by 5pm for same-day processing
+            </p>
+          </div>
+          {onBackToStyle && (
+            <button
+              onClick={onBackToStyle}
+              className="btn-base btn-tertiary text-surface-muted mt-2"
+            >
+              ↻ Try a Different Style
+            </button>
+          )}
+        </div>
+
+        {/* Testimonials */}
+        <div className="px-6 pb-12">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg" style={{ color: '#FFBF00' }}>★★★★★</span>
+            <span className="text-a2 font-display text-surface-foreground">4.9/5</span>
+          </div>
+          <p className="text-subtitle text-surface-muted tracking-widest mb-4">
+            FROM 287 CUSTOMERS
+          </p>
+
+          {/* Horizontal scroll cards */}
+          <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+            {TESTIMONIALS.map((t, i) => (
+              <div
+                key={i}
+                className="flex-shrink-0 w-[200px]"
+                style={{ borderRadius: '2px', overflow: 'hidden' }}
+              >
+                <img
+                  src={t.img}
+                  alt={t.name}
+                  className="w-full h-[160px] object-cover"
+                />
+                <div className="p-3" style={{ backgroundColor: '#F9F5F0' }}>
+                  <p className="text-body-sm font-body text-surface-foreground mb-2 line-clamp-3">
+                    {t.quote}
+                  </p>
+                  <p className="text-subtitle text-surface-foreground" style={{ fontSize: '10px' }}>
+                    {t.name}
+                  </p>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-      </div>
 
-      {/* Sticky Bottom CTA */}
-      {showStickyCTA && (
-        <div className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border py-3 px-4 z-50 animate-fade-in">
-          <div className="max-w-4xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {selectedImage && (
-                <img src={selectedImage} alt="" className="w-10 h-10 rounded object-cover" />
-              )}
-              <div>
-                <p className="text-body-sm text-foreground">Your Cosmic Masterpiece</p>
-                <p className="text-body-sm text-muted-foreground">{chartData.sun.sign} Sun • {chartData.moon.sign} Moon</p>
-              </div>
-            </div>
+      {/* Footer */}
+      <Footer />
+
+      {/* Email capture modal (placeholder) */}
+      {showEmailModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-6">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full space-y-4">
+            <h3 className="text-a2 font-display text-surface-foreground text-center">
+              Get Your Free Preview
+            </h3>
+            <p className="text-body font-body text-surface-muted text-center">
+              Enter your email to download the high-resolution preview.
+            </p>
+            <input
+              type="email"
+              placeholder="your@email.com"
+              className="w-full border px-4 py-3 text-body font-body"
+              style={{ borderColor: '#D4D4D4', borderRadius: '2px' }}
+            />
+            <button className="btn-base btn-primary w-full">
+              Send My Preview
+            </button>
             <button
-              onClick={onGetFramed}
-              className="bg-primary text-primary-foreground text-a5 px-6 py-2 rounded-lg hover:opacity-90 transition-opacity tracking-wide border-glow"
+              onClick={() => setShowEmailModal(false)}
+              className="btn-base btn-tertiary w-full text-surface-muted"
             >
-              Choose Your Size →
+              Cancel
             </button>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
