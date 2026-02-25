@@ -279,3 +279,16 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Hide native date input calendar icon */
+.date-no-icon::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.date-no-icon::-webkit-inner-spin-button {
+  display: none;
+}
