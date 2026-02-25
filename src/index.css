@@ -262,6 +262,11 @@
   text-decoration: underline;
   text-underline-offset: 3px;
   color: inherit;
+  transition: background-color 0.2s, opacity 0.2s;
+  border-radius: 40px;
+}
+.btn-tertiary:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 /* Mobile: full width */
