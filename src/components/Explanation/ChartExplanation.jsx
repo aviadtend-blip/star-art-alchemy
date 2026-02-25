@@ -73,15 +73,15 @@ function HangingFrameIcon() {
         {/* Nail */}
         <circle cx="24" cy="3" r="2.5" fill="#FFBF00" />
         {/* String */}
-        <path d="M24 5.5 L14 18 M24 5.5 L34 18" stroke="white" strokeWidth="1" strokeLinecap="round" opacity="0.5" />
+        <path d="M24 5.5 L14 18 M24 5.5 L34 18" stroke="white" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
         {/* Frame */}
-        <rect x="8" y="18" width="32" height="34" rx="2" stroke="white" strokeWidth="1.5" fill="none" opacity="0.7" />
+        <rect x="8" y="18" width="32" height="34" rx="2" stroke="white" strokeWidth="2.5" fill="none" opacity="0.95" />
         {/* Inner frame */}
-        <rect x="12" y="22" width="24" height="26" rx="1" stroke="white" strokeWidth="0.75" fill="none" opacity="0.35" />
+        <rect x="12" y="22" width="24" height="26" rx="1" stroke="white" strokeWidth="1.25" fill="none" opacity="0.6" />
         {/* Mountain scene inside */}
-        <path d="M14 42 L20 32 L24 36 L30 28 L34 42 Z" fill="white" opacity="0.15" />
+        <path d="M14 42 L20 32 L24 36 L30 28 L34 42 Z" fill="white" opacity="0.25" />
         {/* Sun */}
-        <circle cx="30" cy="28" r="2.5" fill="#FFBF00" opacity="0.4" />
+        <circle cx="30" cy="28" r="2.5" fill="#FFBF00" opacity="0.6" />
       </svg>
     </div>
   );
