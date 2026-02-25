@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import ProgressBar from '@/components/ui/ProgressBar';
+import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
 
@@ -67,7 +67,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FFFFFF' }}>
-      <ProgressBar currentStep={4} />
+      <StepProgressBar currentStep={4} />
       <BirthDataBar formData={formData} onEdit={onEditBirthData} />
 
       {/* Hero mockup area — dark background */}
