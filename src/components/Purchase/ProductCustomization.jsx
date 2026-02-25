@@ -2,6 +2,7 @@ import { useState } from 'react';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
+import Header from '@/components/Layout/Header';
 
 // 12x18 mockups
 import mockup12x18_1 from '@/assets/mockups/12x18/mockup-1.png';
@@ -66,7 +67,8 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#FFFFFF' }}>
+    <div className="min-h-screen relative pt-14" style={{ backgroundColor: '#FFFFFF' }}>
+      <Header />
       <StepProgressBar currentStep={4} />
       <BirthDataBar formData={formData} onEdit={onEditBirthData} />
 
