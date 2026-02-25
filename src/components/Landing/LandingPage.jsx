@@ -84,9 +84,8 @@ export default function LandingPage() {
 
   // Step 1b modal state
   const [showTimeModal, setShowTimeModal] = useState(false);
-  const [birthHour, setBirthHour] = useState("12");
-  const [birthMinute, setBirthMinute] = useState("00");
-  const [birthPeriod, setBirthPeriod] = useState("PM");
+  const [birthTimeValue, setBirthTimeValue] = useState("12:00"); // HH:MM 24h format
+  const [dontKnowTime, setDontKnowTime] = useState(false);
   const [dontKnowTime, setDontKnowTime] = useState(false);
   const [locationError, setLocationError] = useState(false);
 
@@ -146,17 +145,20 @@ export default function LandingPage() {
   };
 
   const handleStep1bSubmit = () => {
-    let hour = Number(birthHour);
+    let hour = 12;
+    let minute = 0;
     if (dontKnowTime) {
       hour = 12;
+      minute = 0;
     } else {
-      if (birthPeriod === "PM" && hour !== 12) hour += 12;
-      if (birthPeriod === "AM" && hour === 12) hour = 0;
+      const [h, m] = birthTimeValue.split(":");
+      hour = Number(h);
+      minute = Number(m);
     }
     const params = new URLSearchParams({
       name: formData.name, month: formData.birthMonth, day: formData.birthDay,
       year: formData.birthYear, hour: String(hour),
-      minute: dontKnowTime ? "0" : birthMinute,
+      minute: String(minute),
       city: formData.birthCity, nation: formData.birthCountry,
       ...(formData.lat != null ? { lat: String(formData.lat) } : {}),
       ...(formData.lng != null ? { lng: String(formData.lng) } : {}),
@@ -275,18 +277,13 @@ export default function LandingPage() {
               <div className="flex flex-col gap-[24px]">
                 <div>
                    <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH TIME</label>
-                  <div className={`grid grid-cols-3 gap-4 transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
-                    <input type="number" value={birthHour} onChange={(e) => setBirthHour(e.target.value)} placeholder="12" min="1" max="12" className={inputClass} />
-                    <input type="number" value={birthMinute} onChange={(e) => setBirthMinute(e.target.value)} placeholder="00" min="0" max="59" className={inputClass} />
-                    <div className="relative">
-                      <select value={birthPeriod} onChange={(e) => setBirthPeriod(e.target.value)} className="w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-foreground outline-none focus:border-primary transition appearance-none">
-                        <option value="AM" className="bg-card">AM</option>
-                        <option value="PM" className="bg-card">PM</option>
-                      </select>
-                      <span className="absolute right-0 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
-                      </span>
-                    </div>
+                   <div className={`transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
+                    <input
+                      type="time"
+                      value={birthTimeValue}
+                      onChange={(e) => setBirthTimeValue(e.target.value)}
+                      className={inputClass}
+                    />
                   </div>
                 </div>
                 <div className="flex items-start gap-3 min-h-[52px]">
@@ -400,18 +397,13 @@ export default function LandingPage() {
               <div className="flex flex-col gap-[24px]">
                 <div>
                   <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH TIME</label>
-                  <div className={`grid grid-cols-3 gap-4 transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
-                    <input type="number" value={birthHour} onChange={(e) => setBirthHour(e.target.value)} placeholder="12" min="1" max="12" className={inputClass} />
-                    <input type="number" value={birthMinute} onChange={(e) => setBirthMinute(e.target.value)} placeholder="00" min="0" max="59" className={inputClass} />
-                    <div className="relative">
-                      <select value={birthPeriod} onChange={(e) => setBirthPeriod(e.target.value)} className="w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-foreground outline-none focus:border-primary transition appearance-none">
-                        <option value="AM" className="bg-card">AM</option>
-                        <option value="PM" className="bg-card">PM</option>
-                      </select>
-                      <span className="absolute right-0 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
-                      </span>
-                    </div>
+                  <div className={`transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
+                    <input
+                      type="time"
+                      value={birthTimeValue}
+                      onChange={(e) => setBirthTimeValue(e.target.value)}
+                      className={inputClass}
+                    />
                   </div>
                 </div>
                 <div className="flex items-start gap-3 min-h-[52px]">
@@ -744,19 +736,14 @@ export default function LandingPage() {
               <div className="flex flex-col gap-[30px]">
                 <div>
                   <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH TIME</label>
-                  <div className={`grid grid-cols-3 gap-4 transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
-                      <input type="number" value={birthHour} onChange={(e) => setBirthHour(e.target.value)} placeholder="12" min="1" max="12" className={inputClass} />
-                      <input type="number" value={birthMinute} onChange={(e) => setBirthMinute(e.target.value)} placeholder="00" min="0" max="59" className={inputClass} />
-                      <div className="relative">
-                        <select value={birthPeriod} onChange={(e) => setBirthPeriod(e.target.value)} className="w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-foreground outline-none focus:border-primary transition appearance-none">
-                          <option value="AM" className="bg-card">AM</option>
-                          <option value="PM" className="bg-card">PM</option>
-                        </select>
-                        <span className="absolute right-0 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
-                        </span>
-                      </div>
-                    </div>
+                  <div className={`transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
+                    <input
+                      type="time"
+                      value={birthTimeValue}
+                      onChange={(e) => setBirthTimeValue(e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
                 </div>
 
                 <div className="flex items-start gap-3 min-h-[52px]">
