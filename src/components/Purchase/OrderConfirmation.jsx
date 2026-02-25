@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import confetti from 'canvas-confetti';
 import { useSearchParams } from 'react-router-dom';
 import { Copy, Share2 } from 'lucide-react';
 import FAQSection from '@/components/ui/FAQSection';
@@ -70,6 +71,28 @@ export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNew
 
   const referralCode = order.firstName ? `${order.firstName.toUpperCase()}10` : 'COSMIC10';
 
+  useEffect(() => {
+    const end = Date.now() + 1500;
+    const colors = ['#FFBF00', '#FF6B8A', '#A855F7', '#38BDF8', '#34D399'];
+    (function frame() {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0 },
+        colors,
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0 },
+        colors,
+      });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -80,8 +103,8 @@ export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNew
 
       {/* Success Header — centered */}
       <div className="text-center px-4 pt-10 pb-8">
-        <h1 className="text-a1 flex items-center justify-center gap-2" style={{ color: '#333' }}>
-          <span style={{ fontSize: '28px' }}>☑</span> Order Confirmed!
+        <h1 className="text-a1" style={{ color: '#333' }}>
+          Order Confirmed!
         </h1>
         <p className="text-body mt-2" style={{ color: '#666' }}>
           Thank you, {order.firstName || 'there'}!
