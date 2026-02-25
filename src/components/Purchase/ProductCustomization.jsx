@@ -5,6 +5,7 @@ import Footer from '@/components/Layout/Footer';
 import Header from '@/components/Layout/Header';
 import PopularTag from '@/components/ui/PopularTag';
 import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
+import MockupWithArtwork from '@/components/Purchase/MockupWithArtwork';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import canvasDetail from '@/assets/gallery/canvas-detail.jpg';
 import womanHolding from '@/assets/gallery/woman-holding.jpg';
@@ -152,8 +153,9 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
       >
         {/* Outgoing image */}
         {slideDir !== 0 && (
-          <img
-            src={mockups[displayIndex]}
+          <MockupWithArtwork
+            mockupSrc={mockups[displayIndex]}
+            artworkSrc={artworkImage}
             alt=""
             className="absolute inset-0 w-full object-contain"
             style={{
@@ -163,11 +165,11 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           />
         )}
         {/* Current / incoming image */}
-        <img
-          src={mockups[activeThumb]}
+        <MockupWithArtwork
+          mockupSrc={mockups[activeThumb]}
+          artworkSrc={artworkImage}
           alt={`Canvas mockup ${activeThumb + 1}`}
           className="w-full object-contain"
-          loading="lazy"
           style={{
             transform: slideDir !== 0
               ? 'translateX(0)'
