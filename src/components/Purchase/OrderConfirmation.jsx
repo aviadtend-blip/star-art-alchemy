@@ -154,15 +154,15 @@ export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNew
 
             <div className="space-y-5">
               {TIMELINE_STEPS.map((step, i) => (
-                <div key={i}>
-                  <p className="text-subtitle tracking-wider mb-1 font-bold" style={{ color: '#333' }}>
+                <div key={i} className="space-y-1">
+                  <p className="text-subtitle tracking-wider font-bold" style={{ color: '#333' }}>
                     {step.label}
                   </p>
                   <div className="flex items-start gap-2">
                     <span style={{ fontSize: '14px' }}>{step.icon}</span>
-                    <div>
+                    <div className="space-y-1">
                       <p className="text-a4" style={{ color: '#333' }}>{step.title}</p>
-                      <p className="text-body-sm mt-0.5" style={{ color: '#888' }}>{step.desc}</p>
+                      <p className="text-body" style={{ color: '#888' }}>{step.desc}</p>
                     </div>
                   </div>
                 </div>
@@ -184,10 +184,10 @@ export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNew
             {/* Give $10, Get $10 */}
             <div className="rounded-sm p-6" style={{ backgroundColor: '#F5F5F0' }}>
               <h2 className="text-a2 mb-1" style={{ color: '#333' }}>Give $10, Get $10</h2>
-              <p className="text-body-sm mb-1" style={{ color: '#888' }}>
+              <p className="text-body mb-1" style={{ color: '#888' }}>
                 Love your artwork? Share it with friends!
               </p>
-              <p className="text-body-sm mb-4" style={{ color: '#888' }}>
+              <p className="text-body mb-4" style={{ color: '#888' }}>
                 When they order using your code, they get $10 off and you get $10 credit toward your next order.
               </p>
               <p className="text-subtitle tracking-wider mb-1" style={{ color: '#888' }}>
@@ -218,7 +218,7 @@ export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNew
               <h2 className="text-a2 mb-1" style={{ color: '#333' }}>
                 Your Free Digital Copy 🌍
               </h2>
-              <p className="text-body-sm mb-4" style={{ color: '#888' }}>
+              <p className="text-body mb-4" style={{ color: '#888' }}>
                 While you wait for your canvas print, enjoy your artwork digitally!
               </p>
               <a
