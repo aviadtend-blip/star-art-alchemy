@@ -14,8 +14,8 @@ const STEPS = [
  */
 export default function StepProgressBar({ currentStep = 1 }) {
   return (
-    <div className="w-full" style={{ backgroundColor: '#121212' }}>
-      <div className="flex items-stretch overflow-x-auto scrollbar-hide" style={{ padding: '0 30px 12px 31px' }}>
+    <div className="w-full relative" style={{ backgroundColor: '#121212' }}>
+      <div className="flex items-stretch overflow-x-auto scrollbar-hide" style={{ padding: '0 0 12px 31px' }}>
         {STEPS.map((step) => {
           const isCompleted = step.number < currentStep;
           const isActive = step.number === currentStep;
@@ -24,7 +24,7 @@ export default function StepProgressBar({ currentStep = 1 }) {
             <div
               key={step.number}
               className="flex flex-col items-center"
-              style={{ marginRight: step.number < 4 ? '40px' : 0 }}
+              style={{ marginRight: step.number < 4 ? '40px' : 0, paddingRight: step.number === 4 ? '30px' : 0 }}
             >
               {/* Pink accent bar above active step */}
               <div
@@ -53,6 +53,8 @@ export default function StepProgressBar({ currentStep = 1 }) {
           );
         })}
       </div>
+      {/* Fade hint on right edge for mobile */}
+      <div className="absolute right-0 top-0 bottom-0 w-8 pointer-events-none md:hidden" style={{ background: 'linear-gradient(to right, transparent, #121212)' }} />
     </div>
   );
 }
