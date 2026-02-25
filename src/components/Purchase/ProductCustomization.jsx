@@ -56,7 +56,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const [displayIndex, setDisplayIndex] = useState(0);
   const [slideDir, setSlideDir] = useState(0); // -1 left, 1 right, 0 settled
   const sizeCarouselRef = useRef(null);
-  const orderSummaryRef = useRef(null);
+  
   const isFirstSizeScroll = useRef(true);
 
   const sizeData = SIZE_OPTIONS.find(s => s.id === selectedSize);
@@ -122,6 +122,11 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
     isFirstSizeScroll.current = false;
   }, [selectedSize]);
+
+  const scrollToOrder = () => {
+    const el = document.getElementById('order-summary-mobile') || document.getElementById('order-summary-desktop');
+    el?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const handleCheckout = () => {
     onCheckout({
@@ -331,11 +336,9 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           <SizeSelector />
         </div>
 
-        <div ref={orderSummaryRef} className="px-4" style={{ paddingBottom: '32px', marginTop: '23px' }}>
+        <div id="order-summary-mobile" className="px-4" style={{ paddingBottom: '32px', marginTop: '23px' }}>
           <OrderSummary />
         </div>
-
-
         {/* Mobile — Materials + Gift */}
         <div className="px-4 py-16 flex flex-col gap-16">
           <div>
@@ -346,7 +349,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
               <p className="text-body text-surface-muted">
                 Your artwork arrives ready to hang—printed on museum-grade archival paper in a solid wood frame with anti-reflective glaze. It'll look exactly this good in 100 years.
               </p>
-              <button onClick={() => orderSummaryRef.current?.scrollIntoView({ behavior: 'smooth' })} className="link-a5 font-body text-surface-foreground mt-4">
+              <button onClick={scrollToOrder} className="link-a5 font-body text-surface-foreground mt-4">
                 Continue to checkout
               </button>
             </div>
@@ -359,7 +362,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
               <p className="text-body text-surface-muted">
                 Birthdays. Anniversaries. New homes. Give a gift that's impossible to buy anywhere else—because it's created from their exact birth moment. Every friend who sees it will ask.
               </p>
-              <button onClick={() => orderSummaryRef.current?.scrollIntoView({ behavior: 'smooth' })} className="link-a5 font-body text-surface-foreground mt-4">
+              <button onClick={scrollToOrder} className="link-a5 font-body text-surface-foreground mt-4">
                 Continue to checkout
               </button>
             </div>
@@ -379,7 +382,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
             {/* Right — scrollable content */}
             <div className="flex-1 space-y-8">
               <SizeSelector vertical />
-              <div ref={orderSummaryRef}><OrderSummary /></div>
+              <div id="order-summary-desktop"><OrderSummary /></div>
 
               {/* Museum-Quality Materials */}
               <div>
@@ -390,7 +393,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
                   <p className="text-body text-surface-muted">
                     Your artwork arrives ready to hang—printed on museum-grade archival paper in a solid wood frame with anti-reflective glaze. It'll look exactly this good in 100 years.
                   </p>
-                  <button onClick={() => orderSummaryRef.current?.scrollIntoView({ behavior: 'smooth' })} className="link-a5 font-body text-surface-foreground mt-4">
+                  <button onClick={scrollToOrder} className="link-a5 font-body text-surface-foreground mt-4">
                     Continue to checkout
                   </button>
                 </div>
@@ -405,7 +408,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
                   <p className="text-body text-surface-muted">
                     Birthdays. Anniversaries. New homes. Give a gift that's impossible to buy anywhere else—because it's created from their exact birth moment. Every friend who sees it will ask.
                   </p>
-                  <button onClick={() => orderSummaryRef.current?.scrollIntoView({ behavior: 'smooth' })} className="link-a5 font-body text-surface-foreground mt-4">
+                  <button onClick={scrollToOrder} className="link-a5 font-body text-surface-foreground mt-4">
                     Continue to checkout
                   </button>
                 </div>
