@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from "react";
-import { ChevronUp } from "lucide-react";
-import FAQSection from "@/components/ui/FAQSection";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import FAQSection from "@/components/ui/FAQSection";
+import BirthDataFormCard from "./BirthDataFormCard";
 import heroMobile from "@/assets/hero-mobile.webp";
 import heroMobileTall from "@/assets/hero-mobile-tall.jpg";
 import heroDesktop from "@/assets/hero-desktop.webp";
@@ -76,94 +75,21 @@ const galleryItems = [
 export default function LandingPage() {
   const navigate = useNavigate();
 
-  // Step 1a form state
+  // Shared form state — passed to all BirthDataFormCard instances
   const [formData, setFormData] = useState({
     name: "", birthMonth: "", birthDay: "", birthYear: "",
     birthCity: "", birthCountry: "US", lat: null, lng: null,
   });
 
-  // Step 1b modal state
-  const [showTimeModal, setShowTimeModal] = useState(false);
-  const [birthTimeValue, setBirthTimeValue] = useState("12:00"); // HH:MM 24h format
-  const [dontKnowTime, setDontKnowTime] = useState(false);
-  const [dontKnowTime, setDontKnowTime] = useState(false);
-  const [locationError, setLocationError] = useState(false);
-
-  // City autocomplete
-  const [cityQuery, setCityQuery] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
-  const debounceRef = useRef(null);
-  const wrapperRef = useRef(null);
-
-  useEffect(() => {
-    const handleClick = (e) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) setShowSuggestions(false);
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
-  useEffect(() => {
-    if (cityQuery.length < 2) { setSuggestions([]); return; }
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(async () => {
-      setLoadingSuggestions(true);
-      try {
-        const { data, error } = await supabase.functions.invoke("google-places-autocomplete", { body: { input: cityQuery } });
-        if (!error && data?.predictions) { setSuggestions(data.predictions); setShowSuggestions(true); }
-      } catch (e) { console.error("[LandingPage] Autocomplete error:", e); }
-      finally { setLoadingSuggestions(false); }
-    }, 300);
-  }, [cityQuery]);
-
-  const handleSelectCity = async (prediction) => {
-    setShowSuggestions(false);
-    setCityQuery(prediction.description);
-    setLoadingSuggestions(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("google-places-detail", { body: { place_id: prediction.place_id } });
-      if (!error && data) {
-        setFormData((prev) => ({ ...prev, birthCity: data.city || prediction.description, birthCountry: data.nation || prev.birthCountry, lat: data.lat, lng: data.lng }));
-        setCityQuery(data.formatted_address || prediction.description);
-      }
-    } catch (e) { console.error("[LandingPage] Place detail error:", e); }
-    finally { setLoadingSuggestions(false); }
-  };
-
-  const set = (field, value) => setFormData((prev) => ({ ...prev, [field]: value }));
-
-  const handleStep1aSubmit = (e) => {
-    e.preventDefault();
-    if (!formData.lat || !formData.birthCity) {
-      setLocationError(true);
-      return;
-    }
-    setLocationError(false);
-    setShowTimeModal(true);
-  };
-
-  const handleStep1bSubmit = () => {
-    let hour = 12;
-    let minute = 0;
-    if (dontKnowTime) {
-      hour = 12;
-      minute = 0;
-    } else {
-      const [h, m] = birthTimeValue.split(":");
-      hour = Number(h);
-      minute = Number(m);
-    }
-    const params = new URLSearchParams({
-      name: formData.name, month: formData.birthMonth, day: formData.birthDay,
-      year: formData.birthYear, hour: String(hour),
-      minute: String(minute),
-      city: formData.birthCity, nation: formData.birthCountry,
-      ...(formData.lat != null ? { lat: String(formData.lat) } : {}),
-      ...(formData.lng != null ? { lng: String(formData.lng) } : {}),
+  const handleFormComplete = (params) => {
+    const searchParams = new URLSearchParams({
+      name: params.name, month: params.month, day: params.day,
+      year: params.year, hour: params.hour, minute: params.minute,
+      city: params.city, nation: params.nation,
+      ...(params.lat != null ? { lat: String(params.lat) } : {}),
+      ...(params.lng != null ? { lng: String(params.lng) } : {}),
     });
-    navigate(`/generate?${params.toString()}`);
+    navigate(`/generate?${searchParams.toString()}`);
   };
 
   const scrollToForm = () => {
@@ -172,11 +98,8 @@ export default function LandingPage() {
 
   const fillTestData = () => {
     setFormData({ name: "Sarah", birthMonth: "6", birthDay: "15", birthYear: "1995", birthCity: "New York", birthCountry: "US", lat: null, lng: null });
-    setCityQuery("New York");
     document.getElementById("birth-form")?.scrollIntoView({ behavior: "smooth" });
   };
-
-  const inputClass = "w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-left text-foreground placeholder:text-[#B1B1B1] focus:border-primary focus:ring-0 transition outline-none";
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -203,7 +126,7 @@ export default function LandingPage() {
             Every element in your artwork corresponds to a specific astrological placement.
           </p>
 
-          {/* Inline birth data form — same glass card as bottom form */}
+          {/* Glass card */}
           <div
             className="flex flex-col items-stretch rounded-[2px]"
             style={{
@@ -211,97 +134,9 @@ export default function LandingPage() {
               backdropFilter: 'blur(17px)',
               WebkitBackdropFilter: 'blur(17px)',
               padding: '36px 28px',
-              gap: 24,
             }}
           >
-            {!showTimeModal ? (
-              <form onSubmit={handleStep1aSubmit} className="flex flex-col gap-[24px]">
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
-                    <input
-                      type="date"
-                      required
-                      value={
-                        formData.birthYear && formData.birthMonth && formData.birthDay
-                          ? `${String(formData.birthYear).padStart(4, '0')}-${String(formData.birthMonth).padStart(2, '0')}-${String(formData.birthDay).padStart(2, '0')}`
-                          : ""
-                      }
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val) {
-                          const [y, m, d] = val.split("-");
-                          set("birthYear", y);
-                          set("birthMonth", String(Number(m)));
-                          set("birthDay", String(Number(d)));
-                        }
-                      }}
-                      max="2026-12-31"
-                      min="1900-01-01"
-                      className={`${inputClass} date-no-icon`}
-                    />
-                  </div>
-                  <div ref={wrapperRef} className="relative">
-                    <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH LOCATION</label>
-                    <div className="relative">
-                      <input
-                        type="text" required value={cityQuery}
-                        onChange={(e) => { setCityQuery(e.target.value); setLocationError(false); setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null })); }}
-                        placeholder="City"
-                        className={`${inputClass} ${locationError ? 'border-red-500' : ''}`} autoComplete="off"
-                      />
-                      {loadingSuggestions && (
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2">
-                          <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                        </div>
-                      )}
-                    </div>
-                    {showSuggestions && suggestions.length > 0 && (
-                      <ul className="absolute z-50 w-full mt-1 bg-card border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
-                        {suggestions.map((s) => (
-                          <li key={s.place_id} onClick={() => handleSelectCity(s)} className="px-4 py-3 text-body text-foreground hover:bg-primary/10 cursor-pointer transition-colors">
-                            {s.description}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    {locationError && !formData.lat && <p className="text-body text-red-400 mt-2">Please select a city from the dropdown</p>}
-                    {formData.lat && <p className="text-body text-muted-foreground mt-2">📍 {formData.birthCity}, {formData.birthCountry}</p>}
-                  </div>
-                </div>
-                <PrimaryButton type="submit" className="w-full mt-2">
-                  Continue
-                </PrimaryButton>
-              </form>
-            ) : (
-              <div className="flex flex-col gap-[24px]">
-                <div>
-                   <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH TIME</label>
-                   <div className={`transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
-                    <input
-                      type="time"
-                      value={birthTimeValue}
-                      onChange={(e) => setBirthTimeValue(e.target.value)}
-                      className={inputClass}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 min-h-[52px]">
-                  <div className="w-5 h-5 mt-0.5 rounded flex items-center justify-center flex-shrink-0 cursor-pointer border border-white/10" style={{ backgroundColor: '#2C2C2C' }} onClick={() => setDontKnowTime(!dontKnowTime)}>
-                    {dontKnowTime && <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-                  </div>
-                  <input type="checkbox" checked={dontKnowTime} onChange={(e) => setDontKnowTime(e.target.checked)} className="sr-only" />
-                  <div>
-                    <span className="text-a5 text-foreground">I don't know my birth time</span>
-                    {dontKnowTime && <p className="text-body mt-1" style={{ color: '#6A6A6A' }}>No worries! Your artwork will still be deeply personal and beautifully accurate.</p>}
-                  </div>
-                </div>
-                <div className="flex items-center gap-[30px]">
-                  <button type="button" onClick={() => setShowTimeModal(false)} className="link-a5 font-body text-foreground py-4">Back</button>
-                  <PrimaryButton onClick={handleStep1bSubmit} className="flex-1">Choose style</PrimaryButton>
-                </div>
-              </div>
-            )}
+            <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} />
           </div>
         </div>
       </section>
@@ -331,97 +166,9 @@ export default function LandingPage() {
               backdropFilter: 'blur(17px)',
               WebkitBackdropFilter: 'blur(17px)',
               padding: '40px 40px',
-              gap: 24,
             }}
           >
-            {!showTimeModal ? (
-              <form onSubmit={handleStep1aSubmit} className="flex flex-col gap-[24px]">
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
-                    <input
-                      type="date"
-                      required
-                      value={
-                        formData.birthYear && formData.birthMonth && formData.birthDay
-                          ? `${String(formData.birthYear).padStart(4, '0')}-${String(formData.birthMonth).padStart(2, '0')}-${String(formData.birthDay).padStart(2, '0')}`
-                          : ""
-                      }
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val) {
-                          const [y, m, d] = val.split("-");
-                          set("birthYear", y);
-                          set("birthMonth", String(Number(m)));
-                          set("birthDay", String(Number(d)));
-                        }
-                      }}
-                      max="2026-12-31"
-                      min="1900-01-01"
-                      className={`${inputClass} date-no-icon`}
-                    />
-                  </div>
-                  <div className="relative">
-                    <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH LOCATION</label>
-                    <div className="relative">
-                      <input
-                        type="text" required value={cityQuery}
-                        onChange={(e) => { setCityQuery(e.target.value); setLocationError(false); setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null })); }}
-                        placeholder="City"
-                        className={`${inputClass} ${locationError ? 'border-red-500' : ''}`} autoComplete="off"
-                      />
-                      {loadingSuggestions && (
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2">
-                          <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                        </div>
-                      )}
-                    </div>
-                    {showSuggestions && suggestions.length > 0 && (
-                      <ul className="absolute z-50 w-full mt-1 bg-card border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
-                        {suggestions.map((s) => (
-                          <li key={s.place_id} onClick={() => handleSelectCity(s)} className="px-4 py-3 text-body text-foreground hover:bg-primary/10 cursor-pointer transition-colors">
-                            {s.description}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    {locationError && !formData.lat && <p className="text-body text-red-400 mt-2">Please select a city from the dropdown</p>}
-                    {formData.lat && <p className="text-body text-muted-foreground mt-2">📍 {formData.birthCity}, {formData.birthCountry}</p>}
-                  </div>
-                </div>
-                <PrimaryButton type="submit" className="w-full mt-2">
-                  Show me my artwork
-                </PrimaryButton>
-              </form>
-            ) : (
-              <div className="flex flex-col gap-[24px]">
-                <div>
-                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH TIME</label>
-                  <div className={`transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
-                    <input
-                      type="time"
-                      value={birthTimeValue}
-                      onChange={(e) => setBirthTimeValue(e.target.value)}
-                      className={inputClass}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 min-h-[52px]">
-                  <div className="w-5 h-5 mt-0.5 rounded flex items-center justify-center flex-shrink-0 cursor-pointer border border-white/10" style={{ backgroundColor: '#2C2C2C' }} onClick={() => setDontKnowTime(!dontKnowTime)}>
-                    {dontKnowTime && <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-                  </div>
-                  <input type="checkbox" checked={dontKnowTime} onChange={(e) => setDontKnowTime(e.target.checked)} className="sr-only" />
-                  <div>
-                    <span className="text-a5 text-foreground">I don't know my birth time</span>
-                    {dontKnowTime && <p className="text-body mt-1" style={{ color: '#6A6A6A' }}>No worries! Your artwork will still be deeply personal and beautifully accurate.</p>}
-                  </div>
-                </div>
-                <div className="flex items-center gap-[30px]">
-                  <button type="button" onClick={() => setShowTimeModal(false)} className="link-a5 font-body text-foreground py-4">Back</button>
-                  <PrimaryButton onClick={handleStep1bSubmit} className="flex-1">Choose style</PrimaryButton>
-                </div>
-              </div>
-            )}
+            <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" />
           </div>
         </div>
       </section>
@@ -649,7 +396,7 @@ export default function LandingPage() {
             </h2>
           </div>
 
-          {/* Glass card — rgba(17,17,17,0.70) + blur(17px) */}
+          {/* Glass card */}
           <div
             className="flex flex-col items-stretch rounded-[2px]"
             style={{
@@ -657,130 +404,11 @@ export default function LandingPage() {
               backdropFilter: 'blur(17px)',
               WebkitBackdropFilter: 'blur(17px)',
               padding: 48,
-              gap: 30,
               minWidth: 320,
               minHeight: 380,
             }}
           >
-            {!showTimeModal ? (
-              <form onSubmit={handleStep1aSubmit} className="flex flex-col gap-[30px]">
-                {/* Birth Date */}
-                <div>
-                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
-                  {/* Mobile: native date picker */}
-                  <input
-                    type="date"
-                    required
-                    value={
-                      formData.birthYear && formData.birthMonth && formData.birthDay
-                        ? `${String(formData.birthYear).padStart(4, '0')}-${String(formData.birthMonth).padStart(2, '0')}-${String(formData.birthDay).padStart(2, '0')}`
-                        : ""
-                    }
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (val) {
-                        const [y, m, d] = val.split("-");
-                        set("birthYear", y);
-                        set("birthMonth", String(Number(m)));
-                        set("birthDay", String(Number(d)));
-                      }
-                    }}
-                    max="2026-12-31"
-                    min="1900-01-01"
-                    className={`${inputClass} md:hidden`}
-                  />
-                  {/* Desktop: 3-column number inputs */}
-                  <div className="hidden md:grid grid-cols-3 gap-4">
-                    <input type="number" required value={formData.birthMonth} onChange={(e) => set("birthMonth", e.target.value)} placeholder="Month" min="1" max="12" className={inputClass} />
-                    <input type="number" required value={formData.birthDay} onChange={(e) => set("birthDay", e.target.value)} placeholder="Day" min="1" max="31" className={inputClass} />
-                    <input type="number" required value={formData.birthYear} onChange={(e) => set("birthYear", e.target.value)} placeholder="Year" min="1900" max="2026" className={inputClass} />
-                  </div>
-                </div>
-
-                {/* Birth Location */}
-                <div ref={wrapperRef} className="relative">
-                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH LOCATION</label>
-                  <div className="relative">
-                    <input
-                      type="text" required value={cityQuery}
-                      onChange={(e) => { setCityQuery(e.target.value); setLocationError(false); setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null })); }}
-                      placeholder="City"
-                      className={`${inputClass} ${locationError ? 'border-red-500' : ''}`} autoComplete="off"
-                    />
-                    {loadingSuggestions && (
-                      <div className="absolute right-0 top-1/2 -translate-y-1/2">
-                        <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                      </div>
-                    )}
-                  </div>
-                  {showSuggestions && suggestions.length > 0 && (
-                    <ul className="absolute z-50 w-full mt-1 bg-card border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
-                      {suggestions.map((s) => (
-                        <li key={s.place_id} onClick={() => handleSelectCity(s)} className="px-4 py-3 text-body text-foreground hover:bg-primary/10 cursor-pointer transition-colors">
-                          {s.description}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {locationError && !formData.lat && <p className="text-body text-red-400 mt-2">Please select a city from the dropdown</p>}
-                  {formData.lat && <p className="text-body text-muted-foreground mt-2">📍 {formData.birthCity}, {formData.birthCountry}</p>}
-                </div>
-
-                {/* Submit */}
-                <PrimaryButton type="submit" className="w-full mt-2">
-                  Continue
-                </PrimaryButton>
-              </form>
-            ) : (
-              /* Step 1b — Birth Time (inline, replaces step 1) */
-              <div className="flex flex-col gap-[30px]">
-                <div>
-                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH TIME</label>
-                  <div className={`transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
-                    <input
-                      type="time"
-                      value={birthTimeValue}
-                      onChange={(e) => setBirthTimeValue(e.target.value)}
-                      className={inputClass}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 min-h-[52px]">
-                  <div
-                    className="w-5 h-5 mt-0.5 rounded flex items-center justify-center flex-shrink-0 cursor-pointer border border-white/10"
-                    style={{ backgroundColor: '#2C2C2C' }}
-                    onClick={() => setDontKnowTime(!dontKnowTime)}
-                  >
-                    {dontKnowTime && (
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                    )}
-                  </div>
-                  <input type="checkbox" checked={dontKnowTime} onChange={(e) => setDontKnowTime(e.target.checked)} className="sr-only" />
-                  <div>
-                    <span className="text-a5 text-foreground">I don't know my birth time</span>
-                    {dontKnowTime && (
-                      <p className="text-body mt-1" style={{ color: '#6A6A6A' }}>
-                        No worries! Your artwork will still be deeply personal and beautifully accurate.
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-[30px]">
-                  <button
-                    type="button"
-                    onClick={() => setShowTimeModal(false)}
-                    className="link-a5 font-body text-foreground py-4"
-                  >
-                    Back
-                  </button>
-                  <PrimaryButton onClick={handleStep1bSubmit} className="flex-1">
-                    Choose style
-                  </PrimaryButton>
-                </div>
-              </div>
-            )}
+            <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} gap={30} />
           </div>
         </div>
       </section>
