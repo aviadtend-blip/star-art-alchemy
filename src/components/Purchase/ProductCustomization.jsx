@@ -140,7 +140,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
               }}
             >
               {size.popular && (
-                <div className="absolute" style={{ top: '-4px', right: '-4px' }}>
+                <div className="absolute" style={{ top: '-12px', right: '-4px' }}>
                   <PopularTag>Most popular</PopularTag>
                 </div>
               )}
