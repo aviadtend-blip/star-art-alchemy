@@ -2,15 +2,20 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import Index from "./pages/Index";
-import GeneratePage from "./pages/Generate";
 import NotFound from "./pages/NotFound";
 import OrderConfirmationPage from "./pages/OrderConfirmation";
 import ShippingPolicy from "./pages/ShippingPolicy";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import ReturnsPolicy from "./pages/ReturnsPolicy";
+import { GeneratorProvider } from "./contexts/GeneratorContext";
+import GenerateEntry from "./pages/GenerateEntry";
+import GenerateStyle from "./pages/GenerateStyle";
+import GenerateLoading from "./pages/GenerateLoading";
+import GeneratePreview from "./pages/GeneratePreview";
+import GenerateSize from "./pages/GenerateSize";
 
 const queryClient = new QueryClient();
 
@@ -22,7 +27,16 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/generate" element={<GeneratePage />} />
+
+          {/* Generator flow — wrapped in shared context */}
+          <Route element={<GeneratorProvider><Outlet /></GeneratorProvider>}>
+            <Route path="/generate" element={<GenerateEntry />} />
+            <Route path="/generate/style" element={<GenerateStyle />} />
+            <Route path="/generate/loading" element={<GenerateLoading />} />
+            <Route path="/generate/preview" element={<GeneratePreview />} />
+            <Route path="/generate/size" element={<GenerateSize />} />
+          </Route>
+
           <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
           <Route path="/shipping" element={<ShippingPolicy />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
