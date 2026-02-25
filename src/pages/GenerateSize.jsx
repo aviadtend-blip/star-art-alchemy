@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import { ProductCustomization } from '@/components/Purchase/ProductCustomization';
@@ -7,7 +7,7 @@ export default function GenerateSize() {
   const navigate = useNavigate();
   const {
     chartData, generatedImage, formData,
-    handleCheckout, handleBackToPreview, handleEditBirthData,
+    handleCheckout, handleTestCheckout, handleBackToPreview, handleEditBirthData,
     isCheckingOut,
   } = useGenerator();
 
@@ -36,6 +36,23 @@ export default function GenerateSize() {
           </div>
         </div>
       )}
+
+      {/* Test bypass button */}
+      <button
+        onClick={() => {
+          const sizeData = { id: '16x24', label: '16" × 24"', price: 119 };
+          handleTestCheckout({
+            size: sizeData.id,
+            sizeLabel: sizeData.label,
+            frame: 'canvas',
+            frameName: 'Canvas Print',
+            total: sizeData.price,
+          });
+        }}
+        className="fixed bottom-4 right-4 z-50 bg-green-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg hover:bg-green-700 transition-colors"
+      >
+        🧪 Skip to Confirmation
+      </button>
     </>
   );
 }

@@ -35,9 +35,8 @@ const App = () => (
             <Route path="/generate/loading" element={<GenerateLoading />} />
             <Route path="/generate/preview" element={<GeneratePreview />} />
             <Route path="/generate/size" element={<GenerateSize />} />
+            <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
           </Route>
-
-          <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
           <Route path="/shipping" element={<ShippingPolicy />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsConditions />} />
