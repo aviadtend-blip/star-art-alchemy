@@ -153,7 +153,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           ))}
         </div>
 
-        <p className="text-body-sm mt-3" style={{ color: '#888888' }}>
+        <p className="text-body-sm" style={{ color: '#888888', marginTop: '4px' }}>
           💡 Not sure? We recommend 18"×24" for most spaces
         </p>
       </div>
