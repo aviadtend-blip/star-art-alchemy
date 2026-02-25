@@ -116,7 +116,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
       {/* Choose frame Size — white background */}
       <div className="px-4 pt-6 pb-4">
-        <h2 className="text-a4" style={{ color: '#333333', marginBottom: '12px' }}>
+        <h2 className="text-a4" style={{ color: '#333333', marginBottom: '8px' }}>
           🖼️ Choose frame Size
         </h2>
 
