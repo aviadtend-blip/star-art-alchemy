@@ -11,37 +11,37 @@ const MOCK_ORDER = {
   sun: 'Gemini',
   moon: 'Capricorn',
   rising: 'Virgo',
-  sizeLabel: '18" × 24"',
-  total: 194.00,
+  sizeLabel: '16" × 24"',
+  total: 119.00,
   paymentLast4: '4242',
   shippingAddress: 'Sarah Johnson, 123 Main Street San Francisco, CA 94102',
 };
 
 const TIMELINE_STEPS = [
   {
-    label: 'STEP 1 – NOW',
-    icon: '✅',
+    label: 'STEP 1 — NOW',
+    icon: '✓',
     title: 'Order Confirmed',
     desc: 'Your payment is processed and order is in our system.',
     active: true,
   },
   {
-    label: 'STEP 2 – TODAY & TOMORROW (1-2 DAYS)',
+    label: 'STEP 2 — TODAY & TOMORROW (1-2 DAYS)',
     icon: '🎨',
     title: 'Creating Your Artwork',
-    desc: 'We generate your unique cosmic blueprint based on your exact birth data. We review every artwork for quality.',
+    desc: 'We create your unique cosmic blueprint based on your exact birth data. Every artwork is reviewed for quality before printing.',
   },
   {
-    label: 'STEP 3 – THIS WEEK (2-3 DAYS)',
-    icon: '🖼️',
+    label: 'STEP 3 — THIS WEEK (2-3 DAYS)',
+    icon: '🖨',
     title: 'Professional Printing',
-    desc: 'Your artwork is printed on museum-grade archival paper with gallery-quality canvas.',
+    desc: 'Your artwork is printed on museum-grade archival paper using a 12-color giclée process for gallery-quality results.',
   },
   {
-    label: 'STEP 4 – NEXT WEEK (5-7 DAYS)',
+    label: 'STEP 4 — NEXT WEEK (5-7 DAYS)',
     icon: '📦',
     title: 'Shipped to You',
-    desc: 'Free shipping with tracking to your door. Arrives ready to hang—no assembly required.',
+    desc: 'Free shipping with tracking to your door. Arrives ready to display — no assembly required.',
   },
 ];
 
@@ -106,7 +106,7 @@ export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNew
         </p>
         <div className="mt-3 space-y-0.5">
           <p className="text-body-sm" style={{ color: '#888' }}>
-            Your Order Order {order.orderNumber || sessionId?.slice(0, 12) || '#CA-12345'}
+            Order {order.orderNumber || sessionId?.slice(0, 12) || '#CA-12345'}
           </p>
           <p className="text-body-sm" style={{ color: '#888' }}>
             Placed: {order.date || new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
@@ -128,7 +128,7 @@ export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNew
             {sunSign} Sun · {moonSign} Moon · {risingSign} Rising
           </p>
           <p className="text-body-sm" style={{ color: '#555' }}>
-            {order.sizeLabel}
+            {order.sizeLabel} Canvas Print
           </p>
           <p className="text-body-sm" style={{ color: '#555' }}>
             Total Paid: ${order.total?.toFixed(2)}
@@ -219,7 +219,7 @@ export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNew
                 Your Free Digital Copy 🌍
               </h2>
               <p className="text-body-sm mb-4" style={{ color: '#888' }}>
-                While you wait for your framed print, enjoy your artwork digitally!
+                While you wait for your canvas print, enjoy your artwork digitally!
               </p>
               <a
                 href={artworkImage || '#'}
