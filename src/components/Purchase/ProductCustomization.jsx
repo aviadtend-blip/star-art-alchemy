@@ -13,6 +13,14 @@ import mockup16x24_6 from '@/assets/mockups/16x24/mockup-6.png';
 import mockup16x24_7 from '@/assets/mockups/16x24/mockup-7.png';
 import mockup16x24_8 from '@/assets/mockups/16x24/mockup-8.png';
 
+// 20x30 mockups
+import mockup20x30_1 from '@/assets/mockups/20x30/mockup-1.png';
+import mockup20x30_2 from '@/assets/mockups/20x30/mockup-2.png';
+import mockup20x30_3 from '@/assets/mockups/20x30/mockup-3.png';
+import mockup20x30_4 from '@/assets/mockups/20x30/mockup-4.png';
+import mockup20x30_5 from '@/assets/mockups/20x30/mockup-5.png';
+import mockup20x30_6 from '@/assets/mockups/20x30/mockup-6.png';
+
 const SIZE_OPTIONS = [
   { id: '12x18', label: '12" × 18"', description: 'Perfect for combinations', price: 79 },
   { id: '16x24', label: '16" × 24"', description: 'Statement piece (34% choose this)', price: 119, popular: true },
@@ -23,7 +31,7 @@ const SIZE_OPTIONS = [
 const MOCKUPS = {
   '12x18': [mockup16x24_1, mockup16x24_2, mockup16x24_3, mockup16x24_4, mockup16x24_5, mockup16x24_6, mockup16x24_7, mockup16x24_8],
   '16x24': [mockup16x24_1, mockup16x24_2, mockup16x24_3, mockup16x24_4, mockup16x24_5, mockup16x24_6, mockup16x24_7, mockup16x24_8],
-  '20x30': [mockup16x24_1, mockup16x24_2, mockup16x24_3, mockup16x24_4, mockup16x24_5, mockup16x24_6, mockup16x24_7, mockup16x24_8],
+  '20x30': [mockup20x30_1, mockup20x30_2, mockup20x30_3, mockup20x30_4, mockup20x30_5, mockup20x30_6],
 };
 
 export function ProductCustomization({ chartData, artworkImage, onCheckout, onBack, formData, onEditBirthData }) {
