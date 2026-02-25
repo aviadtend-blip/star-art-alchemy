@@ -149,7 +149,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
           style={{ backgroundColor: '#FFF5DD', borderRadius: '2px' }}
         >
           <p className="text-body-sm font-body" style={{ color: '#C99700' }}>
-            💡 {FUN_FACTS[factIndex]}
+            {FUN_FACTS[factIndex].startsWith('Fun fact') ? '💡 ' : ''}{FUN_FACTS[factIndex]}
           </p>
         </div>
       </div>
