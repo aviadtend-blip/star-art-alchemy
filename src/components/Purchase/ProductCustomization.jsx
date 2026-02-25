@@ -347,7 +347,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
               <p className="text-subtitle text-surface-muted tracking-widest mb-2">MUSEUM-QUALITY MATERIALS</p>
               <h3 className="text-a2 text-surface-foreground mb-4">Materials So Good, Museums Use Them</h3>
               <p className="text-body text-surface-muted">
-                Your artwork arrives ready to hang—printed on museum-grade archival paper in a solid wood frame with anti-reflective glaze. It'll look exactly this good in 100 years.
+                Your artwork arrives ready to hang—printed on premium stretched canvas using a 12-color giclée process for stunning color depth and museum-grade archival quality. Built to last a lifetime.
               </p>
               <button onClick={scrollToOrder} className="link-a5 font-body text-surface-foreground mt-4">
                 Continue to checkout
@@ -391,7 +391,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
                   <p className="text-subtitle text-surface-muted tracking-widest mb-2">MUSEUM-QUALITY MATERIALS</p>
                   <h3 className="text-a2 text-surface-foreground mb-4">Materials So Good, Museums Use Them</h3>
                   <p className="text-body text-surface-muted">
-                    Your artwork arrives ready to hang—printed on museum-grade archival paper in a solid wood frame with anti-reflective glaze. It'll look exactly this good in 100 years.
+                    Your artwork arrives ready to hang—printed on premium stretched canvas using a 12-color giclée process for stunning color depth and museum-grade archival quality. Built to last a lifetime.
                   </p>
                   <button onClick={scrollToOrder} className="link-a5 font-body text-surface-foreground mt-4">
                     Continue to checkout

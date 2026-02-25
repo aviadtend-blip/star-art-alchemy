@@ -103,11 +103,11 @@ const BirthDataFormJsx = ({ onSubmit }) => {
     const hour = Number(data.hour);
     const minute = Number(data.minute);
 
-    if (!data.month || month < 1 || month > 12) errs.month = "1–12";
-    if (!data.day || day < 1 || day > 31) errs.day = "1–31";
-    if (!data.year || year < 1900 || year > new Date().getFullYear()) errs.year = `1900–${new Date().getFullYear()}`;
-    if (data.hour === "" || hour < 0 || hour > 23) errs.hour = "0–23";
-    if (data.minute === "" || minute < 0 || minute > 59) errs.minute = "0–59";
+    if (!data.month || month < 1 || month > 12) errs.month = "Enter a valid month (1–12)";
+    if (!data.day || day < 1 || day > 31) errs.day = "Enter a valid day (1–31)";
+    if (!data.year || year < 1900 || year > new Date().getFullYear()) errs.year = `Enter a valid year (1900–${new Date().getFullYear()})`;
+    if (data.hour === "" || hour < 0 || hour > 23) errs.hour = "Enter a valid hour (0–23)";
+    if (data.minute === "" || minute < 0 || minute > 59) errs.minute = "Enter a valid minute (0–59)";
     if (!data.city.trim()) errs.city = "Required";
 
     return errs;

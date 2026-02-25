@@ -37,7 +37,7 @@ const TIMELINE_STEPS = [
     label: 'STEP 3 — THIS WEEK (2-3 DAYS)',
     icon: '🖨',
     title: 'Professional Printing',
-    desc: 'Your artwork is printed on museum-grade archival paper using a 12-color giclée process for gallery-quality results.',
+    desc: 'Your artwork is printed on premium stretched canvas using a 12-color giclée process for stunning color depth and museum-grade archival quality.',
   },
   {
     label: 'STEP 4 — NEXT WEEK (5-7 DAYS)',
@@ -263,14 +263,22 @@ export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNew
           Show your friends your one-of-a-kind cosmic blueprint
         </p>
         <div className="flex justify-center gap-5">
-          {['𝕏', '📷', 'in', 'f', '💬', '📧'].map((icon, i) => (
+          {[
+            { icon: '𝕏', label: 'Share on X', href: 'https://twitter.com/intent/tweet?text=Just%20ordered%20my%20personalized%20birth%20chart%20artwork!%20🌟&url=https://celestialartworks.com' },
+            { icon: '📷', label: 'Share on Instagram', href: 'https://instagram.com' },
+            { icon: 'f', label: 'Share on Facebook', href: 'https://www.facebook.com/sharer/sharer.php?u=https://celestialartworks.com' },
+            { icon: '📧', label: 'Share via Email', href: 'mailto:?subject=Check%20out%20my%20birth%20chart%20artwork!&body=I%20just%20ordered%20a%20personalized%20birth%20chart%20artwork%20from%20Celestial%20Artworks!%20https://celestialartworks.com' },
+          ].map((item, i) => (
             <a
               key={i}
-              href="#"
-              className="w-10 h-10 flex items-center justify-center rounded-full transition-colors"
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={item.label}
+              className="w-10 h-10 flex items-center justify-center rounded-full transition-colors hover:bg-gray-100"
               style={{ color: '#333', fontSize: '18px' }}
             >
-              {icon}
+              {item.icon}
             </a>
           ))}
         </div>
