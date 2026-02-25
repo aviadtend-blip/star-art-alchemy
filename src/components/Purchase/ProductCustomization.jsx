@@ -4,6 +4,7 @@ import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
 import Header from '@/components/Layout/Header';
 import PopularTag from '@/components/ui/PopularTag';
+import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 
 // 12x18 mockups
@@ -80,19 +81,13 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
             loading={activeThumb === 0 ? 'eager' : 'lazy'}
           />
         </div>
-        <div className="absolute bottom-3 left-0 right-0 flex gap-1.5 px-4 justify-center">
-          {mockups.map((src, i) => (
-            <button
-              key={i}
-              onClick={() => setActiveThumb(i)}
-              className={`flex-shrink-0 overflow-hidden transition-all ${
-                activeThumb === i ? 'ring-1 ring-[#FFBF00]' : ''
-              }`}
-              style={{ width: 30, height: 30, borderRadius: '0px', opacity: 1 }}
-            >
-              <img src={src} alt={`Thumbnail ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
-            </button>
-          ))}
+        <div className="absolute bottom-3 left-0 right-0 flex justify-center px-4">
+          <ThumbnailStrip
+            images={mockups}
+            activeIndex={activeThumb}
+            onSelect={setActiveThumb}
+            size={30}
+          />
         </div>
       </div>
       {/* Reviews — desktop only */}

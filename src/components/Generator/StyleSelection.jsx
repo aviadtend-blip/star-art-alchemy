@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
 import { Search, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ART_STYLES } from '@/config/artStyles';
@@ -6,6 +6,7 @@ import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
 import PopularTag from '@/components/ui/PopularTag';
+import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
 
 import boldImg from '@/assets/gallery/taurus-artwork.jpg';
 import minimalImg from '@/assets/gallery/capricorn-gallery.jpg';
@@ -37,6 +38,9 @@ const STYLE_LABELS = {
 export default function StyleSelection({ onSelect, onBack, chartData, formData, onEditBirthData }) {
   const [selected, setSelected] = useState(null);
   const [lightbox, setLightbox] = useState(null); // { styleId, index }
+  const [lightboxVisible, setLightboxVisible] = useState(false); // for animation
+  const touchStartRef = useRef({ x: 0, y: 0 });
+  const swipeHandledRef = useRef(false);
 
   const handleContinue = () => {
     if (selected) onSelect(selected);
@@ -58,9 +62,14 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
   const openLightbox = (styleId, e) => {
     e.stopPropagation();
     setLightbox({ styleId, index: 0 });
+    // Trigger enter animation on next frame
+    requestAnimationFrame(() => setLightboxVisible(true));
   };
 
-  const closeLightbox = () => setLightbox(null);
+  const closeLightbox = useCallback(() => {
+    setLightboxVisible(false);
+    setTimeout(() => setLightbox(null), 250); // match transition duration
+  }, []);
 
   const lightboxImages = lightbox ? STYLE_GALLERY[lightbox.styleId] || [] : [];
 
@@ -204,8 +213,34 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
       {/* Lightbox Modal */}
       {lightbox && (
         <div
-          className="fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-center"
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center transition-all duration-250"
+          style={{
+            backgroundColor: lightboxVisible ? 'rgba(0,0,0,0.95)' : 'rgba(0,0,0,0)',
+            opacity: lightboxVisible ? 1 : 0,
+          }}
           onClick={closeLightbox}
+          onTouchStart={(e) => {
+            const t = e.touches[0];
+            touchStartRef.current = { x: t.clientX, y: t.clientY };
+            swipeHandledRef.current = false;
+          }}
+          onTouchMove={(e) => {
+            if (swipeHandledRef.current) return;
+            const t = e.touches[0];
+            const dx = t.clientX - touchStartRef.current.x;
+            const dy = t.clientY - touchStartRef.current.y;
+
+            // Horizontal swipe (navigate images)
+            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+              swipeHandledRef.current = true;
+              navigateLightbox(dx < 0 ? 1 : -1);
+            }
+            // Vertical swipe down (close)
+            if (dy > 80 && Math.abs(dy) > Math.abs(dx) * 1.5) {
+              swipeHandledRef.current = true;
+              closeLightbox();
+            }
+          }}
         >
           {/* Close button */}
           <button
@@ -223,7 +258,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
 
           {/* Main image */}
           <div
-            className="flex-1 flex items-center justify-center w-full px-0 md:px-16 py-10 md:py-20"
+            className="flex-1 flex items-center justify-center w-full px-0 md:px-16 py-10 md:py-20 transition-transform duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             <img
@@ -234,18 +269,18 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
             />
           </div>
 
-          {/* Navigation arrows */}
+          {/* Navigation arrows (desktop) */}
           {lightboxImages.length > 1 && (
             <>
               <button
                 onClick={(e) => { e.stopPropagation(); navigateLightbox(-1); }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors hidden md:flex"
               >
                 <ChevronLeft className="w-5 h-5 text-white" />
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); navigateLightbox(1); }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors hidden md:flex"
               >
                 <ChevronRight className="w-5 h-5 text-white" />
               </button>
@@ -253,25 +288,14 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
           )}
 
           {/* Thumbnail strip */}
-          {lightboxImages.length > 1 && (
-            <div
-              className="flex items-center gap-2 pb-6"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {lightboxImages.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setLightbox((prev) => ({ ...prev, index: i }))}
-                  className={`
-                    w-14 h-14 rounded-sm overflow-hidden border-2 transition-all
-                    ${i === lightbox.index ? 'border-white opacity-100' : 'border-transparent opacity-50 hover:opacity-80'}
-                  `}
-                >
-                  <img src={img} alt={`Thumb ${i + 1}`} className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
-          )}
+          <div className="pb-6" onClick={(e) => e.stopPropagation()}>
+            <ThumbnailStrip
+              images={lightboxImages}
+              activeIndex={lightbox.index}
+              onSelect={(i) => setLightbox((prev) => ({ ...prev, index: i }))}
+              size={56}
+            />
+          </div>
         </div>
       )}
     </div>
