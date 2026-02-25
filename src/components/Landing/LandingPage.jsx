@@ -208,7 +208,7 @@ export default function LandingPage() {
 
           {/* Gallery cards */}
           <div className="flex gap-[10px] overflow-x-auto -ml-6 -mr-6 lg:ml-0 lg:mr-0 scrollbar-hide snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:justify-items-center lg:overflow-visible" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-            <div aria-hidden="true" className="w-6 min-w-6 flex-shrink-0 snap-start lg:hidden" />
+            <div aria-hidden="true" className="w-6 min-w-6 flex-shrink-0 snap-center lg:hidden" />
             {[
               {
                 img: taurusArtwork, name: "Sarah", signs: "Leo Sun, Pisces Moon",
@@ -277,21 +277,21 @@ export default function LandingPage() {
         </div>
 
         {/* Horizontal scroll on mobile, grid on desktop */}
-        <div className="overflow-x-auto md:overflow-visible -mx-4 md:mx-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div className="overflow-x-auto md:overflow-visible -mx-4 md:mx-0 snap-x snap-mandatory md:snap-none" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           <div className="relative flex gap-6 md:px-0 md:grid md:grid-cols-4 md:gap-10 w-max md:w-full md:mx-auto" style={{ maxWidth: 880 }}>
             {/* Connecting line through circles — mobile: from center of 1st to center of 4th circle */}
             {/* Connecting line: center of 1st circle (124px) to center of 4th circle (796px) = 672px wide */}
             <div className="md:hidden absolute top-6 h-px bg-surface-border" style={{ left: 124, width: 672 }} />
             <div className="hidden md:block absolute top-7 left-[12.5%] right-[12.5%] h-px bg-surface-border" />
 
-            <div aria-hidden="true" className="w-6 min-w-6 flex-shrink-0 md:hidden" />
+            <div aria-hidden="true" className="w-6 min-w-6 flex-shrink-0 snap-center md:hidden" />
             {[
               { n: "1", title: "Enter your birth data", desc: "Provide your birth date, time, and location. We calculate your complete natal chart." },
               { n: "2", title: "Choose your style", desc: "Pick from multiple artistic styles — each transforms your chart into a different visual experience." },
               { n: "3", title: "We create your artwork", desc: "Our system generates unique artwork incorporating your zodiac symbols and cosmic blueprint." },
               { n: "4", title: "Get it framed & shipped", desc: "Love it? Choose your canvas size. We'll print and ship museum-quality canvas to your door." },
             ].map((s) => (
-              <div key={s.n} className="flex flex-col items-center text-center flex-shrink-0 w-[200px] md:w-auto relative z-10">
+              <div key={s.n} className="flex flex-col items-center text-center flex-shrink-0 snap-center w-[200px] md:w-auto relative z-10">
                 <div className="w-12 h-12 md:w-14 md:h-14 border border-surface-border bg-white rounded-full flex items-center justify-center text-xl md:text-2xl text-surface-foreground flex-shrink-0 font-display font-medium">
                   {s.n}
                 </div>
@@ -367,10 +367,10 @@ export default function LandingPage() {
           </div>
 
           {/* Mobile: 2-row horizontal scroll */}
-          <div className="md:hidden -mx-4 overflow-x-auto scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="md:hidden -mx-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="grid grid-rows-2 grid-flow-col gap-[10px] w-max px-4">
               {galleryItems.map((item, i) => (
-                <div key={i} className="overflow-hidden rounded-[2px] w-[160px]">
+                <div key={i} className="overflow-hidden rounded-[2px] w-[160px] snap-center">
                   <img
                     src={item.img}
                     alt={item.label || `Gallery image ${i + 1}`}
