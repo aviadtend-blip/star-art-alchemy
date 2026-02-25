@@ -10,6 +10,7 @@ import OrderConfirmationPage from "./pages/OrderConfirmation";
 import ShippingPolicy from "./pages/ShippingPolicy";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
+import ReturnsPolicy from "./pages/ReturnsPolicy";
 
 const queryClient = new QueryClient();
 
