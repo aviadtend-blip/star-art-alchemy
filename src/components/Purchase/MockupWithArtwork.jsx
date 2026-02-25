@@ -87,8 +87,15 @@ export default function MockupWithArtwork({ mockupSrc, artworkSrc, alt = '', cla
           const bw = maxX - minX + 1;
           const bh = maxY - minY + 1;
 
-          // Draw artwork into the green area
-          ctx.drawImage(artworkImg, minX, minY, bw, bh);
+          // Draw artwork with "cover" fitting (fill area, crop overflow)
+          const artW = artworkImg.naturalWidth;
+          const artH = artworkImg.naturalHeight;
+          const scale = Math.max(bw / artW, bh / artH);
+          const sw = bw / scale;
+          const sh = bh / scale;
+          const sx = (artW - sw) / 2;
+          const sy = (artH - sh) / 2;
+          ctx.drawImage(artworkImg, sx, sy, sw, sh, minX, minY, bw, bh);
 
           // Re-read the mockup to get edge pixels that should stay on top
           // (frame edges, shadows). We do this by redrawing only non-green

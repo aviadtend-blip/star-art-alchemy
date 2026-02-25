@@ -329,7 +329,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           <StepProgressBar currentStep={4} />
         </div>
       </div>
-      <BirthDataBar formData={formData} onEdit={onEditBirthData} />
+      
 
       {/* Mobile layout */}
       <div className="md:hidden">
