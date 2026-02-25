@@ -110,7 +110,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
             return (
               <div
                 key={style.id}
-                className="snap-center shrink-0 flex flex-col w-[290px] md:w-[304px]"
+                className="snap-center shrink-0 flex flex-col w-[290px] md:w-[304px] relative"
               >
                 <button
                   onClick={() => setSelected(style.id)}
@@ -124,11 +124,6 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
                   `}
                   style={{ borderRadius: '2px' }}
                 >
-                  {/* Badge */}
-                  {style.popular && (
-                    <PopularTag className="absolute z-10" style={{ bottom: '42px', left: '110px' }} />
-                  )}
-
                   {/* Magnifying glass */}
                   <div
                     onClick={(e) => openLightbox(style.id, e)}
@@ -148,8 +143,20 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
                   </div>
                 </button>
 
+                {/* Popular tag — centered, straddling bottom edge of image */}
+                {style.popular && (
+                  <>
+                    <div className="absolute z-20 left-1/2 -translate-x-1/2 md:hidden" style={{ top: '339px' }}>
+                      <PopularTag />
+                    </div>
+                    <div className="absolute z-20 left-1/2 -translate-x-1/2 hidden md:block" style={{ top: '314px' }}>
+                      <PopularTag />
+                    </div>
+                  </>
+                )}
+
                 {/* Label below card */}
-                <div className="text-center pt-3 pb-1">
+                <div className="text-center pt-3 pb-1" style={{ marginTop: '12px' }}>
                   <h3 className="text-a5 text-surface-foreground tracking-wider uppercase font-display">{labels.title}</h3>
                   <p className="text-body-sm text-surface-muted font-body">{labels.sub}</p>
                 </div>
