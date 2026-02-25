@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
@@ -55,55 +55,92 @@ const MOCKUPS = {
 export function ProductCustomization({ chartData, artworkImage, onCheckout, onBack, formData, onEditBirthData }) {
   const [selectedSize, setSelectedSize] = useState('16x24');
   const [activeThumb, setActiveThumb] = useState(0);
-  const [displayIndex, setDisplayIndex] = useState(0);
-  const [slideDir, setSlideDir] = useState(0); // -1 left, 1 right, 0 settled
   const sizeCarouselRef = useRef(null);
-  
   const isFirstSizeScroll = useRef(true);
 
   const sizeData = SIZE_OPTIONS.find(s => s.id === selectedSize);
   const total = sizeData?.price || 119;
   const mockups = MOCKUPS[selectedSize] || MOCKUPS['16x24'];
   const compositedThumbs = useCompositedMockups(mockups, artworkImage);
-  // Touch swipe for artwork carousel
-  const touchStartX = useRef(null);
-  const handleTouchStart = useCallback((e) => {
-    touchStartX.current = e.touches[0].clientX;
-  }, []);
-  const handleSwipe = useCallback((direction) => {
-    if (slideDir !== 0) return;
-    const next = direction > 0
-      ? Math.min(activeThumb + 1, mockups.length - 1)
-      : Math.max(activeThumb - 1, 0);
-    if (next === activeThumb) return;
-    setSlideDir(direction);
-    setActiveThumb(next);
-    // After transition ends, settle
-    setTimeout(() => {
-      setDisplayIndex(next);
-      setSlideDir(0);
-    }, 300);
-  }, [activeThumb, mockups.length, slideDir]);
 
-  const handleTouchEnd = useCallback((e) => {
-    if (touchStartX.current === null) return;
-    const diff = touchStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 50) {
-      handleSwipe(diff > 0 ? 1 : -1);
+  // Preload all mockup images across all sizes on mount
+  useEffect(() => {
+    const allMockups = Object.values(MOCKUPS).flat();
+    allMockups.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
+  // --- Drag carousel state ---
+  const carouselRef = useRef(null);
+  const dragState = useRef({ startX: 0, startY: 0, isDragging: false, offsetX: 0, startTime: 0 });
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const containerWidth = useRef(0);
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (el) containerWidth.current = el.offsetWidth;
+    const onResize = () => { if (el) containerWidth.current = el.offsetWidth; };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  const goTo = useCallback((index) => {
+    const clamped = Math.max(0, Math.min(mockups.length - 1, index));
+    setIsTransitioning(true);
+    setDragOffset(0);
+    setActiveThumb(clamped);
+    setTimeout(() => setIsTransitioning(false), 300);
+  }, [mockups.length]);
+
+  const handlePointerDown = useCallback((e) => {
+    if (isTransitioning) return;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    dragState.current = { startX: clientX, startY: clientY, isDragging: true, offsetX: 0, startTime: Date.now() };
+  }, [isTransitioning]);
+
+  const handlePointerMove = useCallback((e) => {
+    if (!dragState.current.isDragging) return;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    let dx = clientX - dragState.current.startX;
+
+    // Rubberband at edges
+    const atStart = activeThumb === 0 && dx > 0;
+    const atEnd = activeThumb === mockups.length - 1 && dx < 0;
+    if (atStart || atEnd) {
+      dx = dx * 0.3; // elastic resistance
     }
-    touchStartX.current = null;
-  }, [handleSwipe]);
+
+    dragState.current.offsetX = dx;
+    setDragOffset(dx);
+  }, [activeThumb, mockups.length]);
+
+  const handlePointerUp = useCallback(() => {
+    if (!dragState.current.isDragging) return;
+    dragState.current.isDragging = false;
+    const dx = dragState.current.offsetX;
+    const dt = Date.now() - dragState.current.startTime;
+    const velocity = Math.abs(dx) / Math.max(dt, 1);
+    const w = containerWidth.current || 300;
+    const threshold = w * 0.2;
+
+    if (Math.abs(dx) > threshold || velocity > 0.5) {
+      goTo(activeThumb + (dx < 0 ? 1 : -1));
+    } else {
+      // Snap back
+      setIsTransitioning(true);
+      setDragOffset(0);
+      setTimeout(() => setIsTransitioning(false), 300);
+    }
+  }, [activeThumb, goTo]);
 
   const handleThumbSelect = useCallback((index) => {
-    if (index === activeThumb || slideDir !== 0) return;
-    const dir = index > activeThumb ? 1 : -1;
-    setSlideDir(dir);
-    setActiveThumb(index);
-    setTimeout(() => {
-      setDisplayIndex(index);
-      setSlideDir(0);
-    }, 300);
-  }, [activeThumb, slideDir]);
+    if (index === activeThumb || isTransitioning) return;
+    goTo(index);
+  }, [activeThumb, isTransitioning, goTo]);
 
   useEffect(() => {
     const carousel = sizeCarouselRef.current;
@@ -144,63 +181,67 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   };
 
   /* Shared sub-components */
-  const ArtworkPanel = ({ className = '' }) => (
-    <div className={className}>
-      <div
-        className="relative overflow-hidden"
-        style={{ backgroundColor: '#F5F5F5', touchAction: 'pan-y' }}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
-        {/* Outgoing image */}
-        {slideDir !== 0 && (
-          <MockupWithArtwork
-            mockupSrc={mockups[displayIndex]}
-            artworkSrc={artworkImage}
-            alt=""
-            className="absolute inset-0 w-full object-contain"
+  const ArtworkPanel = ({ className = '' }) => {
+    // Build the transform: base position + drag offset
+    const baseX = -activeThumb * 100;
+    const dragPx = dragOffset;
+
+    return (
+      <div className={className}>
+        <div
+          ref={carouselRef}
+          className="relative overflow-hidden"
+          style={{ backgroundColor: '#F5F5F5', touchAction: 'pan-y' }}
+          onTouchStart={handlePointerDown}
+          onTouchMove={handlePointerMove}
+          onTouchEnd={handlePointerUp}
+          onMouseDown={handlePointerDown}
+          onMouseMove={handlePointerMove}
+          onMouseUp={handlePointerUp}
+          onMouseLeave={() => { if (dragState.current.isDragging) handlePointerUp(); }}
+        >
+          <div
+            className="flex"
             style={{
-              transform: `translateX(${slideDir > 0 ? '-100%' : '100%'})`,
-              transition: 'transform 0.3s ease-out',
+              transform: `translateX(calc(${baseX}% + ${dragPx}px))`,
+              transition: isTransitioning ? 'transform 0.3s ease-out' : 'none',
+              willChange: 'transform',
             }}
-          />
-        )}
-        {/* Current / incoming image */}
-        <MockupWithArtwork
-          mockupSrc={mockups[activeThumb]}
-          artworkSrc={artworkImage}
-          alt={`Canvas mockup ${activeThumb + 1}`}
-          className="w-full object-contain"
-          style={{
-            transform: slideDir !== 0
-              ? 'translateX(0)'
-              : 'translateX(0)',
-            ...(slideDir !== 0
-              ? { animation: `slide-in-from-${slideDir > 0 ? 'right' : 'left'} 0.3s ease-out` }
-              : {}),
-          }}
-        />
-        <div className="absolute bottom-3 left-0 right-0 flex justify-center px-4">
-          <ThumbnailStrip
-            images={compositedThumbs.length ? compositedThumbs : mockups}
-            activeIndex={activeThumb}
-            onSelect={handleThumbSelect}
-            size={30}
-          />
+          >
+            {mockups.map((src, i) => (
+              <div key={i} className="w-full flex-shrink-0">
+                <MockupWithArtwork
+                  mockupSrc={src}
+                  artworkSrc={artworkImage}
+                  alt={`Canvas mockup ${i + 1}`}
+                  className="w-full object-contain select-none pointer-events-none"
+                  style={{ userSelect: 'none', WebkitUserDrag: 'none' }}
+                />
+              </div>
+            ))}
+          </div>
+          <div className="absolute bottom-3 left-0 right-0 flex justify-center px-4">
+            <ThumbnailStrip
+              images={compositedThumbs.length ? compositedThumbs : mockups}
+              activeIndex={activeThumb}
+              onSelect={handleThumbSelect}
+              size={30}
+            />
+          </div>
+        </div>
+        {/* Reviews — desktop only */}
+        <div className="hidden md:flex items-center justify-center gap-1.5 mt-4">
+          <div className="flex">
+            {[1,2,3,4,5].map(s => (
+              <span key={s} style={{ color: '#FFBF00', fontSize: '16px' }}>★</span>
+            ))}
+          </div>
+          <span className="text-body-sm" style={{ color: '#333333' }}>4.9/5</span>
+          <span className="text-body-sm" style={{ color: '#888888' }}>287 reviews</span>
         </div>
       </div>
-      {/* Reviews — desktop only */}
-      <div className="hidden md:flex items-center justify-center gap-1.5 mt-4">
-        <div className="flex">
-          {[1,2,3,4,5].map(s => (
-            <span key={s} style={{ color: '#FFBF00', fontSize: '16px' }}>★</span>
-          ))}
-        </div>
-        <span className="text-body-sm" style={{ color: '#333333' }}>4.9/5</span>
-        <span className="text-body-sm" style={{ color: '#888888' }}>287 reviews</span>
-      </div>
-    </div>
-  );
+    );
+  };
 
   const SizeSelector = ({ vertical = false }) => (
     <div>
