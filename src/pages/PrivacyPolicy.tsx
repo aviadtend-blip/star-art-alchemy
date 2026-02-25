@@ -11,7 +11,7 @@ const sections = [
         <p className="text-body text-surface-muted mb-4">We collect the following categories of information in connection with providing our Services:</p>
 
         <h3 className="text-a5 text-surface-foreground mb-3 mt-6">A. Information You Provide Directly</h3>
-        <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5 mb-4">
+        <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5 mb-4">
           <li>Full name</li>
           <li>Email address</li>
           <li>Birth date, birth time (if provided), and birth location (city and country)</li>
@@ -22,11 +22,11 @@ const sections = [
 
         <div className="bg-primary/10 border-l-[3px] border-primary rounded-r-[2px] px-6 py-5 my-6">
           <span className="text-a5 text-primary block mb-1.5">Note Regarding Birth Data</span>
-          <p className="text-body-sm text-surface-foreground">Your birth date, birth time, and birth location are collected solely for the purpose of calculating your natal chart and generating personalized artwork. Birth location is collected at the city and country level only and does not constitute precise geolocation data. This data is never used for identity verification, credit decisions, background checks, profiling, or shared with data brokers or advertisers.</p>
+          <p className="text-body text-surface-foreground">Your birth date, birth time, and birth location are collected solely for the purpose of calculating your natal chart and generating personalized artwork. Birth location is collected at the city and country level only and does not constitute precise geolocation data. This data is never used for identity verification, credit decisions, background checks, profiling, or shared with data brokers or advertisers.</p>
         </div>
 
         <h3 className="text-a5 text-surface-foreground mb-3 mt-6">B. Automatically Collected Information</h3>
-        <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5 mb-4">
+        <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5 mb-4">
           <li>IP address</li>
           <li>Device type, browser type, and operating system</li>
           <li>Pages visited, referring URLs, and usage data</li>
@@ -37,7 +37,7 @@ const sections = [
         <p className="text-body text-surface-muted mb-4">Payments are processed securely by Stripe, Inc. We do not store, access, or retain full credit card numbers, CVVs, or other sensitive payment credentials. Stripe collects and processes payment data in accordance with its own privacy policy.</p>
 
         <h3 className="text-a5 text-surface-foreground mb-3 mt-6">D. Generated Data</h3>
-        <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5">
+        <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5">
           <li>Natal chart calculations derived from your birth data</li>
           <li>Interpretive chart analysis</li>
           <li>Generated artwork files associated with your order</li>
@@ -50,7 +50,7 @@ const sections = [
     num: "02",
     title: "How We Use Your Information",
     content: (
-      <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5">
+      <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5">
         <li>Generating personalized artwork based on your birth data</li>
         <li>Processing, fulfilling, and shipping orders</li>
         <li>Creating and managing user accounts</li>
@@ -70,7 +70,7 @@ const sections = [
     content: (
       <>
         <p className="text-body text-surface-muted mb-4">We use artificial intelligence and machine learning systems to provide our Services, including:</p>
-        <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5 mb-4">
+        <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5 mb-4">
           <li>Calculating and interpreting natal chart data using algorithmic and AI-powered analysis</li>
           <li>Generating personalized artwork using AI image generation models</li>
           <li>Processing birth data to create visual art directions and narratives</li>
@@ -79,7 +79,7 @@ const sections = [
 
         <div className="bg-primary/10 border-l-[3px] border-primary rounded-r-[2px] px-6 py-5 my-6">
           <span className="text-a5 text-primary block mb-1.5">Data Transmitted to AI Providers</span>
-          <p className="text-body-sm text-surface-foreground">No raw birth data (name, date, time, or location) is transmitted directly to AI providers; only derived chart calculations and anonymized descriptive parameters are sent. These providers process data in accordance with our data processing agreements and do not retain your personal information beyond the duration of the generation session.</p>
+          <p className="text-body text-surface-foreground">No raw birth data (name, date, time, or location) is transmitted directly to AI providers; only derived chart calculations and anonymized descriptive parameters are sent. These providers process data in accordance with our data processing agreements and do not retain your personal information beyond the duration of the generation session.</p>
         </div>
       </>
     ),
@@ -90,7 +90,7 @@ const sections = [
     content: (
       <>
         <p className="text-body text-surface-muted mb-4">If you are located in the European Economic Area (EEA), United Kingdom, or a jurisdiction with similar data protection laws, we process your personal data under the following legal bases:</p>
-        <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5">
+        <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5">
           <li><strong className="text-surface-foreground font-medium">Performance of a Contract:</strong> Processing necessary to generate your artwork, fulfill your order, and deliver purchased products.</li>
           <li><strong className="text-surface-foreground font-medium">Legitimate Interests:</strong> Processing for website improvement, analytics, fraud prevention, and business operations.</li>
           <li><strong className="text-surface-foreground font-medium">Consent:</strong> Processing based on your explicit opt-in consent, such as marketing emails for EEA/UK residents.</li>
@@ -103,7 +103,7 @@ const sections = [
     num: "05",
     title: "Data Retention",
     content: (
-      <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5">
+      <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5">
         <li><strong className="text-surface-foreground font-medium">Order and transaction records:</strong> Seven (7) years from the date of transaction.</li>
         <li><strong className="text-surface-foreground font-medium">Account data:</strong> For as long as your account remains active, plus thirty (30) days following account deletion.</li>
         <li><strong className="text-surface-foreground font-medium">Marketing and email data:</strong> Until you unsubscribe, plus thirty (30) days to process the request.</li>
@@ -119,7 +119,7 @@ const sections = [
     content: (
       <>
         <p className="text-body text-surface-muted mb-4">We share personal data only with trusted third-party service providers necessary to operate our business:</p>
-        <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5 mb-4">
+        <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5 mb-4">
           <li>Stripe, Inc. — Payment processing</li>
           <li>Prodigi Group Ltd. / Printful, Inc. — Print-on-demand fulfillment and shipping</li>
           <li>Email service provider — Transactional and marketing email delivery</li>
@@ -131,7 +131,7 @@ const sections = [
         </ul>
         <div className="bg-primary/10 border-l-[3px] border-primary rounded-r-[2px] px-6 py-5 my-6">
           <span className="text-a5 text-primary block mb-1.5">No Sale of Personal Information</span>
-          <p className="text-body-sm text-surface-foreground">We do not sell your personal information as defined under the California Consumer Privacy Act (CCPA/CPRA) or any other applicable privacy law. We do not share your personal information with data brokers.</p>
+          <p className="text-body text-surface-foreground">We do not sell your personal information as defined under the California Consumer Privacy Act (CCPA/CPRA) or any other applicable privacy law. We do not share your personal information with data brokers.</p>
         </div>
       </>
     ),
@@ -156,7 +156,7 @@ const sections = [
     content: (
       <>
         <p className="text-body text-surface-muted mb-4">We use cookies and similar technologies for the following purposes:</p>
-        <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5 mb-4">
+        <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5 mb-4">
           <li><strong className="text-surface-foreground font-medium">Strictly Necessary Cookies:</strong> Required for core website functionality, including session management and shopping cart operation.</li>
           <li><strong className="text-surface-foreground font-medium">Analytics Cookies:</strong> Used to understand how visitors interact with our website.</li>
           <li><strong className="text-surface-foreground font-medium">Marketing Cookies:</strong> Used to support advertising, retargeting, and promotional campaigns.</li>
@@ -172,7 +172,7 @@ const sections = [
     content: (
       <>
         <h3 className="text-a5 text-surface-foreground mb-3">A. Rights for All Users</h3>
-        <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5 mb-4">
+        <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5 mb-4">
           <li>Request access to the personal data we hold about you</li>
           <li>Request correction of inaccurate personal data</li>
           <li>Request deletion of your personal data (subject to legal retention requirements)</li>
@@ -180,7 +180,7 @@ const sections = [
         </ul>
 
         <h3 className="text-a5 text-surface-foreground mb-3 mt-6">B. Additional Rights for EEA, UK, and Similar Jurisdictions (GDPR)</h3>
-        <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5 mb-4">
+        <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5 mb-4">
           <li>Restrict processing of your personal data</li>
           <li>Object to processing based on legitimate interests</li>
           <li>Request data portability</li>
@@ -189,7 +189,7 @@ const sections = [
         </ul>
 
         <h3 className="text-a5 text-surface-foreground mb-3 mt-6">C. Additional Rights for California Residents (CCPA/CPRA)</h3>
-        <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5 mb-4">
+        <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5 mb-4">
           <li>Request disclosure of the categories and specific pieces of personal information collected</li>
           <li>Request deletion or correction of your personal information</li>
           <li>Opt out of the sale or sharing of your personal information</li>
@@ -215,7 +215,7 @@ const sections = [
     content: (
       <>
         <p className="text-body text-surface-muted mb-4">We implement reasonable administrative, technical, and physical safeguards including:</p>
-        <ul className="list-disc pl-6 text-body-sm text-surface-muted space-y-1.5 mb-4">
+        <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5 mb-4">
           <li>Encryption of data in transit using TLS/SSL</li>
           <li>Encryption of data at rest for sensitive data categories</li>
           <li>Secure hosting with reputable U.S.-based cloud providers</li>
@@ -265,7 +265,7 @@ const sections = [
         <p className="text-body text-surface-muted mb-2">924 N Magnolia Ave, Suite 202 Unit #5014</p>
         <p className="text-body text-surface-muted mb-2">Orlando, Florida 32803, United States</p>
         <p className="text-body text-surface-muted mb-4">Email: <a href="mailto:hello@celestialartworks.com" className="text-primary hover:underline">hello@celestialartworks.com</a></p>
-        <p className="text-body-sm text-surface-muted">For European privacy inquiries, use subject line "GDPR Privacy Inquiry." For California privacy rights requests, use subject line "California Privacy Rights Request."</p>
+        <p className="text-body text-surface-muted">For European privacy inquiries, use subject line "GDPR Privacy Inquiry." For California privacy rights requests, use subject line "California Privacy Rights Request."</p>
       </>
     ),
   },
@@ -285,7 +285,7 @@ export default function PrivacyPolicy() {
           <p className="text-body text-surface-muted max-w-[520px] mx-auto">
             Operated by Human Brand Firm LLC, a Delaware Limited Liability Company.
           </p>
-          <p className="text-body-sm text-surface-muted mt-3">Last Updated: February 28, 2026 · Version 2.0</p>
+          <p className="text-body text-surface-muted mt-3">Last Updated: February 28, 2026 · Version 2.0</p>
           <div className="mt-8 text-primary/60 text-sm tracking-[24px]">✦</div>
         </header>
 

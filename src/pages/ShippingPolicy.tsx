@@ -51,7 +51,7 @@ const sections = [
               </div>
               <div>
                 <div className="text-a5 text-surface-foreground mb-1">{s.label}</div>
-                <div className="text-[12px] text-surface-muted leading-snug">{s.desc}</div>
+                <div className="text-body text-surface-muted leading-snug">{s.desc}</div>
               </div>
             </div>
           ))}
@@ -80,9 +80,9 @@ const sections = [
             <tbody>
               {shippingData.map((row) => (
                 <tr key={row.region} className="hover:bg-surface/80 transition-colors">
-                  <td className="px-5 py-4 text-body-sm text-surface-foreground border-b border-surface-border/30">{row.region}</td>
-                  <td className="px-5 py-4 text-body-sm text-surface-muted border-b border-surface-border/30">{row.production}</td>
-                  <td className="px-5 py-4 text-body-sm text-surface-foreground font-medium border-b border-surface-border/30">{row.total}</td>
+          <td className="px-5 py-4 text-body text-surface-foreground border-b border-surface-border/30">{row.region}</td>
+                  <td className="px-5 py-4 text-body text-surface-muted border-b border-surface-border/30">{row.production}</td>
+                  <td className="px-5 py-4 text-body text-surface-foreground font-medium border-b border-surface-border/30">{row.total}</td>
                 </tr>
               ))}
             </tbody>
@@ -93,7 +93,7 @@ const sections = [
 
         <div className="bg-primary/10 border-l-[3px] border-primary rounded-r-[2px] px-6 py-5 my-6">
           <span className="text-a5 text-primary block mb-1.5">Planning a Gift?</span>
-          <p className="text-body-sm text-surface-foreground">We recommend ordering at least 3 weeks before your occasion to account for production, shipping, and any unexpected delays — especially for international orders.</p>
+          <p className="text-body text-surface-foreground">We recommend ordering at least 3 weeks before your occasion to account for production, shipping, and any unexpected delays — especially for international orders.</p>
         </div>
       </>
     ),
@@ -120,7 +120,7 @@ const sections = [
             <div key={c.title} className="bg-surface-card border border-surface-border rounded-[2px] p-5 hover:border-primary/25 transition-all">
               <span className="text-xl block mb-2.5">{c.icon}</span>
               <div className="text-a5 text-surface-foreground mb-1">{c.title}</div>
-              <div className="text-body-sm text-surface-muted leading-relaxed">{c.desc}</div>
+              <div className="text-body text-surface-muted leading-relaxed">{c.desc}</div>
             </div>
           ))}
         </div>
@@ -139,7 +139,7 @@ const sections = [
 
         <div className="bg-primary/10 border-l-[3px] border-primary rounded-r-[2px] px-6 py-5 my-6">
           <span className="text-a5 text-primary block mb-1.5">Please Note</span>
-          <p className="text-body-sm text-surface-foreground">If a package is returned to us because delivery was refused due to unpaid customs charges, we are unable to issue a refund for the original order or the return shipping cost. We're happy to reship the order at your expense.</p>
+          <p className="text-body text-surface-foreground">If a package is returned to us because delivery was refused due to unpaid customs charges, we are unable to issue a refund for the original order or the return shipping cost. We're happy to reship the order at your expense.</p>
         </div>
       </>
     ),
@@ -191,7 +191,7 @@ export default function ShippingPolicy() {
             <div key={c.title} className="bg-surface-card border border-surface-border rounded-[2px] p-7 text-center hover:border-primary/25 transition-all hover:-translate-y-0.5">
               <span className="text-[28px] block mb-3">{c.icon}</span>
               <div className="text-a5 text-surface-foreground mb-1.5">{c.title}</div>
-              <div className="text-body-sm text-surface-muted leading-snug">{c.desc}</div>
+              <div className="text-body text-surface-muted leading-snug">{c.desc}</div>
             </div>
           ))}
         </div>
@@ -214,8 +214,8 @@ export default function ShippingPolicy() {
         <div className="bg-surface-card border border-surface-border rounded-[2px] p-8 my-12">
           <span className="text-subtitle text-accent tracking-[3px] block mb-3">EU & UK Customers</span>
           <h3 className="text-a2 text-surface-foreground mb-4" style={{ fontSize: 22 }}>Risk of Loss During Shipping</h3>
-          <p className="text-body-sm text-surface-muted leading-relaxed mb-3">For customers in the European Economic Area and United Kingdom, we bear the risk of loss or damage to your order during shipping. Risk transfers to you when you (or a person you've designated) physically takes possession of the goods, in accordance with Article 20 of the EU Consumer Rights Directive and Section 29 of the UK Consumer Rights Act 2015.</p>
-          <p className="text-body-sm text-surface-muted leading-relaxed">For customers in the United States, risk of loss passes to you when the carrier accepts the shipment for delivery, in accordance with common carrier law.</p>
+          <p className="text-body text-surface-muted leading-relaxed mb-3">For customers in the European Economic Area and United Kingdom, we bear the risk of loss or damage to your order during shipping. Risk transfers to you when you (or a person you've designated) physically takes possession of the goods, in accordance with Article 20 of the EU Consumer Rights Directive and Section 29 of the UK Consumer Rights Act 2015.</p>
+          <p className="text-body text-surface-muted leading-relaxed">For customers in the United States, risk of loss passes to you when the carrier accepts the shipment for delivery, in accordance with common carrier law.</p>
         </div>
 
         {/* Contact CTA */}
