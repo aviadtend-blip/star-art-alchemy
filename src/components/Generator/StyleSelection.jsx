@@ -161,25 +161,19 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
 
         {/* CTAs */}
         <div className="text-center space-y-4 mt-6">
-          <div className="flex items-center justify-center gap-4 flex-wrap">
-            <button
-              onClick={handleSurpriseMe}
-              className="px-10 py-3 rounded-full text-a5 font-display bg-surface-foreground text-white hover:opacity-90 shadow-md transition-all"
-            >
-              Surprise me
-            </button>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4">
             <button
               onClick={handleContinue}
               disabled={!selected}
-              className={`
-                px-10 py-3 rounded-full text-a5 transition-all border-2
-                ${selected
-                  ? 'border-surface-foreground bg-transparent text-surface-foreground hover:bg-surface-foreground hover:text-white'
-                  : 'border-surface-border text-surface-muted cursor-not-allowed'
-                }
-              `}
+              className="btn-base btn-primary"
             >
               Select Style
+            </button>
+            <button
+              onClick={handleSurpriseMe}
+              className="btn-base btn-secondary"
+            >
+              Surprise me
             </button>
           </div>
           <p className="text-body font-body text-surface-muted">Can't decide? Let us choose the best style based on your chart</p>

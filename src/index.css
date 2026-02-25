@@ -206,6 +206,71 @@
   opacity: 0.7;
 }
 
+/* ─── Button system ─── */
+.btn-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 8px 24px;
+  border-radius: 40px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 113%;
+  letter-spacing: -0.26px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.btn-base:hover {
+  opacity: 0.9;
+}
+
+/* Primary: yellow filled */
+.btn-primary {
+  background-color: #FFBF00;
+  color: #333333;
+  border: none;
+}
+.btn-primary:disabled {
+  background-color: #D4D4D4;
+  color: #999999;
+  cursor: not-allowed;
+  opacity: 1;
+}
+.btn-primary:disabled:hover {
+  opacity: 1;
+}
+
+/* Secondary: outlined */
+.btn-secondary {
+  background-color: transparent;
+  color: #333333;
+  border: 1px solid #333333;
+}
+.btn-secondary:disabled {
+  border-color: #D4D4D4;
+  color: #999999;
+  cursor: not-allowed;
+}
+
+/* Tertiary: link style with button padding */
+.btn-tertiary {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: inherit;
+}
+
+/* Mobile: full width */
+@media (max-width: 767px) {
+  .btn-base {
+    width: 100%;
+  }
+}
+
 /* Hide scrollbar utility */
 .scrollbar-hide {
   -ms-overflow-style: none;
