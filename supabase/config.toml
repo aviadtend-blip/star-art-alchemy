@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.ai-interpret]
 verify_jwt = false
+
+[functions.proxy-image]
+verify_jwt = false
