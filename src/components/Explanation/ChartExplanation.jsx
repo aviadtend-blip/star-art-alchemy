@@ -153,7 +153,7 @@ export function ChartExplanation({
               Frame it. Hang it.{'\n'}Treasure it forever
             </h2>
             <p className="text-body font-body text-white/70">
-              Gallery-quality printing. Solid wood frames.{'\n'}Ready to hang. Built to last 100 years.
+              Museum-grade archival canvas. Gallery-quality 12-color printing.{'\n'}Ready to display. Built to last 100 years.
             </p>
             <div className="space-y-3 pt-2">
               <button
