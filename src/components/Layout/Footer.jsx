@@ -20,7 +20,7 @@ export default function Footer({ onScrollToForm }) {
         <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row justify-between gap-8">
           {/* Left — Brand */}
           <div>
-            <p className="text-subtitle text-white tracking-[3px] mb-1">CELESTIAL ARTWORKS</p>
+            <Link to="/" className="text-subtitle text-white tracking-[3px] mb-1 hover:opacity-80 transition">CELESTIAL ARTWORKS</Link>
           </div>
 
           {/* Right — Help */}
