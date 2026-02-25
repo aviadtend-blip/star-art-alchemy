@@ -3,6 +3,7 @@ import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
 import Header from '@/components/Layout/Header';
+import PopularTag from '@/components/ui/PopularTag';
 
 // 12x18 mockups
 import mockup12x18_1 from '@/assets/mockups/12x18/mockup-1.png';
@@ -120,28 +121,29 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
             <button
               key={size.id}
               onClick={() => { setSelectedSize(size.id); setActiveThumb(0); }}
-              className={`relative flex-shrink-0 rounded-lg border p-4 text-left transition-all ${
-                selectedSize === size.id
-                  ? 'border-2'
-                  : 'border hover:border-gray-400'
-              }`}
+              className={`relative flex-shrink-0 transition-all`}
               style={{
-                minWidth: '140px',
-                borderColor: selectedSize === size.id ? '#333333' : '#E0E0E0',
+                display: 'flex',
+                width: '168px',
+                height: '74px',
+                padding: '15px',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                borderRadius: '4px',
+                border: selectedSize === size.id ? '2px solid #333333' : '1px solid #E0E0E0',
                 backgroundColor: '#FFFFFF',
               }}
             >
               {size.popular && (
-                <span
-                  className="absolute -top-2 right-2 text-subtitle px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: '#FE6781', color: '#FFFFFF', fontSize: '10px' }}
-                >
-                  Most popular
-                </span>
+                <div className="absolute -top-2.5 left-1/2 -translate-x-1/2">
+                  <PopularTag>Most popular</PopularTag>
+                </div>
               )}
-              <p className="text-a4" style={{ color: '#333333' }}>{size.label}</p>
-              <p className="text-body-sm mt-1" style={{ color: '#888888', fontSize: '12px' }}>{size.description}</p>
-              <p className="text-a4 mt-2" style={{ color: '#333333' }}>${size.price}</p>
+              <div className="text-left">
+                <p className="text-a4" style={{ color: '#333333' }}>{size.label}</p>
+                <p className="text-body-sm" style={{ color: '#888888' }}>{size.description}</p>
+              </div>
+              <p className="text-a4 flex-shrink-0" style={{ color: '#333333' }}>${size.price}</p>
             </button>
           ))}
         </div>
