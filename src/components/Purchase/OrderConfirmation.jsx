@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { ChevronUp, Copy, Share2 } from 'lucide-react';
+import { Copy, Share2 } from 'lucide-react';
+import FAQSection from '@/components/ui/FAQSection';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 
@@ -46,26 +47,10 @@ const TIMELINE_STEPS = [
 ];
 
 const FAQS = [
-  {
-    icon: '📝',
-    q: 'NEED TO MAKE A CHANGE?',
-    a: 'Contact us within 24 hours to modify your order:\nhello@celestialartworks.com',
-  },
-  {
-    icon: '📦',
-    q: 'WHEN WILL IT SHIP?',
-    a: "Within 5-7 business days. You'll get tracking automatically.",
-  },
-  {
-    icon: '👁️',
-    q: 'CAN I SEE A PREVIEW BEFORE IT SHIPS?',
-    a: "We'll email you a preview within 1-2 days. Reply if you want any adjustments.",
-  },
-  {
-    icon: '🏠',
-    q: "WORRIED IT WON'T MATCH YOUR SPACE?",
-    a: "30-day money-back guarantee. If you don't love it, return it for a full refund—no questions asked.",
-  },
+  { q: 'Need to make a change?', a: 'Contact us within 24 hours to modify your order:\nhello@celestialartworks.com' },
+  { q: 'When will it ship?', a: "Within 5-7 business days. You'll get tracking automatically." },
+  { q: 'Can I see a preview before it ships?', a: "We'll email you a preview within 1-2 days. Reply if you want any adjustments." },
+  { q: "Worried it won't match your space?", a: "30-day money-back guarantee. If you don't love it, return it for a full refund—no questions asked." },
 ];
 
 export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNewChart }) {
@@ -268,24 +253,7 @@ export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNew
         </div>
       </div>
 
-      {/* FAQ Section */}
-      <div className="px-4 pb-10 max-w-3xl mx-auto">
-        <h2 className="text-a2 text-center mb-6" style={{ color: '#333' }}>Frequently asked questions</h2>
-        <div className="divide-y" style={{ borderColor: '#E0E0E0' }}>
-          {FAQS.map((faq) => (
-            <details key={faq.q} className="group" open>
-              <summary className="text-a5 uppercase tracking-wide list-none flex items-center justify-between py-5 cursor-pointer" style={{ color: '#333' }}>
-                <span className="flex items-center gap-2">
-                  <span>{faq.icon}</span>
-                  <span>{faq.q}</span>
-                </span>
-                <ChevronUp className="w-5 h-5 transition-transform duration-300 group-open:rotate-0 rotate-180" style={{ color: '#888' }} />
-              </summary>
-              <p className="text-body-sm pb-5 -mt-1" style={{ color: '#888', whiteSpace: 'pre-line' }}>{faq.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
+      <FAQSection items={FAQS} />
 
       <Footer />
     </div>
