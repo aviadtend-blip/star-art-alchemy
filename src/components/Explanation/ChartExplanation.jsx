@@ -250,7 +250,8 @@ export function ChartExplanation({
           {onBackToStyle && (
             <button
               onClick={onBackToStyle}
-              className="btn-base btn-tertiary text-surface-muted mt-2"
+              className="btn-base btn-tertiary"
+              style={{ color: '#333333' }}
             >
               ↻ Try a Different Style
             </button>
