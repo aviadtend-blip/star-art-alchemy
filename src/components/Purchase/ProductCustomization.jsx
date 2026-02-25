@@ -6,6 +6,7 @@ import Header from '@/components/Layout/Header';
 import PopularTag from '@/components/ui/PopularTag';
 import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
 import MockupWithArtwork from '@/components/Purchase/MockupWithArtwork';
+import useCompositedMockups from '@/hooks/useCompositedMockups';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import canvasDetail from '@/assets/gallery/canvas-detail.jpg';
 import womanHolding from '@/assets/gallery/woman-holding.jpg';
@@ -63,7 +64,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const sizeData = SIZE_OPTIONS.find(s => s.id === selectedSize);
   const total = sizeData?.price || 119;
   const mockups = MOCKUPS[selectedSize] || MOCKUPS['16x24'];
-
+  const compositedThumbs = useCompositedMockups(mockups, artworkImage);
   // Touch swipe for artwork carousel
   const touchStartX = useRef(null);
   const handleTouchStart = useCallback((e) => {
@@ -181,7 +182,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
         />
         <div className="absolute bottom-3 left-0 right-0 flex justify-center px-4">
           <ThumbnailStrip
-            images={mockups}
+            images={compositedThumbs.length ? compositedThumbs : mockups}
             activeIndex={activeThumb}
             onSelect={handleThumbSelect}
             size={30}
