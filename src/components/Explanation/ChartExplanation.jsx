@@ -124,7 +124,7 @@ export function ChartExplanation({
       </nav>
 
       {/* Progress bar */}
-      <StepProgressBar currentStep={3} />
+      <StepProgressBar currentStep={2} />
 
       {/* Main content */}
       <div className="flex-1">

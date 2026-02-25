@@ -367,7 +367,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
       <div style={{ backgroundColor: '#121212' }}>
         <Header />
         <div className="pt-14">
-          <StepProgressBar currentStep={4} />
+          <StepProgressBar currentStep={3} />
         </div>
       </div>
       

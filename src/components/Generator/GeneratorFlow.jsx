@@ -192,8 +192,6 @@ const GeneratorFlowJsx = () => {
 
   return (
     <div className="min-h-screen bg-cosmic">
-      {/* Show progress bar for input step */}
-      {step === "input" && <ProgressBar currentStep={1} />}
 
       {/* Decorative stars */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -249,7 +247,7 @@ const GeneratorFlowJsx = () => {
 
         {step === "explaining" && chartData && generatedImage && (
           <div className="animate-fade-in">
-            <ProgressBar currentStep={3} />
+            <ProgressBar currentStep={2} />
             <ChartExplanation
               chartData={chartData}
               selectedImage={generatedImage}
