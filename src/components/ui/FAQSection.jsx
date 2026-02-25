@@ -13,9 +13,9 @@ export default function FAQSection({ items, title = 'Frequently asked questions'
           {items.map((faq) => (
             <details
               key={faq.q}
-              className="group cursor-pointer rounded-[2px] [&_p]:grid [&_p]:grid-rows-[1fr] [&_p]:transition-[grid-template-rows,opacity] [&_p]:duration-300 [&:not([open])_p]:grid-rows-[0fr] [&:not([open])_p]:opacity-0"
+              className="group cursor-pointer rounded-[2px] [&_p]:grid [&_p]:grid-rows-[1fr] [&_p]:transition-[grid-template-rows,opacity] [&_p]:duration-300 [&:not([open])_p]:grid-rows-[0fr] [&:not([open])_p]:opacity-0 [&[open]_p]:animate-fade-in"
             >
-              <summary className="text-a5 text-surface-foreground uppercase tracking-wide list-none flex items-center justify-between py-6">
+              <summary className="text-subtitle text-surface-foreground uppercase tracking-wide list-none flex items-center justify-between py-6">
                 <span>{faq.q}</span>
                 <ChevronUp className="w-5 h-5 text-surface-muted transition-transform duration-300 group-open:rotate-0 rotate-180" />
               </summary>
