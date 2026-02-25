@@ -73,6 +73,8 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
     }
     touchStartX.current = null;
   }, [mockups.length]);
+
+  useEffect(() => {
     const carousel = sizeCarouselRef.current;
     if (!carousel || window.innerWidth >= 768) return;
 
