@@ -177,7 +177,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* DEV: Auto-fill test button */}
-      <button onClick={fillTestData} className="fixed bottom-4 right-4 z-50 bg-card text-foreground px-4 py-2 rounded-full text-body-sm shadow-lg hover:bg-card/80 transition opacity-70 hover:opacity-100 border border-border">
+      <button onClick={fillTestData} className="fixed bottom-4 right-4 z-50 bg-card text-foreground px-4 py-2 rounded-full text-body shadow-lg hover:bg-card/80 transition opacity-70 hover:opacity-100 border border-border">
         🧪 Fill Test Data
       </button>
 
@@ -204,7 +204,7 @@ export default function LandingPage() {
               Show me my artwork
             </PrimaryButton>
           </div>
-          <div className="flex items-center justify-center gap-4 text-body-sm text-muted-foreground flex-wrap">
+          <div className="flex items-center justify-center gap-4 text-body text-muted-foreground flex-wrap">
             <span>🔒 Secure Payment</span>
             <span className="text-border">|</span>
             <span>📦 Free Shipping</span>
@@ -240,7 +240,7 @@ export default function LandingPage() {
       </section>
 
       {/* Trust badges strip */}
-      <div className="hidden md:flex items-center justify-center gap-6 py-3.5 text-body-sm" style={{ backgroundColor: '#F2F1EF', color: '#000000' }}>
+      <div className="hidden md:flex items-center justify-center gap-6 py-3.5 text-body" style={{ backgroundColor: '#F2F1EF', color: '#000000' }}>
         <span>🔒 Secure Payment</span>
         <span style={{ color: '#00000030' }}>|</span>
         <span>📦 Free Shipping</span>
@@ -254,19 +254,19 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 text-center py-[60px] md:py-[85px]" style={{ gap: '30px' }}>
             <div>
               <div className="text-a1 text-surface-foreground mb-2">2,000+</div>
-              <div className="text-body-sm text-surface-muted">Artworks Created</div>
+              <div className="text-body text-surface-muted">Artworks Created</div>
             </div>
             <div>
               <div className="text-a1 text-surface-foreground mb-2">4.9 <span className="inline-block align-middle text-[0.7em] opacity-60">☆</span></div>
-              <div className="text-body-sm text-surface-muted">Average Rating</div>
+              <div className="text-body text-surface-muted">Average Rating</div>
             </div>
             <div>
               <div className="text-a1 text-surface-foreground mb-2">98%</div>
-              <div className="text-body-sm text-surface-muted">Display It Proudly</div>
+              <div className="text-body text-surface-muted">Display It Proudly</div>
             </div>
             <div>
               <div className="text-a1 text-surface-foreground mb-2">23</div>
-              <div className="text-body-sm text-surface-muted">Countries Shipped</div>
+              <div className="text-body text-surface-muted">Countries Shipped</div>
             </div>
           </div>
 
@@ -325,7 +325,7 @@ export default function LandingPage() {
           <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-8 h-12 w-full md:w-auto rounded-full text-a4 hover:opacity-90 transition-all shadow-lg">
             Generate your free preview
           </button>
-          <p className="text-body-sm text-surface-muted">Free preview in 60 seconds.</p>
+          <p className="text-body text-surface-muted">Free preview in 60 seconds.</p>
         </div>
       </section>
 
@@ -361,7 +361,7 @@ export default function LandingPage() {
                 </div>
                 <div className="mt-6">
                   <h3 className="text-a4 text-surface-foreground mb-[24px]">{s.title}</h3>
-                  <p className="text-body-sm text-surface-muted">{s.desc}</p>
+                  <p className="text-body text-surface-muted">{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -379,10 +379,10 @@ export default function LandingPage() {
             <div className="mt-4">
               <p className="text-subtitle text-surface-muted tracking-widest mb-2">THE PERFECT GIFT</p>
               <h3 className="text-a2 text-surface-foreground mb-4">Impossible to Duplicate. Impossible to Forget.</h3>
-              <p className="text-body-sm text-surface-muted mb-6">
+              <p className="text-body text-surface-muted mb-6">
                 Birthdays. Anniversaries. New homes. Give a gift that's impossible to buy anywhere else—because it's created from their exact birth moment. Every friend who sees it will ask.
               </p>
-              <button onClick={scrollToForm} className="text-surface-foreground text-body-sm underline underline-offset-4 hover:opacity-70 transition-opacity">
+              <button onClick={scrollToForm} className="text-surface-foreground text-body underline underline-offset-4 hover:opacity-70 transition-opacity">
                 Create a gift
               </button>
             </div>
@@ -394,10 +394,10 @@ export default function LandingPage() {
             <div className="mt-4">
               <p className="text-subtitle text-surface-muted tracking-widest mb-2">MUSEUM-QUALITY MATERIALS</p>
               <h3 className="text-a2 text-surface-foreground mb-4">Materials So Good, Museums Use Them</h3>
-              <p className="text-body-sm text-surface-muted mb-6">
+              <p className="text-body text-surface-muted mb-6">
                 Your artwork arrives ready to hang—printed on museum-grade archival paper in a solid wood frame with anti-reflective glaze. It'll look exactly this good in 100 years.
               </p>
-              <button onClick={scrollToForm} className="text-surface-foreground text-body-sm underline underline-offset-4 hover:opacity-70 transition-opacity">
+              <button onClick={scrollToForm} className="text-surface-foreground text-body underline underline-offset-4 hover:opacity-70 transition-opacity">
                 Generate my free artwork
               </button>
             </div>
@@ -506,14 +506,14 @@ export default function LandingPage() {
                   {showSuggestions && suggestions.length > 0 && (
                     <ul className="absolute z-50 w-full mt-1 bg-card border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
                       {suggestions.map((s) => (
-                        <li key={s.place_id} onClick={() => handleSelectCity(s)} className="px-4 py-3 text-body-sm text-foreground hover:bg-primary/10 cursor-pointer transition-colors">
+                        <li key={s.place_id} onClick={() => handleSelectCity(s)} className="px-4 py-3 text-body text-foreground hover:bg-primary/10 cursor-pointer transition-colors">
                           {s.description}
                         </li>
                       ))}
                     </ul>
                   )}
-                  {locationError && !formData.lat && <p className="text-body-sm text-red-400 mt-2">Please select a city from the dropdown</p>}
-                  {formData.lat && <p className="text-body-sm text-muted-foreground mt-2">📍 {formData.birthCity}, {formData.birthCountry}</p>}
+                  {locationError && !formData.lat && <p className="text-body text-red-400 mt-2">Please select a city from the dropdown</p>}
+                  {formData.lat && <p className="text-body text-muted-foreground mt-2">📍 {formData.birthCity}, {formData.birthCountry}</p>}
                 </div>
 
                 {/* Submit */}
@@ -555,7 +555,7 @@ export default function LandingPage() {
                   <div>
                     <span className="text-a5 text-foreground">I don't know my birth time</span>
                     {dontKnowTime && (
-                      <p className="text-body-sm mt-1" style={{ color: '#6A6A6A' }}>
+                      <p className="text-body mt-1" style={{ color: '#6A6A6A' }}>
                         No worries! Your artwork will still be deeply personal and beautifully accurate.
                       </p>
                     )}
