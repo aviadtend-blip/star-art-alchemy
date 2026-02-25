@@ -152,7 +152,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
                 {/* Label below card */}
                 <div className="text-center pt-3 pb-1">
                   <h3 className="text-a5 text-surface-foreground tracking-wider uppercase font-display">{labels.title}</h3>
-                  <p className="text-subtitle text-surface-muted font-body">{labels.sub}</p>
+                  <p className="text-body-sm text-surface-muted font-body">{labels.sub}</p>
                 </div>
               </div>
             );
