@@ -121,7 +121,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
         </h2>
 
         {/* Horizontal scrollable size cards */}
-        <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+        <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 pt-3">
           {SIZE_OPTIONS.map((size) => (
             <button
               key={size.id}
