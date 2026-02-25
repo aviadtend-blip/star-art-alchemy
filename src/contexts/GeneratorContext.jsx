@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { calculateNatalChart } from '@/lib/astrology/chartCalculator.js';
 import { buildConcretePrompt } from '@/lib/prompts/promptBuilder.js';
@@ -8,16 +8,37 @@ import { supabase } from '@/integrations/supabase/client';
 
 const GeneratorContext = createContext(null);
 
+const SESSION_KEY = 'celestial_generator_state';
+
+function loadSession() {
+  try {
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+
+function saveSession(state) {
+  try {
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(state));
+  } catch { /* quota exceeded — ignore */ }
+}
+
 export function GeneratorProvider({ children }) {
   const navigate = useNavigate();
-  const [chartData, setChartData] = useState(null);
-  const [formData, setFormData] = useState(null);
-  const [selectedStyle, setSelectedStyle] = useState(null);
-  const [generatedImage, setGeneratedImage] = useState(null);
+  const cached = loadSession();
+  const [chartData, setChartData] = useState(cached.chartData || null);
+  const [formData, setFormData] = useState(cached.formData || null);
+  const [selectedStyle, setSelectedStyle] = useState(cached.selectedStyle || null);
+  const [generatedImage, setGeneratedImage] = useState(cached.generatedImage || null);
   const [error, setError] = useState(null);
   const [generationProgress, setGenerationProgress] = useState('');
-  const [orderDetails, setOrderDetails] = useState(null);
+  const [orderDetails, setOrderDetails] = useState(cached.orderDetails || null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+
+  // Persist critical state to sessionStorage
+  useEffect(() => {
+    saveSession({ chartData, formData, selectedStyle, generatedImage, orderDetails });
+  }, [chartData, formData, selectedStyle, generatedImage, orderDetails]);
 
   const handleFormSubmit = useCallback(async (data) => {
     try {

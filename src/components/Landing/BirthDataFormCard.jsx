@@ -187,7 +187,7 @@ export default function BirthDataFormCard({
               required
               value={dateValue}
               onChange={handleDateChange}
-              max="2026-12-31"
+              max={`${new Date().getFullYear()}-12-31`}
               min="1900-01-01"
               placeholder="MM/DD/YYYY"
               data-empty={!dateValue ? "true" : undefined}

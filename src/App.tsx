@@ -11,6 +11,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import ReturnsPolicy from "./pages/ReturnsPolicy";
 import { GeneratorProvider } from "./contexts/GeneratorContext";
+import ErrorBoundary from "./components/ErrorBoundary";
 import GenerateEntry from "./pages/GenerateEntry";
 import GenerateStyle from "./pages/GenerateStyle";
 import GenerateLoading from "./pages/GenerateLoading";
@@ -28,8 +29,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
 
-          {/* Generator flow — wrapped in shared context */}
-          <Route element={<GeneratorProvider><Outlet /></GeneratorProvider>}>
+          {/* Generator flow — wrapped in shared context + error boundary */}
+          <Route element={<ErrorBoundary><GeneratorProvider><Outlet /></GeneratorProvider></ErrorBoundary>}>
             <Route path="/generate" element={<GenerateEntry />} />
             <Route path="/generate/style" element={<GenerateStyle />} />
             <Route path="/generate/loading" element={<GenerateLoading />} />
