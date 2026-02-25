@@ -14,7 +14,7 @@ const STEPS = [
  */
 export default function StepProgressBar({ currentStep = 1 }) {
   return (
-    <div className="w-full relative" style={{ backgroundColor: '#121212' }}>
+    <div className="w-full relative" style={{ backgroundColor: '#121212', borderTop: '1px solid rgba(255,255,255,0.15)' }}>
       <div className="flex items-stretch overflow-x-auto scrollbar-hide" style={{ padding: '0 0 12px 31px' }}>
         {STEPS.map((step) => {
           const isCompleted = step.number < currentStep;
