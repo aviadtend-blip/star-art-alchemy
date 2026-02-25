@@ -211,14 +211,14 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
                 <span style={{ fontSize: '18px' }}>🔄</span>
                 <div>
                   <p className="text-a4" style={{ color: '#FFFFFF' }}>30-day money-back guarantee.</p>
-                  <p className="text-body-sm" style={{ color: '#999999' }}>Love it or your money back. No questions asked.</p>
+                  <p className="text-body-sm" style={{ color: '#999999', marginTop: '4px' }}>Love it or your money back. No questions asked.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <span style={{ fontSize: '18px' }}>📦</span>
                 <div>
                   <p className="text-a4" style={{ color: '#FFFFFF' }}>Ships in 2-3 business days</p>
-                  <p className="text-body-sm" style={{ color: '#999999' }}>Order by 5pm EST for same-day processing.</p>
+                  <p className="text-body-sm" style={{ color: '#999999', marginTop: '4px' }}>Order by 5pm EST for same-day processing.</p>
                 </div>
               </div>
             </div>
