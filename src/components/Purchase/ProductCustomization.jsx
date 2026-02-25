@@ -79,7 +79,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
       <BirthDataBar formData={formData} onEdit={onEditBirthData} />
 
       {/* Hero mockup area — light background */}
-      <div style={{ backgroundColor: '#F5F5F5' }}>
+      <div className="relative" style={{ backgroundColor: '#F5F5F5' }}>
         {/* Main mockup image — full width */}
         <div className="w-full">
           <img
@@ -90,18 +90,18 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           />
         </div>
 
-        {/* Thumbnail strip — overlapping bottom of image */}
-        <div className="flex gap-1.5 px-4 py-3 justify-center">
+        {/* Thumbnail strip — overlaid on bottom of image */}
+        <div className="absolute bottom-3 left-0 right-0 flex gap-1.5 px-4 justify-center">
           {mockups.map((src, i) => (
             <button
               key={i}
               onClick={() => setActiveThumb(i)}
-              className={`flex-shrink-0 rounded-sm overflow-hidden transition-all ${
+              className={`flex-shrink-0 overflow-hidden transition-all ${
                 activeThumb === i
                   ? 'ring-1 ring-[#FFBF00] opacity-100'
                   : 'opacity-50 hover:opacity-75'
               }`}
-              style={{ width: 30, height: 30 }}
+              style={{ width: 30, height: 30, borderRadius: '2px' }}
             >
               <img
                 src={src}
