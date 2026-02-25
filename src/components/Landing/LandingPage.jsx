@@ -216,11 +216,27 @@ export default function LandingPage() {
               <form onSubmit={handleStep1aSubmit} className="flex flex-col gap-[24px]">
                 <div>
                   <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH DATE</label>
-                  <div className="grid grid-cols-3 gap-4">
-                    <input type="number" required value={formData.birthMonth} onChange={(e) => set("birthMonth", e.target.value)} placeholder="Month" min="1" max="12" className={inputClass} />
-                    <input type="number" required value={formData.birthDay} onChange={(e) => set("birthDay", e.target.value)} placeholder="Day" min="1" max="31" className={inputClass} />
-                    <input type="number" required value={formData.birthYear} onChange={(e) => set("birthYear", e.target.value)} placeholder="Year" min="1900" max="2026" className={inputClass} />
-                  </div>
+                  <input
+                    type="date"
+                    required
+                    value={
+                      formData.birthYear && formData.birthMonth && formData.birthDay
+                        ? `${String(formData.birthYear).padStart(4, '0')}-${String(formData.birthMonth).padStart(2, '0')}-${String(formData.birthDay).padStart(2, '0')}`
+                        : ""
+                    }
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val) {
+                        const [y, m, d] = val.split("-");
+                        set("birthYear", y);
+                        set("birthMonth", String(Number(m)));
+                        set("birthDay", String(Number(d)));
+                      }
+                    }}
+                    max="2026-12-31"
+                    min="1900-01-01"
+                    className={inputClass}
+                  />
                 </div>
                 <div ref={wrapperRef} className="relative">
                   <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH LOCATION</label>
@@ -639,7 +655,30 @@ export default function LandingPage() {
                 {/* Birth Date */}
                 <div>
                   <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH DATE</label>
-                  <div className="grid grid-cols-3 gap-4">
+                  {/* Mobile: native date picker */}
+                  <input
+                    type="date"
+                    required
+                    value={
+                      formData.birthYear && formData.birthMonth && formData.birthDay
+                        ? `${String(formData.birthYear).padStart(4, '0')}-${String(formData.birthMonth).padStart(2, '0')}-${String(formData.birthDay).padStart(2, '0')}`
+                        : ""
+                    }
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val) {
+                        const [y, m, d] = val.split("-");
+                        set("birthYear", y);
+                        set("birthMonth", String(Number(m)));
+                        set("birthDay", String(Number(d)));
+                      }
+                    }}
+                    max="2026-12-31"
+                    min="1900-01-01"
+                    className={`${inputClass} md:hidden`}
+                  />
+                  {/* Desktop: 3-column number inputs */}
+                  <div className="hidden md:grid grid-cols-3 gap-4">
                     <input type="number" required value={formData.birthMonth} onChange={(e) => set("birthMonth", e.target.value)} placeholder="Month" min="1" max="12" className={inputClass} />
                     <input type="number" required value={formData.birthDay} onChange={(e) => set("birthDay", e.target.value)} placeholder="Day" min="1" max="31" className={inputClass} />
                     <input type="number" required value={formData.birthYear} onChange={(e) => set("birthYear", e.target.value)} placeholder="Year" min="1900" max="2026" className={inputClass} />
