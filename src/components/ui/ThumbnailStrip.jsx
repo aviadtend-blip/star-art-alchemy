@@ -18,7 +18,7 @@ export default function ThumbnailStrip({ images, activeIndex, onSelect, size = 5
           key={i}
           onClick={(e) => { e.stopPropagation(); onSelect(i); }}
           className={`flex-shrink-0 overflow-hidden transition-all ${
-            i === activeIndex ? 'ring-1 ring-[#FFBF00]' : 'opacity-50 hover:opacity-80'
+            i === activeIndex ? 'ring-1 ring-[#FFBF00]' : 'opacity-90 hover:opacity-100'
           }`}
           style={{ width: size, height: size, borderRadius: 2 }}
         >
