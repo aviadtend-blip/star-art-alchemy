@@ -51,6 +51,8 @@ const MOCKUPS = {
 export function ProductCustomization({ chartData, artworkImage, onCheckout, onBack, formData, onEditBirthData }) {
   const [selectedSize, setSelectedSize] = useState('16x24');
   const [activeThumb, setActiveThumb] = useState(0);
+  const [slideDir, setSlideDir] = useState(0); // -1 left, 1 right, 0 none
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const sizeCarouselRef = useRef(null);
   const isFirstSizeScroll = useRef(true);
 
@@ -63,16 +65,29 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const handleTouchStart = useCallback((e) => {
     touchStartX.current = e.touches[0].clientX;
   }, []);
+  const handleSwipe = useCallback((direction) => {
+    if (isTransitioning) return;
+    const next = direction > 0
+      ? Math.min(activeThumb + 1, mockups.length - 1)
+      : Math.max(activeThumb - 1, 0);
+    if (next === activeThumb) return;
+    setSlideDir(direction);
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActiveThumb(next);
+      setSlideDir(0);
+      setIsTransitioning(false);
+    }, 200);
+  }, [activeThumb, mockups.length, isTransitioning]);
+
   const handleTouchEnd = useCallback((e) => {
     if (touchStartX.current === null) return;
     const diff = touchStartX.current - e.changedTouches[0].clientX;
     if (Math.abs(diff) > 50) {
-      setActiveThumb(prev =>
-        diff > 0 ? Math.min(prev + 1, mockups.length - 1) : Math.max(prev - 1, 0)
-      );
+      handleSwipe(diff > 0 ? 1 : -1);
     }
     touchStartX.current = null;
-  }, [mockups.length]);
+  }, [handleSwipe]);
 
   useEffect(() => {
     const carousel = sizeCarouselRef.current;
@@ -116,12 +131,21 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="w-full">
+        <div
+          className="w-full overflow-hidden"
+          style={{
+            transform: slideDir !== 0
+              ? `translateX(${slideDir > 0 ? '-8%' : '8%'})`
+              : 'translateX(0)',
+            opacity: slideDir !== 0 ? 0.3 : 1,
+            transition: 'transform 0.2s ease-out, opacity 0.2s ease-out',
+          }}
+        >
           <img
             src={mockups[activeThumb]}
             alt={`Canvas mockup ${activeThumb + 1}`}
             className="w-full object-contain"
-            loading={activeThumb === 0 ? 'eager' : 'lazy'}
+            loading="lazy"
           />
         </div>
         <div className="absolute bottom-3 left-0 right-0 flex justify-center px-4">
