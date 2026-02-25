@@ -57,7 +57,7 @@ function HangingFrameIcon() {
   }, []);
 
   return (
-    <div ref={ref} className="flex justify-center" style={{ marginBottom: 12 }}>
+    <div ref={ref} className="flex justify-center" style={{ marginBottom: 12, filter: 'drop-shadow(0 8px 16px rgba(255, 191, 0, 0.3))' }}>
       <svg
         width="48"
         height="56"
