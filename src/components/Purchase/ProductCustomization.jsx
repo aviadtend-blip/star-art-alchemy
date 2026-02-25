@@ -68,9 +68,13 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   };
 
   return (
-    <div className="min-h-screen relative pt-14" style={{ backgroundColor: '#FFFFFF' }}>
-      <Header />
-      <StepProgressBar currentStep={4} />
+    <div className="min-h-screen relative" style={{ backgroundColor: '#FFFFFF' }}>
+      <div style={{ backgroundColor: '#121212' }}>
+        <Header />
+        <div className="pt-14">
+          <StepProgressBar currentStep={4} />
+        </div>
+      </div>
       <BirthDataBar formData={formData} onEdit={onEditBirthData} />
 
       {/* Hero mockup area — light background */}
