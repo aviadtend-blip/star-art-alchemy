@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
+const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
+
 /**
  * Composites the user's generated artwork onto a room mockup image
  * by detecting and replacing the green-screen area via canvas chroma key.
@@ -34,11 +36,33 @@ export default function MockupWithArtwork({ mockupSrc, artworkSrc, alt = '', cla
         img.src = src;
       });
 
+    const loadArtworkViaProxy = async (src) => {
+      // Proxy external URLs to avoid CORS issues with canvas getImageData
+      const needsProxy = src.startsWith('http') && !src.startsWith(window.location.origin);
+      if (!needsProxy) return loadImage(src);
+
+      const res = await fetch(PROXY_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({ url: src }),
+      });
+      if (!res.ok) throw new Error(`Proxy failed: ${res.status}`);
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const img = await loadImage(objectUrl);
+      // Store objectUrl for cleanup
+      img._objectUrl = objectUrl;
+      return img;
+    };
+
     (async () => {
       try {
         const [mockupImg, artworkImg] = await Promise.all([
           loadImage(mockupSrc),
-          loadImage(artworkSrc),
+          loadArtworkViaProxy(artworkSrc),
         ]);
         if (cancelled) return;
 
@@ -93,6 +117,8 @@ export default function MockupWithArtwork({ mockupSrc, artworkSrc, alt = '', cla
         }
 
         setCompositeSrc(canvas.toDataURL('image/jpeg', 0.92));
+        // Clean up blob URL if we created one
+        if (artworkImg._objectUrl) URL.revokeObjectURL(artworkImg._objectUrl);
       } catch (err) {
         if (import.meta.env.DEV) console.warn('MockupWithArtwork composite failed:', err);
         // Fallback to raw mockup
