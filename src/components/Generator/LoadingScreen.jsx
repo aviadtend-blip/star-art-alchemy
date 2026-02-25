@@ -83,7 +83,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
         <h2 className="text-a2 text-surface-foreground font-display text-center mb-2 transition-opacity duration-500">
           {HEADLINES[headlineIndex]}
         </h2>
-        <p className="text-body-sm font-body text-surface-muted mb-12">
+        <p className="text-body font-body text-surface-muted mb-12">
           Typical generation time: 30-45 seconds
         </p>
 
@@ -107,9 +107,9 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
         {/* Birth Chart Summary */}
         {chartData && (
           <div className="w-full space-y-3 mb-8">
-            <h3 className="text-a3 text-surface-foreground font-display text-center mb-4">
-              Your Birth Chart Summary
-            </h3>
+             <h3 className="text-a2 text-surface-foreground font-display text-center mb-4">
+               Your Birth Chart Summary
+             </h3>
 
             {/* Big Three — stacked cards */}
             <div className="space-y-3">
@@ -124,8 +124,8 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
                   style={{ backgroundColor: '#F9F5F0', borderRadius: '2px' }}
                 >
                   <span className="text-2xl mb-1">{item.icon}</span>
-                  <span className="text-a4 text-surface-foreground font-display">{item.label}</span>
-                  <span className="text-body-sm font-body text-surface-muted">{item.sub}</span>
+                  <span className="text-a5 text-surface-foreground font-display">{item.label}</span>
+                  <span className="text-body font-body text-surface-muted">{item.sub}</span>
                 </div>
               ))}
             </div>
