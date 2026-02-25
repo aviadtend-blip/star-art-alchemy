@@ -197,7 +197,7 @@ export default function LandingPage() {
             Turn Your Birth<br />
             Into Gallery-Worthy Art
           </h1>
-          <p className="text-body text-muted-foreground text-center mb-8">
+          <p className="text-body text-center mb-8" style={{ color: '#ffffff' }}>
             Every element in your artwork corresponds to a specific astrological placement.
           </p>
 
@@ -303,7 +303,7 @@ export default function LandingPage() {
               Turn Your Birth<br />
               Into Gallery-Worthy Art
             </h1>
-            <p className="text-body text-foreground/70 max-w-md">
+            <p className="text-body max-w-md" style={{ color: '#ffffff' }}>
               Every element in your artwork corresponds to a specific<br className="hidden lg:block" />
               astrological placement.
             </p>
