@@ -26,8 +26,18 @@ const TESTIMONIALS = [
   },
   {
     img: lifestyleImg,
-    quote: '"As a Taurus sun it spoke to me instantly. I get compliments every time someone visits asks ab..."',
+    quote: '"As a Taurus sun it spoke to me instantly. I get compliments every time someone visits"',
     name: 'JENNIFER K, VERIFIED BUYER',
+  },
+  {
+    img: womanHolding,
+    quote: '"I bought one for myself and two more as gifts. Everyone was blown away"',
+    name: 'EMMA R, VERIFIED BUYER',
+  },
+  {
+    img: lifestyleImg,
+    quote: '"The detail is incredible — every symbol actually means something about my chart"',
+    name: 'MICHAEL T, VERIFIED BUYER',
   },
 ];
 
@@ -211,7 +221,7 @@ export function ChartExplanation({
           </p>
 
           {/* Horizontal scroll cards */}
-          <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+          <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 -mx-6 px-6">
             {TESTIMONIALS.map((t, i) => (
               <div
                 key={i}
