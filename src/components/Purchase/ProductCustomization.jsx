@@ -145,7 +145,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
               )}
               <div className="text-left">
                 <p className="text-a4" style={{ color: '#333333' }}>{size.label}</p>
-                <p className="text-body-sm" style={{ color: '#888888' }}>{size.description}</p>
+                <p className="text-body-sm" style={{ color: '#888888', marginTop: '2px' }}>{size.description}</p>
               </div>
               <p className="text-a4 flex-shrink-0" style={{ color: '#333333' }}>${size.price}</p>
             </button>
