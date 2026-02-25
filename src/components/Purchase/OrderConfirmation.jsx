@@ -109,7 +109,7 @@ export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNew
         <p className="text-body mt-2" style={{ color: '#666' }}>
           Thank you, {order.firstName || 'there'}!
         </p>
-        <p className="text-body-sm" style={{ color: '#888' }}>
+        <p className="text-body" style={{ color: '#888' }}>
           Your cosmic blueprint is coming to life.
         </p>
         <div className="mt-3 space-y-0.5">
