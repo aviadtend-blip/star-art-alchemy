@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import ProgressBar from '@/components/ui/ProgressBar';
+import StepProgressBar from '@/components/ui/StepProgressBar';
+import Footer from '@/components/Layout/Footer';
 
 const FUN_FACTS = [
   "Fun fact: Your chart has never been created as artwork before today.",
@@ -7,9 +8,24 @@ const FUN_FACTS = [
   "Each element you see will have meaning tied to your birth moment.",
 ];
 
+const ELEMENT_ICONS = {
+  Fire: '🔥',
+  Water: '💧',
+  Earth: '🌍',
+  Air: '💨',
+};
+
+const ELEMENT_DESCRIPTIONS = {
+  Fire: 'warm, bold tones with dynamic energy',
+  Water: 'deep blues and flowing, fluid forms',
+  Earth: 'grounded, intellectual aesthetics',
+  Air: 'light, airy compositions with soft gradients',
+};
+
 /**
  * Full-page loading screen shown between Step 2 and Step 3.
- * Displays chart summary, element balance, and rotating fun facts.
+ * White background, header, progress bar, circular spinner,
+ * stacked Big Three cards, 2×2 element grid, dominant callout, fun facts.
  */
 export default function LoadingScreen({ chartData, selectedStyle, generationProgress }) {
   const [factIndex, setFactIndex] = useState(0);
@@ -21,101 +37,125 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
     return () => clearInterval(interval);
   }, []);
 
-  // Determine dominant elements
   const elements = chartData?.element_balance || {};
   const sortedElements = Object.entries(elements).sort(([, a], [, b]) => b - a);
   const dominantElements = sortedElements.filter(([, v]) => v === sortedElements[0]?.[1]).map(([k]) => k);
 
-  const elementDescriptions = {
-    Fire: 'warm, bold tones with dynamic energy',
-    Water: 'deep blues and flowing, fluid forms',
-    Earth: 'rich textures and grounded materials',
-    Air: 'light, airy compositions with soft gradients',
-  };
-
   return (
-    <div className="min-h-screen bg-cosmic flex flex-col">
-      <ProgressBar currentStep={2} />
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#FFFFFF' }}>
+      {/* Header */}
+      <nav className="flex items-center justify-between" style={{ backgroundColor: '#121212', padding: '26px 30px' }}>
+        <div className="text-a4 text-white font-display">Celestial Artworks</div>
+        <button className="text-white/70 hover:text-white transition">
+          <div className="space-y-1.5">
+            <div className="w-6 h-0.5 bg-current" />
+            <div className="w-6 h-0.5 bg-current" />
+          </div>
+        </button>
+      </nav>
 
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-12">
+      {/* Progress bar */}
+      <div style={{ borderBottom: '1px solid #2A2A2A' }}>
+        <StepProgressBar currentStep={2} />
+      </div>
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col items-center px-6 py-12 max-w-lg mx-auto w-full">
         {/* Headline */}
-        <h2 className="text-a2 md:text-4xl text-foreground text-center mb-2">
+        <h2 className="text-a2 text-surface-foreground font-display text-center mb-2">
           Calculating planetary positions...
         </h2>
-        <p className="text-body-sm text-muted-foreground mb-10">Typical generation time: 30-45 seconds</p>
+        <p className="text-body-sm font-body text-surface-muted mb-12">
+          Typical generation time: 30-45 seconds
+        </p>
 
-        {/* Spinner */}
-        <div className="relative w-20 h-20 mb-10">
-          <div className="absolute inset-0 border-2 border-primary/20 rounded-full" />
-          <div className="absolute inset-0 border-2 border-transparent border-t-primary rounded-full animate-spin" />
-          <div className="absolute inset-3 border border-accent/30 rounded-full animate-spin" style={{ animationDirection: "reverse", animationDuration: "2s" }} />
+        {/* Circular spinner */}
+        <div className="relative w-16 h-16 mb-12">
+          {/* Track */}
+          <svg className="w-full h-full" viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="28" fill="none" stroke="#F5F5F5" strokeWidth="4" />
+          </svg>
+          {/* Animated arc */}
+          <svg className="w-full h-full absolute inset-0 animate-spin" viewBox="0 0 64 64" style={{ animationDuration: '1.2s' }}>
+            <circle
+              cx="32" cy="32" r="28" fill="none"
+              stroke="#FE6781" strokeWidth="4"
+              strokeLinecap="round"
+              strokeDasharray="44 132"
+            />
+          </svg>
         </div>
 
-        {/* Big Three Cards */}
+        {/* Birth Chart Summary */}
         {chartData && (
-          <div className="w-full max-w-3xl space-y-8 mb-10">
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-card border border-border rounded-xl p-4 text-center">
-                <div className="text-3xl mb-2">☀️</div>
-                <span className="text-subtitle text-muted-foreground tracking-widest">Sun</span>
-                <span className="block text-a4 text-foreground capitalize mt-1">{chartData.sun.sign}</span>
-                <span className="text-body-sm text-muted-foreground">House {chartData.sun.house}</span>
-              </div>
-              <div className="bg-card border border-border rounded-xl p-4 text-center">
-                <div className="text-3xl mb-2">🌙</div>
-                <span className="text-subtitle text-muted-foreground tracking-widest">Moon</span>
-                <span className="block text-a4 text-foreground capitalize mt-1">{chartData.moon.sign}</span>
-                <span className="text-body-sm text-muted-foreground">House {chartData.moon.house}</span>
-              </div>
-              <div className="bg-card border border-border rounded-xl p-4 text-center">
-                <div className="text-3xl mb-2">⬆️</div>
-                <span className="text-subtitle text-muted-foreground tracking-widest">Rising</span>
-                <span className="block text-a4 text-foreground capitalize mt-1">{chartData.rising}</span>
-                <span className="text-body-sm text-muted-foreground">Ascendant</span>
-              </div>
+          <div className="w-full space-y-3 mb-8">
+            <h3 className="text-a3 text-surface-foreground font-display text-center mb-4">
+              Your Birth Chart Summary
+            </h3>
+
+            {/* Big Three — stacked cards */}
+            <div className="space-y-3">
+              {[
+                { icon: '☀️', label: `Sun in ${chartData.sun?.sign}`, sub: `House ${chartData.sun?.house}` },
+                { icon: '🌙', label: `Moon in ${chartData.moon?.sign}`, sub: `House ${chartData.moon?.house}` },
+                { icon: '⬆️', label: `${chartData.rising} Rising`, sub: 'Your Ascendant' },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="flex flex-col items-center py-5 px-4"
+                  style={{ backgroundColor: '#F9F5F0', borderRadius: '2px' }}
+                >
+                  <span className="text-2xl mb-1">{item.icon}</span>
+                  <span className="text-a4 text-surface-foreground font-display">{item.label}</span>
+                  <span className="text-body-sm font-body text-surface-muted">{item.sub}</span>
+                </div>
+              ))}
             </div>
 
-            {/* Element Balance */}
-            <div className="grid grid-cols-4 gap-3">
-              {[
-                { key: 'Fire', icon: '🔥' },
-                { key: 'Water', icon: '💧' },
-                { key: 'Earth', icon: '🌍' },
-                { key: 'Air', icon: '💨' },
-              ].map(({ key, icon }) => (
-                <div key={key} className="bg-card border border-border rounded-lg p-3 text-center">
-                  <span className="text-lg">{icon}</span>
-                  <span className="block text-body-sm text-muted-foreground mt-1">{key}</span>
-                  <span className="block text-a4 text-foreground">{elements[key] || 0}</span>
+            {/* Element Balance — 2×2 grid */}
+            <div className="grid grid-cols-2 gap-3">
+              {['Fire', 'Water', 'Earth', 'Air'].map((key) => (
+                <div
+                  key={key}
+                  className="flex flex-col items-center py-4 px-3"
+                  style={{ backgroundColor: '#F9F5F0', borderRadius: '2px' }}
+                >
+                  <span className="text-xl mb-1">{ELEMENT_ICONS[key]}</span>
+                  <span className="text-a5 text-surface-foreground font-display">
+                    {key}: {elements[key] || 0}
+                  </span>
                 </div>
               ))}
             </div>
 
             {/* Dominant Element Callout */}
             {dominantElements.length > 0 && (
-              <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 text-center">
-                <p className="text-body-sm text-foreground">
-                  Your dominant element{dominantElements.length > 1 ? 's' : ''}:{' '}
-                  <span className="text-primary font-semibold">{dominantElements.join(' & ')}</span>
-                </p>
-                <p className="text-body-sm text-muted-foreground mt-1">
-                  Expect {dominantElements.map(e => elementDescriptions[e]).join(' blended with ')}
+              <div
+                className="py-4 px-5 text-center"
+                style={{ backgroundColor: '#F0F0F0', borderRadius: '2px' }}
+              >
+                <p className="text-body-sm font-body text-surface-foreground">
+                  Your dominant elements: {dominantElements.join(' & ')} → Expect{' '}
+                  {dominantElements.map(e => ELEMENT_DESCRIPTIONS[e]).filter(Boolean).join(', ')}
                 </p>
               </div>
             )}
           </div>
         )}
 
-        {/* Progress text */}
-        <p className="text-a5 text-primary mb-6">{generationProgress}</p>
-
         {/* Rotating Fun Facts */}
-        <div className="bg-accent/10 border border-accent/20 rounded-xl px-6 py-3 max-w-lg transition-all">
-          <p className="text-body-sm text-foreground/80 text-center">
+        <div
+          className="w-full py-4 px-5 text-center"
+          style={{ backgroundColor: '#FFF5DD', borderRadius: '2px' }}
+        >
+          <p className="text-body-sm font-body" style={{ color: '#C99700' }}>
             💡 {FUN_FACTS[factIndex]}
           </p>
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
