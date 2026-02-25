@@ -8,14 +8,14 @@ const STEPS = [
 ];
 
 /**
- * Persistent 4-step progress bar matching Figma design.
- * Dark background, text labels with pink accent on active step + pink bar above.
+ * Persistent 4-step progress bar.
+ * Dark background, left-aligned steps with pink accent bar on active step.
  * @param {{ currentStep: number }} props – 1-based step (1–4)
  */
 export default function StepProgressBar({ currentStep = 1 }) {
   return (
-    <div className="w-full" style={{ backgroundColor: '#1A1A1A' }}>
-      <div className="max-w-4xl mx-auto flex">
+    <div className="w-full" style={{ backgroundColor: '#121212' }}>
+      <div className="flex items-stretch" style={{ padding: '0 30px 12px 31px' }}>
         {STEPS.map((step) => {
           const isCompleted = step.number < currentStep;
           const isActive = step.number === currentStep;
@@ -23,31 +23,30 @@ export default function StepProgressBar({ currentStep = 1 }) {
           return (
             <div
               key={step.number}
-              className="flex-1 flex flex-col items-center relative"
+              className="flex flex-col items-center"
+              style={{ marginRight: step.number < 4 ? '40px' : 0 }}
             >
               {/* Pink accent bar above active step */}
               <div
-                className="w-full h-[3px]"
+                className="w-full mb-2"
                 style={{
-                  backgroundColor: isActive ? 'hsl(var(--primary))' : 'transparent',
+                  height: '3px',
+                  backgroundColor: isActive ? '#FE6781' : 'transparent',
                 }}
               />
 
-              {/* Label row */}
-              <div className="flex items-center gap-1.5 py-3">
+              {/* Label */}
+              <div className="flex items-center gap-1.5 whitespace-nowrap">
                 <span
-                  className={`text-body-sm font-body tracking-wide whitespace-nowrap ${
-                    isActive
-                      ? 'text-primary'
-                      : isCompleted
-                        ? 'text-white/60'
-                        : 'text-white/30'
-                  }`}
+                  className="text-body-sm font-body tracking-wide"
+                  style={{
+                    color: isActive ? '#FE6781' : isCompleted ? '#FFFFFF' : '#B0B0B0',
+                  }}
                 >
                   {step.number}. {step.label}
                 </span>
                 {isCompleted && (
-                  <Check className="w-3.5 h-3.5 text-white/60" />
+                  <Check className="w-3.5 h-3.5" style={{ color: '#FFFFFF' }} />
                 )}
               </div>
             </div>
