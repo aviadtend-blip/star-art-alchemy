@@ -183,9 +183,9 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
               Select Style
             </button>
           </div>
-          <p className="text-body text-surface-muted italic">Can't decide? Let us choose the best style based on your chart</p>
-          <div className="inline-block bg-surface-card border border-surface-border rounded-md px-5 py-2.5 mt-2">
-            <p className="text-body text-surface-muted">💡 You'll see your preview before committing.</p>
+          <p className="text-body text-surface-muted">Can't decide? Let us choose the best style based on your chart</p>
+          <div className="inline-flex items-center justify-center gap-2.5 mt-2" style={{ padding: '8px', borderRadius: '2px', backgroundColor: '#FFF5DD' }}>
+            <p className="text-body" style={{ color: '#C99700' }}>💡 You'll see your preview before committing.</p>
           </div>
         </div>
       </div>
