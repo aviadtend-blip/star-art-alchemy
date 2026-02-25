@@ -66,7 +66,7 @@ export default function GalleryTile({ image, name, signs, explanations = [] }) {
               <p className="text-a5 text-white">
                 {exp.icon} {exp.title}
               </p>
-              <p className="text-body-sm text-white/80 leading-relaxed">
+              <p className="text-body text-white/80 leading-relaxed">
                 {exp.description}
               </p>
             </div>
@@ -77,7 +77,7 @@ export default function GalleryTile({ image, name, signs, explanations = [] }) {
       {/* Label below image */}
       <div className="w-full text-center py-[10px]">
         <p className="text-subtitle text-surface-foreground">{name.toUpperCase()}'S CHART</p>
-        <p className="text-body-sm text-surface-muted">{signs}</p>
+        <p className="text-body text-surface-muted">{signs}</p>
       </div>
     </div>
   );

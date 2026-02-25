@@ -59,7 +59,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
         <h2 className="text-a2 md:text-4xl text-center text-surface-foreground mb-3">
           See how it all happens
         </h2>
-        <p className="text-body-sm text-surface-muted text-center mb-[80px] max-w-xl mx-auto">
+        <p className="text-body text-surface-muted text-center mb-[80px] max-w-xl mx-auto">
           Every element in your artwork corresponds to a specific astrological placement.
         </p>
 
@@ -110,7 +110,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
                       <span className="text-surface-muted">·</span>
                       <span className="text-a5 text-surface-foreground/70">{item.theme}</span>
                     </div>
-                    <p className="text-body-sm text-surface-muted leading-relaxed pl-8">{item.desc}</p>
+                    <p className="text-body text-surface-muted leading-relaxed pl-8">{item.desc}</p>
                   </div>
                 ))}
               </div>
@@ -166,14 +166,14 @@ export default function InteractiveHotspots({ onScrollToForm }) {
           ) : (
             <div className="flex items-center gap-3 text-surface-muted justify-center">
               <span className="text-xl">👆</span>
-              <p className="text-body-sm">Tap a number to explore how this chart was personalized.</p>
+              <p className="text-body">Tap a number to explore how this chart was personalized.</p>
             </div>
           )}
         </div>
 
         {/* CTA */}
         <div className="text-center mt-[80px] space-y-3">
-          <p className="text-body-sm text-surface-muted">
+          <p className="text-body text-surface-muted">
             Want to see what symbols appear in YOUR chart?
           </p>
           <button
