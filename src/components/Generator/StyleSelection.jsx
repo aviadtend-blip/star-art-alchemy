@@ -74,7 +74,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Header */}
-      <nav className="bg-surface-foreground py-4 px-6 md:px-10 flex items-center justify-between">
+      <nav className="flex items-center justify-between" style={{ backgroundColor: '#121212', padding: '26px 30px' }}>
         <div className="text-a4 text-white font-display">Celestial Artworks</div>
         <button className="text-white/70 hover:text-white transition">
           <div className="space-y-1.5">
@@ -85,7 +85,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
       </nav>
 
       {/* Progress bar */}
-      <div className="bg-surface border-b border-surface-border">
+      <div style={{ borderBottom: '1px solid #2A2A2A' }}>
         <StepProgressBar currentStep={2} />
       </div>
 
