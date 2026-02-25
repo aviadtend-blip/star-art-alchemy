@@ -174,7 +174,7 @@ export default function LandingPage() {
     document.getElementById("birth-form")?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const inputClass = "w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-left text-foreground placeholder:text-white/40 focus:border-primary focus:ring-0 transition outline-none";
+  const inputClass = "w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-left text-foreground placeholder:text-[#B1B1B1] focus:border-primary focus:ring-0 transition outline-none";
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -216,7 +216,7 @@ export default function LandingPage() {
               <form onSubmit={handleStep1aSubmit} className="flex flex-col gap-[24px]">
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH DATE</label>
+                    <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
                     <input
                       type="date"
                       required
@@ -240,7 +240,7 @@ export default function LandingPage() {
                     />
                   </div>
                   <div ref={wrapperRef} className="relative">
-                    <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH LOCATION</label>
+                    <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH LOCATION</label>
                     <div className="relative">
                       <input
                         type="text" required value={cityQuery}
@@ -274,7 +274,7 @@ export default function LandingPage() {
             ) : (
               <div className="flex flex-col gap-[24px]">
                 <div>
-                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH TIME</label>
+                   <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH TIME</label>
                   <div className={`grid grid-cols-3 gap-4 transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
                     <input type="number" value={birthHour} onChange={(e) => setBirthHour(e.target.value)} placeholder="12" min="1" max="12" className={inputClass} />
                     <input type="number" value={birthMinute} onChange={(e) => setBirthMinute(e.target.value)} placeholder="00" min="0" max="59" className={inputClass} />
@@ -340,7 +340,7 @@ export default function LandingPage() {
             {!showTimeModal ? (
               <form onSubmit={handleStep1aSubmit} className="flex flex-col gap-[24px]">
                 <div>
-                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH DATE</label>
+                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
                   <div className="grid grid-cols-3 gap-4">
                     <input type="number" required value={formData.birthMonth} onChange={(e) => set("birthMonth", e.target.value)} placeholder="Month" min="1" max="12" className={inputClass} />
                     <input type="number" required value={formData.birthDay} onChange={(e) => set("birthDay", e.target.value)} placeholder="Day" min="1" max="31" className={inputClass} />
@@ -348,7 +348,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div className="relative">
-                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH LOCATION</label>
+                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH LOCATION</label>
                   <div className="relative">
                     <input
                       type="text" required value={cityQuery}
@@ -381,7 +381,7 @@ export default function LandingPage() {
             ) : (
               <div className="flex flex-col gap-[24px]">
                 <div>
-                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH TIME</label>
+                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH TIME</label>
                   <div className={`grid grid-cols-3 gap-4 transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
                     <input type="number" value={birthHour} onChange={(e) => setBirthHour(e.target.value)} placeholder="12" min="1" max="12" className={inputClass} />
                     <input type="number" value={birthMinute} onChange={(e) => setBirthMinute(e.target.value)} placeholder="00" min="0" max="59" className={inputClass} />
@@ -656,7 +656,7 @@ export default function LandingPage() {
               <form onSubmit={handleStep1aSubmit} className="flex flex-col gap-[30px]">
                 {/* Birth Date */}
                 <div>
-                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH DATE</label>
+                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
                   {/* Mobile: native date picker */}
                   <input
                     type="date"
@@ -689,7 +689,7 @@ export default function LandingPage() {
 
                 {/* Birth Location */}
                 <div ref={wrapperRef} className="relative">
-                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH LOCATION</label>
+                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH LOCATION</label>
                   <div className="relative">
                     <input
                       type="text" required value={cityQuery}
@@ -725,7 +725,7 @@ export default function LandingPage() {
               /* Step 1b — Birth Time (inline, replaces step 1) */
               <div className="flex flex-col gap-[30px]">
                 <div>
-                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#6A6A6A' }}>BIRTH TIME</label>
+                  <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH TIME</label>
                   <div className={`grid grid-cols-3 gap-4 transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
                       <input type="number" value={birthHour} onChange={(e) => setBirthHour(e.target.value)} placeholder="12" min="1" max="12" className={inputClass} />
                       <input type="number" value={birthMinute} onChange={(e) => setBirthMinute(e.target.value)} placeholder="00" min="0" max="59" className={inputClass} />
