@@ -108,41 +108,55 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
       <h2 className="text-a4" style={{ color: '#333333', marginBottom: '8px' }}>
         🖼️ Choose Your Size
       </h2>
-      <div className={`${vertical ? 'flex flex-col gap-3 pt-3' : 'flex gap-3 overflow-x-auto scrollbar-hide pb-2 pt-4 px-0'}`}>
-        {SIZE_OPTIONS.map((size) => (
-          <button
-            key={size.id}
-            onClick={() => { setSelectedSize(size.id); setActiveThumb(0); }}
-            className="relative flex-shrink-0 transition-all"
-            style={{
-              display: 'flex',
-              width: vertical ? '100%' : '180px',
-              height: '74px',
-              padding: '15px',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              borderRadius: '4px',
-              border: selectedSize === size.id ? '2px solid #333333' : '1px solid #E0E0E0',
-              backgroundColor: '#FFFFFF',
-            }}
-          >
-            {size.popular && (
-              <div className="absolute" style={{ top: '-12px', right: '-4px' }}>
-                <PopularTag>Most popular</PopularTag>
-              </div>
-            )}
-            <div className="text-left">
-              <p className="text-a4" style={{ color: '#333333' }}>{size.label}</p>
-              <p className="text-body-sm" style={{ color: '#888888', marginTop: '4px' }}>{size.description}</p>
-            </div>
-            <p className="text-a4 font-bold flex-shrink-0" style={{ color: '#333333', marginLeft: '16px' }}>${size.price}</p>
-          </button>
-        ))}
-      </div>
+      {vertical ? (
+        <div className="flex flex-col gap-3 pt-3">
+          {SIZE_OPTIONS.map((size) => (
+            <SizeCard key={size.id} size={size} />
+          ))}
+        </div>
+      ) : (
+        <div className="pt-4 -mx-4 px-4">
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 pr-4" style={{ overflow: 'auto', clipPath: 'inset(-20px -20px -20px 0px)' }}>
+            {SIZE_OPTIONS.map((size) => (
+              <SizeCard key={size.id} size={size} />
+            ))}
+          </div>
+        </div>
+      )}
       <p className="text-body-sm" style={{ color: '#888888', marginTop: '4px' }}>
         💡 Not sure? We recommend 16"×24" for most spaces
       </p>
     </div>
+  );
+
+  const SizeCard = ({ size }) => (
+    <button
+      onClick={() => { setSelectedSize(size.id); setActiveThumb(0); }}
+      className="relative flex-shrink-0 transition-all"
+      style={{
+        display: 'flex',
+        width: size.id === selectedSize ? '180px' : '180px',
+        minWidth: '180px',
+        height: '74px',
+        padding: '15px',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderRadius: '4px',
+        border: selectedSize === size.id ? '2px solid #333333' : '1px solid #E0E0E0',
+        backgroundColor: '#FFFFFF',
+      }}
+    >
+      {size.popular && (
+        <div className="absolute" style={{ top: '-12px', right: '-4px' }}>
+          <PopularTag>Most popular</PopularTag>
+        </div>
+      )}
+      <div className="text-left">
+        <p className="text-a4" style={{ color: '#333333' }}>{size.label}</p>
+        <p className="text-body-sm" style={{ color: '#888888', marginTop: '4px' }}>{size.description}</p>
+      </div>
+      <p className="text-a4 font-bold flex-shrink-0" style={{ color: '#333333', marginLeft: '16px' }}>${size.price}</p>
+    </button>
   );
 
   const OrderSummary = () => (
