@@ -161,12 +161,12 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
       {/* Order Summary — galaxy background card */}
       <div className="px-4 pb-8">
         <div
-          className="relative overflow-hidden p-[14px]"
+          className="relative overflow-hidden p-5"
           style={{ borderRadius: '2px' }}
         >
           {/* Galaxy background */}
           <img src={galaxyBg} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
-          <div className="absolute inset-0 bg-black/30" />
+          <div className="absolute inset-0 bg-black/20" />
 
           {/* Content */}
           <div className="relative z-10 space-y-4">
