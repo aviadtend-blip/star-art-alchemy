@@ -147,7 +147,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const SizeSelector = ({ vertical = false }) => (
     <div>
       <h2 className="text-a4" style={{ color: '#333333' }}>
-        🖼️ Choose Your Size
+        Choose Your Size
       </h2>
       {vertical ? (
         <div className="flex flex-col gap-3">
