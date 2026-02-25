@@ -4,6 +4,7 @@ import { ART_STYLES } from '@/config/artStyles';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
+import PopularTag from '@/components/ui/PopularTag';
 
 import boldImg from '@/assets/gallery/taurus-artwork.jpg';
 import minimalImg from '@/assets/gallery/capricorn-gallery.jpg';
@@ -125,9 +126,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
                 >
                   {/* Badge */}
                   {style.popular && (
-                    <span className="absolute z-10 text-subtitle bg-primary text-primary-foreground px-3 py-0.5 tracking-wide whitespace-nowrap" style={{ bottom: '10px', left: '50%', transform: 'translateX(-50%)', borderRadius: '2px' }}>
-                      Most popular
-                    </span>
+                    <PopularTag className="absolute z-10" style={{ bottom: '42px', left: '110px' }} />
                   )}
 
                   {/* Magnifying glass */}
