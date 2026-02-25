@@ -3,6 +3,16 @@ import ProgressBar from '@/components/ui/ProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
 
+// 12x18 mockups
+import mockup12x18_1 from '@/assets/mockups/12x18/mockup-1.png';
+import mockup12x18_2 from '@/assets/mockups/12x18/mockup-2.png';
+import mockup12x18_3 from '@/assets/mockups/12x18/mockup-3.png';
+import mockup12x18_4 from '@/assets/mockups/12x18/mockup-4.png';
+import mockup12x18_5 from '@/assets/mockups/12x18/mockup-5.png';
+import mockup12x18_6 from '@/assets/mockups/12x18/mockup-6.png';
+import mockup12x18_7 from '@/assets/mockups/12x18/mockup-7.png';
+import mockup12x18_8 from '@/assets/mockups/12x18/mockup-8.png';
+
 // 16x24 mockups
 import mockup16x24_1 from '@/assets/mockups/16x24/mockup-1.png';
 import mockup16x24_2 from '@/assets/mockups/16x24/mockup-2.png';
@@ -29,7 +39,7 @@ const SIZE_OPTIONS = [
 
 // Mockup images per size (for now only 16x24 has real mockups)
 const MOCKUPS = {
-  '12x18': [mockup16x24_1, mockup16x24_2, mockup16x24_3, mockup16x24_4, mockup16x24_5, mockup16x24_6, mockup16x24_7, mockup16x24_8],
+  '12x18': [mockup12x18_1, mockup12x18_2, mockup12x18_3, mockup12x18_4, mockup12x18_5, mockup12x18_6, mockup12x18_7, mockup12x18_8],
   '16x24': [mockup16x24_1, mockup16x24_2, mockup16x24_3, mockup16x24_4, mockup16x24_5, mockup16x24_6, mockup16x24_7, mockup16x24_8],
   '20x30': [mockup20x30_1, mockup20x30_2, mockup20x30_3, mockup20x30_4, mockup20x30_5, mockup20x30_6],
 };
