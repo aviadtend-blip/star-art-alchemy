@@ -8,14 +8,14 @@ import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 
 // 12x18 mockups
-import mockup12x18_1 from '@/assets/mockups/12x18/mockup-1.png';
-import mockup12x18_2 from '@/assets/mockups/12x18/mockup-2.png';
-import mockup12x18_3 from '@/assets/mockups/12x18/mockup-3.png';
-import mockup12x18_4 from '@/assets/mockups/12x18/mockup-4.png';
-import mockup12x18_5 from '@/assets/mockups/12x18/mockup-5.png';
-import mockup12x18_6 from '@/assets/mockups/12x18/mockup-6.png';
-import mockup12x18_7 from '@/assets/mockups/12x18/mockup-7.png';
-import mockup12x18_8 from '@/assets/mockups/12x18/mockup-8.png';
+import mockup12x18_1 from '@/assets/mockups/12x18/mockup-1.webp';
+import mockup12x18_2 from '@/assets/mockups/12x18/mockup-2.webp';
+import mockup12x18_3 from '@/assets/mockups/12x18/mockup-3.webp';
+import mockup12x18_4 from '@/assets/mockups/12x18/mockup-4.webp';
+import mockup12x18_5 from '@/assets/mockups/12x18/mockup-5.webp';
+import mockup12x18_6 from '@/assets/mockups/12x18/mockup-6.webp';
+import mockup12x18_7 from '@/assets/mockups/12x18/mockup-7.webp';
+import mockup12x18_8 from '@/assets/mockups/12x18/mockup-8.webp';
 
 // 16x24 mockups
 import mockup16x24_1 from '@/assets/mockups/16x24/mockup-1.png';
