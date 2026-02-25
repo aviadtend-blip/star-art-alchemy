@@ -255,7 +255,6 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   const OrderSummary = () => (
     <div
-      ref={orderSummaryRef}
       className="relative overflow-hidden"
       style={{ borderRadius: '2px', padding: '20px 20px 44px 20px' }}
     >
@@ -332,7 +331,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           <SizeSelector />
         </div>
 
-        <div className="px-4" style={{ paddingBottom: '32px', marginTop: '23px' }}>
+        <div ref={orderSummaryRef} className="px-4" style={{ paddingBottom: '32px', marginTop: '23px' }}>
           <OrderSummary />
         </div>
 
@@ -380,7 +379,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
             {/* Right — scrollable content */}
             <div className="flex-1 space-y-8">
               <SizeSelector vertical />
-              <OrderSummary />
+              <div ref={orderSummaryRef}><OrderSummary /></div>
 
               {/* Museum-Quality Materials */}
               <div>
