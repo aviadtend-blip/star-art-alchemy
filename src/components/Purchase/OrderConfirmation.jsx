@@ -28,8 +28,8 @@ const TIMELINE_STEPS = [
   {
     label: 'STEP 2 — TODAY & TOMORROW (1-2 DAYS)',
     icon: '🎨',
-    title: 'Creating Your Artwork',
-    desc: 'We create your unique cosmic blueprint based on your exact birth data. Every artwork is reviewed for quality before printing.',
+    title: 'Preparing Your Artwork',
+    desc: 'Your cosmic blueprint is being prepared for printing. We review every artwork for quality and color accuracy before it goes to production.',
   },
   {
     label: 'STEP 3 — THIS WEEK (2-3 DAYS)',
