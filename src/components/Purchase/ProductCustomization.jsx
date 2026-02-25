@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
@@ -58,7 +58,21 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const total = sizeData?.price || 119;
   const mockups = MOCKUPS[selectedSize] || MOCKUPS['16x24'];
 
-  useEffect(() => {
+  // Touch swipe for artwork carousel
+  const touchStartX = useRef(null);
+  const handleTouchStart = useCallback((e) => {
+    touchStartX.current = e.touches[0].clientX;
+  }, []);
+  const handleTouchEnd = useCallback((e) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      setActiveThumb(prev =>
+        diff > 0 ? Math.min(prev + 1, mockups.length - 1) : Math.max(prev - 1, 0)
+      );
+    }
+    touchStartX.current = null;
+  }, [mockups.length]);
     const carousel = sizeCarouselRef.current;
     if (!carousel || window.innerWidth >= 768) return;
 
@@ -94,7 +108,12 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   /* Shared sub-components */
   const ArtworkPanel = ({ className = '' }) => (
     <div className={className}>
-      <div className="relative" style={{ backgroundColor: '#F5F5F5' }}>
+      <div
+        className="relative"
+        style={{ backgroundColor: '#F5F5F5', touchAction: 'pan-y' }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <div className="w-full">
           <img
             src={mockups[activeThumb]}
