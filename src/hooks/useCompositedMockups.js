@@ -77,15 +77,15 @@ export default function useCompositedMockups(mockupSrcs, artworkSrc) {
               const { minX, minY, maxX, maxY } = bounds;
               const bw = maxX - minX + 1;
               const bh = maxY - minY + 1;
-              // "Cover" fit: fill the green area, crop overflow
+              // "Contain" fit: show full artwork, center in green area
               const artW = artworkImg.naturalWidth;
               const artH = artworkImg.naturalHeight;
-              const scale = Math.max(bw / artW, bh / artH);
-              const sw = bw / scale;
-              const sh = bh / scale;
-              const sx = (artW - sw) / 2;
-              const sy = (artH - sh) / 2;
-              ctx.drawImage(artworkImg, sx, sy, sw, sh, minX, minY, bw, bh);
+              const scale = Math.min(bw / artW, bh / artH);
+              const dw = artW * scale;
+              const dh = artH * scale;
+              const dx = minX + (bw - dw) / 2;
+              const dy = minY + (bh - dh) / 2;
+              ctx.drawImage(artworkImg, dx, dy, dw, dh);
 
               // Restore non-green mockup pixels on top
               const mockupCanvas = document.createElement('canvas');

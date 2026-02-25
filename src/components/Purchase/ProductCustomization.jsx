@@ -100,6 +100,23 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
     return () => window.removeEventListener('resize', measure);
   }, []);
 
+  // Attach touch listeners with { passive: false } so preventDefault works
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const onTouchStart = (e) => handlePointerDown(e);
+    const onTouchMove = (e) => handlePointerMove(e);
+    const onTouchEnd = (e) => handlePointerUp(e);
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    el.addEventListener('touchend', onTouchEnd, { passive: true });
+    return () => {
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchmove', onTouchMove);
+      el.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [handlePointerDown, handlePointerMove, handlePointerUp]);
+
   const goTo = useCallback((index) => {
     const len = MOCKUPS[selectedSize]?.length || mockups.length;
     const clamped = Math.max(0, Math.min(len - 1, index));
@@ -221,9 +238,6 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           ref={carouselRef}
           className="relative overflow-hidden"
           style={{ backgroundColor: '#F5F5F5', touchAction: 'pan-y pinch-zoom' }}
-          onTouchStart={handlePointerDown}
-          onTouchMove={handlePointerMove}
-          onTouchEnd={handlePointerUp}
           onMouseDown={handlePointerDown}
           onMouseMove={handlePointerMove}
           onMouseUp={handlePointerUp}
