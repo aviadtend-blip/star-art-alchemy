@@ -4,7 +4,7 @@
 export const ART_STYLES = [
   {
     id: 'bold-vibrant',
-    name: 'Cosmic Collage — Bold & Vibrant',
+    name: 'Galaxy Bloom — Bold & Vibrant',
     description: 'Rich, saturated layers of celestial imagery with bold textures and warm, vivid tones.',
     model: 'aviadtend-blip/magical-pink',
     version: '7f84b4df7d58f1a406097da9cf729e4e3f8840f0e51657137da9956e1fa1362a',
@@ -14,7 +14,7 @@ export const ART_STYLES = [
   },
   {
     id: 'minimal-architectural',
-    name: 'Cosmic Collage — Minimal & Architectural',
+    name: 'Stellar Blueprint — Minimal & Architectural',
     description: 'Clean lines, structured composition, and restrained palettes with precise geometric forms.',
     model: 'aviadtend-blip/magical-pink', // routes to same model for MVP
     version: '7f84b4df7d58f1a406097da9cf729e4e3f8840f0e51657137da9956e1fa1362a',
@@ -25,7 +25,7 @@ export const ART_STYLES = [
   },
   {
     id: 'organic-flowing',
-    name: 'Cosmic Collage — Organic & Flowing',
+    name: 'Nebula Flow — Organic & Flowing',
     description: 'Fluid, natural forms with soft gradients and gentle movement inspired by water and growth.',
     model: 'aviadtend-blip/magical-pink', // routes to same model for MVP
     version: '7f84b4df7d58f1a406097da9cf729e4e3f8840f0e51657137da9956e1fa1362a',
