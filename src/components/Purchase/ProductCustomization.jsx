@@ -137,9 +137,9 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           ))}
         </div>
       ) : (
-        <div className="pt-4 -mx-4">
-          <div ref={sizeCarouselRef} className="overflow-x-auto scrollbar-hide">
-            <div className="flex w-max gap-3 pb-2 pl-4 pr-4">
+        <div className="pt-4 -mx-4" style={{ overflow: 'clip visible' }}>
+          <div ref={sizeCarouselRef} className="overflow-x-auto scrollbar-hide" style={{ overflowY: 'visible', overflow: 'auto visible' }}>
+            <div className="flex w-max gap-3 pb-2 pt-4 pl-4 pr-4">
               {SIZE_OPTIONS.map((size) => (
                 <SizeCard key={size.id} size={size} />
               ))}
