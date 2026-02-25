@@ -382,7 +382,7 @@ export default function LandingPage() {
               <p className="text-body text-surface-muted mb-6">
                 Birthdays. Anniversaries. New homes. Give a gift that's impossible to buy anywhere else—because it's created from their exact birth moment. Every friend who sees it will ask.
               </p>
-              <button onClick={scrollToForm} className="text-surface-foreground text-body underline underline-offset-4 hover:opacity-70 transition-opacity">
+              <button onClick={scrollToForm} className="link-a5 font-body text-surface-foreground">
                 Create a gift
               </button>
             </div>
@@ -397,7 +397,7 @@ export default function LandingPage() {
               <p className="text-body text-surface-muted mb-6">
                 Your artwork arrives ready to hang—printed on museum-grade archival paper in a solid wood frame with anti-reflective glaze. It'll look exactly this good in 100 years.
               </p>
-              <button onClick={scrollToForm} className="text-surface-foreground text-body underline underline-offset-4 hover:opacity-70 transition-opacity">
+              <button onClick={scrollToForm} className="link-a5 font-body text-surface-foreground">
                 Generate my free artwork
               </button>
             </div>
@@ -566,7 +566,7 @@ export default function LandingPage() {
                   <button
                     type="button"
                     onClick={() => setShowTimeModal(false)}
-                    className="text-a5 text-foreground underline underline-offset-4 hover:opacity-80 transition-opacity py-4"
+                    className="link-a5 font-body text-foreground py-4"
                   >
                     Back
                   </button>
