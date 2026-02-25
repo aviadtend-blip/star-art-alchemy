@@ -292,3 +292,14 @@
 .date-no-icon::-webkit-inner-spin-button {
   display: none;
 }
+
+/* Show placeholder text on empty date inputs (iOS/mobile) */
+.date-no-icon[data-empty="true"] {
+  color: transparent;
+}
+.date-no-icon[data-empty="true"]::before {
+  content: attr(placeholder);
+  color: #B1B1B1;
+  position: absolute;
+  pointer-events: none;
+}

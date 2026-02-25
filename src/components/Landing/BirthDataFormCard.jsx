@@ -181,15 +181,19 @@ export default function BirthDataFormCard({
       <div className="grid grid-cols-2 gap-6">
         <div>
           <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
-          <input
-            type="date"
-            required
-            value={dateValue}
-            onChange={handleDateChange}
-            max="2026-12-31"
-            min="1900-01-01"
-            className={`${INPUT_CLASS} date-no-icon`}
-          />
+          <div className="relative">
+            <input
+              type="date"
+              required
+              value={dateValue}
+              onChange={handleDateChange}
+              max="2026-12-31"
+              min="1900-01-01"
+              placeholder="MM/DD/YYYY"
+              data-empty={!dateValue ? "true" : undefined}
+              className={`${INPUT_CLASS} date-no-icon`}
+            />
+          </div>
         </div>
         <div ref={wrapperRef} className="relative">
           <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH LOCATION</label>
