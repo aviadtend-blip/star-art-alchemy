@@ -27,7 +27,7 @@ const GeneratorFlowJsx = () => {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const autoSubmitted = useRef(false);
 
-  // Auto-submit if query params are present from landing page
+  // Auto-submit if query params are present from landing page, otherwise redirect home
   useEffect(() => {
     if (autoSubmitted.current) return;
     const month = searchParams.get("month");
@@ -47,6 +47,8 @@ const GeneratorFlowJsx = () => {
         nation: searchParams.get("nation") || "US",
       };
       handleFormSubmit(data);
+    } else {
+      navigate("/");
     }
   }, [searchParams]);
 
