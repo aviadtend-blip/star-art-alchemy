@@ -5,7 +5,6 @@ import Footer from '@/components/Layout/Footer';
 import Header from '@/components/Layout/Header';
 import PopularTag from '@/components/ui/PopularTag';
 import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
-import MockupWithArtwork from '@/components/Purchase/MockupWithArtwork';
 import useCompositedMockups from '@/hooks/useCompositedMockups';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import canvasDetail from '@/assets/gallery/canvas-detail.jpg';
@@ -63,15 +62,19 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const mockups = MOCKUPS[selectedSize] || MOCKUPS['16x24'];
   const compositedThumbs = useCompositedMockups(mockups, artworkImage);
 
-  // Preload all mockup images across all sizes on mount
-  useEffect(() => {
-    const allMockups = Object.values(MOCKUPS).flat();
-    allMockups.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, []);
+  // Pre-composite all sizes
+  const composited12x18 = useCompositedMockups(MOCKUPS['12x18'], artworkImage);
+  const composited16x24 = useCompositedMockups(MOCKUPS['16x24'], artworkImage);
+  const composited20x30 = useCompositedMockups(MOCKUPS['20x30'], artworkImage);
 
+  const allComposited = useMemo(() => ({
+    '12x18': composited12x18,
+    '16x24': composited16x24,
+    '20x30': composited20x30,
+  }), [composited12x18, composited16x24, composited20x30]);
+
+  const compositedImages = allComposited[selectedSize] || [];
+  const displayImages = compositedImages.length ? compositedImages : mockups;
   // --- Drag carousel state ---
   const carouselRef = useRef(null);
   const dragState = useRef({ startX: 0, startY: 0, isDragging: false, offsetX: 0, startTime: 0 });
@@ -208,11 +211,10 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
               willChange: 'transform',
             }}
           >
-            {mockups.map((src, i) => (
+            {displayImages.map((src, i) => (
               <div key={i} className="w-full flex-shrink-0">
-                <MockupWithArtwork
-                  mockupSrc={src}
-                  artworkSrc={artworkImage}
+                <img
+                  src={src}
                   alt={`Canvas mockup ${i + 1}`}
                   className="w-full object-contain select-none pointer-events-none"
                   style={{ userSelect: 'none', WebkitUserDrag: 'none' }}
@@ -222,7 +224,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           </div>
           <div className="absolute bottom-3 left-0 right-0 flex justify-center px-4">
             <ThumbnailStrip
-              images={compositedThumbs.length ? compositedThumbs : mockups}
+              images={displayImages}
               activeIndex={activeThumb}
               onSelect={handleThumbSelect}
               size={30}
