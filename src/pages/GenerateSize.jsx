@@ -11,11 +11,11 @@ export default function GenerateSize() {
     isCheckingOut,
   } = useGenerator();
 
-  useEffect(() => {
-    if (!chartData || !generatedImage) navigate('/');
-  }, [chartData, generatedImage, navigate]);
+  // useEffect(() => {
+  //   if (!chartData || !generatedImage) navigate('/');
+  // }, [chartData, generatedImage, navigate]);
 
-  if (!chartData || !generatedImage) return null;
+  // if (!chartData || !generatedImage) return null;
 
   return (
     <>
