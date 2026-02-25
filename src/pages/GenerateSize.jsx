@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import { ProductCustomization } from '@/components/Purchase/ProductCustomization';
@@ -11,11 +11,11 @@ export default function GenerateSize() {
     isCheckingOut,
   } = useGenerator();
 
-  // useEffect(() => {
-  //   if (!chartData || !generatedImage) navigate('/');
-  // }, [chartData, generatedImage, navigate]);
+  useEffect(() => {
+    if (!chartData) navigate('/');
+  }, [chartData, navigate]);
 
-  // if (!chartData || !generatedImage) return null;
+  if (!chartData) return null;
 
   return (
     <>

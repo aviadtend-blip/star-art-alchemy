@@ -105,7 +105,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
 
     if (!data.month || month < 1 || month > 12) errs.month = "1–12";
     if (!data.day || day < 1 || day > 31) errs.day = "1–31";
-    if (!data.year || year < 1900 || year > 2025) errs.year = "1900–2025";
+    if (!data.year || year < 1900 || year > new Date().getFullYear()) errs.year = `1900–${new Date().getFullYear()}`;
     if (data.hour === "" || hour < 0 || hour > 23) errs.hour = "0–23";
     if (data.minute === "" || minute < 0 || minute > 59) errs.minute = "0–59";
     if (!data.city.trim()) errs.city = "Required";
@@ -203,7 +203,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
                   setErrors(validate({ ...formData, year: y, month: String(Number(m)), day: String(Number(d)) }));
                 }
               }}
-              max="2025-12-31"
+              max={`${new Date().getFullYear()}-12-31`}
               min="1900-01-01"
               className={inputClass("month")}
             />
@@ -216,7 +216,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
             {[
               { field: "month", placeholder: "MM", min: 1, max: 12 },
               { field: "day", placeholder: "DD", min: 1, max: 31 },
-              { field: "year", placeholder: "YYYY", min: 1900, max: 2025 },
+              { field: "year", placeholder: "YYYY", min: 1900, max: new Date().getFullYear() },
             ].map(({ field, placeholder, min, max }) => (
               <div key={field}>
                 <input
