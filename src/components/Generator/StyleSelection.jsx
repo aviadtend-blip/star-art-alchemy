@@ -109,22 +109,24 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
             return (
               <div
                 key={style.id}
-                className="snap-center shrink-0 w-[75vw] sm:w-[60vw] md:w-auto flex flex-col"
+                className="snap-center shrink-0 flex flex-col"
+                style={{ width: '304px' }}
               >
                 <button
                   onClick={() => setSelected(style.id)}
                   className={`
-                    relative text-left rounded-lg overflow-hidden transition-all duration-200 group cursor-pointer border-2
+                    relative text-left overflow-hidden transition-all duration-200 group cursor-pointer border-2
                     ${isSelected
                       ? 'border-primary shadow-lg shadow-primary/15 ring-1 ring-primary/30'
                       : 'border-transparent hover:border-surface-muted/30'
                     }
                     bg-white
                   `}
+                  style={{ borderRadius: '2px' }}
                 >
                   {/* Badge */}
                   {style.popular && (
-                    <span className="absolute bottom-[72px] left-1/2 -translate-x-1/2 z-10 text-subtitle bg-primary text-primary-foreground px-3 py-0.5 rounded-sm tracking-wide whitespace-nowrap">
+                    <span className="absolute z-10 text-subtitle bg-primary text-primary-foreground px-3 py-0.5 tracking-wide whitespace-nowrap" style={{ bottom: '10px', left: '50%', transform: 'translateX(-50%)', borderRadius: '2px' }}>
                       Most popular
                     </span>
                   )}
@@ -132,13 +134,14 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
                   {/* Magnifying glass */}
                   <div
                     onClick={(e) => openLightbox(style.id, e)}
-                    className="absolute bottom-[72px] right-3 z-10 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-white transition-colors"
+                    className="absolute z-10 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-white transition-colors"
+                    style={{ bottom: '10px', right: '9px' }}
                   >
                     <Search className="w-4 h-4 text-surface-foreground" />
                   </div>
 
                   {/* Image */}
-                  <div className="aspect-[3/4] overflow-hidden">
+                  <div style={{ width: '100%', height: '323px' }} className="overflow-hidden">
                     <img
                       src={STYLE_IMAGES[style.id]}
                       alt={style.name}
