@@ -353,7 +353,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
       <button
         type="submit"
         disabled={hasErrors}
-        className="w-full bg-primary text-primary-foreground py-4 rounded-lg font-display text-lg tracking-wider uppercase hover:bg-primary/90 transition-colors disabled:opacity-30 disabled:cursor-not-allowed border-glow"
+        className="btn-base btn-primary w-full"
       >
         Generate My Birth Chart Artwork
       </button>
