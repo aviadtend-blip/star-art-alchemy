@@ -100,6 +100,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
     }, 300);
   }, [activeThumb, slideDir]);
 
+  useEffect(() => {
     const carousel = sizeCarouselRef.current;
     if (!carousel || window.innerWidth >= 768) return;
 
