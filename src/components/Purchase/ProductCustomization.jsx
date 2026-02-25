@@ -60,7 +60,6 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const sizeData = SIZE_OPTIONS.find(s => s.id === selectedSize);
   const total = sizeData?.price || 119;
   const mockups = MOCKUPS[selectedSize] || MOCKUPS['16x24'];
-  const compositedThumbs = useCompositedMockups(mockups, artworkImage);
 
   // Pre-composite all sizes
   const composited12x18 = useCompositedMockups(MOCKUPS['12x18'], artworkImage);
@@ -75,75 +74,102 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   const compositedImages = allComposited[selectedSize] || [];
   const displayImages = compositedImages.length ? compositedImages : mockups;
+
+  // Reset thumb when size changes
+  const handleSizeChange = useCallback((sizeId) => {
+    setSelectedSize(sizeId);
+    setActiveThumb(0);
+    setDragOffset(0);
+    setIsTransitioning(false);
+  }, []);
+
   // --- Drag carousel state ---
   const carouselRef = useRef(null);
-  const dragState = useRef({ startX: 0, startY: 0, isDragging: false, offsetX: 0, startTime: 0 });
+  const dragState = useRef({ startX: 0, isDragging: false, offsetX: 0, startTime: 0, locked: null });
   const [dragOffset, setDragOffset] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const containerWidth = useRef(0);
   useEffect(() => {
-    const el = carouselRef.current;
-    if (el) containerWidth.current = el.offsetWidth;
-    const onResize = () => { if (el) containerWidth.current = el.offsetWidth; };
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    const measure = () => {
+      const el = carouselRef.current;
+      if (el) containerWidth.current = el.offsetWidth;
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
   }, []);
 
   const goTo = useCallback((index) => {
-    const clamped = Math.max(0, Math.min(mockups.length - 1, index));
-    setIsTransitioning(true);
+    const len = MOCKUPS[selectedSize]?.length || mockups.length;
+    const clamped = Math.max(0, Math.min(len - 1, index));
     setDragOffset(0);
+    setIsTransitioning(true);
     setActiveThumb(clamped);
-    setTimeout(() => setIsTransitioning(false), 300);
-  }, [mockups.length]);
+    const tid = setTimeout(() => setIsTransitioning(false), 320);
+    return () => clearTimeout(tid);
+  }, [selectedSize, mockups.length]);
 
   const handlePointerDown = useCallback((e) => {
     if (isTransitioning) return;
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    dragState.current = { startX: clientX, startY: clientY, isDragging: true, offsetX: 0, startTime: Date.now() };
+    dragState.current = { startX: clientX, startY: clientY, isDragging: true, offsetX: 0, startTime: Date.now(), locked: null };
   }, [isTransitioning]);
 
   const handlePointerMove = useCallback((e) => {
-    if (!dragState.current.isDragging) return;
+    const ds = dragState.current;
+    if (!ds.isDragging) return;
+
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    let dx = clientX - dragState.current.startX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    const dx = clientX - ds.startX;
+    const dy = clientY - ds.startY;
+
+    // Lock direction on first significant move
+    if (ds.locked === null && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+      ds.locked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+    }
+    if (ds.locked === 'y') return; // let browser handle vertical scroll
+    if (ds.locked === 'x' && e.cancelable) e.preventDefault();
 
     // Rubberband at edges
     const atStart = activeThumb === 0 && dx > 0;
-    const atEnd = activeThumb === mockups.length - 1 && dx < 0;
-    if (atStart || atEnd) {
-      dx = dx * 0.3; // elastic resistance
-    }
+    const atEnd = activeThumb === displayImages.length - 1 && dx < 0;
+    const finalDx = (atStart || atEnd) ? dx * 0.3 : dx;
 
-    dragState.current.offsetX = dx;
-    setDragOffset(dx);
-  }, [activeThumb, mockups.length]);
+    ds.offsetX = finalDx;
+    setDragOffset(finalDx);
+  }, [activeThumb, displayImages.length]);
 
   const handlePointerUp = useCallback(() => {
-    if (!dragState.current.isDragging) return;
-    dragState.current.isDragging = false;
-    const dx = dragState.current.offsetX;
-    const dt = Date.now() - dragState.current.startTime;
+    const ds = dragState.current;
+    if (!ds.isDragging) return;
+    ds.isDragging = false;
+
+    if (ds.locked !== 'x') {
+      setDragOffset(0);
+      return;
+    }
+
+    const dx = ds.offsetX;
+    const dt = Date.now() - ds.startTime;
     const velocity = Math.abs(dx) / Math.max(dt, 1);
     const w = containerWidth.current || 300;
-    const threshold = w * 0.2;
 
-    if (Math.abs(dx) > threshold || velocity > 0.5) {
+    if (Math.abs(dx) > w * 0.15 || velocity > 0.4) {
       goTo(activeThumb + (dx < 0 ? 1 : -1));
     } else {
-      // Snap back
       setIsTransitioning(true);
       setDragOffset(0);
-      setTimeout(() => setIsTransitioning(false), 300);
+      setTimeout(() => setIsTransitioning(false), 320);
     }
   }, [activeThumb, goTo]);
 
   const handleThumbSelect = useCallback((index) => {
-    if (index === activeThumb || isTransitioning) return;
+    if (index === activeThumb) return;
     goTo(index);
-  }, [activeThumb, isTransitioning, goTo]);
+  }, [activeThumb, goTo]);
 
   useEffect(() => {
     const carousel = sizeCarouselRef.current;
@@ -194,7 +220,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
         <div
           ref={carouselRef}
           className="relative overflow-hidden"
-          style={{ backgroundColor: '#F5F5F5', touchAction: 'pan-y' }}
+          style={{ backgroundColor: '#F5F5F5', touchAction: 'pan-y pinch-zoom' }}
           onTouchStart={handlePointerDown}
           onTouchMove={handlePointerMove}
           onTouchEnd={handlePointerUp}
@@ -276,7 +302,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const SizeCard = ({ size, vertical = false }) => (
     <button
       data-size-card={size.id}
-      onClick={() => { setSelectedSize(size.id); setActiveThumb(0); }}
+      onClick={() => handleSizeChange(size.id)}
       className="relative flex-shrink-0 transition-all"
       style={{
         display: 'flex',
