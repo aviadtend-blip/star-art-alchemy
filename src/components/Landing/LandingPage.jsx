@@ -104,6 +104,12 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
 
+      {import.meta.env.DEV && (
+        <button onClick={fillTestData} className="fixed bottom-4 right-4 z-50 bg-card text-foreground px-4 py-2 rounded-full text-body shadow-lg hover:bg-card/80 transition opacity-70 hover:opacity-100 border border-border">
+          🧪 Fill Test Data
+        </button>
+      )}
+
       {/* NAVIGATION */}
       <Header />
 
