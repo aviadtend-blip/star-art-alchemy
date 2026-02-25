@@ -191,14 +191,13 @@ export default function LandingPage() {
       <section className="md:hidden relative overflow-hidden">
         <div className="absolute inset-0">
           <img src={heroMobileTall} alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         </div>
         <div className="relative z-10 flex flex-col justify-end px-4 pt-[45vh] pb-10">
-          <h1 className="text-a1 text-foreground mb-3">
+          <h1 className="text-a1 text-foreground text-center mb-3">
             Turn Your Birth<br />
             Into Gallery-Worthy Art
           </h1>
-          <p className="text-body text-muted-foreground mb-8">
+          <p className="text-body text-muted-foreground text-center mb-8">
             Every element in your artwork corresponds to a specific astrological placement.
           </p>
 
