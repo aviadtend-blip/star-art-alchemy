@@ -101,7 +101,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
         </div>
 
         {/* Style cards — horizontal scroll on mobile */}
-        <div className="flex gap-5 md:gap-6 mb-10 overflow-x-auto snap-x snap-mandatory pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-3 md:overflow-visible scrollbar-hide">
+        <div className="flex mb-10 overflow-x-auto snap-x snap-mandatory pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-3 md:overflow-visible scrollbar-hide" style={{ gap: '10px' }}>
           {ART_STYLES.map((style) => {
             const isSelected = selected === style.id;
             const labels = STYLE_LABELS[style.id];
@@ -109,8 +109,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
             return (
               <div
                 key={style.id}
-                className="snap-center shrink-0 flex flex-col"
-                style={{ width: '304px' }}
+                className="snap-center shrink-0 flex flex-col w-[290px] md:w-[304px]"
               >
                 <button
                   onClick={() => setSelected(style.id)}
@@ -135,13 +134,13 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
                   <div
                     onClick={(e) => openLightbox(style.id, e)}
                     className="absolute z-10 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-white transition-colors"
-                    style={{ bottom: '10px', right: '9px' }}
+                    style={{ bottom: '10px', right: '10px' }}
                   >
                     <Search className="w-4 h-4 text-surface-foreground" />
                   </div>
 
                   {/* Image */}
-                  <div style={{ width: '100%', height: '323px' }} className="overflow-hidden">
+                  <div className="w-full h-[306px] md:h-[323px] overflow-hidden">
                     <img
                       src={STYLE_IMAGES[style.id]}
                       alt={style.name}
@@ -152,8 +151,8 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
 
                 {/* Label below card */}
                 <div className="text-center pt-3 pb-1">
-                  <h3 className="text-a5 text-surface-foreground tracking-wider uppercase">{labels.title}</h3>
-                  <p className="text-body text-surface-muted">{labels.sub}</p>
+                  <h3 className="text-a5 text-surface-foreground tracking-wider uppercase font-display">{labels.title}</h3>
+                  <p className="text-body text-surface-muted font-body">{labels.sub}</p>
                 </div>
               </div>
             );
