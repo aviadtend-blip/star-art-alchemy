@@ -140,7 +140,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
                   </div>
 
                   {/* Image */}
-                  <div className="w-full h-[306px] md:h-[323px] overflow-hidden">
+                  <div className="w-full h-[348px] md:h-[323px] overflow-hidden">
                     <img
                       src={STYLE_IMAGES[style.id]}
                       alt={style.name}
