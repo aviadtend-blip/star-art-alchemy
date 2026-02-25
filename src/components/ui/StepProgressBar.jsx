@@ -8,55 +8,48 @@ const STEPS = [
 ];
 
 /**
- * Persistent 4-step progress bar.
+ * Persistent 4-step progress bar matching Figma design.
+ * Dark background, text labels with pink accent on active step + pink bar above.
  * @param {{ currentStep: number }} props – 1-based step (1–4)
  */
 export default function StepProgressBar({ currentStep = 1 }) {
   return (
-    <div className="w-full max-w-2xl mx-auto py-6 px-4">
-      <div className="flex items-center justify-between">
-        {STEPS.map((step, i) => {
+    <div className="w-full" style={{ backgroundColor: '#1A1A1A' }}>
+      <div className="max-w-4xl mx-auto flex">
+        {STEPS.map((step) => {
           const isCompleted = step.number < currentStep;
           const isActive = step.number === currentStep;
-          const isLast = i === STEPS.length - 1;
 
           return (
-            <div key={step.number} className="flex items-center flex-1 last:flex-none">
-              {/* Step circle + label */}
-              <div className="flex flex-col items-center">
-                <div
-                  className={`
-                    w-9 h-9 rounded-full flex items-center justify-center text-a5 transition-all
-                    ${isCompleted
-                      ? 'bg-primary text-primary-foreground'
-                      : isActive
-                        ? 'bg-primary text-primary-foreground shadow-[0_0_12px_hsl(45_80%_65%/0.4)]'
-                        : 'bg-secondary text-muted-foreground border border-border'
-                    }
-                  `}
-                >
-                  {isCompleted ? <Check className="w-4 h-4" /> : step.number}
-                </div>
-                <span
-                  className={`
-                    mt-2 text-subtitle tracking-wide whitespace-nowrap
-                    ${isActive ? 'text-primary' : isCompleted ? 'text-foreground' : 'text-muted-foreground'}
-                  `}
-                >
-                  {step.label}
-                </span>
-              </div>
+            <div
+              key={step.number}
+              className="flex-1 flex flex-col items-center relative"
+            >
+              {/* Pink accent bar above active step */}
+              <div
+                className="w-full h-[3px]"
+                style={{
+                  backgroundColor: isActive ? 'hsl(var(--primary))' : 'transparent',
+                }}
+              />
 
-              {/* Connector line */}
-              {!isLast && (
-                <div className="flex-1 mx-3 mt-[-1.25rem]">
-                  <div
-                    className={`h-px transition-colors ${
-                      step.number < currentStep ? 'bg-primary' : 'bg-border'
-                    }`}
-                  />
-                </div>
-              )}
+              {/* Label row */}
+              <div className="flex items-center gap-1.5 py-3">
+                <span
+                  className={`text-body-sm font-body tracking-wide whitespace-nowrap ${
+                    isActive
+                      ? 'text-primary'
+                      : isCompleted
+                        ? 'text-white/60'
+                        : 'text-white/30'
+                  }`}
+                >
+                  {step.number}. {step.label}
+                </span>
+                {isCompleted && (
+                  <Check className="w-3.5 h-3.5 text-white/60" />
+                )}
+              </div>
             </div>
           );
         })}
