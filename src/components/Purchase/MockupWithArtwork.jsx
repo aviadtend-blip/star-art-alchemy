@@ -121,8 +121,8 @@ export default function MockupWithArtwork({ mockupSrc, artworkSrc, alt = '', cla
         if (artworkImg._objectUrl) URL.revokeObjectURL(artworkImg._objectUrl);
       } catch (err) {
         if (import.meta.env.DEV) console.warn('MockupWithArtwork composite failed:', err);
-        // Fallback to raw mockup
-        if (!cancelled) setCompositeSrc(mockupSrc);
+        // Fallback: show plain artwork (not the green-screen mockup)
+        if (!cancelled) setCompositeSrc(artworkSrc || mockupSrc);
       }
     })();
 
