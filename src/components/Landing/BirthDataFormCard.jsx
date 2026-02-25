@@ -33,6 +33,7 @@ export default function BirthDataFormCard({
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const debounceRef = useRef(null);
   const wrapperRef = useRef(null);
+  const skipAutocompleteRef = useRef(false);
 
   // Sync cityQuery if formData.birthCity changes externally (e.g. test fill)
   useEffect(() => {
@@ -46,12 +47,13 @@ export default function BirthDataFormCard({
     const handleClick = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) setShowSuggestions(false);
     };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener("pointerdown", handleClick);
+    return () => document.removeEventListener("pointerdown", handleClick);
   }, []);
 
   // Fetch autocomplete suggestions
   useEffect(() => {
+    if (skipAutocompleteRef.current) { skipAutocompleteRef.current = false; return; }
     if (cityQuery.length < 2) { setSuggestions([]); return; }
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(async () => {
@@ -66,6 +68,7 @@ export default function BirthDataFormCard({
 
   const handleSelectCity = async (prediction) => {
     setShowSuggestions(false);
+    skipAutocompleteRef.current = true;
     setCityQuery(prediction.description);
     setLoadingSuggestions(true);
     try {
@@ -213,7 +216,7 @@ export default function BirthDataFormCard({
           {showSuggestions && suggestions.length > 0 && (
             <ul className="absolute z-50 w-full mt-1 bg-card border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
               {suggestions.map((s) => (
-                <li key={s.place_id} onClick={() => handleSelectCity(s)} className="px-4 py-3 text-body text-foreground hover:bg-primary/10 cursor-pointer transition-colors">
+                <li key={s.place_id} onPointerDown={(e) => { e.preventDefault(); handleSelectCity(s); }} className="px-4 py-3 text-body text-foreground hover:bg-primary/10 cursor-pointer transition-colors">
                   {s.description}
                 </li>
               ))}
