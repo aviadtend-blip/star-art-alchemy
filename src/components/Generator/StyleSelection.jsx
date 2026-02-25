@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from '@/hooks/use-toast';
 import { Search, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ART_STYLES } from '@/config/artStyles';
 import StepProgressBar from '@/components/ui/StepProgressBar';
@@ -169,9 +170,14 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
         <div className="text-center space-y-4 mt-6">
           <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4">
             <button
-              onClick={handleContinue}
-              disabled={!selected}
-              className="btn-base btn-primary"
+              onClick={() => {
+                if (!selected) {
+                  toast({ title: 'Please select a style first', description: 'Tap one of the artwork styles above to continue.', variant: 'destructive' });
+                  return;
+                }
+                handleContinue();
+              }}
+              className={`btn-base ${selected ? 'btn-primary' : 'btn-primary opacity-50'}`}
             >
               Select Style
             </button>
