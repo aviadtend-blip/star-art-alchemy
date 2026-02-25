@@ -17,10 +17,12 @@ export async function generateImage(prompt, options = {}) {
   const aspectRatio = options.aspectRatio || '3:4';
   const version = options.version || null;
 
-  console.log('🎨 Starting image generation...');
-  console.log('Prompt length:', prompt.length);
-  console.log('Version override:', version ? 'yes' : 'using default');
-  console.log('Prompt preview:', prompt.substring(0, 100) + '...');
+  if (import.meta.env.DEV) {
+    console.log('🎨 Starting image generation...');
+    console.log('Prompt length:', prompt.length);
+    console.log('Version override:', version ? 'yes' : 'using default');
+    console.log('Prompt preview:', prompt.substring(0, 100) + '...');
+  }
 
   const body = { prompt, aspectRatio };
   if (version) body.version = version;
@@ -41,17 +43,19 @@ export async function generateImage(prompt, options = {}) {
   }
 
   const result = await response.json();
-  console.log('📋 Generation result status:', result.status);
+  if (import.meta.env.DEV) console.log('📋 Generation result status:', result.status);
 
   if (result.status === 'succeeded' && result.imageUrl) {
-    console.log('✅ Image generated successfully!');
-    console.log('Image URL:', result.imageUrl);
+    if (import.meta.env.DEV) {
+      console.log('✅ Image generated successfully!');
+      console.log('Image URL:', result.imageUrl);
+    }
     return result.imageUrl;
   }
 
   // If the edge function returned a predictionId (not yet complete), poll for it
   if (result.predictionId) {
-    console.log('⏳ Prediction in progress, polling...', result.predictionId);
+    if (import.meta.env.DEV) console.log('⏳ Prediction in progress, polling...', result.predictionId);
     return pollPrediction(result.predictionId);
   }
 
@@ -64,10 +68,13 @@ export async function generateImage(prompt, options = {}) {
  * @returns {Promise<string>} The generated image URL
  */
 async function pollPrediction(predictionId) {
-  const maxAttempts = 90; // 3 minutes max (2 second intervals)
+  const maxAttempts = 120; // ~3 minutes with exponential backoff
   let attempts = 0;
 
   while (attempts < maxAttempts) {
+    const delay = Math.min(1000 * Math.pow(1.5, attempts), 5000);
+    await new Promise(resolve => setTimeout(resolve, delay));
+
     const response = await fetch(FUNCTION_URL, {
       method: 'POST',
       headers: {
@@ -82,11 +89,13 @@ async function pollPrediction(predictionId) {
     }
 
     const result = await response.json();
-    console.log(`⏳ Prediction status: ${result.status} (attempt ${attempts + 1}/${maxAttempts})`);
+    if (import.meta.env.DEV) console.log(`⏳ Prediction status: ${result.status} (attempt ${attempts + 1}, delay ${Math.round(delay)}ms)`);
 
     if (result.status === 'succeeded' && result.imageUrl) {
-      console.log('✅ Image generated successfully!');
-      console.log('Image URL:', result.imageUrl);
+      if (import.meta.env.DEV) {
+        console.log('✅ Image generated successfully!');
+        console.log('Image URL:', result.imageUrl);
+      }
       return result.imageUrl;
     }
 
@@ -99,7 +108,6 @@ async function pollPrediction(predictionId) {
       throw new Error('Image generation was canceled');
     }
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
     attempts++;
   }
 

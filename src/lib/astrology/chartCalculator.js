@@ -28,7 +28,7 @@ export async function calculateNatalChart(birthData) {
       ...(birthData.lat != null && birthData.lng != null ? { lat: birthData.lat, lng: birthData.lng } : {}),
     };
 
-    console.log("[chartCalculator] Calling natal chart API with:", payload);
+    if (import.meta.env.DEV) console.log("[chartCalculator] Calling natal chart API with:", payload);
 
     // Race the API call against a 30-second timeout
     const controller = new AbortController();
@@ -64,7 +64,7 @@ export async function calculateNatalChart(birthData) {
       throw new Error("We received an incomplete chart. Please try again.");
     }
 
-    console.log("[chartCalculator] Chart received:", data);
+    if (import.meta.env.DEV) console.log("[chartCalculator] Chart received:", data);
     return data;
   } catch (error) {
     console.error("[chartCalculator] Failed to calculate natal chart:", error);

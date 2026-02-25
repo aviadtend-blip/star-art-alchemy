@@ -38,11 +38,13 @@ Aesthetic: ${risingVisuals.overallEnergy}
 SPATIAL ARRANGEMENT:
 ${getSpatialArrangement(chartData.sun.sign, chartData.moon.sign, chartData.rising)}`;
 
-  console.log('🎨 Built concrete visual prompt for:', {
-    sun: chartData.sun.sign,
-    moon: chartData.moon.sign,
-    rising: chartData.rising
-  });
+  if (import.meta.env.DEV) {
+    console.log('🎨 Built concrete visual prompt for:', {
+      sun: chartData.sun.sign,
+      moon: chartData.moon.sign,
+      rising: chartData.rising
+    });
+  }
 
   return prompt;
 }
