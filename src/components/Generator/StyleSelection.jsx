@@ -92,11 +92,11 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
 
       {/* Main content */}
       <div className="flex-1 max-w-5xl mx-auto w-full px-4 py-10 md:py-14">
-        <div className="text-center mb-10">
+        <div className="text-center mb-10 max-w-[230px] mx-auto" style={{ paddingTop: 60, paddingBottom: 60 }}>
           <h2 className="font-display text-a2 md:text-[40px] text-surface-foreground tracking-tight mb-3" style={{ fontWeight: 400 }}>
             Choose your artistic expression
           </h2>
-          <p className="text-body font-body text-surface-muted max-w-md mx-auto">
+          <p className="text-body font-body text-surface-muted">
             Each style reveals your cosmic blueprint differently. Pick the one that resonates.
           </p>
         </div>
