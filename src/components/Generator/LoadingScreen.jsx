@@ -51,7 +51,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
   useEffect(() => {
     const interval = setInterval(() => {
       setHeadlineIndex((prev) => (prev < HEADLINES.length - 1 ? prev + 1 : prev));
-    }, 5000);
+    }, 3000);
     return () => clearInterval(interval);
   }, [HEADLINES.length]);
 
