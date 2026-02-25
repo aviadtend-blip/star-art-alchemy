@@ -38,15 +38,15 @@ export default function StepProgressBar({ currentStep = 1 }) {
               {/* Label */}
               <div className="flex items-center gap-1.5 whitespace-nowrap">
                 <span
-                  className="text-body-sm font-body tracking-wide"
+                  className="text-a5 font-body tracking-wide"
                   style={{
-                    color: isActive ? '#FE6781' : isCompleted ? '#FFFFFF' : '#B0B0B0',
+                    color: isActive ? '#FE6781' : '#B0B0B0',
                   }}
                 >
                   {step.number}. {step.label}
                 </span>
                 {isCompleted && (
-                  <Check className="w-3.5 h-3.5" style={{ color: '#FFFFFF' }} />
+                  <Check className="w-3.5 h-3.5" style={{ color: '#B0B0B0' }} />
                 )}
               </div>
             </div>
