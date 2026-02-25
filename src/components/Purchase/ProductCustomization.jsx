@@ -164,7 +164,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   const scrollToOrder = () => {
     const el = document.getElementById('order-summary-mobile') || document.getElementById('order-summary-desktop');
-    el?.scrollIntoView({ behavior: 'smooth' });
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
   const handleCheckout = () => {
@@ -305,7 +305,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const OrderSummary = () => (
     <div
       className="relative overflow-hidden"
-      style={{ borderRadius: '2px', padding: '20px 20px 44px 20px' }}
+      style={{ borderRadius: '2px', padding: '20px 20px 32px 20px' }}
     >
       <img src={galaxyBg} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
       <div className="absolute inset-0 bg-black/40" />
