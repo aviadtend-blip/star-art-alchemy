@@ -4,6 +4,7 @@ import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
 import Header from '@/components/Layout/Header';
 import PopularTag from '@/components/ui/PopularTag';
+import galaxyBg from '@/assets/galaxy-bg.jpg';
 
 // 12x18 mockups
 import mockup12x18_1 from '@/assets/mockups/12x18/mockup-1.png';
@@ -157,62 +158,73 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
         </p>
       </div>
 
-      {/* Order Summary — dark card */}
+      {/* Order Summary — galaxy background card */}
       <div className="px-4 pb-8">
-        <div className="rounded-2xl p-6 space-y-4" style={{ backgroundColor: '#1A1A2E' }}>
-          <h3 className="text-a4" style={{ color: '#FFFFFF' }}>Your Selection</h3>
+        <div
+          className="relative overflow-hidden p-[14px]"
+          style={{ borderRadius: '2px' }}
+        >
+          {/* Galaxy background */}
+          <img src={galaxyBg} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
+          <div className="absolute inset-0 bg-black/30" />
 
-          <div className="space-y-2 text-body-sm">
-            <div className="flex justify-between" style={{ color: '#CCCCCC' }}>
-              <span>Birth Chart Artwork — {chartData?.sun?.sign || 'Gemini'} Sun</span>
-              <span>Included</span>
-            </div>
-            <div className="flex justify-between" style={{ color: '#CCCCCC' }}>
-              <span>{sizeData?.label} Canvas</span>
-              <span>${total}</span>
-            </div>
-          </div>
+          {/* Content */}
+          <div className="relative z-10 space-y-4">
+            <h3 className="text-body-strong" style={{ color: '#FFFFFF' }}>Your Selection</h3>
 
-          <div className="pt-3 space-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-            <div className="flex justify-between text-body-sm" style={{ color: '#CCCCCC' }}>
-              <span>Subtotal</span>
-              <span>${total}</span>
-            </div>
-            <div className="flex justify-between text-body-sm" style={{ color: '#CCCCCC' }}>
-              <span>Shipping</span>
-              <span>Free shipping unlocked</span>
-            </div>
-            <div className="flex justify-between items-center pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-              <span className="text-a4" style={{ color: '#FFFFFF' }}>TOTAL</span>
-              <span className="text-a2" style={{ color: '#FFFFFF' }}>${total}</span>
-            </div>
-          </div>
-
-          <button
-            onClick={handleCheckout}
-            className="btn-base btn-primary w-full justify-center"
-            style={{ borderRadius: '40px', height: '52px', fontSize: '14px' }}
-          >
-            Continue to Secure Checkout — ${total}
-          </button>
-
-          <div className="space-y-3 pt-2">
-            <div className="flex items-start gap-3">
-              <span style={{ fontSize: '18px' }}>🔄</span>
-              <div>
-                <p className="text-body-sm font-semibold" style={{ color: '#FFFFFF' }}>30-day money-back guarantee</p>
-                <p className="text-body-sm" style={{ color: '#999999', fontSize: '12px' }}>Love it or your money back. No questions asked.</p>
+            <div className="space-y-4 text-body-sm">
+              <div className="flex justify-between" style={{ color: '#CCCCCC' }}>
+                <span>Birth Chart Artwork — {chartData?.sun?.sign || 'Gemini'} Sun</span>
+                <span>Included</span>
+              </div>
+              <div className="flex justify-between" style={{ color: '#CCCCCC' }}>
+                <span>{sizeData?.label} Canvas</span>
+                <span>${total}</span>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <span style={{ fontSize: '18px' }}>📦</span>
-              <div>
-                <p className="text-body-sm font-semibold" style={{ color: '#FFFFFF' }}>Ships in 2-3 business days</p>
-                <p className="text-body-sm" style={{ color: '#999999', fontSize: '12px' }}>Order by 5pm EST for same-day processing.</p>
+
+            <div className="pt-4 space-y-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+              <div className="flex justify-between text-body-sm" style={{ color: '#CCCCCC' }}>
+                <span>Subtotal</span>
+                <span>${total}</span>
+              </div>
+              <div className="flex justify-between text-body-sm" style={{ color: '#CCCCCC' }}>
+                <span>Shipping</span>
+                <span>Free shipping unlocked</span>
+              </div>
+              <div className="flex justify-between items-center pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                <span className="text-a4" style={{ color: '#FFFFFF' }}>TOTAL</span>
+                <span className="font-body" style={{ color: '#FFFFFF', fontSize: '26px', fontWeight: 500 }}>${total}</span>
+              </div>
+            </div>
+
+            <button
+              onClick={handleCheckout}
+              className="btn-base btn-primary w-full justify-center"
+              style={{ borderRadius: '40px', height: '52px', fontSize: '14px' }}
+            >
+              Continue to Secure Checkout — ${total}
+            </button>
+
+            <div className="space-y-4 pt-2">
+              <div className="flex items-start gap-3">
+                <span style={{ fontSize: '18px' }}>🔄</span>
+                <div>
+                  <p className="text-a4" style={{ color: '#FFFFFF' }}>30-day money-back guarantee.</p>
+                  <p className="text-body-sm" style={{ color: '#999999' }}>Love it or your money back. No questions asked.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <span style={{ fontSize: '18px' }}>📦</span>
+                <div>
+                  <p className="text-a4" style={{ color: '#FFFFFF' }}>Ships in 2-3 business days</p>
+                  <p className="text-body-sm" style={{ color: '#999999' }}>Order by 5pm EST for same-day processing.</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       <Footer />
