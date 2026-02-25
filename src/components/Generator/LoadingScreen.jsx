@@ -29,6 +29,17 @@ const ELEMENT_DESCRIPTIONS = {
  */
 export default function LoadingScreen({ chartData, selectedStyle, generationProgress }) {
   const [factIndex, setFactIndex] = useState(0);
+  const [headlineIndex, setHeadlineIndex] = useState(0);
+
+  const sunSign = chartData?.sun?.sign || 'your';
+
+  const HEADLINES = [
+    'Calculating planetary positions...',
+    `Interpreting your ${sunSign} sun...`,
+    'Balancing elemental colors...',
+    'Finalizing cosmic geometry...',
+    'Almost ready!',
+  ];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -36,6 +47,13 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
     }, 4000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHeadlineIndex((prev) => (prev < HEADLINES.length - 1 ? prev + 1 : prev));
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [HEADLINES.length]);
 
   const elements = chartData?.element_balance || {};
   const sortedElements = Object.entries(elements).sort(([, a], [, b]) => b - a);
@@ -62,8 +80,8 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
       {/* Main content */}
       <div className="flex-1 flex flex-col items-center px-6 py-12 max-w-lg mx-auto w-full">
         {/* Headline */}
-        <h2 className="text-a2 text-surface-foreground font-display text-center mb-2">
-          Calculating planetary positions...
+        <h2 className="text-a2 text-surface-foreground font-display text-center mb-2 transition-opacity duration-500">
+          {HEADLINES[headlineIndex]}
         </h2>
         <p className="text-body-sm font-body text-surface-muted mb-12">
           Typical generation time: 30-45 seconds
