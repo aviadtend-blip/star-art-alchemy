@@ -108,7 +108,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
       <h2 className="text-a4" style={{ color: '#333333', marginBottom: '8px' }}>
         🖼️ Choose Your Size
       </h2>
-      <div className={`${vertical ? 'flex flex-col gap-3' : 'flex gap-3 overflow-x-auto scrollbar-hide pb-2 pt-3 px-0'}`}>
+      <div className={`${vertical ? 'flex flex-col gap-3 pt-3' : 'flex gap-3 overflow-x-auto scrollbar-hide pb-2 pt-4 px-0'}`}>
         {SIZE_OPTIONS.map((size) => (
           <button
             key={size.id}
