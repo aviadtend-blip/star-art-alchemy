@@ -303,3 +303,12 @@
   position: absolute;
   pointer-events: none;
 }
+
+/* Hanging frame swing animation */
+@keyframes frame-swing {
+  0% { transform: rotate(-20deg) scale(0.8); opacity: 0; }
+  40% { transform: rotate(8deg) scale(1.02); opacity: 1; }
+  60% { transform: rotate(-4deg) scale(1); }
+  80% { transform: rotate(2deg); }
+  100% { transform: rotate(0deg); }
+}

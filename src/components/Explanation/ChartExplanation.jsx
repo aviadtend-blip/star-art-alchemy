@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { generateChartExplanation } from '@/lib/explanations/generateExplanation';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
@@ -40,6 +40,52 @@ const TESTIMONIALS = [
     name: 'MICHAEL T, VERIFIED BUYER',
   },
 ];
+
+function HangingFrameIcon() {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.5 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className="flex justify-center mb-4">
+      <svg
+        width="48"
+        height="56"
+        viewBox="0 0 48 56"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{
+          transformOrigin: '24px 0px',
+          animation: visible ? 'frame-swing 1.2s ease-out forwards' : 'none',
+          opacity: visible ? 1 : 0,
+        }}
+      >
+        {/* Nail */}
+        <circle cx="24" cy="3" r="2.5" fill="#FFBF00" />
+        {/* String */}
+        <path d="M24 5.5 L14 18 M24 5.5 L34 18" stroke="white" strokeWidth="1" strokeLinecap="round" opacity="0.5" />
+        {/* Frame */}
+        <rect x="8" y="18" width="32" height="34" rx="2" stroke="white" strokeWidth="1.5" fill="none" opacity="0.7" />
+        {/* Inner frame */}
+        <rect x="12" y="22" width="24" height="26" rx="1" stroke="white" strokeWidth="0.75" fill="none" opacity="0.35" />
+        {/* Mountain scene inside */}
+        <path d="M14 42 L20 32 L24 36 L30 28 L34 42 Z" fill="white" opacity="0.15" />
+        {/* Sun */}
+        <circle cx="30" cy="28" r="2.5" fill="#FFBF00" opacity="0.4" />
+      </svg>
+    </div>
+  );
+}
 
 export function ChartExplanation({
   chartData,
@@ -158,6 +204,7 @@ export function ChartExplanation({
           className="mt-12 py-12 px-6 text-center bg-cover bg-center"
           style={{ backgroundImage: `url(${galaxyBg})`, backgroundColor: '#121212' }}
         >
+          <HangingFrameIcon />
           <div className="max-w-md mx-auto space-y-4">
             <h2 className="text-a1 text-white font-display">
               Frame it. Hang it.{'\n'}Treasure it forever
