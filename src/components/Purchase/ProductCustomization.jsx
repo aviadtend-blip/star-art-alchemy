@@ -225,7 +225,6 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           </div>
         </div>
       </div>
-      </div>
 
       <Footer />
     </div>
