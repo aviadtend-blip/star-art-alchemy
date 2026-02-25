@@ -269,11 +269,11 @@ export function ChartExplanation({
           </p>
 
           {/* Horizontal scroll cards */}
-          <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 -mx-6 px-6">
+          <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 -mx-6 px-6 snap-x snap-mandatory">
             {TESTIMONIALS.map((t, i) => (
               <div
                 key={i}
-                className="flex-shrink-0 w-[200px]"
+                className="flex-shrink-0 w-[200px] snap-center"
                 style={{ borderRadius: '2px', overflow: 'hidden' }}
               >
                 <img
