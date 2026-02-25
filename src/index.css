@@ -191,6 +191,21 @@
   }
 }
 
+/* Link style: A5 underscored */
+.link-a5 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 113%;
+  letter-spacing: -0.26px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s;
+}
+.link-a5:hover {
+  opacity: 0.7;
+}
+
 /* Hide scrollbar utility */
 .scrollbar-hide {
   -ms-overflow-style: none;
