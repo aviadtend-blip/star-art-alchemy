@@ -129,7 +129,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
               className={`relative flex-shrink-0 transition-all`}
               style={{
                 display: 'flex',
-                width: '168px',
+                width: '180px',
                 height: '74px',
                 padding: '15px',
                 justifyContent: 'space-between',
@@ -140,7 +140,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
               }}
             >
               {size.popular && (
-                <div className="absolute -top-2.5 left-1/2 -translate-x-1/2">
+                <div className="absolute -top-2.5 right-0">
                   <PopularTag>Most popular</PopularTag>
                 </div>
               )}
