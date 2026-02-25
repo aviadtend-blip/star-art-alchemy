@@ -115,13 +115,13 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
       </div>
 
       {/* Choose frame Size — white background */}
-      <div className="px-4 pt-6 pb-4">
-        <h2 className="text-a4" style={{ color: '#333333', marginBottom: '8px' }}>
+      <div className="pt-6 pb-4">
+        <h2 className="text-a4 px-4" style={{ color: '#333333', marginBottom: '8px' }}>
           🖼️ Choose frame Size
         </h2>
 
         {/* Horizontal scrollable size cards */}
-        <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 pt-3 pr-4">
+        <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 pt-3 px-4">
           {SIZE_OPTIONS.map((size) => (
             <button
               key={size.id}
@@ -153,7 +153,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           ))}
         </div>
 
-        <p className="text-body-sm" style={{ color: '#888888', marginTop: '4px' }}>
+        <p className="text-body-sm px-4" style={{ color: '#888888', marginTop: '4px' }}>
           💡 Not sure? We recommend 18"×24" for most spaces
         </p>
       </div>
