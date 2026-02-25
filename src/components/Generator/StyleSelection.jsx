@@ -95,13 +95,13 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
           <h2 className="font-display text-a2 md:text-[40px] text-surface-foreground tracking-tight mb-3" style={{ fontWeight: 400 }}>
             Choose your artistic expression
           </h2>
-          <p className="text-body text-surface-muted max-w-md mx-auto">
+          <p className="text-body font-body text-surface-muted max-w-md mx-auto">
             Each style reveals your cosmic blueprint differently. Pick the one that resonates.
           </p>
         </div>
 
         {/* Style cards — horizontal scroll on mobile */}
-        <div className="flex mb-10 overflow-x-auto snap-x snap-mandatory pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-3 md:overflow-visible scrollbar-hide" style={{ gap: '10px' }}>
+        <div className="flex gap-[10px] md:gap-4 mb-10 overflow-x-auto snap-x snap-mandatory pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-3 md:overflow-visible scrollbar-hide">
           {ART_STYLES.map((style) => {
             const isSelected = selected === style.id;
             const labels = STYLE_LABELS[style.id];
@@ -164,7 +164,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <button
               onClick={handleSurpriseMe}
-              className="px-10 py-3 rounded-full text-a5 bg-surface-foreground text-white hover:opacity-90 shadow-md transition-all"
+              className="px-10 py-3 rounded-full text-a5 font-display bg-surface-foreground text-white hover:opacity-90 shadow-md transition-all"
             >
               Surprise me
             </button>
@@ -182,9 +182,9 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
               Select Style
             </button>
           </div>
-          <p className="text-body text-surface-muted">Can't decide? Let us choose the best style based on your chart</p>
+          <p className="text-body font-body text-surface-muted">Can't decide? Let us choose the best style based on your chart</p>
           <div className="inline-flex items-center justify-center gap-2.5 mt-2" style={{ padding: '8px', borderRadius: '2px', backgroundColor: '#FFF5DD' }}>
-            <p className="text-body" style={{ color: '#C99700' }}>💡 You'll see your preview before committing.</p>
+            <p className="text-body font-body" style={{ color: '#C99700' }}>💡 You'll see your preview before committing.</p>
           </div>
         </div>
       </div>
