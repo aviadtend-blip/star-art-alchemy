@@ -405,7 +405,6 @@ export default function LandingPage() {
               WebkitBackdropFilter: 'blur(17px)',
               padding: 48,
               minWidth: 320,
-              minHeight: 380,
             }}
           >
             <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} gap={30} />
