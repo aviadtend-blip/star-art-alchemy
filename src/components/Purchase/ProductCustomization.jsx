@@ -68,6 +68,148 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
     });
   };
 
+  /* Shared sub-components */
+  const ArtworkPanel = ({ className = '' }) => (
+    <div className={className}>
+      <div className="relative" style={{ backgroundColor: '#F5F5F5' }}>
+        <div className="w-full">
+          <img
+            src={mockups[activeThumb]}
+            alt={`Canvas mockup ${activeThumb + 1}`}
+            className="w-full object-contain"
+            loading={activeThumb === 0 ? 'eager' : 'lazy'}
+          />
+        </div>
+        <div className="absolute bottom-3 left-0 right-0 flex gap-1.5 px-4 justify-center">
+          {mockups.map((src, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveThumb(i)}
+              className={`flex-shrink-0 overflow-hidden transition-all ${
+                activeThumb === i ? 'ring-1 ring-[#FFBF00]' : ''
+              }`}
+              style={{ width: 30, height: 30, borderRadius: '0px', opacity: 1 }}
+            >
+              <img src={src} alt={`Thumbnail ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Reviews — desktop only */}
+      <div className="hidden md:flex items-center justify-center gap-1.5 mt-4">
+        <div className="flex">
+          {[1,2,3,4,5].map(s => (
+            <span key={s} style={{ color: '#FFBF00', fontSize: '16px' }}>★</span>
+          ))}
+        </div>
+        <span className="text-body-sm" style={{ color: '#333333' }}>4.9/5</span>
+        <span className="text-body-sm" style={{ color: '#888888' }}>287 reviews</span>
+      </div>
+    </div>
+  );
+
+  const SizeSelector = ({ vertical = false }) => (
+    <div>
+      <h2 className="text-a4" style={{ color: '#333333', marginBottom: '8px' }}>
+        🖼️ Choose Your Size
+      </h2>
+      <div className={`${vertical ? 'flex flex-col gap-3' : 'flex gap-3 overflow-x-auto scrollbar-hide pb-2 pt-3 px-0'}`}>
+        {SIZE_OPTIONS.map((size) => (
+          <button
+            key={size.id}
+            onClick={() => { setSelectedSize(size.id); setActiveThumb(0); }}
+            className="relative flex-shrink-0 transition-all"
+            style={{
+              display: 'flex',
+              width: vertical ? '100%' : '180px',
+              height: '74px',
+              padding: '15px',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              borderRadius: '4px',
+              border: selectedSize === size.id ? '2px solid #333333' : '1px solid #E0E0E0',
+              backgroundColor: '#FFFFFF',
+            }}
+          >
+            {size.popular && (
+              <div className="absolute" style={{ top: '-12px', right: '-4px' }}>
+                <PopularTag>Most popular</PopularTag>
+              </div>
+            )}
+            <div className="text-left">
+              <p className="text-a4" style={{ color: '#333333' }}>{size.label}</p>
+              <p className="text-body-sm" style={{ color: '#888888', marginTop: '4px' }}>{size.description}</p>
+            </div>
+            <p className="text-a4 font-bold flex-shrink-0" style={{ color: '#333333', marginLeft: '16px' }}>${size.price}</p>
+          </button>
+        ))}
+      </div>
+      <p className="text-body-sm" style={{ color: '#888888', marginTop: '4px' }}>
+        💡 Not sure? We recommend 16"×24" for most spaces
+      </p>
+    </div>
+  );
+
+  const OrderSummary = () => (
+    <div
+      className="relative overflow-hidden p-5"
+      style={{ borderRadius: '2px' }}
+    >
+      <img src={galaxyBg} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
+      <div className="absolute inset-0 bg-black/40" />
+      <div className="relative z-10 space-y-4">
+        <h3 className="text-a2" style={{ color: '#FFFFFF' }}>Your Order</h3>
+        <div className="space-y-4 text-body-sm">
+          <div className="flex justify-between" style={{ color: '#CCCCCC' }}>
+            <span>Birth Chart Artwork — {chartData?.sun?.sign || 'Gemini'} Sun</span>
+            <span>Included</span>
+          </div>
+          <div className="flex justify-between" style={{ color: '#CCCCCC' }}>
+            <span>{sizeData?.label} Canvas</span>
+            <span>${total}</span>
+          </div>
+        </div>
+        <div className="pt-4 space-y-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+          <div className="flex justify-between text-body-sm" style={{ color: '#CCCCCC' }}>
+            <span>Subtotal</span>
+            <span>${total}</span>
+          </div>
+          <div className="flex justify-between text-body-sm" style={{ color: '#CCCCCC' }}>
+            <span>Shipping</span>
+            <span>Free shipping unlocked</span>
+          </div>
+          <div className="flex justify-between items-center pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+            <span className="text-a4" style={{ color: '#FFFFFF' }}>TOTAL</span>
+            <span className="font-body" style={{ color: '#FFFFFF', fontSize: '26px', fontWeight: 500 }}>${total}</span>
+          </div>
+        </div>
+        <button
+          onClick={handleCheckout}
+          className="btn-base btn-primary w-full justify-center"
+          style={{ borderRadius: '40px', height: '52px', fontSize: '14px' }}
+        >
+          Continue to Secure Checkout — ${total}
+        </button>
+        <div className="space-y-4 pt-2">
+          <div className="flex items-start gap-3">
+            <span style={{ fontSize: '18px' }}>🔄</span>
+            <div>
+              <p className="text-a4" style={{ color: '#FFFFFF' }}>30-day money-back guarantee.</p>
+              <p className="text-body-sm" style={{ color: '#999999', marginTop: '4px' }}>Love it or your money back. No questions asked.</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <span style={{ fontSize: '18px' }}>📦</span>
+            <div>
+              <p className="text-a4" style={{ color: '#FFFFFF' }}>Ships in 2-3 business days</p>
+              <p className="text-body-sm" style={{ color: '#999999', marginTop: '4px' }}>Order by 5pm EST for same-day processing.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen relative" style={{ backgroundColor: '#FFFFFF' }}>
       <div style={{ backgroundColor: '#121212' }}>
@@ -78,149 +220,32 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
       </div>
       <BirthDataBar formData={formData} onEdit={onEditBirthData} />
 
-      {/* Hero mockup area — light background */}
-      <div className="relative" style={{ backgroundColor: '#F5F5F5' }}>
-        {/* Main mockup image — full width */}
-        <div className="w-full">
-          <img
-            src={mockups[activeThumb]}
-            alt={`Canvas mockup ${activeThumb + 1}`}
-            className="w-full object-contain"
-            loading={activeThumb === 0 ? 'eager' : 'lazy'}
-          />
+      {/* Mobile layout */}
+      <div className="md:hidden">
+        <ArtworkPanel />
+
+        <div className="pt-6 pb-4 px-4">
+          <SizeSelector />
         </div>
 
-        {/* Thumbnail strip — overlaid on bottom of image */}
-        <div className="absolute bottom-3 left-0 right-0 flex gap-1.5 px-4 justify-center">
-          {mockups.map((src, i) => (
-            <button
-              key={i}
-              onClick={() => setActiveThumb(i)}
-              className={`flex-shrink-0 overflow-hidden transition-all ${
-                activeThumb === i
-                  ? 'ring-1 ring-[#FFBF00]'
-                  : ''
-              }`}
-              style={{ width: 30, height: 30, borderRadius: '0px', opacity: 1 }}
-            >
-              <img
-                src={src}
-                alt={`Thumbnail ${i + 1}`}
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
-            </button>
-          ))}
+        <div className="px-4" style={{ paddingBottom: '32px', marginTop: '35px' }}>
+          <OrderSummary />
         </div>
       </div>
 
-      {/* Choose frame Size — white background */}
-      <div className="pt-6 pb-4">
-        <h2 className="text-a4 px-4" style={{ color: '#333333', marginBottom: '8px' }}>
-          🖼️ Choose frame Size
-        </h2>
-
-        {/* Horizontal scrollable size cards */}
-        <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 pt-3 px-4">
-          {SIZE_OPTIONS.map((size) => (
-            <button
-              key={size.id}
-              onClick={() => { setSelectedSize(size.id); setActiveThumb(0); }}
-              className={`relative flex-shrink-0 transition-all`}
-              style={{
-                display: 'flex',
-                width: '180px',
-                height: '74px',
-                padding: '15px',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                borderRadius: '4px',
-                border: selectedSize === size.id ? '2px solid #333333' : '1px solid #E0E0E0',
-                backgroundColor: '#FFFFFF',
-              }}
-            >
-              {size.popular && (
-                <div className="absolute" style={{ top: '-12px', right: '-4px' }}>
-                  <PopularTag>Most popular</PopularTag>
-                </div>
-              )}
-              <div className="text-left">
-                <p className="text-a4" style={{ color: '#333333' }}>{size.label}</p>
-                <p className="text-body-sm" style={{ color: '#888888', marginTop: '4px' }}>{size.description}</p>
-              </div>
-              <p className="text-a4 font-bold flex-shrink-0" style={{ color: '#333333', marginLeft: '16px' }}>${size.price}</p>
-            </button>
-          ))}
-        </div>
-
-        <p className="text-body-sm px-4" style={{ color: '#888888', marginTop: '4px' }}>
-          💡 Not sure? We recommend 18"×24" for most spaces
-        </p>
-      </div>
-
-      {/* Order Summary — galaxy background card */}
-      <div className="px-4" style={{ marginTop: '35px', paddingBottom: '32px' }}>
-        <div
-          className="relative overflow-hidden p-5"
-          style={{ borderRadius: '2px' }}
-        >
-          {/* Galaxy background */}
-          <img src={galaxyBg} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
-          <div className="absolute inset-0 bg-black/40" />
-
-          {/* Content */}
-          <div className="relative z-10 space-y-4">
-            <h3 className="text-a2" style={{ color: '#FFFFFF' }}>Your Order</h3>
-
-            <div className="space-y-4 text-body-sm">
-              <div className="flex justify-between" style={{ color: '#CCCCCC' }}>
-                <span>Birth Chart Artwork — {chartData?.sun?.sign || 'Gemini'} Sun</span>
-                <span>Included</span>
-              </div>
-              <div className="flex justify-between" style={{ color: '#CCCCCC' }}>
-                <span>{sizeData?.label} Canvas</span>
-                <span>${total}</span>
-              </div>
+      {/* Desktop layout — two columns */}
+      <div className="hidden md:block">
+        <div className="max-w-5xl mx-auto px-8 py-12">
+          <div className="flex gap-12">
+            {/* Left — artwork */}
+            <div className="w-1/2 flex-shrink-0">
+              <ArtworkPanel />
             </div>
 
-            <div className="pt-4 space-y-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-              <div className="flex justify-between text-body-sm" style={{ color: '#CCCCCC' }}>
-                <span>Subtotal</span>
-                <span>${total}</span>
-              </div>
-              <div className="flex justify-between text-body-sm" style={{ color: '#CCCCCC' }}>
-                <span>Shipping</span>
-                <span>Free shipping unlocked</span>
-              </div>
-              <div className="flex justify-between items-center pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                <span className="text-a4" style={{ color: '#FFFFFF' }}>TOTAL</span>
-                <span className="font-body" style={{ color: '#FFFFFF', fontSize: '26px', fontWeight: 500 }}>${total}</span>
-              </div>
-            </div>
-
-            <button
-              onClick={handleCheckout}
-              className="btn-base btn-primary w-full justify-center"
-              style={{ borderRadius: '40px', height: '52px', fontSize: '14px' }}
-            >
-              Continue to Secure Checkout — ${total}
-            </button>
-
-            <div className="space-y-4 pt-2">
-              <div className="flex items-start gap-3">
-                <span style={{ fontSize: '18px' }}>🔄</span>
-                <div>
-                  <p className="text-a4" style={{ color: '#FFFFFF' }}>30-day money-back guarantee.</p>
-                  <p className="text-body-sm" style={{ color: '#999999', marginTop: '4px' }}>Love it or your money back. No questions asked.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span style={{ fontSize: '18px' }}>📦</span>
-                <div>
-                  <p className="text-a4" style={{ color: '#FFFFFF' }}>Ships in 2-3 business days</p>
-                  <p className="text-body-sm" style={{ color: '#999999', marginTop: '4px' }}>Order by 5pm EST for same-day processing.</p>
-                </div>
-              </div>
+            {/* Right — size + order */}
+            <div className="flex-1 space-y-8">
+              <SizeSelector vertical />
+              <OrderSummary />
             </div>
           </div>
         </div>
