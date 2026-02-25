@@ -159,9 +159,9 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
         {/* Rotating Fun Facts */}
         <div
           className="w-full py-4 px-5 text-center"
-          style={{ backgroundColor: '#FFF5DD', borderRadius: '2px' }}
+          style={{ backgroundColor: '#DAEEFF', borderRadius: '2px' }}
         >
-          <p className="text-body-sm font-body" style={{ color: '#C99700' }}>
+          <p className="text-body-sm font-body" style={{ color: '#333333' }}>
             {FUN_FACTS[factIndex].startsWith('Fun fact') ? '💡 ' : ''}{FUN_FACTS[factIndex]}
           </p>
         </div>
