@@ -97,7 +97,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
 
       {/* Progress bar */}
       <div style={{ borderBottom: '1px solid #2A2A2A' }}>
-        <StepProgressBar currentStep={2} />
+        <StepProgressBar currentStep={1} />
       </div>
 
       {/* Main content */}
