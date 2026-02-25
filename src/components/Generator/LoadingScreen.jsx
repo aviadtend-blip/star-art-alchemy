@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import StepProgressBar from '@/components/ui/StepProgressBar';
 import Footer from '@/components/Layout/Footer';
 
 const FUN_FACTS = [
@@ -72,10 +71,6 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
         </button>
       </nav>
 
-      {/* Progress bar */}
-      <div style={{ borderBottom: '1px solid #2A2A2A' }}>
-        <StepProgressBar currentStep={2} />
-      </div>
 
       {/* Main content */}
       <div className="flex-1 flex flex-col items-center px-6 py-12 max-w-lg mx-auto w-full">
