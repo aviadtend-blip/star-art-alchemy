@@ -1,6 +1,17 @@
 import { useState } from 'react';
 import ProgressBar from '@/components/ui/ProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
+import Footer from '@/components/Layout/Footer';
+
+// 16x24 mockups
+import mockup16x24_1 from '@/assets/mockups/16x24/mockup-1.png';
+import mockup16x24_2 from '@/assets/mockups/16x24/mockup-2.png';
+import mockup16x24_3 from '@/assets/mockups/16x24/mockup-3.png';
+import mockup16x24_4 from '@/assets/mockups/16x24/mockup-4.png';
+import mockup16x24_5 from '@/assets/mockups/16x24/mockup-5.png';
+import mockup16x24_6 from '@/assets/mockups/16x24/mockup-6.png';
+import mockup16x24_7 from '@/assets/mockups/16x24/mockup-7.png';
+import mockup16x24_8 from '@/assets/mockups/16x24/mockup-8.png';
 
 const SIZE_OPTIONS = [
   { id: '12x18', label: '12" × 18"', description: 'Perfect for combinations', price: 79 },
@@ -8,11 +19,20 @@ const SIZE_OPTIONS = [
   { id: '20x30', label: '20" × 30"', description: 'Gallery showpiece', price: 179 },
 ];
 
+// Mockup images per size (for now only 16x24 has real mockups)
+const MOCKUPS = {
+  '12x18': [mockup16x24_1, mockup16x24_2, mockup16x24_3, mockup16x24_4, mockup16x24_5, mockup16x24_6, mockup16x24_7, mockup16x24_8],
+  '16x24': [mockup16x24_1, mockup16x24_2, mockup16x24_3, mockup16x24_4, mockup16x24_5, mockup16x24_6, mockup16x24_7, mockup16x24_8],
+  '20x30': [mockup16x24_1, mockup16x24_2, mockup16x24_3, mockup16x24_4, mockup16x24_5, mockup16x24_6, mockup16x24_7, mockup16x24_8],
+};
+
 export function ProductCustomization({ chartData, artworkImage, onCheckout, onBack, formData, onEditBirthData }) {
   const [selectedSize, setSelectedSize] = useState('16x24');
+  const [activeThumb, setActiveThumb] = useState(0);
 
   const sizeData = SIZE_OPTIONS.find(s => s.id === selectedSize);
   const total = sizeData?.price || 119;
+  const mockups = MOCKUPS[selectedSize] || MOCKUPS['16x24'];
 
   const handleCheckout = () => {
     onCheckout({
@@ -28,120 +48,147 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   };
 
   return (
-    <div className="min-h-screen bg-cosmic">
+    <div className="min-h-screen" style={{ backgroundColor: '#FFFFFF' }}>
       <ProgressBar currentStep={4} />
       <BirthDataBar formData={formData} onEdit={onEditBirthData} />
 
-      <div className="py-8 px-4">
-        <div className="max-w-6xl mx-auto">
-          <button onClick={onBack} className="text-body-sm text-muted-foreground hover:text-primary transition-colors mb-6 tracking-wide">
-            ← Back to artwork
+      {/* Hero mockup area — dark background */}
+      <div style={{ backgroundColor: '#1A1A1A' }} className="pb-2">
+        {/* Main mockup image */}
+        <div className="flex items-center justify-center px-4 pt-6 pb-4">
+          <img
+            src={mockups[activeThumb]}
+            alt={`Canvas mockup ${activeThumb + 1}`}
+            className="max-h-[420px] w-auto object-contain rounded"
+            loading={activeThumb === 0 ? 'eager' : 'lazy'}
+          />
+        </div>
+
+        {/* Thumbnail strip */}
+        <div className="flex gap-2 px-4 pb-4 overflow-x-auto scrollbar-hide">
+          {mockups.map((src, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveThumb(i)}
+              className={`flex-shrink-0 rounded overflow-hidden transition-all ${
+                activeThumb === i
+                  ? 'ring-2 ring-white opacity-100'
+                  : 'opacity-50 hover:opacity-75'
+              }`}
+            >
+              <img
+                src={src}
+                alt={`Thumbnail ${i + 1}`}
+                className="w-12 h-12 object-cover"
+                loading="lazy"
+              />
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Choose frame Size — white background */}
+      <div className="px-4 pt-6 pb-4">
+        <h2 className="text-a4 mb-4" style={{ color: '#333333' }}>
+          🖼️ Choose frame Size
+        </h2>
+
+        {/* Horizontal scrollable size cards */}
+        <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+          {SIZE_OPTIONS.map((size) => (
+            <button
+              key={size.id}
+              onClick={() => { setSelectedSize(size.id); setActiveThumb(0); }}
+              className={`relative flex-shrink-0 rounded-lg border p-4 text-left transition-all ${
+                selectedSize === size.id
+                  ? 'border-2'
+                  : 'border hover:border-gray-400'
+              }`}
+              style={{
+                minWidth: '140px',
+                borderColor: selectedSize === size.id ? '#333333' : '#E0E0E0',
+                backgroundColor: '#FFFFFF',
+              }}
+            >
+              {size.popular && (
+                <span
+                  className="absolute -top-2 right-2 text-subtitle px-2 py-0.5 rounded-full"
+                  style={{ backgroundColor: '#FE6781', color: '#FFFFFF', fontSize: '10px' }}
+                >
+                  Most popular
+                </span>
+              )}
+              <p className="text-a4" style={{ color: '#333333' }}>{size.label}</p>
+              <p className="text-body-sm mt-1" style={{ color: '#888888', fontSize: '12px' }}>{size.description}</p>
+              <p className="text-a4 mt-2" style={{ color: '#333333' }}>${size.price}</p>
+            </button>
+          ))}
+        </div>
+
+        <p className="text-body-sm mt-3" style={{ color: '#888888' }}>
+          💡 Not sure? We recommend 18"×24" for most spaces
+        </p>
+      </div>
+
+      {/* Order Summary — dark card */}
+      <div className="px-4 pb-8">
+        <div className="rounded-2xl p-6 space-y-4" style={{ backgroundColor: '#1A1A2E' }}>
+          <h3 className="text-a4" style={{ color: '#FFFFFF' }}>Your Selection</h3>
+
+          <div className="space-y-2 text-body-sm">
+            <div className="flex justify-between" style={{ color: '#CCCCCC' }}>
+              <span>Birth Chart Artwork — {chartData?.sun?.sign || 'Gemini'} Sun</span>
+              <span>Included</span>
+            </div>
+            <div className="flex justify-between" style={{ color: '#CCCCCC' }}>
+              <span>{sizeData?.label} Canvas</span>
+              <span>${total}</span>
+            </div>
+          </div>
+
+          <div className="pt-3 space-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+            <div className="flex justify-between text-body-sm" style={{ color: '#CCCCCC' }}>
+              <span>Subtotal</span>
+              <span>${total}</span>
+            </div>
+            <div className="flex justify-between text-body-sm" style={{ color: '#CCCCCC' }}>
+              <span>Shipping</span>
+              <span>Free shipping unlocked</span>
+            </div>
+            <div className="flex justify-between items-center pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+              <span className="text-a4" style={{ color: '#FFFFFF' }}>TOTAL</span>
+              <span className="text-a2" style={{ color: '#FFFFFF' }}>${total}</span>
+            </div>
+          </div>
+
+          <button
+            onClick={handleCheckout}
+            className="btn-base btn-primary w-full justify-center"
+            style={{ borderRadius: '40px', height: '52px', fontSize: '14px' }}
+          >
+            Continue to Secure Checkout — ${total}
           </button>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            {/* LEFT: Sticky Preview */}
-            <div className="lg:sticky lg:top-8 lg:self-start">
-              <div className="bg-card border border-border rounded-xl p-6 space-y-6">
-                <div className="rounded-lg overflow-hidden">
-                  <img src={artworkImage} alt="Your natal chart artwork" className="w-full h-auto" />
-                </div>
-                <div className="text-center space-y-1">
-                  <span className="text-a1 text-primary text-glow">${total}</span>
-                  <p className="text-body-sm text-muted-foreground">Free shipping • 30-day guarantee</p>
-                </div>
-                <div className="text-center space-y-1">
-                  <div className="flex items-center justify-center gap-1">
-                    <span className="text-primary">⭐⭐⭐⭐⭐</span>
-                    <span className="text-body-sm text-foreground">4.9/5</span>
-                  </div>
-                  <p className="text-body-sm text-muted-foreground">287 reviews</p>
-                </div>
+          <div className="space-y-3 pt-2">
+            <div className="flex items-start gap-3">
+              <span style={{ fontSize: '18px' }}>🔄</span>
+              <div>
+                <p className="text-body-sm font-semibold" style={{ color: '#FFFFFF' }}>30-day money-back guarantee</p>
+                <p className="text-body-sm" style={{ color: '#999999', fontSize: '12px' }}>Love it or your money back. No questions asked.</p>
               </div>
             </div>
-
-            {/* RIGHT: Size Selection */}
-            <div className="space-y-8">
-              <h2 className="text-a2 text-foreground tracking-wide">Choose Your Canvas Size</h2>
-
-              <div className="space-y-4">
-                <div className="space-y-3">
-                  {SIZE_OPTIONS.map((size) => (
-                    <label
-                      key={size.id}
-                      className={`relative block cursor-pointer rounded-lg border p-4 transition-all ${
-                        selectedSize === size.id
-                          ? 'border-primary bg-primary/5 border-glow'
-                          : 'border-border bg-card hover:border-muted-foreground'
-                      }`}
-                    >
-                      {size.popular && (
-                        <span className="absolute -top-2 right-3 text-subtitle bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
-                          Most popular
-                        </span>
-                      )}
-                      <input type="radio" name="size" value={size.id} checked={selectedSize === size.id} onChange={() => setSelectedSize(size.id)} className="sr-only" />
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-4 h-4 rounded-full border-2 ${selectedSize === size.id ? 'border-primary bg-primary' : 'border-muted-foreground'}`} />
-                          <div>
-                            <p className="text-body-sm text-foreground">{size.label}</p>
-                            <p className="text-body-sm text-muted-foreground">{size.description}</p>
-                          </div>
-                        </div>
-                        <span className="text-a4 text-foreground">${size.price}</span>
-                      </div>
-                    </label>
-                  ))}
-                </div>
-                <p className="text-body-sm text-muted-foreground">💡 Not sure? We recommend 16"×24" for most spaces</p>
-              </div>
-
-              {/* ORDER SUMMARY */}
-              <div className="bg-card border border-border rounded-xl p-6 space-y-4">
-                <h3 className="text-a4 text-foreground">Your Selection</h3>
-
-                <div className="space-y-2 text-body-sm">
-                  <div className="flex justify-between text-muted-foreground">
-                    <span>Birth Chart Artwork — {chartData.sun.sign} Sun</span>
-                    <span>Included</span>
-                  </div>
-                  <div className="flex justify-between text-muted-foreground">
-                    <span>{sizeData?.label} Canvas</span>
-                    <span>${total}</span>
-                  </div>
-                </div>
-
-                <div className="border-t border-border pt-3 space-y-2">
-                  <div className="flex justify-between text-body-sm text-muted-foreground">
-                    <span>Subtotal</span>
-                    <span>${total}</span>
-                  </div>
-                  <div className="flex justify-between text-body-sm text-primary">
-                    <span>🎉 Free shipping unlocked</span>
-                    <span>$0</span>
-                  </div>
-                  <div className="flex justify-between items-center pt-2 border-t border-border">
-                    <span className="text-a4 text-foreground">TOTAL</span>
-                    <span className="text-a2 text-primary text-glow">${total}</span>
-                  </div>
-                </div>
-
-                <button
-                  onClick={handleCheckout}
-                  className="w-full bg-primary text-primary-foreground text-a4 py-4 rounded-lg hover:opacity-90 transition-opacity tracking-wide border-glow"
-                >
-                  Continue to Secure Checkout — ${total}
-                </button>
-
-                <div className="space-y-2 text-body-sm text-muted-foreground text-center">
-                  <p>↩️ 30-day money-back guarantee. Love it or your money back. No questions asked.</p>
-                  <p>🚀 Ships in 2-3 business days. Order by 5pm EST for same-day processing.</p>
-                </div>
+            <div className="flex items-start gap-3">
+              <span style={{ fontSize: '18px' }}>📦</span>
+              <div>
+                <p className="text-body-sm font-semibold" style={{ color: '#FFFFFF' }}>Ships in 2-3 business days</p>
+                <p className="text-body-sm" style={{ color: '#999999', fontSize: '12px' }}>Order by 5pm EST for same-day processing.</p>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 }
