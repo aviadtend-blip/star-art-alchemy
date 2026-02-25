@@ -159,7 +159,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
       </div>
 
       {/* Order Summary — galaxy background card */}
-      <div className="px-4 pb-8" style={{ marginTop: '35px' }}>
+      <div className="px-4" style={{ marginTop: '35px', paddingBottom: '32px' }}>
         <div
           className="relative overflow-hidden p-5"
           style={{ borderRadius: '2px' }}
@@ -170,7 +170,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
           {/* Content */}
           <div className="relative z-10 space-y-4">
-            <h3 className="text-body-strong" style={{ color: '#FFFFFF' }}>Your Selection</h3>
+            <h3 className="text-a2" style={{ color: '#FFFFFF' }}>Your Order</h3>
 
             <div className="space-y-4 text-body-sm">
               <div className="flex justify-between" style={{ color: '#CCCCCC' }}>
