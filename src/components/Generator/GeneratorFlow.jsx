@@ -161,6 +161,19 @@ const GeneratorFlowJsx = () => {
     );
   }
 
+  // Style selection is a full-page component
+  if (step === "style" && chartData) {
+    return (
+      <StyleSelection
+        onSelect={handleStyleSelect}
+        onBack={handleRetry}
+        chartData={chartData}
+        formData={formData}
+        onEditBirthData={handleEditBirthData}
+      />
+    );
+  }
+
   // Customization is also full-page
   if (step === "customizing" && chartData && generatedImage) {
     return (
@@ -229,17 +242,8 @@ const GeneratorFlowJsx = () => {
           </div>
         )}
 
-        {step === "style" && chartData && (
-          <div className="animate-fade-in">
-            <StyleSelection
-              onSelect={handleStyleSelect}
-              onBack={handleRetry}
-              chartData={chartData}
-              formData={formData}
-              onEditBirthData={handleEditBirthData}
-            />
-          </div>
-        )}
+
+
 
         {step === "explaining" && chartData && generatedImage && (
           <div className="animate-fade-in">
