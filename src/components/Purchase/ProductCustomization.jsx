@@ -139,7 +139,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
       ) : (
         <div className="pt-4 -mx-4">
           <div ref={sizeCarouselRef} className="overflow-x-auto scrollbar-hide">
-            <div className="flex w-max gap-3 pb-2 pl-4 pr-1">
+            <div className="flex w-max gap-3 pb-2 pl-4 pr-4">
               {SIZE_OPTIONS.map((size) => (
                 <SizeCard key={size.id} size={size} />
               ))}
