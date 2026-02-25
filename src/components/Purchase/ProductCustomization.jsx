@@ -70,34 +70,35 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
       <StepProgressBar currentStep={4} />
       <BirthDataBar formData={formData} onEdit={onEditBirthData} />
 
-      {/* Hero mockup area — dark background */}
-      <div style={{ backgroundColor: '#1A1A1A' }} className="pb-2">
-        {/* Main mockup image */}
-        <div className="flex items-center justify-center px-4 pt-6 pb-4">
+      {/* Hero mockup area — light background */}
+      <div style={{ backgroundColor: '#F5F5F5' }}>
+        {/* Main mockup image — full width */}
+        <div className="w-full">
           <img
             src={mockups[activeThumb]}
             alt={`Canvas mockup ${activeThumb + 1}`}
-            className="max-h-[420px] w-auto object-contain rounded"
+            className="w-full object-contain"
             loading={activeThumb === 0 ? 'eager' : 'lazy'}
           />
         </div>
 
-        {/* Thumbnail strip */}
-        <div className="flex gap-2 px-4 pb-4 overflow-x-auto scrollbar-hide">
+        {/* Thumbnail strip — overlapping bottom of image */}
+        <div className="flex gap-1.5 px-4 py-3 justify-center">
           {mockups.map((src, i) => (
             <button
               key={i}
               onClick={() => setActiveThumb(i)}
-              className={`flex-shrink-0 rounded overflow-hidden transition-all ${
+              className={`flex-shrink-0 rounded-sm overflow-hidden transition-all ${
                 activeThumb === i
-                  ? 'ring-2 ring-white opacity-100'
+                  ? 'ring-1 ring-[#FFBF00] opacity-100'
                   : 'opacity-50 hover:opacity-75'
               }`}
+              style={{ width: 30, height: 30 }}
             >
               <img
                 src={src}
                 alt={`Thumbnail ${i + 1}`}
-                className="w-12 h-12 object-cover"
+                className="w-full h-full object-cover"
                 loading="lazy"
               />
             </button>
