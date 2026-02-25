@@ -70,6 +70,15 @@ export function GeneratorProvider({ children }) {
       });
 
       setGeneratedImage(imageUrl);
+
+      // Preload image before navigating to prevent flash of empty content
+      await new Promise((resolve) => {
+        const img = new Image();
+        img.onload = resolve;
+        img.onerror = resolve;
+        img.src = imageUrl;
+      });
+
       navigate('/generate/preview');
     } catch (err) {
       console.error('❌ Generation error:', err);
