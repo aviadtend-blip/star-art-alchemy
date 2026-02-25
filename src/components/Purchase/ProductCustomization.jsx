@@ -228,7 +228,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           <SizeSelector />
         </div>
 
-        <div className="px-4" style={{ paddingBottom: '32px', marginTop: '35px' }}>
+        <div className="px-4" style={{ paddingBottom: '32px', marginTop: '23px' }}>
           <OrderSummary />
         </div>
       </div>
