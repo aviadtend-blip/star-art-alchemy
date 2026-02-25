@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const BirthDataFormJsx = ({ onSubmit }) => {
+  const isMobile = useIsMobile();
   const [formData, setFormData] = useState({
     name: "",
     month: "",
@@ -184,58 +186,102 @@ const BirthDataFormJsx = ({ onSubmit }) => {
         <label className="block text-sm font-medium text-muted-foreground mb-2 font-body uppercase tracking-wide">
           Birth Date
         </label>
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { field: "month", placeholder: "MM", min: 1, max: 12 },
-            { field: "day", placeholder: "DD", min: 1, max: 31 },
-            { field: "year", placeholder: "YYYY", min: 1900, max: 2025 },
-          ].map(({ field, placeholder, min, max }) => (
-            <div key={field}>
-              <input
-                type="number"
-                value={formData[field]}
-                onChange={(e) => handleChange(field, e.target.value)}
-                onBlur={() => handleBlur(field)}
-                placeholder={placeholder}
-                min={min}
-                max={max}
-                className={inputClass(field)}
-              />
-              {errors[field] && touched[field] && (
-                <p className="text-destructive text-xs mt-1">{errors[field]}</p>
-              )}
-            </div>
-          ))}
-        </div>
+        {isMobile ? (
+          <div>
+            <input
+              type="date"
+              value={
+                formData.year && formData.month && formData.day
+                  ? `${String(formData.year).padStart(4, '0')}-${String(formData.month).padStart(2, '0')}-${String(formData.day).padStart(2, '0')}`
+                  : ""
+              }
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val) {
+                  const [y, m, d] = val.split("-");
+                  setFormData((prev) => ({ ...prev, year: y, month: String(Number(m)), day: String(Number(d)) }));
+                  setErrors(validate({ ...formData, year: y, month: String(Number(m)), day: String(Number(d)) }));
+                }
+              }}
+              max="2025-12-31"
+              min="1900-01-01"
+              className={inputClass("month")}
+            />
+            {(errors.month || errors.day || errors.year) && (touched.month || touched.day || touched.year) && (
+              <p className="text-destructive text-xs mt-1">Please select a valid date</p>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { field: "month", placeholder: "MM", min: 1, max: 12 },
+              { field: "day", placeholder: "DD", min: 1, max: 31 },
+              { field: "year", placeholder: "YYYY", min: 1900, max: 2025 },
+            ].map(({ field, placeholder, min, max }) => (
+              <div key={field}>
+                <input
+                  type="number"
+                  value={formData[field]}
+                  onChange={(e) => handleChange(field, e.target.value)}
+                  onBlur={() => handleBlur(field)}
+                  placeholder={placeholder}
+                  min={min}
+                  max={max}
+                  className={inputClass(field)}
+                />
+                {errors[field] && touched[field] && (
+                  <p className="text-destructive text-xs mt-1">{errors[field]}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Time: Hour / Minute */}
       <div>
         <label className="block text-sm font-medium text-muted-foreground mb-2 font-body uppercase tracking-wide">
-          Birth Time <span className="text-muted-foreground/50">(24-hour format)</span>
+          Birth Time {!isMobile && <span className="text-muted-foreground/50">(24-hour format)</span>}
         </label>
-        <div className="grid grid-cols-2 gap-3">
-          {[
-            { field: "hour", placeholder: "HH", min: 0, max: 23 },
-            { field: "minute", placeholder: "MM", min: 0, max: 59 },
-          ].map(({ field, placeholder, min, max }) => (
-            <div key={field}>
-              <input
-                type="number"
-                value={formData[field]}
-                onChange={(e) => handleChange(field, e.target.value)}
-                onBlur={() => handleBlur(field)}
-                placeholder={placeholder}
-                min={min}
-                max={max}
-                className={inputClass(field)}
-              />
-              {errors[field] && touched[field] && (
-                <p className="text-destructive text-xs mt-1">{errors[field]}</p>
-              )}
-            </div>
-          ))}
-        </div>
+        {isMobile ? (
+          <div>
+            <input
+              type="time"
+              value={`${String(formData.hour).padStart(2, '0')}:${String(formData.minute).padStart(2, '0')}`}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val) {
+                  const [h, m] = val.split(":");
+                  setFormData((prev) => ({ ...prev, hour: String(Number(h)), minute: String(Number(m)) }));
+                }
+              }}
+              className={inputClass("hour")}
+            />
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { field: "hour", placeholder: "HH", min: 0, max: 23 },
+              { field: "minute", placeholder: "MM", min: 0, max: 59 },
+            ].map(({ field, placeholder, min, max }) => (
+              <div key={field}>
+                <input
+                  type="number"
+                  value={formData[field]}
+                  onChange={(e) => handleChange(field, e.target.value)}
+                  onBlur={() => handleBlur(field)}
+                  placeholder={placeholder}
+                  min={min}
+                  max={max}
+                  className={inputClass(field)}
+                />
+                {errors[field] && touched[field] && (
+                  <p className="text-destructive text-xs mt-1">{errors[field]}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
         <p className="text-muted-foreground/60 text-xs mt-2 font-body">
           If you don't know your exact birth time, use 12:00 noon
         </p>
