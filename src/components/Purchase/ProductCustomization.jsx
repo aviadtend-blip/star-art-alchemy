@@ -6,6 +6,8 @@ import Header from '@/components/Layout/Header';
 import PopularTag from '@/components/ui/PopularTag';
 import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
+import canvasDetail from '@/assets/gallery/canvas-detail.jpg';
+import womanHolding from '@/assets/gallery/woman-holding.jpg';
 
 // 12x18 mockups
 import mockup12x18_1 from '@/assets/mockups/12x18/mockup-1.webp';
@@ -350,6 +352,35 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           </div>
         </div>
       </div>
+
+      {/* ═══════════════════ MATERIALS + GIFT SECTIONS ═══════════════════ */}
+      <section className="py-16 bg-surface">
+        <div className="max-w-5xl mx-auto px-4 flex flex-col gap-16">
+          {/* Museum-Quality Materials */}
+          <div>
+            <img src={canvasDetail} alt="Close-up of museum-quality canvas print detail" className="w-full object-cover" style={{ borderRadius: 2, aspectRatio: '40/29' }} loading="lazy" />
+            <div className="mt-4">
+              <p className="text-subtitle text-surface-muted tracking-widest mb-2">MUSEUM-QUALITY MATERIALS</p>
+              <h3 className="text-a2 text-surface-foreground mb-4">Materials So Good, Museums Use Them</h3>
+              <p className="text-body text-surface-muted">
+                Your artwork arrives ready to hang—printed on museum-grade archival paper in a solid wood frame with anti-reflective glaze. It'll look exactly this good in 100 years.
+              </p>
+            </div>
+          </div>
+
+          {/* The Perfect Gift */}
+          <div>
+            <img src={womanHolding} alt="Happy customer holding her framed birth chart artwork" className="w-full object-cover" style={{ borderRadius: 2, aspectRatio: '40/29' }} loading="lazy" />
+            <div className="mt-4">
+              <p className="text-subtitle text-surface-muted tracking-widest mb-2">THE PERFECT GIFT</p>
+              <h3 className="text-a2 text-surface-foreground mb-4">Impossible to Duplicate. Impossible to Forget.</h3>
+              <p className="text-body text-surface-muted">
+                Birthdays. Anniversaries. New homes. Give a gift that's impossible to buy anywhere else—because it's created from their exact birth moment. Every friend who sees it will ask.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <Footer />
     </div>
