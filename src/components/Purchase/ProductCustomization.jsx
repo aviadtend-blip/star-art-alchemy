@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
@@ -51,10 +51,32 @@ const MOCKUPS = {
 export function ProductCustomization({ chartData, artworkImage, onCheckout, onBack, formData, onEditBirthData }) {
   const [selectedSize, setSelectedSize] = useState('16x24');
   const [activeThumb, setActiveThumb] = useState(0);
+  const sizeCarouselRef = useRef(null);
+  const isFirstSizeScroll = useRef(true);
 
   const sizeData = SIZE_OPTIONS.find(s => s.id === selectedSize);
   const total = sizeData?.price || 119;
   const mockups = MOCKUPS[selectedSize] || MOCKUPS['16x24'];
+
+  useEffect(() => {
+    const carousel = sizeCarouselRef.current;
+    if (!carousel || window.innerWidth >= 768) return;
+
+    const selectedCard = carousel.querySelector(`[data-size-card="${selectedSize}"]`);
+    if (!selectedCard) return;
+
+    const targetLeft = Math.max(
+      0,
+      selectedCard.offsetLeft - (carousel.clientWidth - selectedCard.offsetWidth) / 2
+    );
+
+    carousel.scrollTo({
+      left: targetLeft,
+      behavior: isFirstSizeScroll.current ? 'auto' : 'smooth',
+    });
+
+    isFirstSizeScroll.current = false;
+  }, [selectedSize]);
 
   const handleCheckout = () => {
     onCheckout({
@@ -115,11 +137,13 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           ))}
         </div>
       ) : (
-        <div className="pt-4 -mx-4 px-4">
-          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 pr-4">
-            {SIZE_OPTIONS.map((size) => (
-              <SizeCard key={size.id} size={size} />
-            ))}
+        <div className="pt-4 -mx-4">
+          <div ref={sizeCarouselRef} className="overflow-x-auto scrollbar-hide">
+            <div className="flex w-max gap-3 pb-2 pl-4 pr-1">
+              {SIZE_OPTIONS.map((size) => (
+                <SizeCard key={size.id} size={size} />
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -130,40 +154,34 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   );
 
   const SizeCard = ({ size, vertical = false }) => (
-    <div
-      className="relative flex-shrink-0"
+    <button
+      data-size-card={size.id}
+      onClick={() => { setSelectedSize(size.id); setActiveThumb(0); }}
+      className="relative flex-shrink-0 transition-all"
       style={{
+        display: 'flex',
         width: vertical ? '100%' : '180px',
         minWidth: vertical ? '100%' : '180px',
-        paddingTop: size.popular ? '12px' : '0px',
+        height: '74px',
+        padding: '12px',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderRadius: '4px',
+        border: selectedSize === size.id ? '2px solid #333333' : '1px solid #E0E0E0',
+        backgroundColor: '#FFFFFF',
       }}
     >
       {size.popular && (
-        <div className="absolute z-10" style={{ top: 0, right: 0 }}>
+        <div className="absolute z-10" style={{ top: '4px', right: '6px' }}>
           <PopularTag>Most popular</PopularTag>
         </div>
       )}
-      <button
-        onClick={() => { setSelectedSize(size.id); setActiveThumb(0); }}
-        className="relative w-full flex-shrink-0 transition-all"
-        style={{
-          display: 'flex',
-          height: '74px',
-          padding: '15px',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderRadius: '4px',
-          border: selectedSize === size.id ? '2px solid #333333' : '1px solid #E0E0E0',
-          backgroundColor: '#FFFFFF',
-        }}
-      >
-        <div className="text-left">
-          <p className="text-a4" style={{ color: '#333333' }}>{size.label}</p>
-          <p className="text-body-sm" style={{ color: '#888888', marginTop: '4px' }}>{size.description}</p>
-        </div>
-        <p className="text-a4 font-bold flex-shrink-0" style={{ color: '#333333', marginLeft: '16px' }}>${size.price}</p>
-      </button>
-    </div>
+      <div className="text-left min-w-0 flex-1 pr-2">
+        <p className="text-a4" style={{ color: '#333333' }}>{size.label}</p>
+        <p className="text-body-sm" style={{ color: '#888888', marginTop: '2px' }}>{size.description}</p>
+      </div>
+      <p className="text-a4 font-bold flex-shrink-0 whitespace-nowrap" style={{ color: '#333333', marginLeft: '8px' }}>${size.price}</p>
+    </button>
   );
 
   const OrderSummary = () => (
