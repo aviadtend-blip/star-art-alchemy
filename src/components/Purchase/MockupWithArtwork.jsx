@@ -147,8 +147,8 @@ export default function MockupWithArtwork({ mockupSrc, artworkSrc, alt = '', cla
 
 /** Check if a pixel is "green screen" green */
 function isGreenPixel(r, g, b) {
-  // Green-screen: high green, low red, low blue
-  return g > 100 && g > r * 1.4 && g > b * 1.4;
+  // Green-screen: high green, low red, low blue (relaxed for varied mockup greens)
+  return g > 80 && g > r * 1.2 && g > b * 1.2;
 }
 
 /** Find the bounding box of the green-screen area */
