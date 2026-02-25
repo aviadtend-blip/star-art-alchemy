@@ -218,13 +218,14 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
 
           {/* Main image */}
           <div
-            className="flex-1 flex items-center justify-center w-full px-16 py-20"
+            className="flex-1 flex items-center justify-center w-full px-0 md:px-16 py-10 md:py-20"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={lightboxImages[lightbox.index]}
               alt={`Gallery ${lightbox.index + 1}`}
-              className="max-h-[75vh] max-w-full object-contain rounded-sm"
+              className="max-h-[80vh] w-full md:w-auto md:max-w-full object-contain"
+              style={{ borderRadius: '2px' }}
             />
           </div>
 
