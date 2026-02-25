@@ -190,3 +190,12 @@
                 radial-gradient(ellipse at 70% 80%, hsl(45 30% 10%) 0%, transparent 50%);
   }
 }
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
