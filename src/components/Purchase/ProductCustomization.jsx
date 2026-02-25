@@ -127,17 +127,17 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   const SizeSelector = ({ vertical = false }) => (
     <div>
-      <h2 className="text-a4" style={{ color: '#333333', marginBottom: '8px' }}>
+      <h2 className="text-a4" style={{ color: '#333333', marginBottom: '24px' }}>
         🖼️ Choose Your Size
       </h2>
       {vertical ? (
-        <div className="flex flex-col gap-3 pt-3">
+        <div className="flex flex-col gap-3">
           {SIZE_OPTIONS.map((size) => (
             <SizeCard key={size.id} size={size} vertical />
           ))}
         </div>
       ) : (
-        <div className="pt-4 -mx-4" style={{ overflow: 'clip visible' }}>
+        <div className="-mx-4" style={{ overflow: 'clip visible' }}>
           <div ref={sizeCarouselRef} className="overflow-x-auto scrollbar-hide" style={{ overflowY: 'visible', overflow: 'auto visible' }}>
             <div className="flex w-max gap-3 pb-2 pt-4 pl-4 pr-4">
               {SIZE_OPTIONS.map((size) => (
