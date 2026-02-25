@@ -181,7 +181,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
             <button
               onClick={() => {
                 if (!selected) {
-                  toast({ title: 'Please select a style first', description: 'Tap one of the artwork styles above to continue.', variant: 'destructive' });
+                  toast({ title: 'Please select a style first', description: 'Tap one of the artwork styles above to continue.' });
                   return;
                 }
                 handleContinue();
