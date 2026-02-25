@@ -56,6 +56,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const [displayIndex, setDisplayIndex] = useState(0);
   const [slideDir, setSlideDir] = useState(0); // -1 left, 1 right, 0 settled
   const sizeCarouselRef = useRef(null);
+  const orderSummaryRef = useRef(null);
   const isFirstSizeScroll = useRef(true);
 
   const sizeData = SIZE_OPTIONS.find(s => s.id === selectedSize);
@@ -254,6 +255,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   const OrderSummary = () => (
     <div
+      ref={orderSummaryRef}
       className="relative overflow-hidden"
       style={{ borderRadius: '2px', padding: '20px 20px 44px 20px' }}
     >
@@ -333,6 +335,37 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
         <div className="px-4" style={{ paddingBottom: '32px', marginTop: '23px' }}>
           <OrderSummary />
         </div>
+
+
+        {/* Mobile — Materials + Gift */}
+        <div className="px-4 py-16 flex flex-col gap-16">
+          <div>
+            <img src={canvasDetail} alt="Close-up of museum-quality canvas print detail" className="w-full object-cover" style={{ borderRadius: 2, aspectRatio: '40/29' }} loading="lazy" />
+            <div className="mt-4">
+              <p className="text-subtitle text-surface-muted tracking-widest mb-2">MUSEUM-QUALITY MATERIALS</p>
+              <h3 className="text-a2 text-surface-foreground mb-4">Materials So Good, Museums Use Them</h3>
+              <p className="text-body text-surface-muted">
+                Your artwork arrives ready to hang—printed on museum-grade archival paper in a solid wood frame with anti-reflective glaze. It'll look exactly this good in 100 years.
+              </p>
+              <button onClick={() => orderSummaryRef.current?.scrollIntoView({ behavior: 'smooth' })} className="link-a5 font-body text-surface-foreground mt-4">
+                Continue to checkout
+              </button>
+            </div>
+          </div>
+          <div>
+            <img src={womanHolding} alt="Happy customer holding her framed birth chart artwork" className="w-full object-cover" style={{ borderRadius: 2, aspectRatio: '40/29' }} loading="lazy" />
+            <div className="mt-4">
+              <p className="text-subtitle text-surface-muted tracking-widest mb-2">THE PERFECT GIFT</p>
+              <h3 className="text-a2 text-surface-foreground mb-4">Impossible to Duplicate. Impossible to Forget.</h3>
+              <p className="text-body text-surface-muted">
+                Birthdays. Anniversaries. New homes. Give a gift that's impossible to buy anywhere else—because it's created from their exact birth moment. Every friend who sees it will ask.
+              </p>
+              <button onClick={() => orderSummaryRef.current?.scrollIntoView({ behavior: 'smooth' })} className="link-a5 font-body text-surface-foreground mt-4">
+                Continue to checkout
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Desktop layout — two columns, left sticky */}
@@ -358,6 +391,9 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
                   <p className="text-body text-surface-muted">
                     Your artwork arrives ready to hang—printed on museum-grade archival paper in a solid wood frame with anti-reflective glaze. It'll look exactly this good in 100 years.
                   </p>
+                  <button onClick={() => orderSummaryRef.current?.scrollIntoView({ behavior: 'smooth' })} className="link-a5 font-body text-surface-foreground mt-4">
+                    Continue to checkout
+                  </button>
                 </div>
               </div>
 
@@ -370,6 +406,9 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
                   <p className="text-body text-surface-muted">
                     Birthdays. Anniversaries. New homes. Give a gift that's impossible to buy anywhere else—because it's created from their exact birth moment. Every friend who sees it will ask.
                   </p>
+                  <button onClick={() => orderSummaryRef.current?.scrollIntoView({ behavior: 'smooth' })} className="link-a5 font-body text-surface-foreground mt-4">
+                    Continue to checkout
+                  </button>
                 </div>
               </div>
             </div>
