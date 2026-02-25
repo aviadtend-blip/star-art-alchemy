@@ -98,10 +98,10 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
               onClick={() => setActiveThumb(i)}
               className={`flex-shrink-0 overflow-hidden transition-all ${
                 activeThumb === i
-                  ? 'ring-1 ring-[#FFBF00] opacity-100'
-                  : 'opacity-50 hover:opacity-75'
+                  ? 'ring-1 ring-[#FFBF00]'
+                  : ''
               }`}
-              style={{ width: 30, height: 30, borderRadius: '2px' }}
+              style={{ width: 30, height: 30, borderRadius: '0px', opacity: 1 }}
             >
               <img
                 src={src}
