@@ -1,12 +1,13 @@
+import { forwardRef } from 'react';
 import { ChevronUp } from 'lucide-react';
 
 /**
  * Reusable FAQ accordion section.
  * @param {{ items: { q: string, a: string }[], title?: string }} props
  */
-export default function FAQSection({ items, title = 'Frequently asked questions' }) {
+const FAQSection = forwardRef(function FAQSection({ items, title = 'Frequently asked questions' }, ref) {
   return (
-    <section className="bg-surface pt-[120px] pb-20">
+    <section ref={ref} className="bg-surface pt-[120px] pb-20">
       <div className="max-w-4xl mx-auto px-4">
         <h2 className="text-a2 text-center text-surface-foreground mb-[30px]">{title}</h2>
         <div className="divide-y divide-surface-border">
@@ -26,4 +27,6 @@ export default function FAQSection({ items, title = 'Frequently asked questions'
       </div>
     </section>
   );
-}
+});
+
+export default FAQSection;
