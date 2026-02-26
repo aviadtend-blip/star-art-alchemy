@@ -134,7 +134,7 @@ export function ChartExplanation({
             Meet Your Cosmic{'\n'}Masterpiece
           </h1>
           <p className="text-body font-body text-surface-muted max-w-sm mx-auto">
-            Every symbol, color, and shape represents your exact planetary positions at birth.
+            Tap a number to see why each element was chosen — every detail was inspired by your birth chart.
           </p>
         </div>
 
@@ -192,7 +192,7 @@ export function ChartExplanation({
               <div className="flex items-center justify-center gap-2 text-surface-muted">
                 <span className="text-xl">👆</span>
                 <p className="text-body font-body">
-                  Tap a number to explore your chart.
+                  Tap a number to see the artist's notes.
                 </p>
               </div>
             )}
