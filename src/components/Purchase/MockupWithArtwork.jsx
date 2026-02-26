@@ -86,20 +86,32 @@ export default function MockupWithArtwork({ mockupSrc, artworkSrc, alt = '', cla
           const { minX, minY, maxX, maxY } = bounds;
           const bw = maxX - minX + 1;
           const bh = maxY - minY + 1;
-
-          // Draw artwork with "cover" fitting (fill entire green area, crop overflow)
+          // Draw artwork with "cover" fitting + 3px padding
           const artW = artworkImg.naturalWidth;
           const artH = artworkImg.naturalHeight;
-          const scale = Math.max(bw / artW, bh / artH);
+          const pad = 3;
+          const scale = Math.max((bw + pad * 2) / artW, (bh + pad * 2) / artH);
           const dw = artW * scale;
           const dh = artH * scale;
-          const dx = minX + (bw - dw) / 2;
-          const dy = minY + (bh - dh) / 2;
+          const dx = minX - pad + (bw + pad * 2 - dw) / 2;
+          const dy = minY - pad + (bh + pad * 2 - dh) / 2;
           ctx.drawImage(artworkImg, dx, dy, dw, dh);
 
-          // Re-read the mockup to get edge pixels that should stay on top
-          // (frame edges, shadows). We do this by redrawing only non-green
-          // pixels from the original mockup on top of the artwork.
+          // Cleanup pass: replace any remaining green pixels
+          const compData = ctx.getImageData(minX, minY, bw, bh);
+          for (let i = 0; i < compData.data.length; i += 4) {
+            if (isGreenPixel(compData.data[i], compData.data[i + 1], compData.data[i + 2])) {
+              const px = (i / 4) % bw;
+              const py = Math.floor((i / 4) / bw);
+              const nc = sampleNearbyColor(compData.data, bw, bh, px, py);
+              compData.data[i] = nc[0];
+              compData.data[i + 1] = nc[1];
+              compData.data[i + 2] = nc[2];
+            }
+          }
+          ctx.putImageData(compData, minX, minY);
+
+          // Restore non-green mockup pixels on top (frame edges, shadows)
           const mockupCanvas = document.createElement('canvas');
           mockupCanvas.width = w;
           mockupCanvas.height = h;
@@ -113,7 +125,6 @@ export default function MockupWithArtwork({ mockupSrc, artworkSrc, alt = '', cla
             const g = mData.data[i + 1];
             const b = mData.data[i + 2];
             if (!isGreenPixel(r, g, b)) {
-              // Restore non-green mockup pixel (frame edges, shadows)
               compositeData.data[i] = r;
               compositeData.data[i + 1] = g;
               compositeData.data[i + 2] = b;
@@ -152,10 +163,22 @@ export default function MockupWithArtwork({ mockupSrc, artworkSrc, alt = '', cla
   );
 }
 
-/** Check if a pixel is "green screen" green */
 function isGreenPixel(r, g, b) {
-  // Green-screen: high green, low red, low blue (relaxed for varied mockup greens)
   return g > 80 && g > r * 1.2 && g > b * 1.2;
+}
+
+function sampleNearbyColor(data, w, h, px, py) {
+  const offsets = [[-1,0],[1,0],[0,-1],[0,1],[-2,0],[2,0],[0,-2],[0,2]];
+  for (const [ox, oy] of offsets) {
+    const nx = px + ox, ny = py + oy;
+    if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+      const ni = (ny * w + nx) * 4;
+      if (!isGreenPixel(data[ni], data[ni+1], data[ni+2])) {
+        return [data[ni], data[ni+1], data[ni+2]];
+      }
+    }
+  }
+  return [200, 200, 200];
 }
 
 /** Find the bounding box of the green-screen area */

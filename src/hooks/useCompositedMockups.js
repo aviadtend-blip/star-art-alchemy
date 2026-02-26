@@ -77,17 +77,33 @@ export default function useCompositedMockups(mockupSrcs, artworkSrc) {
               const { minX, minY, maxX, maxY } = bounds;
               const bw = maxX - minX + 1;
               const bh = maxY - minY + 1;
-              // "Cover" fit: fill entire green area, crop overflow
+              // "Cover" fit with 3px padding to eliminate green edges
               const artW = artworkImg.naturalWidth;
               const artH = artworkImg.naturalHeight;
-              const scale = Math.max(bw / artW, bh / artH);
+              const pad = 3;
+              const scale = Math.max((bw + pad * 2) / artW, (bh + pad * 2) / artH);
               const dw = artW * scale;
               const dh = artH * scale;
-              const dx = minX + (bw - dw) / 2;
-              const dy = minY + (bh - dh) / 2;
+              const dx = minX - pad + (bw + pad * 2 - dw) / 2;
+              const dy = minY - pad + (bh + pad * 2 - dh) / 2;
               ctx.drawImage(artworkImg, dx, dy, dw, dh);
 
-              // Restore non-green mockup pixels on top
+              // Cleanup pass: replace any remaining green pixels in the bounding box
+              const compData = ctx.getImageData(minX, minY, bw, bh);
+              for (let i = 0; i < compData.data.length; i += 4) {
+                if (isGreenPixel(compData.data[i], compData.data[i + 1], compData.data[i + 2])) {
+                  // Sample nearest non-green neighbor
+                  const px = (i / 4) % bw;
+                  const py = Math.floor((i / 4) / bw);
+                  const nc = sampleNearbyColor(compData.data, bw, bh, px, py);
+                  compData.data[i] = nc[0];
+                  compData.data[i + 1] = nc[1];
+                  compData.data[i + 2] = nc[2];
+                }
+              }
+              ctx.putImageData(compData, minX, minY);
+
+              // Restore non-green mockup pixels on top (frame edges, shadows)
               const mockupCanvas = document.createElement('canvas');
               mockupCanvas.width = w;
               mockupCanvas.height = h;
@@ -131,6 +147,20 @@ export default function useCompositedMockups(mockupSrcs, artworkSrc) {
 
 function isGreenPixel(r, g, b) {
   return g > 80 && g > r * 1.2 && g > b * 1.2;
+}
+
+function sampleNearbyColor(data, w, h, px, py) {
+  const offsets = [[-1,0],[1,0],[0,-1],[0,1],[-2,0],[2,0],[0,-2],[0,2]];
+  for (const [ox, oy] of offsets) {
+    const nx = px + ox, ny = py + oy;
+    if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+      const ni = (ny * w + nx) * 4;
+      if (!isGreenPixel(data[ni], data[ni+1], data[ni+2])) {
+        return [data[ni], data[ni+1], data[ni+2]];
+      }
+    }
+  }
+  return [200, 200, 200];
 }
 
 function findGreenBounds(data, w, h) {
