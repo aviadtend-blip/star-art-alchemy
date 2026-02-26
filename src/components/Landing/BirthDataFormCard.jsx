@@ -75,6 +75,7 @@ export default function BirthDataFormCard({
       const { data, error } = await supabase.functions.invoke("google-places-detail", { body: { place_id: prediction.place_id } });
       if (!error && data) {
         setFormData((prev) => ({ ...prev, birthCity: data.city || prediction.description, birthCountry: data.nation || prev.birthCountry, lat: data.lat, lng: data.lng }));
+        skipAutocompleteRef.current = true;
         setCityQuery(data.formatted_address || prediction.description);
       }
     } catch (e) { console.error("[BirthDataFormCard] Place detail error:", e); }
