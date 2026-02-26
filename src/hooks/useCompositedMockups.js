@@ -10,11 +10,13 @@ const MAX_CANVAS_DIM = 1600;
  */
 export default function useCompositedMockups(mockupSrcs, artworkSrc) {
   const [composited, setComposited] = useState([]);
+  const [loading, setLoading] = useState(true);
   const cacheRef = useRef(new Map());
 
   useEffect(() => {
-    if (!mockupSrcs?.length) { setComposited([]); return; }
-    if (!artworkSrc) { setComposited(mockupSrcs); return; }
+    setLoading(true);
+    if (!mockupSrcs?.length) { setComposited([]); setLoading(false); return; }
+    if (!artworkSrc) { setComposited(mockupSrcs); setLoading(false); return; }
 
     let cancelled = false;
 
@@ -51,7 +53,7 @@ export default function useCompositedMockups(mockupSrcs, artworkSrc) {
       try {
         artworkImg = await loadArtworkViaProxy(artworkSrc);
       } catch {
-        if (!cancelled) setComposited(mockupSrcs);
+        if (!cancelled) { setComposited(mockupSrcs); setLoading(false); }
         return;
       }
       if (cancelled) return;
@@ -148,13 +150,16 @@ export default function useCompositedMockups(mockupSrcs, artworkSrc) {
         await new Promise((resolve) => setTimeout(resolve, 0));
       }
 
-      if (!cancelled) setComposited(results.length ? results : mockupSrcs);
+      if (!cancelled) {
+        setComposited(results.length ? results : mockupSrcs);
+        setLoading(false);
+      }
       if (artworkImg._objectUrl) URL.revokeObjectURL(artworkImg._objectUrl);
     })();
 
     return () => { cancelled = true; };
   }, [mockupSrcs, artworkSrc]);
 
-  return composited;
+  return { composited, loading };
 }
 
