@@ -62,9 +62,45 @@ serve(async (req) => {
     console.log('[generate-artwork] Starting prediction with prompt length:', prompt.length);
     console.log('[generate-artwork] Model:', model || 'default');
 
-    // Use the model-based endpoint (e.g. "aviadtend-blip/galaxy-bloom")
     const replicateModel = model || 'aviadtend-blip/galaxy-bloom';
-    const createUrl = `https://api.replicate.com/v1/models/${replicateModel}/predictions`;
+    const inputPayload = {
+      prompt,
+      aspect_ratio: aspectRatio || '3:4',
+      num_outputs: 1,
+      num_inference_steps: 28,
+      guidance_scale: 3.5,
+      output_format: 'png',
+      output_quality: 90,
+    };
+
+    // First, fetch the latest version of the model (works for both public and private)
+    console.log('[generate-artwork] Fetching latest version for model:', replicateModel);
+    const versionsRes = await fetch(
+      `https://api.replicate.com/v1/models/${replicateModel}/versions`,
+      { headers: { 'Authorization': `Bearer ${REPLICATE_API_TOKEN}` } }
+    );
+
+    let createUrl: string;
+    let createBody: Record<string, unknown>;
+
+    if (versionsRes.ok) {
+      const versionsData = await versionsRes.json();
+      const latestVersion = versionsData.results?.[0]?.id;
+      if (latestVersion) {
+        console.log('[generate-artwork] Using version:', latestVersion);
+        createUrl = 'https://api.replicate.com/v1/predictions';
+        createBody = { version: latestVersion, input: inputPayload };
+      } else {
+        // No versions found, try model endpoint as fallback
+        createUrl = `https://api.replicate.com/v1/models/${replicateModel}/predictions`;
+        createBody = { input: inputPayload };
+      }
+    } else {
+      // Versions endpoint failed, try model endpoint directly
+      console.log('[generate-artwork] Versions endpoint failed, trying model endpoint');
+      createUrl = `https://api.replicate.com/v1/models/${replicateModel}/predictions`;
+      createBody = { input: inputPayload };
+    }
 
     const createResponse = await fetch(createUrl, {
       method: 'POST',
@@ -73,17 +109,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
         'Prefer': 'wait',
       },
-      body: JSON.stringify({
-        input: {
-          prompt,
-          aspect_ratio: aspectRatio || '3:4',
-          num_outputs: 1,
-          num_inference_steps: 28,
-          guidance_scale: 3.5,
-          output_format: 'png',
-          output_quality: 90,
-        },
-      }),
+      body: JSON.stringify(createBody),
     });
 
     if (!createResponse.ok) {
