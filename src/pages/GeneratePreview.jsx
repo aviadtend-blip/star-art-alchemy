@@ -10,6 +10,7 @@ export default function GeneratePreview() {
   const {
     chartData, generatedImage, formData,
     handleGetFramed, handleEditBirthData, handleBackToStyle,
+    artworkAnalysis,
   } = useGenerator();
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export default function GeneratePreview() {
       formData={formData}
       onEditBirthData={handleEditBirthData}
       onBackToStyle={handleBackToStyle}
+      artworkAnalysis={artworkAnalysis}
     />
   );
 }
