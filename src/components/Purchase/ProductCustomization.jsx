@@ -65,10 +65,11 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const compositedImages = useCompositedMockups(mockups, artworkImage);
   const displayImages = compositedImages.length ? compositedImages : mockups;
 
-  // Reset thumb when size changes
+  // Preserve photo number when switching sizes; fall back to 0 if new size has fewer photos
   const handleSizeChange = useCallback((sizeId) => {
+    const newMockups = MOCKUPS[sizeId] || MOCKUPS['16x24'];
     setSelectedSize(sizeId);
-    setActiveThumb(0);
+    setActiveThumb((prev) => (prev < newMockups.length ? prev : 0));
     setDragOffset(0);
     setIsTransitioning(false);
   }, []);
