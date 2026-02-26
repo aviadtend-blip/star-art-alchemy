@@ -31,8 +31,8 @@ const STYLE_GALLERY = {
 
 const STYLE_LABELS = {
   'bold-vibrant': { title: 'GALAXY BLOOM', sub: 'Bold & Vibrant' },
-  'minimal-architectural': { title: 'COSMIC COLLAGE', sub: 'Minimal & Architectural' },
-  'organic-flowing': { title: 'COSMIC COLLAGE', sub: 'Organic & Flowing' },
+  'minimal-architectural': { title: 'STELLAR BLUEPRINT', sub: 'Minimal & Architectural' },
+  'organic-flowing': { title: 'NEBULA FLOW', sub: 'Organic & Flowing' },
 };
 
 export default function StyleSelection({ onSelect, onBack, chartData, formData, onEditBirthData }) {
