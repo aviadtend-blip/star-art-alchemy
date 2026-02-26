@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, ComponentType } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,13 +13,32 @@ import ReturnsPolicy from "./pages/ReturnsPolicy";
 import { GeneratorProvider } from "./contexts/GeneratorContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 
-// Lazy-loaded generator routes
-const GenerateEntry = lazy(() => import("./pages/GenerateEntry"));
-const GenerateStyle = lazy(() => import("./pages/GenerateStyle"));
-const GenerateLoading = lazy(() => import("./pages/GenerateLoading"));
-const GeneratePreview = lazy(() => import("./pages/GeneratePreview"));
-const GenerateSize = lazy(() => import("./pages/GenerateSize"));
-const OrderConfirmationPage = lazy(() => import("./pages/OrderConfirmation"));
+// Auto-reload on stale chunk errors (happens after deploys when users have cached HTML)
+function lazyWithRetry<T extends ComponentType<any>>(
+  factory: () => Promise<{ default: T }>
+) {
+  return lazy(() =>
+    factory().catch((err) => {
+      // Only reload once to avoid infinite loops
+      const key = 'chunk_reload';
+      const lastReload = sessionStorage.getItem(key);
+      const now = Date.now();
+      if (!lastReload || now - Number(lastReload) > 10_000) {
+        sessionStorage.setItem(key, String(now));
+        window.location.reload();
+      }
+      throw err;
+    })
+  );
+}
+
+// Lazy-loaded generator routes (with stale-cache retry)
+const GenerateEntry = lazyWithRetry(() => import("./pages/GenerateEntry"));
+const GenerateStyle = lazyWithRetry(() => import("./pages/GenerateStyle"));
+const GenerateLoading = lazyWithRetry(() => import("./pages/GenerateLoading"));
+const GeneratePreview = lazyWithRetry(() => import("./pages/GeneratePreview"));
+const GenerateSize = lazyWithRetry(() => import("./pages/GenerateSize"));
+const OrderConfirmationPage = lazyWithRetry(() => import("./pages/OrderConfirmation"));
 
 const queryClient = new QueryClient();
 
