@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
@@ -61,18 +61,8 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const total = sizeData?.price || 119;
   const mockups = MOCKUPS[selectedSize] || MOCKUPS['16x24'];
 
-  // Pre-composite all sizes
-  const composited12x18 = useCompositedMockups(MOCKUPS['12x18'], artworkImage);
-  const composited16x24 = useCompositedMockups(MOCKUPS['16x24'], artworkImage);
-  const composited20x30 = useCompositedMockups(MOCKUPS['20x30'], artworkImage);
-
-  const allComposited = useMemo(() => ({
-    '12x18': composited12x18,
-    '16x24': composited16x24,
-    '20x30': composited20x30,
-  }), [composited12x18, composited16x24, composited20x30]);
-
-  const compositedImages = allComposited[selectedSize] || [];
+  // Only composite the currently selected size to avoid overwhelming mobile memory
+  const compositedImages = useCompositedMockups(mockups, artworkImage);
   const displayImages = compositedImages.length ? compositedImages : mockups;
 
   // Reset thumb when size changes
