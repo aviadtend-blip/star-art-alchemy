@@ -80,7 +80,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const mockupNums = getMockupNums(selectedSize);
 
   // Only composite the currently selected size to avoid overwhelming mobile memory
-  const compositedImages = useCompositedMockups(mockups, artworkImage);
+  const { composited: compositedImages, loading: compositingLoading } = useCompositedMockups(mockups, artworkImage);
   const displayImages = compositedImages.length ? compositedImages : mockups;
 
   // When switching sizes, try to keep the same mockup number; fall back to index 0
@@ -254,33 +254,44 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           onMouseUp={handlePointerUp}
           onMouseLeave={() => { if (dragState.current.isDragging) handlePointerUp(); }}
         >
-          <div
-            className="flex"
-            style={{
-              transform: `translateX(calc(${baseX}% + ${dragPx}px))`,
-              transition: isTransitioning ? 'transform 0.3s ease-out' : 'none',
-              willChange: 'transform',
-            }}
-          >
-            {displayImages.map((src, i) => (
-              <div key={i} className="w-full flex-shrink-0">
-                <img
-                  src={src}
-                  alt={`Canvas mockup ${i + 1}`}
-                  className="w-full object-contain select-none pointer-events-none"
-                  style={{ userSelect: 'none', WebkitUserDrag: 'none' }}
-                />
+          {compositingLoading ? (
+            <div className="w-full flex items-center justify-center" style={{ aspectRatio: '4/5', backgroundColor: '#F5F5F5' }}>
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#E0E0E0', borderTopColor: 'transparent' }} />
+                <span className="text-body-sm" style={{ color: '#999' }}>Preparing your mockups…</span>
               </div>
-            ))}
-          </div>
-          <div className="absolute bottom-3 left-0 right-0 flex justify-center px-4">
-            <ThumbnailStrip
-              images={displayImages}
-              activeIndex={activeThumb}
-              onSelect={handleThumbSelect}
-              size={30}
-            />
-          </div>
+            </div>
+          ) : (
+            <div
+              className="flex"
+              style={{
+                transform: `translateX(calc(${baseX}% + ${dragPx}px))`,
+                transition: isTransitioning ? 'transform 0.3s ease-out' : 'none',
+                willChange: 'transform',
+              }}
+            >
+              {displayImages.map((src, i) => (
+                <div key={i} className="w-full flex-shrink-0">
+                  <img
+                    src={src}
+                    alt={`Canvas mockup ${i + 1}`}
+                    className="w-full object-contain select-none pointer-events-none"
+                    style={{ userSelect: 'none', WebkitUserDrag: 'none' }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+          {!compositingLoading && (
+            <div className="absolute bottom-3 left-0 right-0 flex justify-center px-4">
+              <ThumbnailStrip
+                images={displayImages}
+                activeIndex={activeThumb}
+                onSelect={handleThumbSelect}
+                size={30}
+              />
+            </div>
+          )}
         </div>
         {/* Reviews — desktop only */}
         <div className="hidden md:flex items-center justify-center gap-1.5 mt-4">
