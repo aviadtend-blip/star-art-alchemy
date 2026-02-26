@@ -77,10 +77,10 @@ export default function useCompositedMockups(mockupSrcs, artworkSrc) {
               const { minX, minY, maxX, maxY } = bounds;
               const bw = maxX - minX + 1;
               const bh = maxY - minY + 1;
-              // "Contain" fit: show full artwork, center in green area
+              // "Cover" fit: fill entire green area, crop overflow
               const artW = artworkImg.naturalWidth;
               const artH = artworkImg.naturalHeight;
-              const scale = Math.min(bw / artW, bh / artH);
+              const scale = Math.max(bw / artW, bh / artH);
               const dw = artW * scale;
               const dh = artH * scale;
               const dx = minX + (bw - dw) / 2;
