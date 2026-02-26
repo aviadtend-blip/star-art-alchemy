@@ -6,9 +6,8 @@ export const ART_STYLES = [
     id: 'bold-vibrant',
     name: 'Galaxy Bloom — Bold & Vibrant',
     description: 'Rich, saturated layers of celestial imagery with bold textures and warm, vivid tones.',
-    model: 'aviadtend-blip/magical-pink',
-    version: '7f84b4df7d58f1a406097da9cf729e4e3f8840f0e51657137da9956e1fa1362a',
-    triggerWord: 'magicalpink',
+    model: 'aviadtend-blip/galaxy-bloom',
+    triggerWord: 'galaxybloom',
     preview: '🎀',
     accentColor: 'from-pink-400 to-rose-500',
   },
@@ -16,9 +15,8 @@ export const ART_STYLES = [
     id: 'minimal-architectural',
     name: 'Stellar Blueprint — Minimal & Architectural',
     description: 'Clean lines, structured composition, and restrained palettes with precise geometric forms.',
-    model: 'aviadtend-blip/magical-pink', // routes to same model for MVP
-    version: '7f84b4df7d58f1a406097da9cf729e4e3f8840f0e51657137da9956e1fa1362a',
-    triggerWord: 'magicalpink',
+    model: 'aviadtend-blip/galaxy-bloom', // routes to same model for MVP
+    triggerWord: 'galaxybloom',
     preview: '🏛️',
     accentColor: 'from-slate-400 to-zinc-500',
     popular: true,
@@ -27,9 +25,8 @@ export const ART_STYLES = [
     id: 'organic-flowing',
     name: 'Nebula Flow — Organic & Flowing',
     description: 'Fluid, natural forms with soft gradients and gentle movement inspired by water and growth.',
-    model: 'aviadtend-blip/magical-pink', // routes to same model for MVP
-    version: '7f84b4df7d58f1a406097da9cf729e4e3f8840f0e51657137da9956e1fa1362a',
-    triggerWord: 'magicalpink',
+    model: 'aviadtend-blip/galaxy-bloom', // routes to same model for MVP
+    triggerWord: 'galaxybloom',
     preview: '🌊',
     accentColor: 'from-teal-400 to-cyan-500',
   },

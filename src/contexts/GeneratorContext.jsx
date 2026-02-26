@@ -66,7 +66,7 @@ export function GeneratorProvider({ children }) {
       setGenerationProgress(`Creating your ${style.name} artwork...`);
       const imageUrl = await generateImage(prompt, {
         aspectRatio: '3:4',
-        version: style.version,
+        model: style.model,
       });
 
       setGeneratedImage(imageUrl);

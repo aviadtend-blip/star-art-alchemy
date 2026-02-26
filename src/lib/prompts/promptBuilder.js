@@ -4,7 +4,7 @@ import getAIInterpretation from './getAIInterpretation.js';
 
 export async function buildConcretePrompt(chartData, style) {
   chartData = buildInterpretationLayer(chartData);
-  const triggerWord = style?.triggerWord ?? 'magicalpink';
+  const triggerWord = style?.triggerWord ?? 'galaxybloom';
   const sunVisuals = CONCRETE_SUN_VISUALS[chartData.sun.sign];
   const moonVisuals = CONCRETE_MOON_VISUALS[chartData.moon.sign];
   const risingVisuals = CONCRETE_RISING_VISUALS[chartData.rising];
