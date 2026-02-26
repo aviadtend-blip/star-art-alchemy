@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
@@ -76,8 +76,8 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   const sizeData = SIZE_OPTIONS.find(s => s.id === selectedSize);
   const total = sizeData?.price || 119;
-  const mockups = getMockupSrcs(selectedSize);
-  const mockupNums = getMockupNums(selectedSize);
+  const mockups = useMemo(() => getMockupSrcs(selectedSize), [selectedSize]);
+  const mockupNums = useMemo(() => getMockupNums(selectedSize), [selectedSize]);
 
   // Only composite the currently selected size to avoid overwhelming mobile memory
   const { composited: compositedImages, loading: compositingLoading } = useCompositedMockups(mockups, artworkImage);
