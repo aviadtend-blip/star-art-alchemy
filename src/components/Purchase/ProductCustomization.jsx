@@ -5,7 +5,7 @@ import Footer from '@/components/Layout/Footer';
 import Header from '@/components/Layout/Header';
 import PopularTag from '@/components/ui/PopularTag';
 import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
-import useCompositedMockups from '@/hooks/useCompositedMockups';
+import useCompositedMockups, { useBackgroundPreload } from '@/hooks/useCompositedMockups';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import canvasDetail from '@/assets/gallery/canvas-detail.jpg';
 import womanHolding from '@/assets/gallery/woman-holding.jpg';
@@ -79,9 +79,16 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const mockups = useMemo(() => getMockupSrcs(selectedSize), [selectedSize]);
   const mockupNums = useMemo(() => getMockupNums(selectedSize), [selectedSize]);
 
-  // Only composite the currently selected size to avoid overwhelming mobile memory
+  // Composite selected size (shows spinner if not cached yet)
   const { composited: compositedImages, loading: compositingLoading } = useCompositedMockups(mockups, artworkImage);
   const displayImages = compositedImages.length ? compositedImages : mockups;
+
+  // Background-preload the other two sizes so switching is instant
+  const otherMockupSets = useMemo(() => {
+    const allSizes = ['12x18', '16x24', '20x30'];
+    return allSizes.filter(s => s !== selectedSize).map(getMockupSrcs);
+  }, [selectedSize]);
+  useBackgroundPreload(otherMockupSets, artworkImage);
 
   // When switching sizes, try to keep the same mockup number; fall back to index 0
   const handleSizeChange = useCallback((sizeId) => {
