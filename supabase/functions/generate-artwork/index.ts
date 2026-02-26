@@ -17,9 +17,7 @@ serve(async (req) => {
       throw new Error('REPLICATE_API_TOKEN is not configured');
     }
 
-    const { prompt, predictionId, width = 768, height = 1024, aspectRatio, version } = await req.json();
-
-    const modelVersion = version || '7f84b4df7d58f1a406097da9cf729e4e3f8840f0e51657137da9956e1fa1362a';
+    const { prompt, predictionId, width = 768, height = 1024, aspectRatio, model } = await req.json();
 
     // --- Poll mode: check status of an existing prediction ---
     if (predictionId) {
@@ -62,8 +60,13 @@ serve(async (req) => {
     }
 
     console.log('[generate-artwork] Starting prediction with prompt length:', prompt.length);
+    console.log('[generate-artwork] Model:', model || 'default');
 
-    const createResponse = await fetch('https://api.replicate.com/v1/predictions', {
+    // Use the model-based endpoint (e.g. "aviadtend-blip/galaxy-bloom")
+    const replicateModel = model || 'aviadtend-blip/galaxy-bloom';
+    const createUrl = `https://api.replicate.com/v1/models/${replicateModel}/predictions`;
+
+    const createResponse = await fetch(createUrl, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${REPLICATE_API_TOKEN}`,
@@ -71,7 +74,6 @@ serve(async (req) => {
         'Prefer': 'wait',
       },
       body: JSON.stringify({
-        version: modelVersion,
         input: {
           prompt,
           aspect_ratio: aspectRatio || '3:4',

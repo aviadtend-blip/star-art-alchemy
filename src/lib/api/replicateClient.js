@@ -15,17 +15,17 @@ const FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate
  */
 export async function generateImage(prompt, options = {}) {
   const aspectRatio = options.aspectRatio || '3:4';
-  const version = options.version || null;
+  const model = options.model || null;
 
   if (import.meta.env.DEV) {
     console.log('🎨 Starting image generation...');
     console.log('Prompt length:', prompt.length);
-    console.log('Version override:', version ? 'yes' : 'using default');
+    console.log('Model:', model || 'using default');
     console.log('Prompt preview:', prompt.substring(0, 100) + '...');
   }
 
   const body = { prompt, aspectRatio };
-  if (version) body.version = version;
+  if (model) body.model = model;
 
   const response = await fetch(FUNCTION_URL, {
     method: 'POST',
