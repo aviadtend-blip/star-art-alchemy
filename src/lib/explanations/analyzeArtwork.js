@@ -42,21 +42,25 @@ export async function analyzeArtwork(imageUrl, chartData) {
           ...fallback.elements[0],
           explanation: analysis.sun.explanation,
           meaning: analysis.sun.insight,
+          aiPosition: normalizePosition(analysis.sun.position),
         },
         {
           ...fallback.elements[1],
           explanation: analysis.moon.explanation,
           meaning: analysis.moon.insight,
+          aiPosition: normalizePosition(analysis.moon.position),
         },
         {
           ...fallback.elements[2],
           explanation: analysis.rising.explanation,
           meaning: analysis.rising.insight,
+          aiPosition: normalizePosition(analysis.rising.position),
         },
         {
           ...fallback.elements[3],
           explanation: analysis.element.explanation,
           meaning: analysis.element.insight,
+          aiPosition: normalizePosition(analysis.element.position),
         },
       ],
     };
@@ -64,6 +68,17 @@ export async function analyzeArtwork(imageUrl, chartData) {
     console.error('Artwork analysis failed, using static fallback:', err);
     return fallback;
   }
+}
+
+/**
+ * Clamp and format AI-returned position into a valid { top, left } percentage object.
+ * Returns null if the position is missing or invalid.
+ */
+function normalizePosition(pos) {
+  if (!pos || typeof pos.top !== 'number' || typeof pos.left !== 'number') return null;
+  const top = Math.max(5, Math.min(95, pos.top));
+  const left = Math.max(5, Math.min(95, pos.left));
+  return { top: `${top}%`, left: `${left}%` };
 }
 
 function getDominantElement(elementBalance) {
