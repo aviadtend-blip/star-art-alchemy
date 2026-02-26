@@ -54,7 +54,7 @@ const faqs = [
   { q: "Can I customize the colors or design?", a: "The artwork is automatically generated based on your astrological placements. The colors and symbols are determined by your chart's element balance and zodiac signs, ensuring astronomical accuracy and symbolic meaning." },
   { q: "What if I don't like my preview?", a: "No problem! You only pay if you love it. The preview is completely free—there's zero obligation to purchase." },
   { q: "Can I see examples of different chart combinations?", a: "Yes! Check out our gallery above to see how different astrological placements create unique artwork. Each piece reflects the individual's birth chart." },
-  { q: "What sizes and frames are available?", a: "We offer three canvas sizes: 12\"×18\" ($79), 16\"×24\" ($119 — most popular), and 20\"×30\" ($179). All prints are museum-quality canvas." },
+  { q: "What sizes are available?", a: "We offer three canvas sizes: 12\"×18\" ($79), 16\"×24\" ($119 — most popular), and 20\"×30\" ($179). All prints are museum-quality stretched canvas, ready to hang." },
   { q: "Do you ship internationally?", a: "Yes! We offer free shipping to the US, UK, Canada, and Australia." },
   { q: "What's your refund policy?", a: "We offer a 30-day money-back guarantee. If you're not completely satisfied with your artwork, contact us for a full refund. No questions asked." },
 ];
@@ -289,7 +289,7 @@ export default function LandingPage() {
               { n: "1", title: "Enter your birth data", desc: "Provide your birth date, time, and location. We calculate your complete natal chart." },
               { n: "2", title: "Choose your style", desc: "Pick from multiple artistic styles — each transforms your chart into a different visual experience." },
               { n: "3", title: "We create your artwork", desc: "Our system generates unique artwork incorporating your zodiac symbols and cosmic blueprint." },
-              { n: "4", title: "Get it framed & shipped", desc: "Love it? Choose your canvas size. We'll print and ship museum-quality canvas to your door." },
+              { n: "4", title: "Get it printed & shipped", desc: "Love it? Choose your canvas size. We'll print and ship museum-quality canvas to your door." },
             ].map((s) => (
               <div key={s.n} className="flex flex-col items-center text-center flex-shrink-0 snap-center w-[200px] md:w-auto relative z-10">
                 <div className="w-12 h-12 md:w-14 md:h-14 border border-surface-border bg-white rounded-full flex items-center justify-center text-xl md:text-2xl text-surface-foreground flex-shrink-0 font-display font-medium">
@@ -331,7 +331,7 @@ export default function LandingPage() {
               <p className="text-subtitle text-surface-muted tracking-widest mb-2">MUSEUM-QUALITY MATERIALS</p>
               <h3 className="text-a2 text-surface-foreground mb-4">Materials So Good, Museums Use Them</h3>
               <p className="text-body text-surface-muted mb-6">
-                Your artwork arrives ready to hang—printed on museum-grade archival paper in a solid wood frame with anti-reflective glaze. It'll look exactly this good in 100 years.
+                Your artwork arrives ready to hang—printed on premium stretched canvas using a 12-color giclée process for stunning color depth and museum-grade archival quality. Built to last a lifetime.
               </p>
               <button onClick={scrollToForm} className="link-a5 font-body text-surface-foreground">
                 Generate my free artwork
