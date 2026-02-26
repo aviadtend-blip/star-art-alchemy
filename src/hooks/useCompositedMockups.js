@@ -7,6 +7,7 @@ const PARALLEL_BATCH = 3;
 
 // ── Shared global caches ──────────────────────────────────────────────
 const compositeCache = new Map();   // cacheKey → dataUrl
+const greenBoundsCache = new Map(); // mockupSrc → bounds|null
 let _artworkCache = { src: null, img: null, promise: null };
 
 function loadImage(src) {
@@ -66,7 +67,13 @@ function compositeSingleMockup(mockupSrc, artworkImg) {
     ctx.drawImage(mockupImg, 0, 0, w, h);
 
     const imageData = ctx.getImageData(0, 0, w, h);
-    const bounds = findGreenBounds(imageData.data, w, h);
+    let bounds;
+    if (greenBoundsCache.has(mockupSrc)) {
+      bounds = greenBoundsCache.get(mockupSrc);
+    } else {
+      bounds = findGreenBounds(imageData.data, w, h);
+      greenBoundsCache.set(mockupSrc, bounds ?? null);
+    }
 
     if (bounds) {
       const { minX, minY, maxX, maxY } = bounds;
@@ -94,27 +101,6 @@ function compositeSingleMockup(mockupSrc, artworkImg) {
         }
       }
       ctx.putImageData(compData, minX, minY);
-
-      const mockupCanvas = document.createElement('canvas');
-      mockupCanvas.width = w;
-      mockupCanvas.height = h;
-      const mCtx = mockupCanvas.getContext('2d');
-      mCtx.drawImage(mockupImg, 0, 0, w, h);
-      const mData = mCtx.getImageData(minX, minY, bw, bh);
-      const compositeData = ctx.getImageData(minX, minY, bw, bh);
-
-      for (let i = 0; i < mData.data.length; i += 4) {
-        const r = mData.data[i];
-        const g = mData.data[i + 1];
-        const b = mData.data[i + 2];
-        if (!isGreenPixel(r, g, b)) {
-          compositeData.data[i] = r;
-          compositeData.data[i + 1] = g;
-          compositeData.data[i + 2] = b;
-          compositeData.data[i + 3] = mData.data[i + 3];
-        }
-      }
-      ctx.putImageData(compositeData, minX, minY);
     }
 
     const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
