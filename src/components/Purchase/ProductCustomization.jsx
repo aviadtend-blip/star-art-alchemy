@@ -30,13 +30,13 @@ import mockup16x24_6 from '@/assets/mockups/16x24/mockup-6.webp';
 import mockup16x24_7 from '@/assets/mockups/16x24/mockup-7.webp';
 import mockup16x24_8 from '@/assets/mockups/16x24/mockup-8.webp';
 
-// 20x30 mockups
-import mockup20x30_1 from '@/assets/mockups/20x30/mockup-1.webp';
-import mockup20x30_2 from '@/assets/mockups/20x30/mockup-2.webp';
+// 20x30 mockups (only 3–8 available)
 import mockup20x30_3 from '@/assets/mockups/20x30/mockup-3.webp';
 import mockup20x30_4 from '@/assets/mockups/20x30/mockup-4.webp';
 import mockup20x30_5 from '@/assets/mockups/20x30/mockup-5.webp';
 import mockup20x30_6 from '@/assets/mockups/20x30/mockup-6.webp';
+import mockup20x30_7 from '@/assets/mockups/20x30/mockup-7.webp';
+import mockup20x30_8 from '@/assets/mockups/20x30/mockup-8.webp';
 
 const SIZE_OPTIONS = [
   { id: '12x18', label: '12" × 18"', description: 'Perfect for combinations', price: 79 },
@@ -44,12 +44,29 @@ const SIZE_OPTIONS = [
   { id: '20x30', label: '20" × 30"', description: 'Gallery showpiece', price: 179 },
 ];
 
-// Mockup images per size (for now only 16x24 has real mockups)
-const MOCKUPS = {
-  '12x18': [mockup12x18_1, mockup12x18_2, mockup12x18_3, mockup12x18_4, mockup12x18_5, mockup12x18_6, mockup12x18_7, mockup12x18_8],
-  '16x24': [mockup16x24_1, mockup16x24_2, mockup16x24_3, mockup16x24_4, mockup16x24_5, mockup16x24_6, mockup16x24_7, mockup16x24_8],
-  '20x30': [mockup20x30_1, mockup20x30_2, mockup20x30_3, mockup20x30_4, mockup20x30_5, mockup20x30_6],
+// Each mockup has a numeric ID so we can match across sizes when switching
+// Ordered low→high. When switching sizes, we try to keep the same mockup number.
+const MOCKUPS_BY_NUMBER = {
+  '12x18': [
+    { num: 1, src: mockup12x18_1 }, { num: 2, src: mockup12x18_2 }, { num: 3, src: mockup12x18_3 },
+    { num: 4, src: mockup12x18_4 }, { num: 5, src: mockup12x18_5 }, { num: 6, src: mockup12x18_6 },
+    { num: 7, src: mockup12x18_7 }, { num: 8, src: mockup12x18_8 },
+  ],
+  '16x24': [
+    { num: 1, src: mockup16x24_1 }, { num: 2, src: mockup16x24_2 }, { num: 3, src: mockup16x24_3 },
+    { num: 4, src: mockup16x24_4 }, { num: 5, src: mockup16x24_5 }, { num: 6, src: mockup16x24_6 },
+    { num: 7, src: mockup16x24_7 }, { num: 8, src: mockup16x24_8 },
+  ],
+  '20x30': [
+    { num: 3, src: mockup20x30_3 }, { num: 4, src: mockup20x30_4 }, { num: 5, src: mockup20x30_5 },
+    { num: 6, src: mockup20x30_6 }, { num: 7, src: mockup20x30_7 }, { num: 8, src: mockup20x30_8 },
+  ],
 };
+
+// Helper: get flat src array for a size
+const getMockupSrcs = (sizeId) => (MOCKUPS_BY_NUMBER[sizeId] || []).map(m => m.src);
+// Helper: get mockup numbers for a size
+const getMockupNums = (sizeId) => (MOCKUPS_BY_NUMBER[sizeId] || []).map(m => m.num);
 
 export function ProductCustomization({ chartData, artworkImage, onCheckout, onBack, formData, onEditBirthData }) {
   const [selectedSize, setSelectedSize] = useState('16x24');
@@ -59,20 +76,23 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   const sizeData = SIZE_OPTIONS.find(s => s.id === selectedSize);
   const total = sizeData?.price || 119;
-  const mockups = MOCKUPS[selectedSize] || MOCKUPS['16x24'];
+  const mockups = getMockupSrcs(selectedSize);
+  const mockupNums = getMockupNums(selectedSize);
 
   // Only composite the currently selected size to avoid overwhelming mobile memory
   const compositedImages = useCompositedMockups(mockups, artworkImage);
   const displayImages = compositedImages.length ? compositedImages : mockups;
 
-  // Preserve photo number when switching sizes; fall back to 0 if new size has fewer photos
+  // When switching sizes, try to keep the same mockup number; fall back to index 0
   const handleSizeChange = useCallback((sizeId) => {
-    const newMockups = MOCKUPS[sizeId] || MOCKUPS['16x24'];
+    const currentNum = getMockupNums(selectedSize)[activeThumb];
+    const newNums = getMockupNums(sizeId);
+    const matchIndex = newNums.indexOf(currentNum);
     setSelectedSize(sizeId);
-    setActiveThumb((prev) => (prev < newMockups.length ? prev : 0));
+    setActiveThumb(matchIndex >= 0 ? matchIndex : 0);
     setDragOffset(0);
     setIsTransitioning(false);
-  }, []);
+  }, [selectedSize, activeThumb]);
 
   // --- Drag carousel state ---
   const carouselRef = useRef(null);
@@ -92,7 +112,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   }, []);
 
   const goTo = useCallback((index) => {
-    const len = MOCKUPS[selectedSize]?.length || mockups.length;
+    const len = mockups.length;
     const clamped = Math.max(0, Math.min(len - 1, index));
     setDragOffset(0);
     setIsTransitioning(true);
