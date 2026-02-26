@@ -288,8 +288,8 @@ export default function LandingPage() {
             {[
               { n: "1", title: "Enter your birth data", desc: "Provide your birth date, time, and location. We calculate your complete natal chart." },
               { n: "2", title: "Choose your style", desc: "Pick from multiple artistic styles — each transforms your chart into a different visual experience." },
-              { n: "3", title: "We create your artwork", desc: "Our system generates unique artwork incorporating your zodiac symbols and cosmic blueprint." },
-              { n: "4", title: "Get it printed & shipped", desc: "Love it? Choose your canvas size. We'll print and ship museum-quality canvas to your door." },
+              { n: "3", title: "We create your artwork", desc: "Your unique artwork is crafted from your zodiac symbols and cosmic blueprint." },
+              { n: "4", title: "Get it printed & shipped", desc: "Love it? Choose your canvas size. We'll print and ship your museum-quality canvas to your door." },
             ].map((s) => (
               <div key={s.n} className="flex flex-col items-center text-center flex-shrink-0 snap-center w-[200px] md:w-auto relative z-10">
                 <div className="w-12 h-12 md:w-14 md:h-14 border border-surface-border bg-white rounded-full flex items-center justify-center text-xl md:text-2xl text-surface-foreground flex-shrink-0 font-display font-medium">
@@ -311,7 +311,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* The Perfect Gift */}
           <div>
-            <img src={womanHolding} alt="Happy customer holding her framed birth chart artwork" className="w-full object-cover self-stretch md:h-[406px]" style={{ borderRadius: 2, aspectRatio: '40/29', height: 'auto' }} />
+            <img src={womanHolding} alt="Happy customer holding her birth chart canvas artwork" className="w-full object-cover self-stretch md:h-[406px]" style={{ borderRadius: 2, aspectRatio: '40/29', height: 'auto' }} />
             <div className="mt-4">
               <p className="text-subtitle text-surface-muted tracking-widest mb-2">THE PERFECT GIFT</p>
               <h3 className="text-a2 text-surface-foreground mb-4">Impossible to Duplicate. Impossible to Forget.</h3>
