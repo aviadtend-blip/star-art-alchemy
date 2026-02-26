@@ -87,10 +87,10 @@ export default function MockupWithArtwork({ mockupSrc, artworkSrc, alt = '', cla
           const bw = maxX - minX + 1;
           const bh = maxY - minY + 1;
 
-          // Draw artwork with "contain" fitting (show full artwork, center in green area)
+          // Draw artwork with "cover" fitting (fill entire green area, crop overflow)
           const artW = artworkImg.naturalWidth;
           const artH = artworkImg.naturalHeight;
-          const scale = Math.min(bw / artW, bh / artH);
+          const scale = Math.max(bw / artW, bh / artH);
           const dw = artW * scale;
           const dh = artH * scale;
           const dx = minX + (bw - dw) / 2;
