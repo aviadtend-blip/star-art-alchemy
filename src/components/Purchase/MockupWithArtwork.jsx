@@ -164,7 +164,8 @@ export default function MockupWithArtwork({ mockupSrc, artworkSrc, alt = '', cla
 }
 
 function isGreenPixel(r, g, b) {
-  return g > 80 && g > r * 1.2 && g > b * 1.2;
+  // Strict green-screen detection: bright, saturated green with low red and blue
+  return g > 120 && r < 150 && b < 150 && g > r * 1.5 && g > b * 1.5;
 }
 
 function sampleNearbyColor(data, w, h, px, py) {
