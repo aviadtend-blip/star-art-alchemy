@@ -5,6 +5,7 @@ import { buildConcretePrompt } from '@/lib/prompts/promptBuilder.js';
 import { generateImage } from '@/lib/api/replicateClient';
 import { getStyleById } from '@/config/artStyles';
 import { supabase } from '@/integrations/supabase/client';
+import { analyzeArtwork } from '@/lib/explanations/analyzeArtwork';
 
 const GeneratorContext = createContext(null);
 
@@ -34,11 +35,12 @@ export function GeneratorProvider({ children }) {
   const [generationProgress, setGenerationProgress] = useState('');
   const [orderDetails, setOrderDetails] = useState(cached.orderDetails || null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [artworkAnalysis, setArtworkAnalysis] = useState(cached.artworkAnalysis || null);
 
   // Persist critical state to sessionStorage
   useEffect(() => {
-    saveSession({ chartData, formData, selectedStyle, generatedImage, orderDetails });
-  }, [chartData, formData, selectedStyle, generatedImage, orderDetails]);
+    saveSession({ chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis });
+  }, [chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis]);
 
   const handleFormSubmit = useCallback(async (data) => {
     try {
@@ -71,13 +73,22 @@ export function GeneratorProvider({ children }) {
 
       setGeneratedImage(imageUrl);
 
-      // Preload image before navigating to prevent flash of empty content
-      await new Promise((resolve) => {
-        const img = new Image();
-        img.onload = resolve;
-        img.onerror = resolve;
-        img.src = imageUrl;
-      });
+      // Run artwork analysis and image preload in parallel
+      setGenerationProgress('Preparing your artist notes...');
+      const [analysisResult] = await Promise.allSettled([
+        analyzeArtwork(imageUrl, chartData),
+        new Promise((resolve) => {
+          const img = new Image();
+          img.onload = resolve;
+          img.onerror = resolve;
+          img.src = imageUrl;
+        }),
+      ]);
+
+      // Store analysis if it succeeded (fallback is built into analyzeArtwork)
+      if (analysisResult.status === 'fulfilled' && analysisResult.value) {
+        setArtworkAnalysis(analysisResult.value);
+      }
 
       navigate('/generate/preview');
     } catch (err) {
@@ -148,6 +159,7 @@ export function GeneratorProvider({ children }) {
   const value = {
     chartData, formData, selectedStyle, generatedImage,
     error, generationProgress, orderDetails, isCheckingOut,
+    artworkAnalysis,
     setFormData, setChartData, setError,
     handleFormSubmit, handleStyleSelect, handleRetry,
     handleEditBirthData, handleBackToStyle, handleGetFramed,
