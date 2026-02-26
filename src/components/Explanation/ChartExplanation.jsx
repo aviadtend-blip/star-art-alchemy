@@ -94,8 +94,10 @@ export function ChartExplanation({
   formData,
   onEditBirthData,
   onBackToStyle,
+  artworkAnalysis,
 }) {
-  const explanation = generateChartExplanation(chartData);
+  // Use AI analysis if available, otherwise fall back to static rule-based explanations
+  const explanation = artworkAnalysis || generateChartExplanation(chartData);
   const [activeHotspot, setActiveHotspot] = useState(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
 
