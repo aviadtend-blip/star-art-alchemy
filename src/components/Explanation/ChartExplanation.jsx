@@ -8,15 +8,80 @@ import womanHolding from '@/assets/gallery/woman-holding.jpg';
 import lifestyleImg from '@/assets/gallery/lifestyle.jpg';
 
 /**
- * Hotspot positions on the artwork — will be dynamic later,
- * but using reasonable defaults for now.
+ * Fallback hotspot positions derived from the prompt positioning data.
+ * Used when AI vision doesn't return positions.
  */
-const HOTSPOT_POSITIONS = [
-  { top: '15%', left: '25%' },
-  { top: '35%', left: '70%' },
-  { top: '60%', left: '30%' },
-  { top: '78%', left: '65%' },
-];
+const SUN_POSITIONS = {
+  'Aries':       { top: '18%', left: '50%' },
+  'Taurus':      { top: '20%', left: '30%' },
+  'Gemini':      { top: '18%', left: '45%' },
+  'Cancer':      { top: '35%', left: '50%' },
+  'Leo':         { top: '30%', left: '50%' },
+  'Virgo':       { top: '30%', left: '35%' },
+  'Libra':       { top: '20%', left: '50%' },
+  'Scorpio':     { top: '45%', left: '65%' },
+  'Sagittarius': { top: '18%', left: '50%' },
+  'Capricorn':   { top: '15%', left: '50%' },
+  'Aquarius':    { top: '25%', left: '35%' },
+  'Pisces':      { top: '30%', left: '50%' },
+};
+
+const MOON_POSITIONS = {
+  'Aries':       { top: '55%', left: '60%' },
+  'Taurus':      { top: '65%', left: '45%' },
+  'Gemini':      { top: '50%', left: '55%' },
+  'Cancer':      { top: '50%', left: '50%' },
+  'Leo':         { top: '50%', left: '55%' },
+  'Virgo':       { top: '55%', left: '45%' },
+  'Libra':       { top: '55%', left: '50%' },
+  'Scorpio':     { top: '65%', left: '70%' },
+  'Sagittarius': { top: '40%', left: '60%' },
+  'Capricorn':   { top: '45%', left: '55%' },
+  'Aquarius':    { top: '50%', left: '65%' },
+  'Pisces':      { top: '60%', left: '45%' },
+};
+
+// Rising affects borders/composition — place hotspot at a framing edge
+const RISING_POSITIONS = {
+  'Aries':       { top: '40%', left: '85%' },
+  'Taurus':      { top: '75%', left: '25%' },
+  'Gemini':      { top: '35%', left: '80%' },
+  'Cancer':      { top: '70%', left: '30%' },
+  'Leo':         { top: '15%', left: '75%' },
+  'Virgo':       { top: '80%', left: '35%' },
+  'Libra':       { top: '45%', left: '85%' },
+  'Scorpio':     { top: '80%', left: '75%' },
+  'Sagittarius': { top: '25%', left: '80%' },
+  'Capricorn':   { top: '70%', left: '80%' },
+  'Aquarius':    { top: '20%', left: '80%' },
+  'Pisces':      { top: '75%', left: '70%' },
+};
+
+// Element palette — place in a color-dense area
+const ELEMENT_POSITIONS = {
+  'Fire':  { top: '78%', left: '55%' },
+  'Water': { top: '80%', left: '40%' },
+  'Earth': { top: '82%', left: '50%' },
+  'Air':   { top: '78%', left: '60%' },
+};
+
+function getStaticPositions(chartData) {
+  const sunSign = chartData?.sun?.sign || 'Leo';
+  const moonSign = chartData?.moon?.sign || 'Cancer';
+  const rising = chartData?.rising || 'Aries';
+  const dominantElement = chartData?.element_balance
+    ? Object.keys(chartData.element_balance).reduce((a, b) =>
+        chartData.element_balance[a] > chartData.element_balance[b] ? a : b
+      )
+    : 'Fire';
+
+  return [
+    SUN_POSITIONS[sunSign] || { top: '20%', left: '50%' },
+    MOON_POSITIONS[moonSign] || { top: '55%', left: '50%' },
+    RISING_POSITIONS[rising] || { top: '40%', left: '80%' },
+    ELEMENT_POSITIONS[dominantElement] || { top: '78%', left: '55%' },
+  ];
+}
 
 const TESTIMONIALS = [
   {
@@ -101,10 +166,12 @@ export function ChartExplanation({
   const [activeHotspot, setActiveHotspot] = useState(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
 
+  const staticPositions = getStaticPositions(chartData);
+
   const hotspots = explanation.elements.map((el, i) => ({
     ...el,
     id: i + 1,
-    position: HOTSPOT_POSITIONS[i] || { top: '50%', left: '50%' },
+    position: el.aiPosition || staticPositions[i] || { top: '50%', left: '50%' },
   }));
 
   const active = hotspots.find((h) => h.id === activeHotspot);

@@ -58,21 +58,33 @@ Write your response as JSON with this exact structure (no markdown, no backticks
 {
   "sun": {
     "explanation": "2-3 sentences as the artist explaining what you chose for the sun/central element and why their Sun in ${sunSign} inspired those specific visual choices. Reference what you ACTUALLY see in the image.",
-    "insight": "1-2 sentences about a specific visual technique or detail you're proud of in the sun area, and why it matters for this placement."
+    "insight": "1-2 sentences about a specific visual technique or detail you're proud of in the sun area, and why it matters for this placement.",
+    "position": { "top": <number 0-100>, "left": <number 0-100> }
   },
   "moon": {
     "explanation": "2-3 sentences as the artist explaining the moon element, atmospheric quality, and emotional texture you created, inspired by their Moon in ${moonSign}. Reference what you ACTUALLY see.",
-    "insight": "1-2 sentences about a specific creative decision in the moon/atmosphere area."
+    "insight": "1-2 sentences about a specific creative decision in the moon/atmosphere area.",
+    "position": { "top": <number 0-100>, "left": <number 0-100> }
   },
   "rising": {
     "explanation": "2-3 sentences as the artist explaining the overall composition style, framing, and aesthetic approach inspired by their ${rising} Rising. Reference the actual layout and style you see.",
-    "insight": "1-2 sentences about a compositional choice that reflects this rising sign."
+    "insight": "1-2 sentences about a compositional choice that reflects this rising sign.",
+    "position": { "top": <number 0-100>, "left": <number 0-100> }
   },
   "element": {
     "explanation": "2-3 sentences as the artist explaining the color palette and overall energy, inspired by their ${dominantElement}-dominant chart. Reference the actual colors and tones you see.",
-    "insight": "1-2 sentences about how the color relationships work throughout the piece."
+    "insight": "1-2 sentences about how the color relationships work throughout the piece.",
+    "position": { "top": <number 0-100>, "left": <number 0-100> }
   }
 }
+
+POSITION RULES:
+- For each element, set "position" to the approximate center of where that element appears in the image as a percentage (0=top/left edge, 100=bottom/right edge).
+- "sun" position: where the main sun or central bright focal element is located.
+- "moon" position: where the moon, crescent, or secondary celestial body is located.
+- "rising" position: pick a notable compositional or border/framing detail that reflects the rising sign style.
+- "element" position: pick a region where the dominant color palette is most visible or concentrated.
+- Spread the four positions so they don't overlap — keep at least 15 percentage points apart vertically.
 
 CRITICAL RULES:
 - Write in first person as the artist ("I chose...", "I wanted...", "I used...")
