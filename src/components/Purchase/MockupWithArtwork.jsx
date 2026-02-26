@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { findGreenBounds, isGreenPixel, sampleNearbyColor } from '../../lib/mockup/chromaKey';
 
 const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
 
@@ -163,48 +164,3 @@ export default function MockupWithArtwork({ mockupSrc, artworkSrc, alt = '', cla
   );
 }
 
-function isGreenPixel(r, g, b) {
-  // Strict green-screen detection: bright, saturated green with low red and blue
-  return g > 120 && r < 150 && b < 150 && g > r * 1.5 && g > b * 1.5;
-}
-
-function sampleNearbyColor(data, w, h, px, py) {
-  const offsets = [[-1,0],[1,0],[0,-1],[0,1],[-2,0],[2,0],[0,-2],[0,2]];
-  for (const [ox, oy] of offsets) {
-    const nx = px + ox, ny = py + oy;
-    if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
-      const ni = (ny * w + nx) * 4;
-      if (!isGreenPixel(data[ni], data[ni+1], data[ni+2])) {
-        return [data[ni], data[ni+1], data[ni+2]];
-      }
-    }
-  }
-  return [200, 200, 200];
-}
-
-/** Find the bounding box of the green-screen area */
-function findGreenBounds(data, w, h) {
-  let minX = w, minY = h, maxX = 0, maxY = 0;
-  let found = false;
-
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      const i = (y * w + x) * 4;
-      if (isGreenPixel(data[i], data[i + 1], data[i + 2])) {
-        if (x < minX) minX = x;
-        if (x > maxX) maxX = x;
-        if (y < minY) minY = y;
-        if (y > maxY) maxY = y;
-        found = true;
-      }
-    }
-  }
-
-  if (!found) return null;
-
-  // Sanity check: green area should be at least 5% of the image
-  const area = (maxX - minX) * (maxY - minY);
-  if (area < w * h * 0.02) return null;
-
-  return { minX, minY, maxX, maxY };
-}
