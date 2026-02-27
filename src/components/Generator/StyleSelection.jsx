@@ -9,7 +9,7 @@ import PopularTag from '@/components/ui/PopularTag';
 import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
 
 import boldImg from '@/assets/gallery/taurus-artwork.jpg';
-import minimalImg from '@/assets/gallery/capricorn-gallery.jpg';
+import minimalImg from '@/assets/gallery/cosmic-collision-preview.png';
 import organicImg from '@/assets/gallery/virgo-artwork.jpg';
 
 // Gallery images for the lightbox per style
@@ -31,7 +31,7 @@ const STYLE_GALLERY = {
 
 const STYLE_LABELS = {
   'bold-vibrant': { title: 'GALAXY BLOOM', sub: 'Bold & Vibrant' },
-  'minimal-architectural': { title: 'STELLAR BLUEPRINT', sub: 'Minimal & Architectural' },
+  'minimal-architectural': { title: 'COSMIC COLLISION', sub: 'Dramatic & Raw' },
   'organic-flowing': { title: 'NEBULA FLOW', sub: 'Organic & Flowing' },
 };
 
