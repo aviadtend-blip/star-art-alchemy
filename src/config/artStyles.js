@@ -13,10 +13,10 @@ export const ART_STYLES = [
   },
   {
     id: 'minimal-architectural',
-    name: 'Stellar Blueprint — Minimal & Architectural',
-    description: 'Clean lines, structured composition, and restrained palettes with precise geometric forms.',
-    model: 'aviadtend-blip/galaxy-bloom', // routes to same model for MVP
-    triggerWord: 'galaxybloom',
+    name: 'Cosmic Collision — Minimal & Architectural',
+    description: 'Explosive celestial collisions rendered in dramatic ink and color splatter with raw, visceral detail.',
+    model: 'aviadtend-blip/cosmic-collision',
+    triggerWord: 'cosmiccollision',
     preview: '🏛️',
     accentColor: 'from-slate-400 to-zinc-500',
     popular: true,
