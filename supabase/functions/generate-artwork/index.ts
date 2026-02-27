@@ -74,33 +74,42 @@ serve(async (req) => {
       lora_scale: 0.8,
     };
 
-    // First, fetch the latest version of the model (works for both public and private)
-    console.log('[generate-artwork] Fetching latest version for model:', replicateModel);
-    const versionsRes = await fetch(
-      `https://api.replicate.com/v1/models/${replicateModel}/versions`,
-      { headers: { 'Authorization': `Bearer ${REPLICATE_API_TOKEN}` } }
-    );
+    // Pin version per model
+    const versionMap: Record<string, string> = {
+      'aviadtend-blip/cosmic-collision': '3624a801628f200ccbaffb71190035f226d79eb7d28f56749d85f90281355df9',
+    };
 
     let createUrl: string;
     let createBody: Record<string, unknown>;
 
-    if (versionsRes.ok) {
-      const versionsData = await versionsRes.json();
-      const latestVersion = versionsData.results?.[0]?.id;
-      if (latestVersion) {
-        console.log('[generate-artwork] Using version:', latestVersion);
-        createUrl = 'https://api.replicate.com/v1/predictions';
-        createBody = { version: latestVersion, input: inputPayload };
+    const pinnedVersion = versionMap[replicateModel];
+    if (pinnedVersion) {
+      console.log('[generate-artwork] Using pinned version:', pinnedVersion, 'for model:', replicateModel);
+      createUrl = 'https://api.replicate.com/v1/predictions';
+      createBody = { version: pinnedVersion, input: inputPayload };
+    } else {
+      // For other models, fetch latest version dynamically
+      console.log('[generate-artwork] Fetching latest version for model:', replicateModel);
+      const versionsRes = await fetch(
+        `https://api.replicate.com/v1/models/${replicateModel}/versions`,
+        { headers: { 'Authorization': `Bearer ${REPLICATE_API_TOKEN}` } }
+      );
+
+      if (versionsRes.ok) {
+        const versionsData = await versionsRes.json();
+        const latestVersion = versionsData.results?.[0]?.id;
+        if (latestVersion) {
+          console.log('[generate-artwork] Using version:', latestVersion);
+          createUrl = 'https://api.replicate.com/v1/predictions';
+          createBody = { version: latestVersion, input: inputPayload };
+        } else {
+          createUrl = `https://api.replicate.com/v1/models/${replicateModel}/predictions`;
+          createBody = { input: inputPayload };
+        }
       } else {
-        // No versions found, try model endpoint as fallback
         createUrl = `https://api.replicate.com/v1/models/${replicateModel}/predictions`;
         createBody = { input: inputPayload };
       }
-    } else {
-      // Versions endpoint failed, try model endpoint directly
-      console.log('[generate-artwork] Versions endpoint failed, trying model endpoint');
-      createUrl = `https://api.replicate.com/v1/models/${replicateModel}/predictions`;
-      createBody = { input: inputPayload };
     }
 
     const createResponse = await fetch(createUrl, {
