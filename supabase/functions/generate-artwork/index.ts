@@ -63,14 +63,15 @@ serve(async (req) => {
     console.log('[generate-artwork] Model:', model || 'default');
 
     const replicateModel = model || 'aviadtend-blip/galaxy-bloom';
-    const inputPayload = {
+    const inputPayload: Record<string, unknown> = {
       prompt,
       aspect_ratio: aspectRatio || '3:4',
       num_outputs: 1,
-      num_inference_steps: 28,
-      guidance_scale: 3.5,
+      num_inference_steps: 45,
+      guidance_scale: 4.0,
       output_format: 'png',
       output_quality: 90,
+      lora_scale: 0.8,
     };
 
     // First, fetch the latest version of the model (works for both public and private)
