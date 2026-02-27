@@ -9,9 +9,50 @@ export async function buildConcretePrompt(chartData, style) {
   const moonVisuals = CONCRETE_MOON_VISUALS[chartData.moon.sign];
   const risingVisuals = CONCRETE_RISING_VISUALS[chartData.rising];
 
-  const aiNarrative = await getAIInterpretation(chartData);
+  let prompt;
 
-  const prompt = `${triggerWord}
+  // For LoRA styles: short, trigger-word-first prompt (~300-500 chars)
+  // This keeps the LoRA's learned style dominant
+  if (triggerWord !== 'galaxybloom') {
+    prompt = buildShortLoRAPrompt(triggerWord, chartData, sunVisuals, moonVisuals, risingVisuals);
+  } else {
+    // Galaxy Bloom: use the full detailed prompt (original behavior)
+    const aiNarrative = await getAIInterpretation(chartData);
+    prompt = buildFullPrompt(triggerWord, chartData, sunVisuals, moonVisuals, risingVisuals, aiNarrative);
+  }
+
+  if (import.meta.env.DEV) {
+    console.log('🎨 Built prompt for:', {
+      sun: chartData.sun.sign,
+      moon: chartData.moon.sign,
+      rising: chartData.rising,
+      style: triggerWord,
+      length: prompt.length,
+    });
+  }
+
+  return prompt;
+}
+
+/**
+ * Short prompt for LoRA-trained styles (~300-500 chars).
+ * Trigger word FIRST, then concise visual direction.
+ */
+function buildShortLoRAPrompt(triggerWord, chartData, sunVisuals, moonVisuals, risingVisuals) {
+  const sunCore = sunVisuals.circleDescription.split('.')[0]; // first sentence only
+  const moonCore = moonVisuals.circleDescription.split('.')[0];
+  const shape = getOverallShape(chartData.rising);
+
+  return `${triggerWord}
+
+${sunCore}. ${moonCore}. ${shape}, ${risingVisuals.overallEnergy}. Botanicals: ${sunVisuals.botanicals}.`;
+}
+
+/**
+ * Full detailed prompt for Galaxy Bloom (original behavior).
+ */
+function buildFullPrompt(triggerWord, chartData, sunVisuals, moonVisuals, risingVisuals, aiNarrative) {
+  return `${triggerWord}
 
 WHO THIS PERSON IS:
 ${aiNarrative}
@@ -37,16 +78,6 @@ Aesthetic: ${risingVisuals.overallEnergy}
 
 SPATIAL ARRANGEMENT:
 ${getSpatialArrangement(chartData.sun.sign, chartData.moon.sign, chartData.rising)}`;
-
-  if (import.meta.env.DEV) {
-    console.log('🎨 Built concrete visual prompt for:', {
-      sun: chartData.sun.sign,
-      moon: chartData.moon.sign,
-      rising: chartData.rising
-    });
-  }
-
-  return prompt;
 }
 
 // Keep backward-compatible export name
