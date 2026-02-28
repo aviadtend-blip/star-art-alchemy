@@ -302,15 +302,16 @@ export function ChartExplanation({
       {/* Main content */}
       <div className="flex-1">
 
-        {/* Fixed fade overlay — flush with progress bar bottom */}
+        {/* Fixed white strip + fade that starts exactly at header/progress bar bottom */}
         <div
-          className="hidden md:block fixed left-1/2 right-0 pointer-events-none z-30"
-          style={{
-            top: '115px',
-            height: '40px',
-            background: 'linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)',
-          }}
-        />
+          className="hidden md:block fixed left-1/2 right-0 pointer-events-none z-35"
+          style={{ top: '0', height: '156px' }}
+        >
+          {/* Solid white covers everything behind the header */}
+          <div style={{ height: '116px', background: 'white' }} />
+          {/* Fade from white to transparent */}
+          <div style={{ height: '40px', background: 'linear-gradient(to bottom, white, transparent)' }} />
+        </div>
 
         {/* ===== DESKTOP LAYOUT: sticky artwork left + scrolling explanations right ===== */}
         <div className="hidden md:flex max-w-6xl mx-auto px-8 pt-12 gap-12 items-start">
