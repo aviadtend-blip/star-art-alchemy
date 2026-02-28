@@ -166,6 +166,7 @@ export function ChartExplanation({
   const [activeHotspot, setActiveHotspot] = useState(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const artworkRef = useRef(null);
+  const rightContentRef = useRef(null);
   const [rightPadding, setRightPadding] = useState(0);
 
   const staticPositions = getStaticPositions(chartData);
@@ -191,17 +192,19 @@ export function ChartExplanation({
   // Measure artwork height and compute bottom padding for right column
   // so the last card's bottom aligns with the artwork's bottom
   useEffect(() => {
-    const el = artworkRef.current;
-    if (!el) return;
+    const artworkEl = artworkRef.current;
+    const rightEl = rightContentRef.current;
+    if (!artworkEl || !rightEl) return;
     const update = () => {
-      const artworkHeight = el.offsetHeight;
-      // Right column should have enough padding so content extends to match artwork bottom
-      setRightPadding(artworkHeight);
+      const artworkH = artworkEl.offsetHeight;
+      const rightH = rightEl.scrollHeight;
+      const diff = Math.max(0, artworkH - rightH);
+      setRightPadding(diff);
     };
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
-  }, [selectedImage]);
+  }, [selectedImage, hotspots]);
 
   // Desktop: IntersectionObserver to highlight hotspot when card scrolls into view
   useEffect(() => {
@@ -342,7 +345,7 @@ export function ChartExplanation({
           </div>
 
           {/* Right: heading + scrolling explanation cards */}
-          <div className="w-1/2" style={{ paddingBottom: rightPadding > 0 ? `${rightPadding * 0.15}px` : '0', maskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)' }}>
+          <div className="w-1/2" ref={rightContentRef} style={{ paddingBottom: `${rightPadding}px`, maskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)' }}>
             <h1 className="text-a1 text-surface-foreground font-display mb-3">
               Meet Your Cosmic Masterpiece
             </h1>
