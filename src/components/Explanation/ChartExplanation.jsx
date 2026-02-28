@@ -296,6 +296,16 @@ export function ChartExplanation({
       {/* Main content */}
       <div className="flex-1">
 
+        {/* Fixed fade overlay for right column content scrolling under header */}
+        <div
+          className="hidden md:block fixed left-1/2 right-0 pointer-events-none z-30"
+          style={{
+            top: '116px',
+            height: '50px',
+            background: 'linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)',
+          }}
+        />
+
         {/* ===== DESKTOP LAYOUT: sticky artwork left + scrolling explanations right ===== */}
         <div className="hidden md:flex max-w-6xl mx-auto px-8 pt-12 gap-12 items-start">
           {/* Left: sticky artwork centered vertically on screen */}
@@ -345,7 +355,7 @@ export function ChartExplanation({
           </div>
 
           {/* Right: heading + scrolling explanation cards */}
-          <div className="w-1/2" ref={rightContentRef} style={{ maskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)' }}>
+          <div className="w-1/2 relative" ref={rightContentRef}>
             <h1 className="text-a1 text-surface-foreground font-display mb-3">
               Meet Your Cosmic Masterpiece
             </h1>
