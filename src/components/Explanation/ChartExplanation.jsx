@@ -325,7 +325,7 @@ export function ChartExplanation({
     return () => window.removeEventListener('scroll', onScroll);
   }, [hotspots]);
 
-  // Sync scroll position to active hotspot on artwork
+  // Sync scroll position to active hotspot on artwork (mobile)
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -347,14 +347,14 @@ export function ChartExplanation({
         }
       });
 
-      if (closestId !== null && closestId !== activeHotspot) {
+      if (closestId !== null) {
         setActiveHotspot(closestId);
       }
     };
 
     container.addEventListener('scroll', handleScroll, { passive: true });
     return () => container.removeEventListener('scroll', handleScroll);
-  }, [hotspots, activeHotspot]);
+  }, [hotspots]);
 
   // Scroll to card when hotspot marker is tapped
   const scrollToCard = (id) => {
