@@ -301,27 +301,28 @@ export function ChartExplanation({
     return () => window.removeEventListener('resize', update);
   }, [selectedImage, hotspots]);
 
-  // Desktop: IntersectionObserver to highlight hotspot when card scrolls into view
+  // Desktop: highlight hotspot for the highest (topmost) visible description card
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const idx = desktopCardRefs.current.indexOf(entry.target);
-            if (idx !== -1 && hotspots[idx]) {
-              setActiveHotspot(hotspots[idx].id);
-            }
-          }
-        });
-      },
-      { threshold: 0.6, rootMargin: '-20% 0px -20% 0px' }
-    );
-
-    desktopCardRefs.current.forEach((el) => {
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
+    const headerOffset = 140; // below fixed header + progress bar
+    const onScroll = () => {
+      let bestIdx = 0;
+      let bestTop = Infinity;
+      desktopCardRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const top = el.getBoundingClientRect().top - headerOffset;
+        // Find the first card whose top is closest to (but not far above) the header
+        if (top >= -el.offsetHeight / 2 && top < bestTop) {
+          bestTop = top;
+          bestIdx = i;
+        }
+      });
+      if (hotspots[bestIdx]) {
+        setActiveHotspot(hotspots[bestIdx].id);
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
   }, [hotspots]);
 
   // Sync scroll position to active hotspot on artwork
