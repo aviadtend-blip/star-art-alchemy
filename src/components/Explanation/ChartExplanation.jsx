@@ -165,6 +165,8 @@ export function ChartExplanation({
   const explanation = artworkAnalysis || generateChartExplanation(chartData);
   const [activeHotspot, setActiveHotspot] = useState(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
+  const artworkRef = useRef(null);
+  const [rightPadding, setRightPadding] = useState(0);
 
   const staticPositions = getStaticPositions(chartData);
 
@@ -185,6 +187,21 @@ export function ChartExplanation({
       setActiveHotspot(hotspots[0].id);
     }
   }, [hotspots]);
+
+  // Measure artwork height and compute bottom padding for right column
+  // so the last card's bottom aligns with the artwork's bottom
+  useEffect(() => {
+    const el = artworkRef.current;
+    if (!el) return;
+    const update = () => {
+      const artworkHeight = el.offsetHeight;
+      // Right column should have enough padding so content extends to match artwork bottom
+      setRightPadding(artworkHeight);
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [selectedImage]);
 
   // Desktop: IntersectionObserver to highlight hotspot when card scrolls into view
   useEffect(() => {
@@ -280,7 +297,7 @@ export function ChartExplanation({
         <div className="hidden md:flex max-w-6xl mx-auto px-8 pt-12 gap-12 items-start">
           {/* Left: sticky artwork centered vertically on screen */}
           <div className="w-1/2 flex-shrink-0 sticky" style={{ top: 'calc(116px + (100vh - 116px) / 2)', transform: 'translateY(-50%)', height: 'fit-content' }}>
-            <div className="relative">
+            <div className="relative" ref={artworkRef}>
                 <img
                   src={selectedImage}
                   alt={`Birth chart artwork for ${chartData.sun.sign} Sun`}
@@ -325,7 +342,7 @@ export function ChartExplanation({
           </div>
 
           {/* Right: heading + scrolling explanation cards */}
-          <div className="w-1/2" style={{ maskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)' }}>
+          <div className="w-1/2" style={{ paddingBottom: rightPadding > 0 ? `${rightPadding * 0.5}px` : '0', maskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)' }}>
             <h1 className="text-a1 text-surface-foreground font-display mb-3">
               Meet Your Cosmic Masterpiece
             </h1>
