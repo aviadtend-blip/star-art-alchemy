@@ -1,9 +1,19 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import { ChartExplanation } from '@/components/Explanation/ChartExplanation';
+import { analyzeArtwork } from '@/lib/explanations/analyzeArtwork';
 
 import taurusExample from '@/assets/gallery/taurus-example.jpg';
+import demoImage from '@/assets/gallery/demo-cosmic-collision.webp';
+
+const DEMO_CHART = {
+  sun: { sign: 'Scorpio', house: 8 },
+  moon: { sign: 'Pisces', house: 12 },
+  rising: 'Capricorn',
+  element_balance: { Fire: 1, Water: 5, Earth: 3, Air: 1 },
+  aspects: [],
+};
 
 export default function GeneratePreview() {
   const navigate = useNavigate();
@@ -13,24 +23,28 @@ export default function GeneratePreview() {
     artworkAnalysis,
   } = useGenerator();
 
+  const [demoAnalysis, setDemoAnalysis] = useState(null);
+
+  const isDemo = !chartData;
+  const displayChart = chartData || DEMO_CHART;
+  const displayImage = generatedImage || (isDemo ? demoImage : taurusExample);
+
+  // Run AI analysis for demo mode
   useEffect(() => {
-    if (!chartData) navigate('/');
-  }, [chartData, navigate]);
-
-  if (!chartData) return null;
-
-  const displayChart = chartData;
-  const displayImage = generatedImage || taurusExample;
+    if (isDemo && !demoAnalysis) {
+      analyzeArtwork(demoImage, DEMO_CHART).then(setDemoAnalysis).catch(console.error);
+    }
+  }, [isDemo, demoAnalysis]);
 
   return (
     <ChartExplanation
       chartData={displayChart}
       selectedImage={displayImage}
-      onGetFramed={handleGetFramed}
+      onGetFramed={handleGetFramed || (() => navigate('/generate/size'))}
       formData={formData}
-      onEditBirthData={handleEditBirthData}
-      onBackToStyle={handleBackToStyle}
-      artworkAnalysis={artworkAnalysis}
+      onEditBirthData={handleEditBirthData || (() => navigate('/'))}
+      onBackToStyle={handleBackToStyle || (() => navigate('/generate/style'))}
+      artworkAnalysis={isDemo ? demoAnalysis : artworkAnalysis}
     />
   );
 }
