@@ -345,7 +345,7 @@ export function ChartExplanation({
           </div>
 
           {/* Right: heading + scrolling explanation cards */}
-          <div className="w-1/2" ref={rightContentRef} style={{ paddingBottom: `${rightPadding}px`, maskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)' }}>
+          <div className="w-1/2" ref={rightContentRef} style={{ maskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)' }}>
             <h1 className="text-a1 text-surface-foreground font-display mb-3">
               Meet Your Cosmic Masterpiece
             </h1>
@@ -393,6 +393,65 @@ export function ChartExplanation({
                   </p>
                 </div>
               ))}
+            </div>
+
+            {/* CTA Banner — inside right column on desktop */}
+            <div
+              className="mt-8 py-12 px-6 text-center bg-cover bg-center rounded-sm"
+              style={{ backgroundImage: `url(${galaxyBg})`, backgroundColor: '#121212' }}
+            >
+              <HangingFrameIcon />
+              <div className="max-w-md mx-auto space-y-4">
+                <h2 className="text-a1 text-white font-display">
+                  Frame it. Hang it.{'\n'}Treasure it forever
+                </h2>
+                <p className="text-body font-body text-white/70">
+                  Museum-grade archival canvas. Gallery-quality 12-color printing.{'\n'}Ready to display. Built to last 100 years.
+                </p>
+                <div className="space-y-3 pt-2">
+                  <button
+                    onClick={onGetFramed}
+                    className="btn-base btn-primary w-full"
+                  >
+                    Select Size Options ($79 - $179)
+                  </button>
+                  <button
+                    onClick={() => setShowEmailModal(true)}
+                    className="btn-base w-full"
+                    style={{
+                      backgroundColor: '#333333',
+                      color: '#FFFFFF',
+                      border: 'none',
+                    }}
+                  >
+                    Download Preview (Free)
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Trust badges — inside right column on desktop */}
+            <div className="py-6 text-center space-y-3">
+              <p className="text-body-sm font-body text-surface-foreground">
+                ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
+              </p>
+              <div
+                className="py-3 px-4 text-center"
+                style={{ backgroundColor: '#DAEEFF', borderRadius: '2px' }}
+              >
+                <p className="text-body-sm font-body" style={{ color: '#333333' }}>
+                  🚀 Order by 5pm for same-day processing
+                </p>
+              </div>
+              {onBackToStyle && (
+                <button
+                  onClick={onBackToStyle}
+                  className="btn-base btn-tertiary"
+                  style={{ color: '#333333' }}
+                >
+                  ↻ Try a Different Style
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -506,9 +565,9 @@ export function ChartExplanation({
           </div>
         </div>
 
-        {/* CTA Banner — dark with starfield */}
+        {/* CTA Banner — mobile only (desktop version is inside right column) */}
         <div
-          className="mt-12 py-12 px-6 text-center bg-cover bg-center"
+          className="md:hidden mt-12 py-12 px-6 text-center bg-cover bg-center"
           style={{ backgroundImage: `url(${galaxyBg})`, backgroundColor: '#121212' }}
         >
           <HangingFrameIcon />
@@ -541,8 +600,8 @@ export function ChartExplanation({
           </div>
         </div>
 
-        {/* Trust badges */}
-        <div className="px-6 py-6 text-center space-y-3">
+        {/* Trust badges — mobile only */}
+        <div className="md:hidden px-6 py-6 text-center space-y-3">
           <p className="text-body-sm font-body text-surface-foreground">
             ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
           </p>
