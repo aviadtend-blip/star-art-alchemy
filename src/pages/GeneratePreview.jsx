@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import { ChartExplanation } from '@/components/Explanation/ChartExplanation';
 import { analyzeArtwork } from '@/lib/explanations/analyzeArtwork';
+import { getNextVariation } from '@/lib/api/replicateClient';
 
 import taurusExample from '@/assets/gallery/taurus-example.jpg';
 import demoImage from '@/assets/gallery/demo-cosmic-collision.webp';
@@ -15,7 +16,6 @@ const DEMO_CHART = {
   aspects: [],
 };
 
-// Public URL for the edge function to fetch (local imports can't be fetched server-side)
 const DEMO_IMAGE_PUBLIC_URL = 'https://zuzbwklzmcrszdjyepqe.supabase.co/storage/v1/object/public/demo-assets/demo-cosmic-collision.webp';
 
 export default function GeneratePreview() {
@@ -23,10 +23,11 @@ export default function GeneratePreview() {
   const {
     chartData, generatedImage, formData,
     handleGetFramed, handleEditBirthData, handleBackToStyle,
-    artworkAnalysis,
+    artworkAnalysis, setGeneratedImage,
   } = useGenerator();
 
   const [demoAnalysis, setDemoAnalysis] = useState(null);
+  const [isReimagining, setIsReimagining] = useState(false);
 
   const isDemo = !chartData;
   const displayChart = chartData || DEMO_CHART;
@@ -39,6 +40,21 @@ export default function GeneratePreview() {
     }
   }, [isDemo, demoAnalysis]);
 
+  const handleReimagine = useCallback(() => {
+    if (isDemo) return;
+    const next = getNextVariation();
+    if (next) {
+      setIsReimagining(true);
+      const img = new Image();
+      img.onload = () => {
+        setGeneratedImage(next.imageUrl);
+        setIsReimagining(false);
+      };
+      img.onerror = () => setIsReimagining(false);
+      img.src = next.imageUrl;
+    }
+  }, [isDemo, setGeneratedImage]);
+
   return (
     <ChartExplanation
       chartData={displayChart}
@@ -48,6 +64,8 @@ export default function GeneratePreview() {
       onEditBirthData={handleEditBirthData || (() => navigate('/'))}
       onBackToStyle={handleBackToStyle || (() => navigate('/generate/style'))}
       artworkAnalysis={isDemo ? demoAnalysis : artworkAnalysis}
+      onReimagine={!isDemo ? handleReimagine : undefined}
+      isReimagining={isReimagining}
     />
   );
 }

@@ -249,6 +249,8 @@ export function ChartExplanation({
   onEditBirthData,
   onBackToStyle,
   artworkAnalysis,
+  onReimagine,
+  isReimagining,
 }) {
   // Use AI analysis if available, otherwise fall back to static rule-based explanations
   const explanation = artworkAnalysis || generateChartExplanation(chartData);
@@ -553,6 +555,16 @@ export function ChartExplanation({
                   🚀 Order by 5pm for same-day processing
                 </p>
               </div>
+              {onReimagine && (
+                <button
+                  onClick={onReimagine}
+                  disabled={isReimagining}
+                  className="btn-base btn-tertiary"
+                  style={{ color: '#333333' }}
+                >
+                  {isReimagining ? '↻ Loading...' : '↻ Reimagine'}
+                </button>
+              )}
               {onBackToStyle && (
                 <button
                   onClick={onBackToStyle}
@@ -726,6 +738,16 @@ export function ChartExplanation({
               🚀 Order by 5pm for same-day processing
             </p>
           </div>
+          {onReimagine && (
+            <button
+              onClick={onReimagine}
+              disabled={isReimagining}
+              className="btn-base btn-tertiary"
+              style={{ color: '#333333' }}
+            >
+              {isReimagining ? '↻ Loading...' : '↻ Reimagine'}
+            </button>
+          )}
           {onBackToStyle && (
             <button
               onClick={onBackToStyle}
