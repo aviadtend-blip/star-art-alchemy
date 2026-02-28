@@ -452,24 +452,26 @@ export function ChartExplanation({
 
           {/* Right: heading + scrolling explanation cards */}
           <div className="w-1/2 relative" ref={rightContentRef}>
-           <div ref={rightInnerRef}>
-            <h1 className="text-a1 text-surface-foreground font-display mb-3">
-              Meet Your Cosmic Masterpiece
-            </h1>
-            <p className="text-body font-body text-surface-muted mb-10">
-              Every symbol, color, and shape represents your exact planetary positions at birth.
-            </p>
+           <div ref={rightInnerRef} className="flex flex-col gap-10">
+            <div className="flex flex-col gap-2.5">
+              <h1 className="text-a1 text-surface-foreground font-display">
+                Meet Your Cosmic Masterpiece
+              </h1>
+              <p className="text-body font-body text-surface-muted">
+                Every symbol, color, and shape represents your exact planetary positions at birth.
+              </p>
+            </div>
 
-            <div className="space-y-0">
+            <div className="flex flex-col gap-5">
               {hotspots.map((h, i) => (
                 <div
                   key={h.id}
                   id={`desktop-hotspot-${h.id}`}
                   ref={(el) => (desktopCardRefs.current[i] = el)}
-                  className={`pb-8 mb-8 ${i > 0 ? 'pt-4' : ''}`}
-                  style={{ borderBottom: i < hotspots.length - 1 ? '1px solid rgba(0, 0, 0, 0.12)' : 'none' }}
+                  className="w-full pt-4"
+                  style={{ borderTop: '1px solid rgba(0, 0, 0, 0.12)' }}
                 >
-                  <div className="flex items-center gap-3 mb-4">
+                  <div className="flex items-center gap-3 mb-5">
                     <span
                       className="flex items-center justify-center font-body flex-shrink-0"
                       style={{
@@ -479,12 +481,13 @@ export function ChartExplanation({
                         border: '1px solid rgba(0, 0, 0, 0.1)',
                         fontSize: 13,
                         color: '#000',
+                        backgroundColor: 'rgba(255,255,255,0.5)',
                       }}
                     >
                       {h.id}
                     </span>
-                    <div>
-                      <p className="text-subtitle font-display text-surface-foreground uppercase tracking-wider" style={{ fontSize: 11 }}>
+                    <div className="flex flex-col gap-1">
+                      <p className="text-subtitle font-display text-surface-foreground uppercase tracking-normal" style={{ fontSize: 11 }}>
                         {h.title.split('·')[0]?.trim() || h.title}
                       </p>
                       <p className="text-a5 font-display text-surface-foreground" style={{ fontFamily: 'var(--font-serif, Erode, serif)', fontWeight: 600 }}>
