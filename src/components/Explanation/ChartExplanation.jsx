@@ -466,7 +466,7 @@ export function ChartExplanation({
                   key={h.id}
                   id={`desktop-hotspot-${h.id}`}
                   ref={(el) => (desktopCardRefs.current[i] = el)}
-                  className="pb-8 mb-8"
+                  className={`pb-8 mb-8 ${i > 0 ? 'pt-4' : ''}`}
                   style={{ borderBottom: i < hotspots.length - 1 ? '1px solid rgba(0, 0, 0, 0.12)' : 'none' }}
                 >
                   <div className="flex items-center gap-3 mb-4">
