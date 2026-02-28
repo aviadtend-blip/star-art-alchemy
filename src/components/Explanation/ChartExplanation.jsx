@@ -315,45 +315,52 @@ export function ChartExplanation({
           {/* Horizontal scroll explanation cards */}
           <div
             ref={scrollContainerRef}
-            className="flex gap-4 overflow-x-auto scrollbar-hide -mx-6 px-6 snap-x snap-mandatory mt-6 pb-2"
-            style={{ scrollPaddingInline: '24px' }}
+            className="flex overflow-x-auto scrollbar-hide -mx-6 px-6 snap-x snap-mandatory mt-6 pb-2"
+            style={{ scrollPaddingInline: '24px', gap: '20px' }}
           >
             {hotspots.map((h, i) => (
               <div
                 key={h.id}
                 ref={(el) => (cardRefs.current[i] = el)}
-                className="flex-shrink-0 snap-center"
+                className="flex-shrink-0 snap-center flex"
                 style={{ width: 'calc(100vw - 80px)', maxWidth: 340 }}
               >
-                <div className="flex items-center gap-2 mb-3">
-                  <span
-                    className="flex items-center justify-center font-body"
-                    style={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: 41,
-                      border: '1px solid rgba(0, 0, 0, 0.1)',
-                      fontSize: 12,
-                      color: '#000',
-                    }}
-                  >
-                    {h.id}
-                  </span>
-                  <div>
-                    <p className="text-subtitle font-display text-surface-foreground uppercase tracking-wider" style={{ fontSize: 11 }}>
-                      {h.title.split('·')[0]?.trim() || h.title}
-                    </p>
-                    <p className="text-a5 font-display text-surface-foreground" style={{ fontFamily: 'var(--font-serif, Erode, serif)' }}>
-                      {h.title.split('·')[1]?.trim() || ''}
-                    </p>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span
+                      className="flex items-center justify-center font-body"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: 41,
+                        border: '1px solid rgba(0, 0, 0, 0.1)',
+                        fontSize: 12,
+                        color: '#000',
+                      }}
+                    >
+                      {h.id}
+                    </span>
+                    <div>
+                      <p className="text-subtitle font-display text-surface-foreground uppercase tracking-wider" style={{ fontSize: 11 }}>
+                        {h.title.split('·')[0]?.trim() || h.title}
+                      </p>
+                      <p className="text-a5 font-display text-surface-foreground" style={{ fontFamily: 'var(--font-serif, Erode, serif)' }}>
+                        {h.title.split('·')[1]?.trim() || ''}
+                      </p>
+                    </div>
                   </div>
+                  <p className="text-body font-body text-surface-muted leading-relaxed mb-2">
+                    {h.explanation}
+                  </p>
+                  <p className="text-body font-body text-surface-muted leading-relaxed">
+                    {h.meaning}
+                  </p>
                 </div>
-                <p className="text-body font-body text-surface-muted leading-relaxed mb-2">
-                  {h.explanation}
-                </p>
-                <p className="text-body font-body text-surface-muted leading-relaxed">
-                  {h.meaning}
-                </p>
+                {/* Vertical divider */}
+                <div
+                  className="flex-shrink-0 self-stretch"
+                  style={{ width: 1, backgroundColor: 'rgba(0, 0, 0, 0.12)', marginLeft: 16 }}
+                />
               </div>
             ))}
           </div>
