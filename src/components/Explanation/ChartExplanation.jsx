@@ -251,6 +251,7 @@ export function ChartExplanation({
   artworkAnalysis,
   onReimagine,
   isReimagining,
+  variationsExhausted,
 }) {
   // Use AI analysis if available, otherwise fall back to static rule-based explanations
   const explanation = artworkAnalysis || generateChartExplanation(chartData);
@@ -562,7 +563,7 @@ export function ChartExplanation({
                   className="btn-base btn-tertiary"
                   style={{ color: '#333333' }}
                 >
-                  {isReimagining ? '↻ Loading...' : '↻ Reimagine'}
+                  {isReimagining ? '↻ Loading...' : variationsExhausted ? '✦ Generate New Artwork' : '↻ Reimagine'}
                 </button>
               )}
               {onBackToStyle && (
@@ -745,7 +746,7 @@ export function ChartExplanation({
               className="btn-base btn-tertiary"
               style={{ color: '#333333' }}
             >
-              {isReimagining ? '↻ Loading...' : '↻ Reimagine'}
+              {isReimagining ? '↻ Loading...' : variationsExhausted ? '✦ Generate New Artwork' : '↻ Reimagine'}
             </button>
           )}
           {onBackToStyle && (
