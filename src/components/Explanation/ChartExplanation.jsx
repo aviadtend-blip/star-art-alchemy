@@ -542,7 +542,7 @@ export function ChartExplanation({
             </div>
 
             {/* Trust badges — inside right column on desktop */}
-            <div className="py-6 text-center space-y-3">
+            <div className="pb-6 text-center space-y-3" style={{ paddingTop: 32 }}>
               <p className="text-body-sm font-body text-surface-foreground">
                 ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
               </p>
@@ -566,7 +566,9 @@ export function ChartExplanation({
              </div>
 
              {/* Testimonials — desktop with arrows */}
-             <TestimonialsSection showArrows />
+             <div style={{ paddingTop: 48 }}>
+               <TestimonialsSection showArrows />
+             </div>
            </div>
           </div>
         </div>
@@ -716,7 +718,7 @@ export function ChartExplanation({
         </div>
 
         {/* Trust badges — mobile only */}
-        <div className="md:hidden px-6 pb-6 text-center space-y-3" style={{ paddingTop: 32 }}>
+        <div className="md:hidden px-6 py-6 text-center space-y-3">
           <p className="text-body-sm font-body text-surface-foreground">
             ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
           </p>
@@ -740,7 +742,7 @@ export function ChartExplanation({
          </div>
 
          {/* Testimonials — mobile */}
-         <div className="md:hidden px-6" style={{ paddingTop: 48 }}>
+         <div className="md:hidden px-6">
            <TestimonialsSection />
          </div>
        </div>
