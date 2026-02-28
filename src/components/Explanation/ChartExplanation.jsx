@@ -342,7 +342,7 @@ export function ChartExplanation({
           </div>
 
           {/* Right: heading + scrolling explanation cards */}
-          <div className="w-1/2" style={{ paddingBottom: rightPadding > 0 ? `${rightPadding * 0.5}px` : '0', maskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)' }}>
+          <div className="w-1/2" style={{ paddingBottom: rightPadding > 0 ? `${rightPadding * 0.15}px` : '0', maskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)' }}>
             <h1 className="text-a1 text-surface-foreground font-display mb-3">
               Meet Your Cosmic Masterpiece
             </h1>
