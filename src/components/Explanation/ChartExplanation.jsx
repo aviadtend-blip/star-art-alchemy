@@ -275,7 +275,7 @@ export function ChartExplanation({
       <div className="flex-1">
 
         {/* ===== DESKTOP LAYOUT: sticky artwork left + scrolling explanations right ===== */}
-        <div className="hidden lg:flex max-w-6xl mx-auto px-8 pt-12 gap-12">
+        <div className="hidden md:flex max-w-6xl mx-auto px-8 pt-12 gap-12">
           {/* Left: sticky artwork */}
           <div className="w-1/2 flex-shrink-0">
             <div className="sticky top-8">
@@ -378,7 +378,7 @@ export function ChartExplanation({
         </div>
 
         {/* ===== MOBILE LAYOUT: horizontal scroll carousel ===== */}
-        <div className="lg:hidden">
+        <div className="md:hidden">
           {/* Hero heading */}
           <div className="text-center px-6 pt-12 pb-8">
             <h1 className="text-a1 text-surface-foreground font-display mb-3">
