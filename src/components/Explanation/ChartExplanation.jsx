@@ -451,7 +451,7 @@ export function ChartExplanation({
           </div>
 
           {/* Right: heading + scrolling explanation cards */}
-          <div className="w-1/2 relative" ref={rightContentRef} style={{ paddingBottom: `${rightPadding}px` }}>
+          <div className="w-1/2 relative" ref={rightContentRef}>
            <div ref={rightInnerRef}>
             <h1 className="text-a1 text-surface-foreground font-display mb-3">
               Meet Your Cosmic Masterpiece
