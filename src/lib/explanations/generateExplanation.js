@@ -75,20 +75,20 @@ function getElementIcon(element) {
 
 function getSunArtistNote(sign, visuals) {
   const notes = {
-    'Aries': `Your ${sign} Sun called for something bold at the center — a fierce, blazing sun with sharp rays that feel like they're breaking through the canvas. I surrounded it with red poppies and angular florals to capture that raw, pioneering energy your chart radiates.`,
-    'Taurus': `A ${sign} Sun needs weight and warmth, so I anchored the piece with a rich golden sun that feels almost tangible. The lush dahlias and full roses clustered around it were inspired by the abundant, sensual quality your chart carries.`,
-    'Gemini': `Your ${sign} Sun is one of the most fun to work with — I used twin suns and paired elements throughout the composition. The butterflies and light, airy florals reflect that quick, curious energy your chart gives off.`,
-    'Cancer': `For a ${sign} Sun, I wanted something that feels like a warm embrace. The silvery-white sun sits at the center with soft concentric ripples radiating outward, and the gentle peonies and roses create a sense of shelter and tenderness.`,
-    'Leo': `A ${sign} Sun demands center stage — so I gave it exactly that. The radiant golden sun dominates the composition with dramatic, mane-like rays. Bold sunflowers and oversized dahlias arranged in a crown-like pattern echo that natural regality in your chart.`,
-    'Virgo': `Your ${sign} Sun inspired the precision you see throughout this piece. Every flower is placed with intention, every wheat stalk aligned just so. The soft honey-golden sun has a quiet elegance — refined rather than loud, exactly like this placement suggests.`,
-    'Libra': `A ${sign} Sun is all about harmony, which is why you'll notice the perfect bilateral symmetry in this piece. The rose-gold sun sits center-top, and every floral element on the left is mirrored on the right — that innate sense of balance in your chart guided every placement.`,
-    'Scorpio': `Your ${sign} Sun drew me toward depth and intensity. The sun here isn't bright and cheerful — it's a deep burgundy-purple form, almost magnetic. Dark roses and rich magentas surround it, and the shadows aren't accidental — they're essential to capturing the transformative power in your chart.`,
-    'Sagittarius': `A ${sign} Sun needs room to breathe, so I built the composition with open horizons and mountain peaks stretching into the distance. The warm orange-gold sun radiates expansively — this placement has a restless, adventurous quality that pushed me to make the piece feel like it extends beyond its borders.`,
-    'Capricorn': `Your ${sign} Sun inspired the structured, almost architectural quality of this piece. The golden sun sits at the summit with crystalline precision, and the angular mountain peaks in the background echo that steady, upward climb your chart embodies.`,
-    'Aquarius': `A ${sign} Sun breaks every conventional rule, and I leaned into that. The sun uses unexpected patterns and unconventional geometry — nothing here follows a predictable template. Your chart has this visionary, future-facing quality that pushed me to experiment.`,
-    'Pisces': `Your ${sign} Sun inspired the most ethereal quality in this piece — the sun seems to glow through a veil of mist and water. I let the edges dissolve intentionally, and the soft florals drift rather than sit rigidly. Your chart has a dreamlike, boundless quality that shaped every brushstroke.`,
+    'Aries': `Your ${sign} Sun blazes at the center — fierce rays and red poppies that refuse to be ignored.`,
+    'Taurus': `A golden sun anchored in lush dahlias and roses. Your ${sign} Sun demanded something you could almost touch.`,
+    'Gemini': `Twin suns and paired elements throughout — your ${sign} Sun's restless duality made visible.`,
+    'Cancer': `A luminous sun wrapped in soft concentric ripples. Your ${sign} Sun turns the whole piece into a warm embrace.`,
+    'Leo': `Your ${sign} Sun commands center stage — dramatic golden rays with a crown of bold sunflowers.`,
+    'Virgo': `Every petal placed with quiet intention. Your ${sign} Sun speaks through precision, not volume.`,
+    'Libra': `Rose-gold sun, perfect bilateral symmetry. Your ${sign} Sun wouldn't settle for anything less than harmony.`,
+    'Scorpio': `Deep burgundy-purple at the core, pulling you in. Your ${sign} Sun doesn't radiate — it magnetizes.`,
+    'Sagittarius': `A warm orange-gold sun reaching past open horizons. Your ${sign} Sun needed room to roam.`,
+    'Capricorn': `Golden sun at the summit, crystalline and precise. Your ${sign} Sun climbs — the artwork follows.`,
+    'Aquarius': `Unconventional geometry, nothing predictable. Your ${sign} Sun breaks every rule on purpose.`,
+    'Pisces': `The sun glows through mist and water, edges dissolving. Your ${sign} Sun exists between worlds.`,
   };
-  return notes[sign] || `Your ${sign} Sun shaped the central focal point of this piece, inspiring the specific colors and forms you see at the heart of the composition.`;
+  return notes[sign] || `Your ${sign} Sun shaped the heart of this piece.`;
 }
 
 function getSunArtistInsight(sign) {
@@ -113,20 +113,20 @@ function getSunArtistInsight(sign) {
 
 function getMoonArtistNote(sign, visuals) {
   const notes = {
-    'Aries': `Your Moon in ${sign} influenced the energetic undercurrent running through the piece. I used bold crescent forms and warm shimmer effects — there's an urgency to the atmosphere that reflects the fast-moving emotional current your chart carries.`,
-    'Taurus': `A Moon in ${sign} told me to make the piece feel grounding and lush. The full, warm-toned moon anchors the lower section, and I let garden-like blooms emerge from its surface — your chart's emotional world is rooted in the sensory and the tangible.`,
-    'Gemini': `Your ${sign} Moon inspired the shifting, quicksilver quality in the atmosphere. I used multiple moon phases and delicate butterfly motifs — your chart's emotional texture is restless and curious, always catching something new.`,
-    'Cancer': `With a Moon in its home sign, I gave it special prominence. The luminous full moon here is one of the most powerful in any chart, and I rendered it with soft protective curves and tidal patterns — your emotional world is deep, intuitive, and fiercely nurturing.`,
-    'Leo': `Your ${sign} Moon brought warmth and drama to the emotional layer. The moon glows with a golden, generous quality — heart-shaped forms and regal warmth radiate from it. Your chart's emotional world doesn't hide; it shines.`,
-    'Virgo': `A ${sign} Moon shaped the delicate precision in the piece's atmospheric details. The crescent has clean, defined edges, and I wove in hexagonal patterns and subtle herb-like botanicals — your chart processes feeling through careful, thoughtful detail.`,
-    'Libra': `Your ${sign} Moon inspired the harmonious quality of the piece's emotional atmosphere. The moon sits in balanced proportion to the sun, with mirror reflections and soft aesthetic proportions — your chart seeks beauty and equilibrium in how it processes feeling.`,
-    'Scorpio': `A Moon in ${sign} is one of the most intense placements to translate visually. I used deep shadows and an almost eclipsed moon — dark, layered, magnetic. Your chart's emotional depth demanded that I push past the surface.`,
-    'Sagittarius': `Your ${sign} Moon gave the piece its sense of emotional expansiveness. The ascending moon reaches toward stars and distant horizons — your chart's emotional world is restless, philosophical, always searching for meaning in something bigger.`,
-    'Capricorn': `A ${sign} Moon brought structure to the emotional layer. The crystalline, geometric moon has almost architectural precision — your chart processes feeling through discipline and composure, and the artwork reflects that steadiness.`,
-    'Aquarius': `Your ${sign} Moon inspired the unconventional atmospheric elements. The moon has an unusual configuration with lightning-like zigzags and community-star patterns — your chart's emotional world operates on its own wavelength, and I wanted that to come through.`,
-    'Pisces': `A Moon in ${sign} is what inspired the most dreamlike quality in this piece. The moon seems to dissolve into water, its edges blurring and flowing — your chart's emotional world has no hard boundaries, and neither does this element.`,
+    'Aries': `Bold crescents and warm shimmer — your ${sign} Moon keeps the emotional undercurrent restless and alive.`,
+    'Taurus': `A full, warm moon anchored in blooming botanicals. Your ${sign} Moon roots feeling in something you can almost smell.`,
+    'Gemini': `Multiple moon phases and quicksilver light. Your ${sign} Moon never settles on one feeling for long.`,
+    'Cancer': `The Moon in its home sign — luminous, protective, tidal. I gave it the prominence your chart demands.`,
+    'Leo': `Golden glow and heart-shaped warmth radiating outward. Your ${sign} Moon doesn't whisper — it shines.`,
+    'Virgo': `Clean crescent edges with hexagonal patterns woven in. Your ${sign} Moon processes feeling with quiet care.`,
+    'Libra': `The moon sits in perfect proportion to the sun — mirror-balanced. Your ${sign} Moon seeks beauty in equilibrium.`,
+    'Scorpio': `Deep shadows, an almost-eclipsed moon. Your ${sign} Moon demanded I push past the surface into the dark.`,
+    'Sagittarius': `An ascending moon reaching toward distant stars. Your ${sign} Moon is always searching for something bigger.`,
+    'Capricorn': `Crystalline, geometric moon with architectural precision. Your ${sign} Moon holds everything together — steady and strong.`,
+    'Aquarius': `Lightning zigzags and unusual configurations. Your ${sign} Moon operates on its own wavelength entirely.`,
+    'Pisces': `The moon dissolves into water, edges blurring. Your ${sign} Moon has no hard boundaries — and neither does this.`,
   };
-  return notes[sign] || `Your Moon in ${sign} guided the emotional atmosphere and mood throughout the piece — the textures, the light quality, and the feeling it evokes.`;
+  return notes[sign] || `Your Moon in ${sign} shaped the mood and atmosphere throughout.`;
 }
 
 function getMoonArtistInsight(sign) {
@@ -151,20 +151,20 @@ function getMoonArtistInsight(sign) {
 
 function getRisingArtistNote(sign, visuals) {
   const notes = {
-    'Aries': `Your ${sign} Rising is why this piece feels so dynamic. I used bold, sharp compositional lines and let elements break through the expected frame — ${sign} Rising gives your chart a sense of urgency that demanded an unconventional layout.`,
-    'Taurus': `A ${sign} Rising shaped the grounded, substantial feel of the entire piece. Thick botanical details frame everything, and the composition has a weight and presence — your chart's first impression is one of earthy, reliable beauty.`,
-    'Gemini': `Your ${sign} Rising inspired the playful, varied detail work throughout. Light asymmetry, paired elements, and a sense of visual conversation between different parts of the composition — your chart presents itself with curiosity and wit.`,
-    'Cancer': `A ${sign} Rising is why the overall composition feels protective and embracing. Soft curves and circular framing elements wrap around the central imagery — your chart's first impression is one of warmth and emotional openness.`,
-    'Leo': `Your ${sign} Rising gave me permission to be bold with the presentation. Ornate borders, generous negative space, regal framing — the piece is confident in its own beauty because that's exactly what this rising sign projects.`,
-    'Virgo': `A ${sign} Rising demanded precision in every detail. Delicate botanical line work, perfect symmetry, and an almost botanical-illustration quality to the rendering — your chart presents itself with quiet, exacting elegance.`,
-    'Libra': `Your ${sign} Rising is the reason the overall aesthetic feels so harmonious. Balanced, mirrored elements and elegant Art Nouveau-inspired curves — your chart's first impression is pure grace, and the composition follows that lead.`,
-    'Scorpio': `A ${sign} Rising pushed me to add layers and mystery. Deep shadows, hidden details that reveal themselves slowly, and a sense of depth that goes beyond the surface — your chart's first impression draws people in and makes them look closer.`,
-    'Sagittarius': `Your ${sign} Rising is why the composition feels so expansive. Directional elements pull the eye outward, and the piece has a sense of movement and adventure — your chart greets the world with openness and optimism.`,
-    'Capricorn': `A ${sign} Rising structured the entire composition. Geometric precision, angular forms, and a clear vertical hierarchy — your chart presents itself with authority and dignity, and the artwork's architecture mirrors that.`,
-    'Aquarius': `Your ${sign} Rising is why you'll notice unconventional patterns and unexpected geometry throughout. The composition deliberately breaks standard rules — because your chart's first impression is that of someone who thinks differently.`,
-    'Pisces': `A ${sign} Rising inspired the soft, ethereal quality of the entire piece. Dissolving edges, boundary-less transitions between elements — your chart greets the world with a dreamlike, open quality that I let flow through the whole composition.`,
+    'Aries': `Sharp compositional lines breaking the frame — your ${sign} Rising gives this piece its raw, forward-charging feel.`,
+    'Taurus': `Thick botanicals frame everything with weight and presence. Your ${sign} Rising grounds the entire composition.`,
+    'Gemini': `Playful asymmetry and paired elements in visual conversation. Your ${sign} Rising keeps the eye dancing.`,
+    'Cancer': `Soft curves wrap protectively around the center. Your ${sign} Rising turns the whole piece into a warm shelter.`,
+    'Leo': `Ornate borders, generous space, regal framing. Your ${sign} Rising gave me permission to be bold.`,
+    'Virgo': `Delicate line work and botanical-illustration precision. Your ${sign} Rising rewards anyone who looks closely.`,
+    'Libra': `Mirrored elements and sweeping Art Nouveau curves. Your ${sign} Rising is pure effortless grace.`,
+    'Scorpio': `Hidden details that reveal themselves slowly, shadows with purpose. Your ${sign} Rising draws you in deeper.`,
+    'Sagittarius': `The composition pulls outward toward open horizons. Your ${sign} Rising points toward the next adventure.`,
+    'Capricorn': `Angular forms and clear vertical hierarchy — almost architectural. Your ${sign} Rising builds upward with authority.`,
+    'Aquarius': `The composition breaks standard rules on purpose. Your ${sign} Rising thinks differently — so does this piece.`,
+    'Pisces': `Dissolving edges, boundary-less transitions. Your ${sign} Rising lets everything flow into everything else.`,
   };
-  return notes[sign] || `Your ${sign} Rising defined the overall style and compositional approach of the piece — it's the first thing people feel when they see your artwork.`;
+  return notes[sign] || `Your ${sign} Rising shaped the overall style and composition.`;
 }
 
 function getRisingArtistInsight(sign) {
@@ -190,12 +190,12 @@ function getRisingArtistInsight(sign) {
 function getElementArtistNote(element, balance, palette) {
   const count = balance[element];
   const notes = {
-    'Fire': `With ${count} placements in Fire signs, your chart burns bright — and the color palette follows. I leaned heavily into warm reds, oranges, and golds throughout. The overall energy is passionate and alive, like the piece itself is radiating heat.`,
-    'Water': `${count} Water placements gave me a clear direction for the palette — deep blues, purples, and teals that flow through the entire composition. The colors move like currents, never sitting still, creating an emotional depth you can feel.`,
-    'Earth': `Your ${count} Earth placements grounded every color choice. Rich greens, warm browns, and natural earth tones anchor the piece with a sense of stability and organic beauty — like something that grew rather than was made.`,
-    'Air': `With ${count} Air placements shaping your chart, I chose a palette of light blues, soft whites, and airy pastels. The colors create spaciousness and breathing room — the piece feels open and intellectually alive.`,
+    'Fire': `${count} Fire placements — the whole palette burns with reds, oranges, and golds. Pure heat made visible.`,
+    'Water': `${count} Water placements flowing through in deep blues, purples, and teals. The colors move like currents.`,
+    'Earth': `${count} Earth placements grounding everything in rich greens and warm browns. It feels grown, not painted.`,
+    'Air': `${count} Air placements opening the palette into soft blues, whites, and airy pastels. The piece breathes.`,
   };
-  return notes[element] || `Your chart's elemental balance directly guided the color palette and overall energy of the piece.`;
+  return notes[element] || `Your chart's elemental balance shaped the entire color palette.`;
 }
 
 function getElementArtistInsight(element) {

@@ -48,56 +48,47 @@ serve(async (req) => {
       "Fire"
     );
 
-    const prompt = `You are the artist who created this birth chart artwork. Look at the actual image carefully and write artist's notes explaining your creative choices.
+    const prompt = `You are the artist who created this birth chart artwork. Study the image and write punchy, mystical artist's notes.
 
-The person's birth chart has:
-- Sun in ${sunSign}
-- Moon in ${moonSign}
-- ${rising} Rising
-- Dominant element: ${dominantElement} (balance: ${Object.entries(elementBalance).map(([k,v]) => `${k}: ${v}`).join(", ")})
+The person's chart: Sun in ${sunSign}, Moon in ${moonSign}, ${rising} Rising, dominant ${dominantElement} (${Object.entries(elementBalance).map(([k,v]) => `${k}: ${v}`).join(", ")}).
 
-Study the image closely. Identify the actual visual elements you see — the colors, shapes, flowers, textures, composition, moon forms, sun forms, patterns, and mood.
-
-Write your response as JSON with this exact structure (no markdown, no backticks, just raw JSON):
+Write JSON (no markdown, no backticks):
 {
   "sun": {
-    "explanation": "2-3 sentences as the artist explaining what you chose for the sun/central element and why their Sun in ${sunSign} inspired those specific visual choices. Reference what you ACTUALLY see in the image.",
-    "insight": "1-2 sentences about a specific visual technique or detail you're proud of in the sun area, and why it matters for this placement.",
-    "position": { "top": <number 0-100>, "left": <number 0-100> }
+    "explanation": "1-2 SHORT punchy sentences. What you see in the sun/central element and how their ${sunSign} Sun inspired it. Mystical tone, not academic.",
+    "insight": "1 sentence — a specific visual detail you're proud of.",
+    "position": { "top": <0-100>, "left": <0-100> }
   },
   "moon": {
-    "explanation": "2-3 sentences as the artist explaining the moon element, atmospheric quality, and emotional texture you created, inspired by their Moon in ${moonSign}. Reference what you ACTUALLY see.",
-    "insight": "1-2 sentences about a specific creative decision in the moon/atmosphere area.",
-    "position": { "top": <number 0-100>, "left": <number 0-100> }
+    "explanation": "1-2 SHORT punchy sentences about the moon element and mood, inspired by Moon in ${moonSign}.",
+    "insight": "1 sentence — a specific creative decision.",
+    "position": { "top": <0-100>, "left": <0-100> }
   },
   "rising": {
-    "explanation": "2-3 sentences as the artist explaining the overall composition style, framing, and aesthetic approach inspired by their ${rising} Rising. Reference the actual layout and style you see.",
-    "insight": "1-2 sentences about a compositional choice that reflects this rising sign.",
-    "position": { "top": <number 0-100>, "left": <number 0-100> }
+    "explanation": "1-2 SHORT punchy sentences about composition/framing inspired by ${rising} Rising.",
+    "insight": "1 sentence — a compositional choice.",
+    "position": { "top": <0-100>, "left": <0-100> }
   },
   "element": {
-    "explanation": "2-3 sentences as the artist explaining the color palette and overall energy, inspired by their ${dominantElement}-dominant chart. Reference the actual colors and tones you see.",
-    "insight": "1-2 sentences about how the color relationships work throughout the piece.",
-    "position": { "top": <number 0-100>, "left": <number 0-100> }
+    "explanation": "1-2 SHORT punchy sentences about the color palette, inspired by ${dominantElement}-dominant chart.",
+    "insight": "1 sentence — how the colors work together.",
+    "position": { "top": <0-100>, "left": <0-100> }
   }
 }
 
-POSITION RULES:
-- For each element, set "position" to the approximate center of where that element appears in the image as a percentage (0=top/left edge, 100=bottom/right edge).
-- "sun" position: where the main sun or central bright focal element is located.
-- "moon" position: where the moon, crescent, or secondary celestial body is located.
-- "rising" position: pick a notable compositional or border/framing detail that reflects the rising sign style.
-- "element" position: pick a region where the dominant color palette is most visible or concentrated.
-- Spread the four positions so they don't overlap — keep at least 15 percentage points apart vertically.
+STYLE RULES:
+- Each explanation must be readable in 3-4 seconds. Max 25 words per sentence.
+- Mystical and warm, NOT academic or verbose. Example: "Your fire-dominant chart blazes through in amber and crimson — pure passion made visible."
+- Use dashes, fragments, and poetic compression. Avoid filler words.
+- First person as the artist ("I chose...", "I let...")
+- ONLY describe what's ACTUALLY VISIBLE — don't invent elements
+- Never use: represent, symbolize, vibrant, intricate, tapestry, journey, essence, energy, manifest
 
-CRITICAL RULES:
-- Write in first person as the artist ("I chose...", "I wanted...", "I used...")
-- ONLY describe what is ACTUALLY VISIBLE in the image — do not invent elements that aren't there
-- Connect each visual choice back to the specific astrological placement that inspired it
-- Be specific about colors, shapes, textures, and composition you can see
-- Keep it warm and passionate but not cheesy — like a real artist at a gallery opening
-- Never use the words: represent, symbolize, vibrant, intricate, tapestry, journey, essence
-- Output ONLY valid JSON, no preamble, no markdown fencing`;
+POSITION RULES:
+- Position = approximate center of each element as percentage (0=top/left, 100=bottom/right)
+- Keep at least 15 percentage points apart vertically
+- Output ONLY valid JSON, no preamble`;
+
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
