@@ -745,6 +745,7 @@ export function ChartExplanation({
        </div>
 
       {/* Footer */}
+      <div style={{ height: 64 }} />
       <Footer />
 
       {/* Email capture modal (placeholder) */}
