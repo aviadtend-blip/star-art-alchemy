@@ -254,9 +254,9 @@ export function ChartExplanation({
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#FFFFFF' }}>
-      {/* Header */}
+      {/* Header — floating on desktop */}
       <nav
-        className="flex items-center justify-between"
+        className="flex items-center justify-between md:fixed md:top-0 md:left-0 md:right-0 md:z-40"
         style={{ backgroundColor: '#121212', padding: '26px 30px' }}
       >
         <div className="text-a4 text-white font-display">Celestial Artworks</div>
@@ -267,6 +267,8 @@ export function ChartExplanation({
           </div>
         </button>
       </nav>
+      {/* Spacer for fixed header on desktop */}
+      <div className="hidden md:block" style={{ height: '76px' }} />
 
       {/* Progress bar */}
       <StepProgressBar currentStep={2} />
@@ -325,7 +327,7 @@ export function ChartExplanation({
           </div>
 
           {/* Right: heading + scrolling explanation cards */}
-          <div className="w-1/2">
+          <div className="w-1/2" style={{ maskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 80px)' }}>
             <h1 className="text-a1 text-surface-foreground font-display mb-3">
               Meet Your Cosmic Masterpiece
             </h1>
