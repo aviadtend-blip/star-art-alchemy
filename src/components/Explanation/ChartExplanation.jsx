@@ -405,7 +405,7 @@ export function ChartExplanation({
         {/* ===== DESKTOP LAYOUT: sticky artwork left + scrolling explanations right ===== */}
         <div className="hidden md:flex max-w-6xl mx-auto px-8 pt-12 gap-12 items-start">
           {/* Left: sticky artwork centered vertically on screen */}
-          <div className="w-1/2 flex-shrink-0 sticky" style={{ top: 'calc(116px + (100vh - 116px) / 2)', transform: 'translateY(-50%)', height: 'fit-content' }}>
+          <div className="w-1/2 flex-shrink-0 sticky" style={{ top: '132px', height: 'fit-content' }}>
             <div className="relative" ref={artworkRef}>
                 <img
                   src={selectedImage}
