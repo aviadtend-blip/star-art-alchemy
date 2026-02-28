@@ -107,7 +107,7 @@ const TESTIMONIALS = [
   },
 ];
 
-function TestimonialsSection({ showArrows = false, bleed = false }) {
+function TestimonialsSection({ showArrows = false, bleed = false, topSpace = 32 }) {
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -134,7 +134,7 @@ function TestimonialsSection({ showArrows = false, bleed = false }) {
   };
 
   return (
-    <div className="py-8">
+    <div className="pb-8" style={{ paddingTop: topSpace }}>
       <div className="flex items-end justify-between mb-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -567,7 +567,7 @@ export function ChartExplanation({
 
              {/* Testimonials — desktop with arrows */}
              <div style={{ paddingTop: 48 }}>
-               <TestimonialsSection showArrows />
+               <TestimonialsSection showArrows topSpace={0} />
              </div>
            </div>
           </div>
