@@ -498,11 +498,8 @@ export function ChartExplanation({
                       </p>
                     </div>
                   </div>
-                  <p className="text-body font-body text-surface-muted leading-relaxed mb-3">
-                    {h.explanation}
-                  </p>
                   <p className="text-body font-body text-surface-muted leading-relaxed">
-                    {h.meaning}
+                    {h.explanation}
                   </p>
                 </div>
               ))}
@@ -666,11 +663,8 @@ export function ChartExplanation({
                         </p>
                       </div>
                     </div>
-                    <p className="text-body font-body text-surface-muted leading-relaxed mb-2">
-                      {h.explanation}
-                    </p>
                     <p className="text-body font-body text-surface-muted leading-relaxed">
-                      {h.meaning}
+                      {h.explanation}
                     </p>
                   </div>
                   {/* Vertical divider */}
