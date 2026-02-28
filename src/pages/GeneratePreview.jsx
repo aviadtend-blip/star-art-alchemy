@@ -15,6 +15,9 @@ const DEMO_CHART = {
   aspects: [],
 };
 
+// Public URL for the edge function to fetch (local imports can't be fetched server-side)
+const DEMO_IMAGE_PUBLIC_URL = 'https://zuzbwklzmcrszdjyepqe.supabase.co/storage/v1/object/public/demo-assets/demo-cosmic-collision.webp';
+
 export default function GeneratePreview() {
   const navigate = useNavigate();
   const {
@@ -32,9 +35,7 @@ export default function GeneratePreview() {
   // Run AI analysis for demo mode
   useEffect(() => {
     if (isDemo && !demoAnalysis) {
-      // Convert relative asset path to absolute URL for the edge function
-      const absoluteUrl = new URL(demoImage, window.location.origin).href;
-      analyzeArtwork(absoluteUrl, DEMO_CHART).then(setDemoAnalysis).catch(console.error);
+      analyzeArtwork(DEMO_IMAGE_PUBLIC_URL, DEMO_CHART).then(setDemoAnalysis).catch(console.error);
     }
   }, [isDemo, demoAnalysis]);
 
