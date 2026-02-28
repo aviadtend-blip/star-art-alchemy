@@ -176,6 +176,7 @@ export function ChartExplanation({
 
   const active = hotspots.find((h) => h.id === activeHotspot);
   const scrollContainerRef = useRef(null);
+  const desktopCardRefs = useRef([]);
   const cardRefs = useRef([]);
 
   // Initialize active hotspot to first one
@@ -183,6 +184,29 @@ export function ChartExplanation({
     if (hotspots.length > 0 && activeHotspot === null) {
       setActiveHotspot(hotspots[0].id);
     }
+  }, [hotspots]);
+
+  // Desktop: IntersectionObserver to highlight hotspot when card scrolls into view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = desktopCardRefs.current.indexOf(entry.target);
+            if (idx !== -1 && hotspots[idx]) {
+              setActiveHotspot(hotspots[idx].id);
+            }
+          }
+        });
+      },
+      { threshold: 0.6, rootMargin: '-20% 0px -20% 0px' }
+    );
+
+    desktopCardRefs.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
   }, [hotspots]);
 
   // Sync scroll position to active hotspot on artwork
@@ -249,92 +273,84 @@ export function ChartExplanation({
 
       {/* Main content */}
       <div className="flex-1">
-        {/* Hero heading */}
-        <div className="text-center px-6 pt-12 pb-8">
-          <h1 className="text-a1 text-surface-foreground font-display mb-3">
-            Meet Your Cosmic{'\n'}Masterpiece
-          </h1>
-          <p className="text-body font-body text-surface-muted max-w-sm mx-auto">
-            Swipe through to discover why each element was chosen — every detail was inspired by your birth chart.
-          </p>
-        </div>
 
-        {/* Artwork with hotspots */}
-        <div className="px-6 max-w-md mx-auto">
-          <div className="relative">
-            <img
-              src={selectedImage}
-              alt={`Birth chart artwork for ${chartData.sun.sign} Sun`}
-              className="w-full"
-              style={{ borderRadius: '2px' }}
-            />
-            {/* Hotspot markers */}
-            {hotspots.map((h) => {
-              const isActive = activeHotspot === h.id;
-              return (
-                <button
-                  key={h.id}
-                  onClick={() => {
-                    setActiveHotspot(h.id);
-                    scrollToCard(h.id);
-                  }}
-                  className="absolute flex items-center justify-center transition-all duration-300 cursor-pointer z-10"
-                  style={{
-                    top: h.position.top,
-                    left: h.position.left,
-                    transform: 'translate(-50%, -50%)',
-                    width: isActive ? 28 : 24,
-                    height: isActive ? 28 : 24,
-                    borderRadius: 41,
-                    padding: 2,
-                    backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.85)',
-                    border: isActive ? '1px solid rgba(255, 191, 0, 0.32)' : '1px solid rgba(0, 0, 0, 0.12)',
-                    boxShadow: isActive
-                      ? '0 2px 8px rgba(255, 191, 0, 0.4)'
-                      : '0 1px 4px rgba(0, 0, 0, 0.15)',
-                  }}
-                  aria-label={`Hotspot ${h.id}: ${h.title}`}
-                >
-                  <span
-                    className="font-body text-center"
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 400,
-                      lineHeight: '113%',
-                      letterSpacing: '-0.42px',
-                      color: '#000',
-                    }}
-                  >
-                    {h.id}
-                  </span>
-                </button>
-              );
-            })}
+        {/* ===== DESKTOP LAYOUT: sticky artwork left + scrolling explanations right ===== */}
+        <div className="hidden lg:flex max-w-6xl mx-auto px-8 pt-12 gap-12">
+          {/* Left: sticky artwork */}
+          <div className="w-1/2 flex-shrink-0">
+            <div className="sticky top-8">
+              <div className="relative">
+                <img
+                  src={selectedImage}
+                  alt={`Birth chart artwork for ${chartData.sun.sign} Sun`}
+                  className="w-full"
+                  style={{ borderRadius: '2px' }}
+                />
+                {hotspots.map((h) => {
+                  const isActive = activeHotspot === h.id;
+                  return (
+                    <button
+                      key={h.id}
+                      onClick={() => {
+                        setActiveHotspot(h.id);
+                        // Scroll the right-side card into view
+                        const el = document.getElementById(`desktop-hotspot-${h.id}`);
+                        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }}
+                      className="absolute flex items-center justify-center transition-all duration-300 cursor-pointer z-10"
+                      style={{
+                        top: h.position.top,
+                        left: h.position.left,
+                        transform: 'translate(-50%, -50%)',
+                        width: isActive ? 28 : 24,
+                        height: isActive ? 28 : 24,
+                        borderRadius: 41,
+                        padding: 2,
+                        backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.85)',
+                        border: isActive ? '1px solid rgba(255, 191, 0, 0.32)' : '1px solid rgba(0, 0, 0, 0.12)',
+                        boxShadow: isActive
+                          ? '0 2px 8px rgba(255, 191, 0, 0.4)'
+                          : '0 1px 4px rgba(0, 0, 0, 0.15)',
+                      }}
+                      aria-label={`Hotspot ${h.id}: ${h.title}`}
+                    >
+                      <span className="font-body text-center" style={{ fontSize: 12, fontWeight: 400, lineHeight: '113%', letterSpacing: '-0.42px', color: '#000' }}>
+                        {h.id}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
-          {/* Horizontal scroll explanation cards */}
-          <div
-            ref={scrollContainerRef}
-            className="flex overflow-x-auto scrollbar-hide -mx-6 px-6 snap-x snap-mandatory mt-6 pb-2"
-            style={{ scrollPaddingInline: '24px', gap: '20px' }}
-          >
-            {hotspots.map((h, i) => (
-              <div
-                key={h.id}
-                ref={(el) => (cardRefs.current[i] = el)}
-                className="flex-shrink-0 snap-center flex"
-                style={{ width: 'calc(100vw - 80px)', maxWidth: 340 }}
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-3">
+          {/* Right: heading + scrolling explanation cards */}
+          <div className="w-1/2">
+            <h1 className="text-a1 text-surface-foreground font-display mb-3">
+              Meet Your Cosmic Masterpiece
+            </h1>
+            <p className="text-body font-body text-surface-muted mb-10">
+              Every symbol, color, and shape represents your exact planetary positions at birth.
+            </p>
+
+            <div className="space-y-0">
+              {hotspots.map((h, i) => (
+                <div
+                  key={h.id}
+                  id={`desktop-hotspot-${h.id}`}
+                  ref={(el) => (desktopCardRefs.current[i] = el)}
+                  className="pb-8 mb-8"
+                  style={{ borderBottom: i < hotspots.length - 1 ? '1px solid rgba(0, 0, 0, 0.12)' : 'none' }}
+                >
+                  <div className="flex items-center gap-3 mb-4">
                     <span
-                      className="flex items-center justify-center font-body"
+                      className="flex items-center justify-center font-body flex-shrink-0"
                       style={{
-                        width: 28,
-                        height: 28,
+                        width: 32,
+                        height: 32,
                         borderRadius: 41,
                         border: '1px solid rgba(0, 0, 0, 0.1)',
-                        fontSize: 12,
+                        fontSize: 13,
                         color: '#000',
                       }}
                     >
@@ -344,25 +360,129 @@ export function ChartExplanation({
                       <p className="text-subtitle font-display text-surface-foreground uppercase tracking-wider" style={{ fontSize: 11 }}>
                         {h.title.split('·')[0]?.trim() || h.title}
                       </p>
-                      <p className="text-a5 font-display text-surface-foreground" style={{ fontFamily: 'var(--font-serif, Erode, serif)' }}>
+                      <p className="text-a5 font-display text-surface-foreground" style={{ fontFamily: 'var(--font-serif, Erode, serif)', fontWeight: 600 }}>
                         {h.title.split('·')[1]?.trim() || ''}
                       </p>
                     </div>
                   </div>
-                  <p className="text-body font-body text-surface-muted leading-relaxed mb-2">
+                  <p className="text-body font-body text-surface-muted leading-relaxed mb-3">
                     {h.explanation}
                   </p>
                   <p className="text-body font-body text-surface-muted leading-relaxed">
                     {h.meaning}
                   </p>
                 </div>
-                {/* Vertical divider */}
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ===== MOBILE LAYOUT: horizontal scroll carousel ===== */}
+        <div className="lg:hidden">
+          {/* Hero heading */}
+          <div className="text-center px-6 pt-12 pb-8">
+            <h1 className="text-a1 text-surface-foreground font-display mb-3">
+              Meet Your Cosmic{'\n'}Masterpiece
+            </h1>
+            <p className="text-body font-body text-surface-muted max-w-sm mx-auto">
+              Swipe through to discover why each element was chosen — every detail was inspired by your birth chart.
+            </p>
+          </div>
+
+          <div className="px-6 max-w-md mx-auto">
+            <div className="relative">
+              <img
+                src={selectedImage}
+                alt={`Birth chart artwork for ${chartData.sun.sign} Sun`}
+                className="w-full"
+                style={{ borderRadius: '2px' }}
+              />
+              {hotspots.map((h) => {
+                const isActive = activeHotspot === h.id;
+                return (
+                  <button
+                    key={h.id}
+                    onClick={() => {
+                      setActiveHotspot(h.id);
+                      scrollToCard(h.id);
+                    }}
+                    className="absolute flex items-center justify-center transition-all duration-300 cursor-pointer z-10"
+                    style={{
+                      top: h.position.top,
+                      left: h.position.left,
+                      transform: 'translate(-50%, -50%)',
+                      width: isActive ? 28 : 24,
+                      height: isActive ? 28 : 24,
+                      borderRadius: 41,
+                      padding: 2,
+                      backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.85)',
+                      border: isActive ? '1px solid rgba(255, 191, 0, 0.32)' : '1px solid rgba(0, 0, 0, 0.12)',
+                      boxShadow: isActive
+                        ? '0 2px 8px rgba(255, 191, 0, 0.4)'
+                        : '0 1px 4px rgba(0, 0, 0, 0.15)',
+                    }}
+                    aria-label={`Hotspot ${h.id}: ${h.title}`}
+                  >
+                    <span className="font-body text-center" style={{ fontSize: 12, fontWeight: 400, lineHeight: '113%', letterSpacing: '-0.42px', color: '#000' }}>
+                      {h.id}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Horizontal scroll explanation cards */}
+            <div
+              ref={scrollContainerRef}
+              className="flex overflow-x-auto scrollbar-hide -mx-6 px-6 snap-x snap-mandatory mt-6 pb-2"
+              style={{ scrollPaddingInline: '24px', gap: '20px' }}
+            >
+              {hotspots.map((h, i) => (
                 <div
-                  className="flex-shrink-0 self-stretch"
-                  style={{ width: 1, backgroundColor: 'rgba(0, 0, 0, 0.12)', marginLeft: 16 }}
-                />
-              </div>
-            ))}
+                  key={h.id}
+                  ref={(el) => (cardRefs.current[i] = el)}
+                  className="flex-shrink-0 snap-center flex"
+                  style={{ width: 'calc(100vw - 80px)', maxWidth: 340 }}
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span
+                        className="flex items-center justify-center font-body"
+                        style={{
+                          width: 28,
+                          height: 28,
+                          borderRadius: 41,
+                          border: '1px solid rgba(0, 0, 0, 0.1)',
+                          fontSize: 12,
+                          color: '#000',
+                        }}
+                      >
+                        {h.id}
+                      </span>
+                      <div>
+                        <p className="text-subtitle font-display text-surface-foreground uppercase tracking-wider" style={{ fontSize: 11 }}>
+                          {h.title.split('·')[0]?.trim() || h.title}
+                        </p>
+                        <p className="text-a5 font-display text-surface-foreground" style={{ fontFamily: 'var(--font-serif, Erode, serif)' }}>
+                          {h.title.split('·')[1]?.trim() || ''}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-body font-body text-surface-muted leading-relaxed mb-2">
+                      {h.explanation}
+                    </p>
+                    <p className="text-body font-body text-surface-muted leading-relaxed">
+                      {h.meaning}
+                    </p>
+                  </div>
+                  {/* Vertical divider */}
+                  <div
+                    className="flex-shrink-0 self-stretch"
+                    style={{ width: 1, backgroundColor: 'rgba(0, 0, 0, 0.12)', marginLeft: 16 }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
