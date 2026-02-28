@@ -279,8 +279,8 @@ export function ChartExplanation({
         {/* ===== DESKTOP LAYOUT: sticky artwork left + scrolling explanations right ===== */}
         <div className="hidden md:flex max-w-6xl mx-auto px-8 pt-12 gap-12">
           {/* Left: sticky artwork centered vertically on screen */}
-          <div className="w-1/2 flex-shrink-0">
-            <div className="sticky top-1/2 -translate-y-1/2">
+          <div className="w-1/2 flex-shrink-0 self-start">
+            <div className="sticky" style={{ top: 'calc(50vh - 40%)' }}>
               <div className="relative">
                 <img
                   src={selectedImage}
