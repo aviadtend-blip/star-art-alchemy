@@ -393,7 +393,7 @@ export function ChartExplanation({
 
         {/* Fixed white strip + fade that starts exactly at header/progress bar bottom */}
         <div
-          className="hidden md:block fixed left-1/2 right-0 pointer-events-none z-35"
+          className="hidden md:block fixed left-0 right-0 pointer-events-none z-35"
           style={{ top: '0', height: '156px' }}
         >
           {/* Solid white covers everything behind the header */}
@@ -403,7 +403,7 @@ export function ChartExplanation({
         </div>
 
         {/* ===== DESKTOP LAYOUT: sticky artwork left + scrolling explanations right ===== */}
-        <div className="hidden md:flex mx-auto px-8 pt-12 gap-12 items-start" style={{ maxWidth: 880 }}>
+        <div className="hidden md:flex mx-auto px-8 pt-12 gap-12 items-start w-full" style={{ maxWidth: 880 }}>
           {/* Left: sticky artwork centered vertically on screen */}
           <div className="w-1/2 flex-shrink-0 sticky" style={{ top: '132px', height: 'fit-content' }}>
             <div className="relative" ref={artworkRef}>
