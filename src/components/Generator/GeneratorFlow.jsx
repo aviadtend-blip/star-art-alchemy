@@ -78,12 +78,9 @@ const GeneratorFlowJsx = () => {
       const prompt = await buildConcretePrompt(chartData, style);
 
       setGenerationProgress(`Creating your ${style.name} artwork...`);
-      const imageUrl = await generateImage(prompt, {
-        aspectRatio: "3:4",
-        version: style.version,
-      });
+      const result = await generateImage(prompt);
 
-      setGeneratedImage(imageUrl);
+      setGeneratedImage(result.imageUrl);
       setStep("explaining");
     } catch (err) {
       console.error("❌ Generation error:", err);

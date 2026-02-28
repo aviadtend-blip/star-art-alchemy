@@ -1,75 +1,118 @@
-// Image Generation Client
-// Routes all API calls through the secure edge function (Apiframe/Midjourney)
+/**
+ * Artwork Generation Client
+ * Calls the generate-artwork Supabase edge function which uses Apiframe (Midjourney)
+ * Supports reimagine feature by cycling through pre-generated variations
+ */
 
-const FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-artwork`;
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+// Store generation results for reimagine feature
+let currentGenerationCache = {
+  allOutputs: [],
+  currentIndex: 0,
+  taskId: null,
+  actions: [],
+};
 
 /**
- * Generates an image using the Apiframe API via the secure edge function.
- * The edge function handles polling internally and returns the final image.
- * @param {string} prompt - The AI art generation prompt
- * @param {object} options - Optional generation settings (currently unused, kept for API compat)
- * @returns {Promise<string>} The generated image URL
+ * Generate artwork via the Supabase edge function
+ * Returns the primary image URL and caches all 4 variations
  */
-export async function generateImage(prompt, options = {}) {
-  if (import.meta.env.DEV) {
-    console.log('🎨 Starting image generation...');
-    console.log('Prompt length:', prompt.length);
-    console.log('Prompt preview:', prompt.substring(0, 100) + '...');
-  }
+export async function generateImage(prompt) {
+  console.log('Prompt preview:', prompt.substring(0, 100) + '...');
 
-  const response = await fetch(FUNCTION_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-    },
-    body: JSON.stringify({ prompt }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-    console.error('❌ Generation API error:', errorData);
-    throw new Error(errorData.error || `Generation failed with status ${response.status}`);
-  }
-
-  const result = await response.json();
-
-  if (result.output) {
-    if (import.meta.env.DEV) {
-      console.log('✅ Image generated successfully!');
-      console.log('Image URL:', result.output);
-      if (result.all_outputs) {
-        console.log(`Total variations: ${result.all_outputs.length}`);
-      }
-    }
-    return result.output;
-  }
-
-  throw new Error(result.error || 'Unexpected response from generation API');
-}
-
-/**
- * Tests the API connection via the edge function.
- * @returns {Promise<{success: boolean, message?: string, error?: string}>}
- */
-export async function testConnection() {
-  try {
-    const response = await fetch(FUNCTION_URL, {
+  const response = await fetch(
+    `${SUPABASE_URL}/functions/v1/generate-artwork`,
+    {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
       },
-      body: JSON.stringify({ prompt: 'test' }),
-    });
-
-    if (response.ok) {
-      return { success: true, message: 'API connection successful' };
-    } else {
-      const err = await response.json().catch(() => ({}));
-      return { success: false, error: err.error || `API returned ${response.status}` };
+      body: JSON.stringify({ prompt }),
     }
-  } catch (err) {
-    return { success: false, error: err.message };
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || `Generation failed with status ${response.status}`);
   }
+
+  const data = await response.json();
+
+  if (!data.output) {
+    throw new Error('No image URL returned from generation');
+  }
+
+  // Cache all outputs for reimagine feature
+  currentGenerationCache = {
+    allOutputs: data.all_outputs || [data.output],
+    currentIndex: 0,
+    taskId: data.task_id || null,
+    actions: data.actions || [],
+  };
+
+  console.log(`Generation complete: ${currentGenerationCache.allOutputs.length} variations cached`);
+
+  return {
+    imageUrl: data.output,
+    hasMoreVariations: currentGenerationCache.allOutputs.length > 1,
+  };
+}
+
+/**
+ * Get next variation for reimagine feature
+ * Cycles through the 4 pre-generated images before needing a new API call
+ * Returns null if all variations exhausted (caller should trigger new generation)
+ */
+export function getNextVariation() {
+  const { allOutputs, currentIndex } = currentGenerationCache;
+
+  // Move to next image
+  const nextIndex = currentIndex + 1;
+
+  if (nextIndex >= allOutputs.length) {
+    // All 4 variations exhausted
+    console.log('All cached variations used, new generation needed');
+    return null;
+  }
+
+  currentGenerationCache.currentIndex = nextIndex;
+  const nextUrl = allOutputs[nextIndex];
+
+  console.log(`Reimagine: showing variation ${nextIndex + 1}/${allOutputs.length}`);
+
+  return {
+    imageUrl: nextUrl,
+    hasMoreVariations: nextIndex < allOutputs.length - 1,
+    variationNumber: nextIndex + 1,
+    totalVariations: allOutputs.length,
+  };
+}
+
+/**
+ * Get all cached image URLs (for preloading mockups)
+ */
+export function getAllCachedOutputs() {
+  return currentGenerationCache.allOutputs;
+}
+
+/**
+ * Get the current task ID (for potential upscaling)
+ */
+export function getCurrentTaskId() {
+  return currentGenerationCache.taskId;
+}
+
+/**
+ * Reset the generation cache (e.g., when starting a new chart)
+ */
+export function resetGenerationCache() {
+  currentGenerationCache = {
+    allOutputs: [],
+    currentIndex: 0,
+    taskId: null,
+    actions: [],
+  };
 }

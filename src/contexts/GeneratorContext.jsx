@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useCallback, useEffect } from 'rea
 import { useNavigate } from 'react-router-dom';
 import { calculateNatalChart } from '@/lib/astrology/chartCalculator.js';
 import { buildConcretePrompt } from '@/lib/prompts/promptBuilder.js';
-import { generateImage } from '@/lib/api/replicateClient';
+import { generateImage, resetGenerationCache } from '@/lib/api/replicateClient';
 import { getStyleById } from '@/config/artStyles';
 import { supabase } from '@/integrations/supabase/client';
 import { analyzeArtwork } from '@/lib/explanations/analyzeArtwork';
@@ -66,19 +66,19 @@ export function GeneratorProvider({ children }) {
       const prompt = await buildConcretePrompt(chartData, style);
 
       setGenerationProgress(`Creating your ${style.name} artwork...`);
-      const imageUrl = await generateImage(prompt);
+      const result = await generateImage(prompt);
 
-      setGeneratedImage(imageUrl);
+      setGeneratedImage(result.imageUrl);
 
       // Run artwork analysis and image preload in parallel
       setGenerationProgress('Preparing your artist notes...');
       const [analysisResult] = await Promise.allSettled([
-        analyzeArtwork(imageUrl, chartData),
+        analyzeArtwork(result.imageUrl, chartData),
         new Promise((resolve) => {
           const img = new Image();
           img.onload = resolve;
           img.onerror = resolve;
-          img.src = imageUrl;
+          img.src = result.imageUrl;
         }),
       ]);
 
@@ -99,6 +99,7 @@ export function GeneratorProvider({ children }) {
     setError(null);
     setGeneratedImage(null);
     setSelectedStyle(null);
+    resetGenerationCache();
     navigate('/');
   }, [navigate]);
 
