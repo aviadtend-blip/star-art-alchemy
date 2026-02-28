@@ -167,6 +167,7 @@ export function ChartExplanation({
   const [showEmailModal, setShowEmailModal] = useState(false);
   const artworkRef = useRef(null);
   const rightContentRef = useRef(null);
+  const rightInnerRef = useRef(null);
   const [rightPadding, setRightPadding] = useState(0);
 
   const staticPositions = getStaticPositions(chartData);
@@ -193,14 +194,19 @@ export function ChartExplanation({
   // so the last card's bottom aligns with the artwork's bottom
   useEffect(() => {
     const artworkEl = artworkRef.current;
-    const rightEl = rightContentRef.current;
-    if (!artworkEl || !rightEl) return;
+    const innerEl = rightInnerRef.current;
+    if (!artworkEl || !innerEl) return;
     const update = () => {
       const artworkH = artworkEl.offsetHeight;
-      const rightH = rightEl.scrollHeight;
-      const diff = Math.max(0, artworkH - rightH);
+      const contentH = innerEl.offsetHeight;
+      const diff = Math.max(0, artworkH - contentH);
       setRightPadding(diff);
     };
+    // Wait for images to load before measuring
+    const img = artworkEl.querySelector('img');
+    if (img && !img.complete) {
+      img.addEventListener('load', update, { once: true });
+    }
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
@@ -300,10 +306,9 @@ export function ChartExplanation({
         <div
           className="hidden md:block fixed left-1/2 right-0 pointer-events-none z-30"
           style={{
-            top: '116px',
+            top: '115px',
             height: '40px',
             background: 'linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)',
-            marginTop: '-1px',
           }}
         />
 
@@ -357,6 +362,7 @@ export function ChartExplanation({
 
           {/* Right: heading + scrolling explanation cards */}
           <div className="w-1/2 relative" ref={rightContentRef} style={{ paddingBottom: `${rightPadding}px` }}>
+           <div ref={rightInnerRef}>
             <h1 className="text-a1 text-surface-foreground font-display mb-3">
               Meet Your Cosmic Masterpiece
             </h1>
@@ -464,6 +470,7 @@ export function ChartExplanation({
                 </button>
               )}
             </div>
+           </div>
           </div>
         </div>
 
