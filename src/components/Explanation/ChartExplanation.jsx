@@ -716,7 +716,7 @@ export function ChartExplanation({
         </div>
 
         {/* Trust badges — mobile only */}
-        <div className="md:hidden px-6 py-6 text-center space-y-3">
+        <div className="md:hidden px-6 pb-6 text-center space-y-3" style={{ paddingTop: 32 }}>
           <p className="text-body-sm font-body text-surface-foreground">
             ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
           </p>
@@ -740,7 +740,7 @@ export function ChartExplanation({
          </div>
 
          {/* Testimonials — mobile */}
-         <div className="md:hidden px-6">
+         <div className="md:hidden px-6" style={{ paddingTop: 48 }}>
            <TestimonialsSection />
          </div>
        </div>
