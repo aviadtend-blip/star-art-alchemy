@@ -277,11 +277,10 @@ export function ChartExplanation({
       <div className="flex-1">
 
         {/* ===== DESKTOP LAYOUT: sticky artwork left + scrolling explanations right ===== */}
-        <div className="hidden md:flex max-w-6xl mx-auto px-8 pt-12 gap-12">
+        <div className="hidden md:flex max-w-6xl mx-auto px-8 pt-12 gap-12 items-start">
           {/* Left: sticky artwork centered vertically on screen */}
-          <div className="w-1/2 flex-shrink-0 self-start">
-            <div className="sticky" style={{ top: 'calc(50vh - 40%)' }}>
-              <div className="relative">
+          <div className="w-1/2 flex-shrink-0 sticky" style={{ top: 'calc(50vh - 40%)', height: 'fit-content' }}>
+            <div className="relative">
                 <img
                   src={selectedImage}
                   alt={`Birth chart artwork for ${chartData.sun.sign} Sun`}
@@ -322,7 +321,6 @@ export function ChartExplanation({
                     </button>
                   );
                 })}
-              </div>
             </div>
           </div>
 
