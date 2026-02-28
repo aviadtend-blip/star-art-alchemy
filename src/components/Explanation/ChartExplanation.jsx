@@ -175,6 +175,58 @@ export function ChartExplanation({
   }));
 
   const active = hotspots.find((h) => h.id === activeHotspot);
+  const scrollContainerRef = useRef(null);
+  const cardRefs = useRef([]);
+
+  // Initialize active hotspot to first one
+  useEffect(() => {
+    if (hotspots.length > 0 && activeHotspot === null) {
+      setActiveHotspot(hotspots[0].id);
+    }
+  }, [hotspots]);
+
+  // Sync scroll position to active hotspot on artwork
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const containerRect = container.getBoundingClientRect();
+      const containerCenter = containerRect.left + containerRect.width / 2;
+      let closestId = null;
+      let closestDist = Infinity;
+
+      cardRefs.current.forEach((cardEl, i) => {
+        if (!cardEl) return;
+        const cardRect = cardEl.getBoundingClientRect();
+        const cardCenter = cardRect.left + cardRect.width / 2;
+        const dist = Math.abs(cardCenter - containerCenter);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closestId = hotspots[i]?.id;
+        }
+      });
+
+      if (closestId !== null && closestId !== activeHotspot) {
+        setActiveHotspot(closestId);
+      }
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [hotspots, activeHotspot]);
+
+  // Scroll to card when hotspot marker is tapped
+  const scrollToCard = (id) => {
+    const idx = hotspots.findIndex((h) => h.id === id);
+    const cardEl = cardRefs.current[idx];
+    const container = scrollContainerRef.current;
+    if (!cardEl || !container) return;
+    const containerRect = container.getBoundingClientRect();
+    const cardRect = cardEl.getBoundingClientRect();
+    const scrollLeft = container.scrollLeft + (cardRect.left - containerRect.left) - (containerRect.width / 2 - cardRect.width / 2);
+    container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+  };
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#FFFFFF' }}>
@@ -203,7 +255,7 @@ export function ChartExplanation({
             Meet Your Cosmic{'\n'}Masterpiece
           </h1>
           <p className="text-body font-body text-surface-muted max-w-sm mx-auto">
-            Tap a number to see why each element was chosen — every detail was inspired by your birth chart.
+            Swipe through to discover why each element was chosen — every detail was inspired by your birth chart.
           </p>
         </div>
 
@@ -217,54 +269,93 @@ export function ChartExplanation({
               style={{ borderRadius: '2px' }}
             />
             {/* Hotspot markers */}
-            {hotspots.map((h) => (
-              <button
-                key={h.id}
-                onClick={() => setActiveHotspot(activeHotspot === h.id ? null : h.id)}
-                className={`absolute w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold font-display transition-all duration-200 cursor-pointer z-10 ${
-                  activeHotspot === h.id
-                    ? 'bg-white text-surface-foreground scale-110 shadow-lg'
-                    : 'bg-surface-foreground/80 text-white hover:scale-110'
-                }`}
-                style={{ top: h.position.top, left: h.position.left, transform: 'translate(-50%, -50%)' }}
-                aria-label={`Hotspot ${h.id}: ${h.title}`}
-              >
-                {h.id}
-              </button>
-            ))}
+            {hotspots.map((h) => {
+              const isActive = activeHotspot === h.id;
+              return (
+                <button
+                  key={h.id}
+                  onClick={() => {
+                    setActiveHotspot(h.id);
+                    scrollToCard(h.id);
+                  }}
+                  className="absolute flex items-center justify-center transition-all duration-300 cursor-pointer z-10"
+                  style={{
+                    top: h.position.top,
+                    left: h.position.left,
+                    transform: 'translate(-50%, -50%)',
+                    width: isActive ? 28 : 24,
+                    height: isActive ? 28 : 24,
+                    borderRadius: 41,
+                    padding: 2,
+                    backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.85)',
+                    border: isActive ? '1px solid rgba(255, 191, 0, 0.32)' : '1px solid rgba(0, 0, 0, 0.12)',
+                    boxShadow: isActive
+                      ? '0 2px 8px rgba(255, 191, 0, 0.4)'
+                      : '0 1px 4px rgba(0, 0, 0, 0.15)',
+                  }}
+                  aria-label={`Hotspot ${h.id}: ${h.title}`}
+                >
+                  <span
+                    className="font-body text-center"
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 400,
+                      lineHeight: '113%',
+                      letterSpacing: '-0.42px',
+                      color: '#000',
+                    }}
+                  >
+                    {h.id}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
-          {/* Hotspot explanation — mobile tap reveal */}
-          <div className="mt-6 min-h-[120px]">
-            {active ? (
-              <div className="animate-fade-in text-center" key={active.id}>
-                <div className="flex items-center justify-center gap-2 mb-3">
+          {/* Horizontal scroll explanation cards */}
+          <div
+            ref={scrollContainerRef}
+            className="flex gap-4 overflow-x-auto scrollbar-hide -mx-6 px-6 snap-x snap-mandatory mt-6 pb-2"
+            style={{ scrollPaddingInline: '24px' }}
+          >
+            {hotspots.map((h, i) => (
+              <div
+                key={h.id}
+                ref={(el) => (cardRefs.current[i] = el)}
+                className="flex-shrink-0 snap-center"
+                style={{ width: 'calc(100vw - 80px)', maxWidth: 340 }}
+              >
+                <div className="flex items-center gap-2 mb-3">
                   <span
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold font-display"
-                    style={{ backgroundColor: '#121212', color: '#FFFFFF' }}
+                    className="flex items-center justify-center font-body"
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: 41,
+                      border: '1px solid rgba(0, 0, 0, 0.1)',
+                      fontSize: 12,
+                      color: '#000',
+                    }}
                   >
-                    {active.id}
+                    {h.id}
                   </span>
-                  <span className="text-lg">{active.icon}</span>
-                  <span className="text-a5 text-surface-foreground font-display">
-                    {active.title}
-                  </span>
+                  <div>
+                    <p className="text-subtitle font-display text-surface-foreground uppercase tracking-wider" style={{ fontSize: 11 }}>
+                      {h.title.split('·')[0]?.trim() || h.title}
+                    </p>
+                    <p className="text-a5 font-display text-surface-foreground" style={{ fontFamily: 'var(--font-serif, Erode, serif)' }}>
+                      {h.title.split('·')[1]?.trim() || ''}
+                    </p>
+                  </div>
                 </div>
                 <p className="text-body font-body text-surface-muted leading-relaxed mb-2">
-                  {active.explanation}
+                  {h.explanation}
                 </p>
                 <p className="text-body font-body text-surface-muted leading-relaxed">
-                  {active.meaning}
+                  {h.meaning}
                 </p>
               </div>
-            ) : (
-              <div className="flex items-center justify-center gap-2 text-surface-muted">
-                <span className="text-xl">👆</span>
-                <p className="text-body font-body">
-                  Tap a number to see the artist's notes.
-                </p>
-              </div>
-            )}
+            ))}
           </div>
         </div>
 
