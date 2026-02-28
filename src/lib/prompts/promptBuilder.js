@@ -4,29 +4,23 @@ import getAIInterpretation from './getAIInterpretation.js';
 
 export async function buildConcretePrompt(chartData, style) {
   chartData = buildInterpretationLayer(chartData);
-  const triggerWord = style?.triggerWord ?? 'galaxybloom';
   const sunVisuals = CONCRETE_SUN_VISUALS[chartData.sun.sign];
   const moonVisuals = CONCRETE_MOON_VISUALS[chartData.moon.sign];
   const risingVisuals = CONCRETE_RISING_VISUALS[chartData.rising];
 
-  let prompt;
+  // Get AI narrative for richer prompts
+  const aiNarrative = await getAIInterpretation(chartData);
 
-  // For LoRA styles: short, trigger-word-first prompt (~300-500 chars)
-  // This keeps the LoRA's learned style dominant
-  if (triggerWord !== 'galaxybloom') {
-    prompt = buildShortLoRAPrompt(triggerWord, chartData, sunVisuals, moonVisuals, risingVisuals);
-  } else {
-    // Galaxy Bloom: use the full detailed prompt (original behavior)
-    const aiNarrative = await getAIInterpretation(chartData);
-    prompt = buildFullPrompt(triggerWord, chartData, sunVisuals, moonVisuals, risingVisuals, aiNarrative);
-  }
+  // Build a clean content prompt — no trigger words or model-specific params.
+  // The edge function handles Midjourney style refs and aspect ratio.
+  const prompt = buildFullPrompt(chartData, sunVisuals, moonVisuals, risingVisuals, aiNarrative);
 
   if (import.meta.env.DEV) {
     console.log('🎨 Built prompt for:', {
       sun: chartData.sun.sign,
       moon: chartData.moon.sign,
       rising: chartData.rising,
-      style: triggerWord,
+      style: style?.id,
       length: prompt.length,
     });
   }
@@ -35,26 +29,11 @@ export async function buildConcretePrompt(chartData, style) {
 }
 
 /**
- * Short prompt for LoRA-trained styles (~300-500 chars).
- * Trigger word FIRST, then concise visual direction.
+ * Full detailed prompt for Midjourney via Apiframe.
+ * No trigger words — the edge function handles style refs and aspect ratio.
  */
-function buildShortLoRAPrompt(triggerWord, chartData, sunVisuals, moonVisuals, risingVisuals) {
-  const sunCore = sunVisuals.circleDescription.split('.')[0]; // first sentence only
-  const moonCore = moonVisuals.circleDescription.split('.')[0];
-  const shape = getOverallShape(chartData.rising);
-
-  return `${triggerWord}
-
-${sunCore}. ${moonCore}. ${shape}, ${risingVisuals.overallEnergy}. Botanicals: ${sunVisuals.botanicals}.`;
-}
-
-/**
- * Full detailed prompt for Galaxy Bloom (original behavior).
- */
-function buildFullPrompt(triggerWord, chartData, sunVisuals, moonVisuals, risingVisuals, aiNarrative) {
-  return `${triggerWord}
-
-WHO THIS PERSON IS:
+function buildFullPrompt(chartData, sunVisuals, moonVisuals, risingVisuals, aiNarrative) {
+  return `WHO THIS PERSON IS:
 ${aiNarrative}
 
 SUN (${chartData.sun.sign}):
