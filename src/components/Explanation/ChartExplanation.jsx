@@ -296,13 +296,14 @@ export function ChartExplanation({
       {/* Main content */}
       <div className="flex-1">
 
-        {/* Fixed fade overlay for right column content scrolling under header */}
+        {/* Fixed fade overlay — flush with progress bar bottom */}
         <div
           className="hidden md:block fixed left-1/2 right-0 pointer-events-none z-30"
           style={{
             top: '116px',
-            height: '50px',
+            height: '40px',
             background: 'linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)',
+            marginTop: '-1px',
           }}
         />
 
@@ -355,7 +356,7 @@ export function ChartExplanation({
           </div>
 
           {/* Right: heading + scrolling explanation cards */}
-          <div className="w-1/2 relative" ref={rightContentRef}>
+          <div className="w-1/2 relative" ref={rightContentRef} style={{ paddingBottom: `${rightPadding}px` }}>
             <h1 className="text-a1 text-surface-foreground font-display mb-3">
               Meet Your Cosmic Masterpiece
             </h1>
