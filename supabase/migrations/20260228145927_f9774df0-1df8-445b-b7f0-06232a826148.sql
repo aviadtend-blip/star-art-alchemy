@@ -1,0 +1,1 @@
+CREATE POLICY "Allow public read access" ON storage.objects FOR SELECT USING (bucket_id = 'demo-assets');
