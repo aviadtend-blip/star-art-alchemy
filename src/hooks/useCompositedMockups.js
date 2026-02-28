@@ -9,6 +9,7 @@ const PARALLEL_BATCH = 3;
 const compositeCache = new Map();   // cacheKey → dataUrl
 const greenBoundsCache = new Map(); // mockupSrc → bounds|null
 let _artworkCache = { src: null, img: null, promise: null };
+let _lastArtworkForComposites = null; // tracks which artwork the composites were built for
 
 function loadImage(src) {
   return new Promise((resolve, reject) => {
@@ -135,6 +136,13 @@ export default function useCompositedMockups(mockupSrcs, artworkSrc) {
     if (!mockupSrcs?.length) { setComposited([]); setLoading(false); return; }
     if (!artworkSrc) { setComposited(mockupSrcs); setLoading(false); return; }
 
+    // If artwork changed, invalidate all composites
+    if (_lastArtworkForComposites && _lastArtworkForComposites !== artworkSrc) {
+      compositeCache.clear();
+      _artworkCache = { src: null, img: null, promise: null };
+    }
+    _lastArtworkForComposites = artworkSrc;
+
     // Check if all are cached already (instant switch)
     const allCached = mockupSrcs.every(src => compositeCache.has(src));
     if (allCached) {
@@ -187,7 +195,6 @@ export function useBackgroundPreload(otherMockupSets, artworkSrc) {
 
       for (const mockupSrcs of otherMockupSets) {
         if (controller.signal.aborted) return;
-        // Skip sets that are fully cached
         if (mockupSrcs.every(src => compositeCache.has(src))) continue;
         await compositeAll(mockupSrcs, artworkImg, controller.signal);
       }
@@ -195,4 +202,47 @@ export function useBackgroundPreload(otherMockupSets, artworkSrc) {
 
     return () => controller.abort();
   }, [otherMockupSets, artworkSrc]);
+}
+
+/**
+ * Clears all cached composites and the artwork image cache.
+ * Call this when the artwork changes (e.g. reimagine).
+ */
+export function clearCompositeCache() {
+  compositeCache.clear();
+  _artworkCache = { src: null, img: null, promise: null };
+  _lastArtworkForComposites = null;
+}
+
+/**
+ * Preloads composites for all mockup sizes in the background.
+ * Call from the preview page so mockups are ready when the user proceeds.
+ * Returns a cleanup/abort function.
+ */
+export function preloadAllMockups(allMockupSets, artworkSrc) {
+  if (!artworkSrc || !allMockupSets?.length) return () => {};
+
+  // If artwork changed, clear old composites first
+  if (_lastArtworkForComposites && _lastArtworkForComposites !== artworkSrc) {
+    compositeCache.clear();
+    _artworkCache = { src: null, img: null, promise: null };
+  }
+  _lastArtworkForComposites = artworkSrc;
+
+  const controller = new AbortController();
+
+  (async () => {
+    let artworkImg;
+    try {
+      artworkImg = await getArtworkImage(artworkSrc);
+    } catch { return; }
+
+    for (const mockupSrcs of allMockupSets) {
+      if (controller.signal.aborted) return;
+      if (mockupSrcs.every(src => compositeCache.has(src))) continue;
+      await compositeAll(mockupSrcs, artworkImg, controller.signal);
+    }
+  })();
+
+  return () => controller.abort();
 }
