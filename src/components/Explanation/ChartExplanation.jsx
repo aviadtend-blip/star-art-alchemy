@@ -303,14 +303,16 @@ export function ChartExplanation({
 
   // Desktop: highlight hotspot for the highest (topmost) visible description card
   useEffect(() => {
-    const headerOffset = 140; // below fixed header + progress bar
+    const mql = window.matchMedia('(min-width: 768px)');
+    if (!mql.matches) return; // skip on mobile
+
+    const headerOffset = 140;
     const onScroll = () => {
       let bestIdx = 0;
       let bestTop = Infinity;
       desktopCardRefs.current.forEach((el, i) => {
         if (!el) return;
         const top = el.getBoundingClientRect().top - headerOffset;
-        // Find the first card whose top is closest to (but not far above) the header
         if (top >= -el.offsetHeight / 2 && top < bestTop) {
           bestTop = top;
           bestIdx = i;
