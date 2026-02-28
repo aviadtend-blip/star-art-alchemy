@@ -542,7 +542,7 @@ export function ChartExplanation({
             </div>
 
             {/* Trust badges — inside right column on desktop */}
-            <div className="pb-6 text-center space-y-3" style={{ paddingTop: 32 }}>
+            <div className="pb-6 text-center space-y-3" style={{ paddingTop: 0 }}>
               <p className="text-body-sm font-body text-surface-foreground">
                 ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
               </p>
@@ -566,7 +566,7 @@ export function ChartExplanation({
              </div>
 
              {/* Testimonials — desktop with arrows */}
-             <div style={{ paddingTop: 48 }}>
+             <div style={{ paddingTop: 0 }}>
                <TestimonialsSection showArrows topSpace={0} />
              </div>
            </div>
