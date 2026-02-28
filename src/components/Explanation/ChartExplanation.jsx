@@ -254,30 +254,30 @@ export function ChartExplanation({
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#FFFFFF' }}>
-      {/* Header — floating on desktop */}
-      <nav
-        className="flex items-center justify-between md:fixed md:top-0 md:left-0 md:right-0 md:z-40"
-        style={{ backgroundColor: '#121212', padding: '26px 30px' }}
-      >
-        <div className="text-a4 text-white font-display">Celestial Artworks</div>
-        <button className="text-white/70 hover:text-white transition">
-          <div className="space-y-1.5">
-            <div className="w-6 h-0.5 bg-current" />
-            <div className="w-6 h-0.5 bg-current" />
-          </div>
-        </button>
-      </nav>
-      {/* Spacer for fixed header on desktop */}
-      <div className="hidden md:block" style={{ height: '76px' }} />
-
-      {/* Progress bar */}
-      <StepProgressBar currentStep={2} />
+      {/* Header + Progress bar — floating on desktop */}
+      <div className="md:fixed md:top-0 md:left-0 md:right-0 md:z-40">
+        <nav
+          className="flex items-center justify-between"
+          style={{ backgroundColor: '#121212', padding: '26px 30px' }}
+        >
+          <div className="text-a4 text-white font-display">Celestial Artworks</div>
+          <button className="text-white/70 hover:text-white transition">
+            <div className="space-y-1.5">
+              <div className="w-6 h-0.5 bg-current" />
+              <div className="w-6 h-0.5 bg-current" />
+            </div>
+          </button>
+        </nav>
+        <StepProgressBar currentStep={2} />
+      </div>
+      {/* Spacer for fixed header + progress bar on desktop */}
+      <div className="hidden md:block" style={{ height: '116px' }} />
 
       {/* Main content */}
       <div className="flex-1">
 
         {/* ===== DESKTOP LAYOUT: sticky artwork left + scrolling explanations right ===== */}
-        <div className="hidden md:flex max-w-6xl mx-auto px-8 pt-12 gap-12">
+        <div className="hidden md:flex max-w-6xl mx-auto px-8 gap-12" style={{ paddingTop: '64px' }}>
           {/* Left: sticky artwork */}
           <div className="w-1/2 flex-shrink-0">
             <div className="sticky top-8">
