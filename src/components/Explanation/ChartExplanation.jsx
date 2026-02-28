@@ -107,7 +107,7 @@ const TESTIMONIALS = [
   },
 ];
 
-function TestimonialsSection({ showArrows = false }) {
+function TestimonialsSection({ showArrows = false, bleed = false }) {
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -181,7 +181,7 @@ function TestimonialsSection({ showArrows = false }) {
 
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 -mx-6 px-6 snap-x snap-mandatory"
+        className={`flex gap-4 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory ${bleed ? '-mx-6 px-6' : ''}`}
       >
         {TESTIMONIALS.map((t, i) => (
           <div
@@ -743,7 +743,7 @@ export function ChartExplanation({
 
          {/* Testimonials — mobile */}
          <div className="md:hidden px-6">
-           <TestimonialsSection />
+           <TestimonialsSection bleed />
          </div>
        </div>
 
