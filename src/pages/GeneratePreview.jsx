@@ -32,7 +32,9 @@ export default function GeneratePreview() {
   // Run AI analysis for demo mode
   useEffect(() => {
     if (isDemo && !demoAnalysis) {
-      analyzeArtwork(demoImage, DEMO_CHART).then(setDemoAnalysis).catch(console.error);
+      // Convert relative asset path to absolute URL for the edge function
+      const absoluteUrl = new URL(demoImage, window.location.origin).href;
+      analyzeArtwork(absoluteUrl, DEMO_CHART).then(setDemoAnalysis).catch(console.error);
     }
   }, [isDemo, demoAnalysis]);
 
