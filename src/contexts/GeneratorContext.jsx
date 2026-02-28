@@ -66,10 +66,7 @@ export function GeneratorProvider({ children }) {
       const prompt = await buildConcretePrompt(chartData, style);
 
       setGenerationProgress(`Creating your ${style.name} artwork...`);
-      const imageUrl = await generateImage(prompt, {
-        aspectRatio: '3:4',
-        model: style.model,
-      });
+      const imageUrl = await generateImage(prompt);
 
       setGeneratedImage(imageUrl);
 
