@@ -134,7 +134,7 @@ function TestimonialsSection({ showArrows = false }) {
   };
 
   return (
-    <div className="py-8 px-6">
+    <div className="py-8">
       <div className="flex items-end justify-between mb-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -736,9 +736,10 @@ export function ChartExplanation({
          </div>
 
          {/* Testimonials — mobile */}
-         <div className="md:hidden">
+         <div className="md:hidden px-6">
            <TestimonialsSection />
          </div>
+       </div>
 
       {/* Footer */}
       <Footer />
