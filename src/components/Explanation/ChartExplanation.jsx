@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { generateChartExplanation } from '@/lib/explanations/generateExplanation';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import womanHolding from '@/assets/gallery/woman-holding.jpg';
 import lifestyleImg from '@/assets/gallery/lifestyle.jpg';
@@ -106,6 +107,100 @@ const TESTIMONIALS = [
   },
 ];
 
+function TestimonialsSection({ showArrows = false }) {
+  const scrollRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const updateScrollState = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 2);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 2);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    updateScrollState();
+    el.addEventListener('scroll', updateScrollState, { passive: true });
+    return () => el.removeEventListener('scroll', updateScrollState);
+  }, [updateScrollState]);
+
+  const scroll = (dir) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * 320, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="py-8 px-6">
+      <div className="flex items-end justify-between mb-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg" style={{ color: '#FFBF00' }}>★★★★★</span>
+            <span className="text-a2 font-display text-surface-foreground">4.9/5</span>
+          </div>
+          <p className="text-subtitle text-surface-muted tracking-widest">
+            FROM 287 CUSTOMERS
+          </p>
+        </div>
+        {showArrows && (
+          <div className="flex gap-2">
+            <button
+              onClick={() => scroll(-1)}
+              disabled={!canScrollLeft}
+              className="flex items-center justify-center transition-all duration-150 hover:bg-black/5 active:bg-black/10"
+              style={{
+                width: 40, height: 40, borderRadius: '50%',
+                border: '1px solid rgba(0,0,0,0.15)',
+                opacity: canScrollLeft ? 1 : 0.35,
+                cursor: canScrollLeft ? 'pointer' : 'default',
+              }}
+              aria-label="Previous reviews"
+            >
+              <ChevronLeft size={18} color="#333" />
+            </button>
+            <button
+              onClick={() => scroll(1)}
+              disabled={!canScrollRight}
+              className="flex items-center justify-center transition-all duration-150 hover:bg-black/5 active:bg-black/10"
+              style={{
+                width: 40, height: 40, borderRadius: '50%',
+                border: '1px solid rgba(0,0,0,0.15)',
+                opacity: canScrollRight ? 1 : 0.35,
+                cursor: canScrollRight ? 'pointer' : 'default',
+              }}
+              aria-label="Next reviews"
+            >
+              <ChevronRight size={18} color="#333" />
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div
+        ref={scrollRef}
+        className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 -mx-6 px-6 snap-x snap-mandatory"
+      >
+        {TESTIMONIALS.map((t, i) => (
+          <div
+            key={i}
+            className="flex-shrink-0 snap-center"
+            style={{ width: 280, borderRadius: '2px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.08)' }}
+          >
+            <img src={t.img} alt={t.name} className="w-full h-[160px] object-cover" />
+            <div className="p-4">
+              <p className="text-body-sm font-body text-surface-foreground mb-2 line-clamp-3">{t.quote}</p>
+              <p className="text-subtitle text-surface-foreground" style={{ fontSize: '10px' }}>{t.name}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function HangingFrameIcon() {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -135,17 +230,11 @@ function HangingFrameIcon() {
           opacity: visible ? 1 : 0,
         }}
       >
-        {/* Nail */}
         <circle cx="24" cy="3" r="2.5" fill="#FFBF00" />
-        {/* String */}
         <path d="M24 5.5 L14 18 M24 5.5 L34 18" stroke="white" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
-        {/* Frame */}
         <rect x="8" y="18" width="32" height="34" rx="2" stroke="white" strokeWidth="2.5" fill="none" opacity="0.95" />
-        {/* Inner frame */}
         <rect x="12" y="22" width="24" height="26" rx="1" stroke="white" strokeWidth="1.25" fill="none" opacity="0.6" />
-        {/* Mountain scene inside */}
         <path d="M14 42 L20 32 L24 36 L30 28 L34 42 Z" fill="white" opacity="0.25" />
-        {/* Sun */}
         <circle cx="30" cy="28" r="2.5" fill="#FFBF00" opacity="0.6" />
       </svg>
     </div>
@@ -470,7 +559,10 @@ export function ChartExplanation({
                   ↻ Try a Different Style
                 </button>
               )}
-            </div>
+             </div>
+
+             {/* Testimonials — desktop with arrows */}
+             <TestimonialsSection showArrows />
            </div>
           </div>
         </div>
@@ -641,44 +733,12 @@ export function ChartExplanation({
               ↻ Try a Different Style
             </button>
           )}
-        </div>
+         </div>
 
-        {/* Testimonials */}
-        <div className="px-6 pb-12">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-lg" style={{ color: '#FFBF00' }}>★★★★★</span>
-            <span className="text-a2 font-display text-surface-foreground">4.9/5</span>
-          </div>
-          <p className="text-subtitle text-surface-muted tracking-widest mb-4">
-            FROM 287 CUSTOMERS
-          </p>
-
-          {/* Horizontal scroll cards */}
-          <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 -mx-6 px-6 snap-x snap-mandatory">
-            {TESTIMONIALS.map((t, i) => (
-              <div
-                key={i}
-                className="flex-shrink-0 w-[200px] snap-center"
-                style={{ borderRadius: '2px', overflow: 'hidden' }}
-              >
-                <img
-                  src={t.img}
-                  alt={t.name}
-                  className="w-full h-[160px] object-cover"
-                />
-                <div className="p-3" style={{ backgroundColor: '#F9F5F0' }}>
-                  <p className="text-body-sm font-body text-surface-foreground mb-2 line-clamp-3">
-                    {t.quote}
-                  </p>
-                  <p className="text-subtitle text-surface-foreground" style={{ fontSize: '10px' }}>
-                    {t.name}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+         {/* Testimonials — mobile */}
+         <div className="md:hidden">
+           <TestimonialsSection />
+         </div>
 
       {/* Footer */}
       <Footer />
