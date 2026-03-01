@@ -394,7 +394,7 @@ export function ChartExplanation({
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: 'radial-gradient(5% 50% at -2.46% 3.42%, rgba(255, 255, 255, 0.30) 0%, rgba(0, 0, 0, 0.00) 100%), radial-gradient(5% 45% at 101.25% 0.54%, rgba(255, 255, 255, 0.10) 0%, rgba(0, 0, 0, 0.00) 100%), #191919' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: 'radial-gradient(25% 35% at 15% -5%, rgba(255, 255, 255, 0.12) 0%, rgba(0, 0, 0, 0.00) 100%), radial-gradient(20% 30% at 90% -3%, rgba(255, 255, 255, 0.18) 0%, rgba(0, 0, 0, 0.00) 100%), #191919' }}>
       {/* Header + Progress bar — floating on desktop */}
       <div className="md:fixed md:top-0 md:left-0 md:right-0 md:z-40">
         <Header variant="dark" />
@@ -592,7 +592,7 @@ export function ChartExplanation({
         <div
           className="md:hidden"
           style={{
-            background: 'radial-gradient(14% 35% at -5.9% 3.07%, rgba(255, 255, 255, 0.20) 0%, rgba(0, 0, 0, 0.00) 100%), radial-gradient(9% 40% at 104.49% 5.2%, rgba(255, 255, 255, 0.20) 0%, rgba(0, 0, 0, 0.00) 100%), #191919',
+            background: 'radial-gradient(40% 45% at 20% -8%, rgba(255, 255, 255, 0.10) 0%, rgba(0, 0, 0, 0.00) 100%), radial-gradient(35% 40% at 85% -5%, rgba(255, 255, 255, 0.18) 0%, rgba(0, 0, 0, 0.00) 100%), #191919',
           }}
         >
           {/* Hero heading */}
