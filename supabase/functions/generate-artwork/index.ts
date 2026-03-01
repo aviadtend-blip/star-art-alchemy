@@ -11,8 +11,10 @@ const APIFRAME_API_KEY = Deno.env.get("APIFRAME_API_KEY");
 const APIFRAME_IMAGINE_URL = "https://api.apiframe.ai/imagine";
 const APIFRAME_FETCH_URL = "https://api.apiframe.ai/fetch";
 
-// Midjourney style reference for Cosmic Collision aesthetic
-const MJ_STYLE_REF = "--p m7426009495576248339";
+// Midjourney personalization code (applied to all styles)
+const MJ_PERSONALIZATION = "--p m7426009495576248339";
+// Default sref fallback
+const DEFAULT_SREF = "3498857616";
 const MJ_PARAMS = "--ar 3:4";
 
 serve(async (req) => {
@@ -22,7 +24,7 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt } = await req.json();
+    const { prompt, sref } = await req.json();
 
     if (!prompt) {
       return new Response(
@@ -38,8 +40,9 @@ serve(async (req) => {
     console.log(`Prompt length: ${prompt.length}`);
     console.log(`Prompt preview: ${prompt.substring(0, 100)}...`);
 
-    // Build the full Midjourney prompt with style reference
-    const fullPrompt = `${prompt} ${MJ_PARAMS} ${MJ_STYLE_REF}`;
+    // Build the full Midjourney prompt with style reference and personalization
+    const styleRef = sref || DEFAULT_SREF;
+    const fullPrompt = `${prompt} ${MJ_PARAMS} --sref ${styleRef} ${MJ_PERSONALIZATION}`;
     console.log(`Full MJ prompt: ${fullPrompt}`);
 
     // Step 1: Submit imagine task to Apiframe
