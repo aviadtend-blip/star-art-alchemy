@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 import { Link } from "react-router-dom";
 import footerBg from "@/assets/footer-bg.jpg";
 import footerMobileBg from "@/assets/footer-mobile-bg.jpg";
+import logo from "@/assets/logo-horizontal.svg";
 
 /**
  * Reusable site footer matching Figma design.
@@ -21,7 +22,9 @@ const Footer = forwardRef(function Footer({ onScrollToForm }, ref) {
         <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row justify-between gap-8">
           {/* Left — Brand */}
           <div>
-            <Link to="/" className="text-subtitle text-white tracking-[3px] mb-1 hover:opacity-80 transition">CELESTIAL ARTWORKS</Link>
+            <Link to="/" className="hover:opacity-80 transition">
+              <img src={logo} alt="Celestial Artworks" className="w-[155px] md:w-[170px] h-auto brightness-0 invert" />
+            </Link>
           </div>
 
           {/* Right — Help */}
