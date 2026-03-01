@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
 import { Search, X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { ART_STYLES } from '@/config/artStyles';
+import { ART_STYLES, ADDITIONAL_STYLES } from '@/config/artStyles';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
@@ -26,34 +26,47 @@ import fable2 from '@/assets/gallery/styles/cosmic-fable-2.webp';
 import fable3 from '@/assets/gallery/styles/cosmic-fable-3.webp';
 import fable4 from '@/assets/gallery/styles/cosmic-fable-4.webp';
 
+// Paper Carnival images
+import paperThumb from '@/assets/gallery/styles/paper-carnival-thumb.webp';
+import paper2 from '@/assets/gallery/styles/paper-carnival-2.webp';
+import paper3 from '@/assets/gallery/styles/paper-carnival-3.webp';
+import paper4 from '@/assets/gallery/styles/paper-carnival-4.webp';
+
 const STYLE_IMAGES = {
   'prism-storm': prismThumb,
   'folk-oracle': folkThumb,
   'cosmic-fable': fableThumb,
+  'paper-carnival': paperThumb,
 };
 
 const STYLE_GALLERY = {
   'prism-storm': [prismThumb, prism2, prism3, prism4],
   'folk-oracle': [folkThumb, folk2, folk3, folk4],
   'cosmic-fable': [fableThumb, fable2, fable3, fable4],
+  'paper-carnival': [paperThumb, paper2, paper3, paper4],
 };
 
 const STYLE_LABELS = {
   'prism-storm': { title: 'PRISM STORM', sub: 'Abstract expressionist cosmos' },
   'folk-oracle': { title: 'FOLK ORACLE', sub: 'Dark folklore, rich warmth' },
   'cosmic-fable': { title: 'COSMIC FABLE', sub: 'Retro cosmic storytelling' },
+  'paper-carnival': { title: 'PAPER CARNIVAL', sub: 'Bright naive wonder' },
 };
 
-// Map ART_STYLES to carousel data shape
-const carouselStyles = ART_STYLES.map((s) => ({
+const toCarouselShape = (s) => ({
   id: s.id,
   name: STYLE_LABELS[s.id]?.title || s.name,
   subtitle: STYLE_LABELS[s.id]?.sub || '',
   imageSrc: STYLE_IMAGES[s.id],
   mostPopular: !!s.popular,
-}));
+});
+
+const baseStyles = ART_STYLES.map(toCarouselShape);
+const additionalStyles = ADDITIONAL_STYLES.map(toCarouselShape);
+const allStyles = [...baseStyles, ...additionalStyles];
 
 export default function StyleSelection({ onSelect, onBack, chartData, formData, onEditBirthData }) {
+  const [showAll, setShowAll] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightbox, setLightbox] = useState(null);
   const [lightboxVisible, setLightboxVisible] = useState(false);
@@ -61,6 +74,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
   const touchStartRef = useRef({ x: 0, y: 0 });
   const swipeHandledRef = useRef(false);
 
+  const carouselStyles = showAll ? allStyles : baseStyles;
   const currentStyle = carouselStyles[activeIndex];
   const selectedStyleId = currentStyle?.id;
 
@@ -108,7 +122,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
   };
 
   const handleShowMore = () => {
-    toast({ title: 'Coming soon', description: 'Additional styles are being developed.' });
+    setShowAll(true);
   };
 
   return (
@@ -147,6 +161,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
           onActiveChange={setActiveIndex}
           onZoom={openLightbox}
           onShowMore={handleShowMore}
+          showingAll={showAll}
         />
 
         {/* Title + subtitle below carousel — crossfade */}
