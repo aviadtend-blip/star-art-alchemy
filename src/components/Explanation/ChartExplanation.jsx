@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { generateChartExplanation } from '@/lib/explanations/generateExplanation';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import logoHorizontal from '@/assets/logo-horizontal.svg';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import womanHolding from '@/assets/gallery/woman-holding.jpg';
 import lifestyleImg from '@/assets/gallery/lifestyle.jpg';
@@ -381,7 +383,9 @@ export function ChartExplanation({
           className="flex items-center justify-between"
           style={{ backgroundColor: '#121212', padding: '26px 30px' }}
         >
-          <div className="text-a4 text-white font-display">Celestial Artworks</div>
+          <Link to="/" className="hover:opacity-80 transition">
+            <img src={logoHorizontal} alt="Celestial Artworks" className="w-[155px] md:w-[170px] h-auto invert" />
+          </Link>
           <button className="text-white/70 hover:text-white transition">
             <div className="space-y-1.5">
               <div className="w-6 h-0.5 bg-current" />
