@@ -157,9 +157,9 @@ function TestimonialsSection({ showArrows = false, bleed = false, topSpace = 32 
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-lg" style={{ color: '#FFBF00' }}>★★★★★</span>
-            <span className="text-a2 font-display text-surface-foreground">4.9/5</span>
+            <span className="text-a2 font-display text-white">4.9/5</span>
           </div>
-          <p className="text-subtitle text-surface-muted tracking-widest">
+          <p className="text-subtitle text-white/50 tracking-widest">
             FROM 287 CUSTOMERS
           </p>
         </div>
@@ -168,30 +168,30 @@ function TestimonialsSection({ showArrows = false, bleed = false, topSpace = 32 
             <button
               onClick={() => scroll(-1)}
               disabled={!canScrollLeft}
-              className="flex items-center justify-center transition-all duration-150 hover:bg-black/5 active:bg-black/10"
+              className="flex items-center justify-center transition-all duration-150 hover:bg-white/5 active:bg-white/10"
               style={{
                 width: 40, height: 40, borderRadius: '50%',
-                border: '1px solid rgba(0,0,0,0.15)',
+                border: '1px solid rgba(255,255,255,0.15)',
                 opacity: canScrollLeft ? 1 : 0.35,
                 cursor: canScrollLeft ? 'pointer' : 'default',
               }}
               aria-label="Previous reviews"
             >
-              <ChevronLeft size={18} color="#333" />
+              <ChevronLeft size={18} color="#ccc" />
             </button>
             <button
               onClick={() => scroll(1)}
               disabled={!canScrollRight}
-              className="flex items-center justify-center transition-all duration-150 hover:bg-black/5 active:bg-black/10"
+              className="flex items-center justify-center transition-all duration-150 hover:bg-white/5 active:bg-white/10"
               style={{
                 width: 40, height: 40, borderRadius: '50%',
-                border: '1px solid rgba(0,0,0,0.15)',
+                border: '1px solid rgba(255,255,255,0.15)',
                 opacity: canScrollRight ? 1 : 0.35,
                 cursor: canScrollRight ? 'pointer' : 'default',
               }}
               aria-label="Next reviews"
             >
-              <ChevronRight size={18} color="#333" />
+              <ChevronRight size={18} color="#ccc" />
             </button>
           </div>
         )}
@@ -205,12 +205,12 @@ function TestimonialsSection({ showArrows = false, bleed = false, topSpace = 32 
           <div
             key={i}
             className="flex-shrink-0 snap-center"
-            style={{ width: 280, borderRadius: '2px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.08)' }}
+            style={{ width: 280, borderRadius: '2px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}
           >
             <img src={t.img} alt={t.name} className="w-full h-[160px] object-cover" />
             <div className="p-4">
-              <p className="text-body-sm font-body text-surface-foreground mb-2 line-clamp-3">{t.quote}</p>
-              <p className="text-subtitle text-surface-foreground" style={{ fontSize: '10px' }}>{t.name}</p>
+              <p className="text-body-sm font-body text-white mb-2 line-clamp-3">{t.quote}</p>
+              <p className="text-subtitle text-white/50" style={{ fontSize: '10px' }}>{t.name}</p>
             </div>
           </div>
         ))}
@@ -394,7 +394,7 @@ export function ChartExplanation({
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#FFFFFF' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: 'radial-gradient(10.24% 106.33% at -2.46% 3.42%, rgba(255, 255, 255, 0.30) 0%, rgba(0, 0, 0, 0.00) 100%), radial-gradient(10.01% 96.02% at 101.25% 0.54%, rgba(255, 255, 255, 0.10) 0%, rgba(0, 0, 0, 0.00) 100%), #191919' }}>
       {/* Header + Progress bar — floating on desktop */}
       <div className="md:fixed md:top-0 md:left-0 md:right-0 md:z-40">
         <Header variant="dark" />
@@ -407,15 +407,13 @@ export function ChartExplanation({
       {/* Main content */}
       <div className="flex-1">
 
-        {/* Fixed white strip + fade that starts exactly at header/progress bar bottom */}
+        {/* Fixed strip + fade behind header on desktop */}
         <div
           className="hidden md:block fixed left-0 right-0 pointer-events-none z-35"
           style={{ top: '0', height: '156px' }}
         >
-          {/* Solid white covers everything behind the header */}
-          <div style={{ height: '116px', background: 'white' }} />
-          {/* Fade from white to transparent */}
-          <div style={{ height: '40px', background: 'linear-gradient(to bottom, white, transparent)' }} />
+          <div style={{ height: '116px', background: '#191919' }} />
+          <div style={{ height: '40px', background: 'linear-gradient(to bottom, #191919, transparent)' }} />
         </div>
 
         {/* ===== DESKTOP LAYOUT: sticky artwork left + scrolling explanations right ===== */}
@@ -449,11 +447,11 @@ export function ChartExplanation({
                         height: isActive ? 28 : 24,
                         borderRadius: 41,
                         padding: 2,
-                        backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.85)',
-                        border: isActive ? '1px solid rgba(255, 191, 0, 0.32)' : '1px solid rgba(0, 0, 0, 0.12)',
+                        backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.5)',
+                        border: '1px solid #6e5200',
                         boxShadow: isActive
                           ? '0 2px 8px rgba(255, 191, 0, 0.4)'
-                          : '0 1px 4px rgba(0, 0, 0, 0.15)',
+                          : 'none',
                       }}
                       aria-label={`Hotspot ${h.id}: ${h.title}`}
                     >
@@ -470,10 +468,10 @@ export function ChartExplanation({
           <div className="w-1/2 relative" ref={rightContentRef}>
            <div ref={rightInnerRef} className="flex flex-col gap-10">
             <div className="flex flex-col gap-2.5">
-              <h1 className="text-a1 text-surface-foreground font-display">
+              <h1 className="text-a1 text-white font-display">
                 Meet Your Cosmic Masterpiece
               </h1>
-              <p className="text-body font-body text-surface-muted">
+              <p className="text-body font-body" style={{ color: '#c7c7c7' }}>
                 {subjectExplanation}
               </p>
             </div>
@@ -485,7 +483,7 @@ export function ChartExplanation({
                   id={`desktop-hotspot-${h.id}`}
                   ref={(el) => (desktopCardRefs.current[i] = el)}
                   className="w-full pt-4"
-                  style={{ borderTop: '1px solid rgba(0, 0, 0, 0.12)' }}
+                  style={{ borderTop: '1px solid rgba(255, 255, 255, 0.12)' }}
                 >
                   <div className="flex items-center gap-3 mb-5">
                     <span
@@ -494,7 +492,7 @@ export function ChartExplanation({
                         width: 32,
                         height: 32,
                         borderRadius: 41,
-                        border: '1px solid rgba(0, 0, 0, 0.1)',
+                        border: '1px solid #6e5200',
                         fontSize: 13,
                         color: '#000',
                         backgroundColor: 'rgba(255,255,255,0.5)',
@@ -503,15 +501,15 @@ export function ChartExplanation({
                       {h.id}
                     </span>
                     <div className="flex flex-col gap-1">
-                      <p className="text-subtitle font-display text-surface-foreground uppercase tracking-normal" style={{ fontSize: 11 }}>
+                      <p className="text-subtitle font-display text-white uppercase tracking-normal" style={{ fontSize: 11 }}>
                         {h.title.split('·')[0]?.trim() || h.title}
                       </p>
-                      <p className="text-a5 font-display text-surface-foreground" style={{ fontFamily: 'var(--font-serif, Erode, serif)', fontWeight: 600 }}>
+                      <p className="text-a5 font-display text-white" style={{ fontFamily: 'var(--font-serif, Erode, serif)', fontWeight: 600 }}>
                         {h.title.split('·')[1]?.trim() || ''}
                       </p>
                     </div>
                   </div>
-                  <p className="text-body font-body text-surface-muted leading-relaxed">
+                  <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7' }}>
                     {h.explanation}
                   </p>
                 </div>
@@ -555,24 +553,17 @@ export function ChartExplanation({
 
             {/* Trust badges — inside right column on desktop */}
             <div className="pb-6 text-center space-y-3" style={{ paddingTop: 0 }}>
-              <p className="text-body-sm font-body text-surface-foreground">
+              <p className="text-body-sm font-body text-white/70">
                 ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
               </p>
-              <div
-                className="py-3 px-4 text-center"
-                style={{ backgroundColor: '#DAEEFF', borderRadius: '2px' }}
-              >
-                <p className="text-body-sm font-body" style={{ color: '#333333' }}>
-                  🚀 Order by 5pm for same-day processing
-                </p>
-              </div>
+              <RotatingBanner />
               <div className="flex items-center justify-center gap-4">
                 {onReimagine && (
                   <button
                     onClick={onReimagine}
                     disabled={isReimagining}
                     className="btn-base btn-tertiary"
-                    style={{ color: '#333333' }}
+                    style={{ color: '#c7c7c7' }}
                   >
                     {isReimagining ? '↻ Loading...' : variationsExhausted ? '✦ Generate New Artwork' : '↻ Reimagine'}
                   </button>
@@ -581,7 +572,7 @@ export function ChartExplanation({
                   <button
                     onClick={onBackToStyle}
                     className="btn-base btn-tertiary"
-                    style={{ color: '#333333' }}
+                    style={{ color: '#c7c7c7' }}
                   >
                     ↻ Try a Different Style
                   </button>
@@ -601,8 +592,7 @@ export function ChartExplanation({
         <div
           className="md:hidden"
           style={{
-            backgroundColor: '#191919',
-            backgroundImage: 'radial-gradient(ellipse at top left, rgba(255,255,255,0.08) 0%, transparent 50%), radial-gradient(ellipse at top right, rgba(255,255,255,0.06) 0%, transparent 50%)',
+            background: 'radial-gradient(28.52% 75.4% at -5.9% 3.07%, rgba(255, 255, 255, 0.20) 0%, rgba(0, 0, 0, 0.00) 100%), radial-gradient(18.29% 85% at 104.49% 5.2%, rgba(255, 255, 255, 0.20) 0%, rgba(0, 0, 0, 0.00) 100%), #191919',
           }}
         >
           {/* Hero heading */}
