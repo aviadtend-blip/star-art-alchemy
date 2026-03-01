@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { Search } from 'lucide-react';
 import PopularTag from '@/components/ui/PopularTag';
+import starsBg from '@/assets/stars-bg.jpg';
 
 /**
  * Horizontal snap-scroll carousel for style selection.
@@ -183,24 +184,23 @@ export default function StyleCarousel({
             height: INACTIVE_H,
             scrollSnapAlign: 'center',
             borderRadius: 2,
-            background: '#ebebeb',
+            backgroundImage: `url(${starsBg})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
           }}
         >
           <p
             className="text-center font-body"
-            style={{ fontSize: 16, color: '#727272', opacity: 0.7, padding: '0 24px' }}
+            style={{ fontSize: 16, color: '#000000', padding: '0 24px' }}
           >
             Need to see more options?
           </p>
           <button
             onClick={() => onShowMore?.()}
-            className="font-body transition-colors hover:opacity-90"
+            className="btn-tertiary font-body"
             style={{
               marginTop: 17,
-              background: '#2c2c2c',
-              borderRadius: 8,
-              padding: 16,
-              color: '#FFFFFF',
+              padding: '12px 16px',
               fontSize: 16,
               width: 'calc(100% - 48px)',
             }}
