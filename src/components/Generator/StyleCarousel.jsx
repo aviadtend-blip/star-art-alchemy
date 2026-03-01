@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { Search } from 'lucide-react';
+import PopularTag from '@/components/ui/PopularTag';
 
 /**
  * Horizontal snap-scroll carousel for style selection.
@@ -160,19 +161,13 @@ export default function StyleCarousel({
               {/* Most popular badge — active card only */}
               {isActive && style.mostPopular && (
                 <div
-                  className="absolute left-1/2 flex items-center justify-center"
+                  className="absolute left-1/2"
                   style={{
                     bottom: -8,
                     transform: 'translateX(-50%)',
-                    background: '#191919',
-                    borderRadius: 26,
-                    padding: '2px 6px',
-                    color: '#FFFFFF',
-                    fontSize: 14,
-                    whiteSpace: 'nowrap',
                   }}
                 >
-                  Most popular
+                  <PopularTag />
                 </div>
               )}
             </div>

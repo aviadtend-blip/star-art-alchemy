@@ -147,8 +147,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
             className="animate-in fade-in slide-in-from-bottom-1 duration-300"
           >
             <h3
-              className="font-display"
-              style={{ fontSize: 12, letterSpacing: '-0.36px', color: '#000000', textTransform: 'uppercase' }}
+              className="font-display text-subtitle"
             >
               {currentStyle?.name}
             </h3>
