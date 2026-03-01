@@ -556,25 +556,27 @@ export function ChartExplanation({
                   🚀 Order by 5pm for same-day processing
                 </p>
               </div>
-              {onReimagine && (
-                <button
-                  onClick={onReimagine}
-                  disabled={isReimagining}
-                  className="btn-base btn-tertiary"
-                  style={{ color: '#333333' }}
-                >
-                  {isReimagining ? '↻ Loading...' : variationsExhausted ? '✦ Generate New Artwork' : '↻ Reimagine'}
-                </button>
-              )}
-              {onBackToStyle && (
-                <button
-                  onClick={onBackToStyle}
-                  className="btn-base btn-tertiary"
-                  style={{ color: '#333333' }}
-                >
-                  ↻ Try a Different Style
-                </button>
-              )}
+              <div className="flex items-center justify-center gap-4">
+                {onReimagine && (
+                  <button
+                    onClick={onReimagine}
+                    disabled={isReimagining}
+                    className="btn-base btn-tertiary"
+                    style={{ color: '#333333' }}
+                  >
+                    {isReimagining ? '↻ Loading...' : variationsExhausted ? '✦ Generate New Artwork' : '↻ Reimagine'}
+                  </button>
+                )}
+                {onBackToStyle && (
+                  <button
+                    onClick={onBackToStyle}
+                    className="btn-base btn-tertiary"
+                    style={{ color: '#333333' }}
+                  >
+                    ↻ Try a Different Style
+                  </button>
+                )}
+              </div>
              </div>
 
              {/* Testimonials — desktop with arrows */}
@@ -739,25 +741,27 @@ export function ChartExplanation({
               🚀 Order by 5pm for same-day processing
             </p>
           </div>
-          {onReimagine && (
-            <button
-              onClick={onReimagine}
-              disabled={isReimagining}
-              className="btn-base btn-tertiary"
-              style={{ color: '#333333' }}
-            >
-              {isReimagining ? '↻ Loading...' : variationsExhausted ? '✦ Generate New Artwork' : '↻ Reimagine'}
-            </button>
-          )}
-          {onBackToStyle && (
-            <button
-              onClick={onBackToStyle}
-              className="btn-base btn-tertiary"
-              style={{ color: '#333333' }}
-            >
-              ↻ Try a Different Style
-            </button>
-          )}
+          <div className="flex items-center justify-center gap-4">
+            {onReimagine && (
+              <button
+                onClick={onReimagine}
+                disabled={isReimagining}
+                className="btn-base btn-tertiary"
+                style={{ color: '#333333' }}
+              >
+                {isReimagining ? '↻ Loading...' : variationsExhausted ? '✦ Generate New Artwork' : '↻ Reimagine'}
+              </button>
+            )}
+            {onBackToStyle && (
+              <button
+                onClick={onBackToStyle}
+                className="btn-base btn-tertiary"
+                style={{ color: '#333333' }}
+              >
+                ↻ Try a Different Style
+              </button>
+            )}
+          </div>
          </div>
 
          {/* Testimonials — mobile */}
