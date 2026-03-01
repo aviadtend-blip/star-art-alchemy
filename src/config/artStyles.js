@@ -28,6 +28,17 @@ export const ART_STYLES = [
   },
 ];
 
+export const ADDITIONAL_STYLES = [
+  {
+    id: 'paper-carnival',
+    name: 'Paper Carnival',
+    description: 'Bright naive wonder with playful folk-art energy and joyful color.',
+    sref: '1457152461',
+    preview: '🎪',
+    accentColor: 'from-yellow-400 to-orange-400',
+  },
+];
+
 /**
  * Get a style by its ID
  */
