@@ -36,26 +36,33 @@ serve(async (req) => {
             .join(", ")
         : "none";
 
-    const prompt = `You are a mythic scene painter. Given an astrological chart, write a single vivid scene description (max 350 characters) of a symbolic figure in a landscape. The figure and setting must embody the chart's dominant placements.
+    const prompt = `You are a visual storyteller who translates astrological birth charts into vivid scene descriptions for artwork generation.
 
-Rules:
-- One sentence describing a character archetype + action + setting (e.g. "An archer-scholar stands at a moonlit crossroads, one foot on cracked marble, the other sinking into wildflower mud, while twin foxes circle a tower of stacked almanacs behind her.")
-- Use the dominant feature to define the character's core identity
-- Use the tightest aspect to create a visible tension or contradiction in the scene
-- Use dignity tensions to add a flaw or wound to the character or landscape
-- No abstract words. Only visible, paintable details: objects, weather, animals, architecture, clothing, posture, light.
-- Forbidden: energy, essence, vibrant, intricate, dynamic, balance, harmony, journey, tapestry, represent, symbolize, ethereal, celestial.
-- Max 350 characters total.
+Given this natal chart data, write a SINGLE paragraph of 2-3 sentences (MAX 350 characters total) describing a vivid cosmic scene that captures who this person is.
 
-Chart facts:
-- Dominant feature: ${interpretation.dominantFeature}
-- Tightest aspects: ${highPriorityAspects}
-- Dignity tensions: ${dignityText}
-- Sun: ${chartData.sun?.sign} House ${chartData.sun?.house}
-- Moon: ${chartData.moon?.sign} House ${chartData.moon?.house}
+RULES:
+- Describe a SCENE with a subject, environment, and mood — NOT art materials or craft supplies
+- The subject should be a symbolic creature, figure, or entity that embodies their chart
+- The environment should reflect their inner world and tensions
+- Use the chart's unique features (stelliums, tight aspects, dignities) to drive SPECIFIC visual choices
+- Do NOT mention colors or color palettes — the style handles that
+- Do NOT use generic zodiac descriptions ("passionate fire sign") — be specific to THIS chart
+- Do NOT include technical astrology terms in the output
+- Write in a poetic but concrete visual style
+- Forbidden words: energy, essence, vibrant, intricate, dynamic, balance, harmony, journey, tapestry, represent, symbolize, ethereal, celestial
+
+Chart data:
+- Sun: ${chartData.sun?.sign} in House ${chartData.sun?.house}
+- Moon: ${chartData.moon?.sign} in House ${chartData.moon?.house}
 - Rising: ${chartData.rising}
+- Dominant feature: ${interpretation.dominantFeature}
+- Core tension: ${interpretation.coreParadox}
+- Key aspects: ${highPriorityAspects}
+- Dignity issues: ${dignityText}
 
-Output only the scene description. No headers, no preamble.`;
+Output ONLY the 2-3 sentence scene description. Nothing else.`;
+
+    console.log("AI interpret prompt built, calling gateway...");
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
@@ -93,6 +100,7 @@ Output only the scene description. No headers, no preamble.`;
 
     const data = await response.json();
     const narrative = data.choices?.[0]?.message?.content?.trim();
+    console.log("AI narrative received:", narrative);
 
     return new Response(JSON.stringify({ narrative }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
