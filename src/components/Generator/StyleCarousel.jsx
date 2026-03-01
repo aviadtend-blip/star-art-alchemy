@@ -100,6 +100,13 @@ export default function StyleCarousel({
           padding: `0 ${PAD}px`,
           gap: `${GAP}px`,
           WebkitOverflowScrolling: 'touch',
+          height: ACTIVE_H,
+        }}
+        style={{
+          scrollSnapType: 'x mandatory',
+          padding: `0 ${PAD}px`,
+          gap: `${GAP}px`,
+          WebkitOverflowScrolling: 'touch',
         }}
       >
         {styles.map((style, i) => {
