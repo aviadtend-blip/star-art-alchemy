@@ -119,7 +119,7 @@ export default function StyleCarousel({
                 height: h,
                 scrollSnapAlign: 'center',
                 borderRadius: 2,
-                overflow: 'hidden',
+                overflow: 'visible',
                 transition: 'width 0.3s ease, height 0.3s ease',
                 cursor: 'pointer',
               }}
@@ -135,7 +135,7 @@ export default function StyleCarousel({
                 src={style.imageSrc}
                 alt={style.name}
                 className="w-full h-full object-cover"
-                style={{ borderRadius: 2 }}
+                style={{ borderRadius: 2, display: 'block' }}
               />
 
               {/* Zoom button — active card only */}
