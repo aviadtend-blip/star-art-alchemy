@@ -1,146 +1,82 @@
-import { CONCRETE_SUN_VISUALS, CONCRETE_MOON_VISUALS, CONCRETE_RISING_VISUALS } from '@/data/concreteVisualPrompts.js';
 import buildInterpretationLayer from './buildInterpretationLayer.js';
 import getAIInterpretation from './getAIInterpretation.js';
 
+// Simple zodiac subject keywords — no colors, no positioning
+const SUN_SUBJECTS = {
+  Aries: 'ram charging through stone walls',
+  Taurus: 'bull resting in a harvest field',
+  Gemini: 'twin figures sharing a single book',
+  Cancer: 'crab guarding a pearl-lined shell',
+  Leo: 'lion with a mane of sunflowers',
+  Virgo: 'maiden with wheat sheaves',
+  Libra: 'figure holding balanced scales',
+  Scorpio: 'scorpion transforming into eagle',
+  Sagittarius: 'archer aiming at distant stars',
+  Capricorn: 'mountain goat on a frozen summit',
+  Aquarius: 'water-bearer pouring from cracked vessels',
+  Pisces: 'two fish circling a whirlpool',
+};
+
+const MOON_TEXTURES = {
+  Aries: 'sparks scattering from struck flint',
+  Taurus: 'moss-covered stone in still water',
+  Gemini: 'twin mirrors reflecting scattered thoughts',
+  Cancer: 'tide pools glowing under moonlight',
+  Leo: 'warm hearth flames behind curtains',
+  Virgo: 'pressed herbs between pages',
+  Libra: 'silk draped over a sleeping face',
+  Scorpio: 'deep well with no visible bottom',
+  Sagittarius: 'bonfire smoke rising into open sky',
+  Capricorn: 'frost crystallizing on iron',
+  Aquarius: 'lightning frozen inside glass',
+  Pisces: 'dissolving ocean mist',
+};
+
+const RISING_ENVIRONMENTS = {
+  Aries: 'volcanic terrain and cracked earth',
+  Taurus: 'lush garden with stone walls',
+  Gemini: 'crossroads with multiple winding paths',
+  Cancer: 'sheltered cove with tidal caves',
+  Leo: 'grand amphitheater under open sky',
+  Virgo: 'apothecary workshop with organized shelves',
+  Libra: 'mirrored courtyard with floating scales',
+  Scorpio: 'underground cavern with phosphorescent pools',
+  Sagittarius: 'distant horizons and open plains',
+  Capricorn: 'ancient stone tower on a cliff',
+  Aquarius: 'observatory floating above clouds',
+  Pisces: 'shoreline where land dissolves into fog',
+};
+
 export async function buildConcretePrompt(chartData, style) {
   chartData = buildInterpretationLayer(chartData);
-  const sunVisuals = CONCRETE_SUN_VISUALS[chartData.sun.sign];
-  const moonVisuals = CONCRETE_MOON_VISUALS[chartData.moon.sign];
-  const risingVisuals = CONCRETE_RISING_VISUALS[chartData.rising];
 
-  // Get AI narrative for richer prompts
+  // Get the AI scene narrative
   const aiNarrative = await getAIInterpretation(chartData);
 
-  // Build a clean content prompt — no trigger words or model-specific params.
-  // The edge function handles Midjourney style refs and aspect ratio.
-  const prompt = buildFullPrompt(chartData, sunVisuals, moonVisuals, risingVisuals, aiNarrative);
+  // Build zodiac keywords
+  const sunSubject = SUN_SUBJECTS[chartData.sun.sign] || 'mysterious figure';
+  const moonTexture = MOON_TEXTURES[chartData.moon.sign] || 'shifting light';
+  const risingEnv = RISING_ENVIRONMENTS[chartData.rising] || 'vast landscape';
+
+  // Combine into a single flat prompt string — no headers, no sections
+  const contentPrompt = `cosmic collage, ${aiNarrative}, ${sunSubject}, ${moonTexture}, ${risingEnv}`;
+
+  // Trim to ~500 chars max (before params)
+  const trimmed = contentPrompt.length > 500 ? contentPrompt.substring(0, 497) + '...' : contentPrompt;
 
   if (import.meta.env.DEV) {
-    console.log('🎨 Built prompt for:', {
+    console.log('🎨 Built prompt:', {
       sun: chartData.sun.sign,
       moon: chartData.moon.sign,
       rising: chartData.rising,
       style: style?.id,
-      length: prompt.length,
+      length: trimmed.length,
+      prompt: trimmed,
     });
   }
 
-  return prompt;
-}
-
-/**
- * Full detailed prompt for Midjourney via Apiframe.
- * No trigger words — the edge function handles style refs and aspect ratio.
- */
-function buildFullPrompt(chartData, sunVisuals, moonVisuals, risingVisuals, aiNarrative) {
-  return `WHO THIS PERSON IS:
-${aiNarrative}
-
-SUN (${chartData.sun.sign}):
-${sunVisuals.circleDescription}
-${sunVisuals.additionalElements}
-Botanicals: ${sunVisuals.botanicals}
-Positioning: ${sunVisuals.positioning}
-
-MOON (${chartData.moon.sign}):
-${moonVisuals.circleDescription}
-${moonVisuals.atmosphere}
-
-RISING (${chartData.rising}):
-${risingVisuals.compositionalStyle}
-${risingVisuals.borderElements}
-
-COMPOSITION:
-Overall shape: ${getOverallShape(chartData.rising)}
-Layout: ${getLayoutDescription(chartData.sun.sign, chartData.moon.sign)}
-Aesthetic: ${risingVisuals.overallEnergy}
-
-SPATIAL ARRANGEMENT:
-${getSpatialArrangement(chartData.sun.sign, chartData.moon.sign, chartData.rising)}`;
+  return trimmed;
 }
 
 // Keep backward-compatible export name
 export const buildCanonicalPrompt = buildConcretePrompt;
-
-// Helper functions
-
-function getOverallShape(rising) {
-  const shapes = {
-    'Aries': 'dynamic asymmetrical shape',
-    'Taurus': 'solid circular or square-based shape',
-    'Gemini': 'irregular or dual-part shape',
-    'Cancer': 'soft circular or oval shape with curved borders',
-    'Leo': 'circular or radial mandala-like shape',
-    'Virgo': 'precisely defined geometric shape',
-    'Libra': 'perfectly symmetrical oval or circle',
-    'Scorpio': 'irregular layered shape with hidden sections',
-    'Sagittarius': 'expansive rectangular or wide oval shape',
-    'Capricorn': 'vertical rectangular or pyramid-like shape',
-    'Aquarius': 'unconventional asymmetrical or polygonal shape',
-    'Pisces': 'soft irregular shape with flowing boundaries'
-  };
-  return shapes[rising] || 'oval shape';
-}
-
-function getLayoutDescription(sunSign, moonSign) {
-  return `Sun positioned ${getSunPosition(sunSign)}, moon positioned ${getMoonPosition(moonSign)}`;
-}
-
-function getSunPosition(sunSign) {
-  const positions = {
-    'Aries': 'upper center area commanding attention',
-    'Taurus': 'upper left creating grounded anchor',
-    'Gemini': 'upper section in dual placement',
-    'Cancer': 'center with nurturing presence',
-    'Leo': 'center stage dominating composition',
-    'Virgo': 'center-left with refined precision',
-    'Libra': 'center-top in balanced harmony',
-    'Scorpio': 'center-right with intense presence',
-    'Sagittarius': 'upper section with expansive quality',
-    'Capricorn': 'upper center elevated like summit',
-    'Aquarius': 'asymmetrically placed breaking norms',
-    'Pisces': 'soft placement with dissolving edges'
-  };
-  return positions[sunSign] || 'upper section';
-}
-
-function getMoonPosition(moonSign) {
-  const positions = {
-    'Aries': 'dynamically with movement quality',
-    'Taurus': 'lower section grounded and stable',
-    'Gemini': 'in dual or changing aspect',
-    'Cancer': 'prominently with protective elements',
-    'Leo': 'with regal dramatic presence',
-    'Virgo': 'precisely with clean execution',
-    'Libra': 'in balanced symmetrical placement',
-    'Scorpio': 'in shadowy lower-right section',
-    'Sagittarius': 'upper section near horizons',
-    'Capricorn': 'elevated with structured framing',
-    'Aquarius': 'unconventionally or asymmetrically',
-    'Pisces': 'softly with dissolved boundaries'
-  };
-  return positions[moonSign] || 'lower section';
-}
-
-function getSpatialArrangement(sunSign, moonSign, rising) {
-  return `${getRisingImpact(rising)}
-Clear visual hierarchy with sun as primary focal point`;
-}
-
-function getRisingImpact(rising) {
-  const impacts = {
-    'Aries': 'Dynamic asymmetrical layout breaking traditional structure',
-    'Taurus': 'Botanical elements frame and ground entire composition',
-    'Gemini': 'Dual perspective creates conversational layout',
-    'Cancer': 'Protective circular forms embrace main elements',
-    'Leo': 'Regal radial structure commands attention',
-    'Virgo': 'Precise geometric grid underlies entire composition',
-    'Libra': 'Perfect bilateral symmetry structures everything',
-    'Scorpio': 'Layered depth with mysterious shadowy sections',
-    'Sagittarius': 'Expansive depth from foreground to distant horizons',
-    'Capricorn': 'Vertical hierarchy with structured elevation',
-    'Aquarius': 'Innovative unconventional spatial relationships',
-    'Pisces': 'Soft flowing boundaries throughout'
-  };
-  return impacts[rising] || 'Balanced compositional structure';
-}
