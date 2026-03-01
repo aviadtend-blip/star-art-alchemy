@@ -435,8 +435,8 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   return (
     <div className="min-h-screen relative" style={{ backgroundColor: '#FFFFFF' }}>
-      <div style={{ backgroundColor: '#121212' }}>
-        <Header />
+      <div>
+        <Header variant="dark" />
         <div className="pt-14">
           <StepProgressBar currentStep={3} />
         </div>

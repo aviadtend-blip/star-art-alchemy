@@ -379,20 +379,8 @@ export function ChartExplanation({
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Header + Progress bar — floating on desktop */}
       <div className="md:fixed md:top-0 md:left-0 md:right-0 md:z-40">
-        <nav
-          className="flex items-center justify-between"
-          style={{ backgroundColor: '#121212', padding: '26px 30px' }}
-        >
-          <Link to="/" className="hover:opacity-80 transition">
-            <img src={logoHorizontal} alt="Celestial Artworks" className="w-[155px] md:w-[170px] h-auto invert" />
-          </Link>
-          <button className="text-white/70 hover:text-white transition">
-            <div className="space-y-1.5">
-              <div className="w-6 h-0.5 bg-current" />
-              <div className="w-6 h-0.5 bg-current" />
-            </div>
-          </button>
-        </nav>
+        <Header variant="dark" />
+
         <StepProgressBar currentStep={2} />
       </div>
       {/* Spacer for fixed header + progress bar on desktop */}

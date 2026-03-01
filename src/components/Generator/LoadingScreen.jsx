@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 
 const FUN_FACTS = [
@@ -61,15 +62,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Header */}
-      <nav className="flex items-center justify-between" style={{ backgroundColor: '#121212', padding: '26px 30px' }}>
-        <div className="text-a4 text-white font-display">Celestial Artworks</div>
-        <button className="text-white/70 hover:text-white transition">
-          <div className="space-y-1.5">
-            <div className="w-6 h-0.5 bg-current" />
-            <div className="w-6 h-0.5 bg-current" />
-          </div>
-        </button>
-      </nav>
+      <Header variant="dark" />
 
 
       {/* Main content */}

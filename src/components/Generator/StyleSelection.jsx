@@ -4,6 +4,7 @@ import { Search, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ART_STYLES, ADDITIONAL_STYLES } from '@/config/artStyles';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
+import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
 import StyleCarousel from '@/components/Generator/StyleCarousel';
@@ -146,15 +147,8 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Header */}
-      <nav className="flex items-center justify-between" style={{ backgroundColor: '#121212', padding: '26px 30px' }}>
-        <div className="text-a4 text-white font-display">Celestial Artworks</div>
-        <button className="text-white/70 hover:text-white transition">
-          <div className="space-y-1.5">
-            <div className="w-6 h-0.5 bg-current" />
-            <div className="w-6 h-0.5 bg-current" />
-          </div>
-        </button>
-      </nav>
+      <Header variant="dark" />
+
 
       {/* Progress bar */}
       <div style={{ borderBottom: '1px solid #2A2A2A' }}>
