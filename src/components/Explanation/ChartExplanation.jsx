@@ -416,177 +416,173 @@ export function ChartExplanation({
           <div style={{ height: '40px', background: 'linear-gradient(to bottom, #191919, transparent)' }} />
         </div>
 
-        {/* ===== DESKTOP LAYOUT: sticky artwork left + scrolling explanations right ===== */}
-        <div className="hidden md:flex mx-auto px-8 pt-12 gap-12 items-start w-full" style={{ maxWidth: 880 }}>
-          {/* Left: sticky artwork centered vertically on screen */}
-          <div className="w-1/2 flex-shrink-0 sticky" style={{ top: '132px', height: 'fit-content' }}>
+        {/* ===== DESKTOP LAYOUT: two-column ===== */}
+        <div className="hidden md:flex mx-auto px-8 pt-16 gap-12 items-start w-full" style={{ maxWidth: 880 }}>
+          {/* Left: sticky artwork */}
+          <div className="w-[379px] flex-shrink-0 sticky" style={{ top: '132px', height: 'fit-content' }}>
             <div className="relative" ref={artworkRef}>
-                <img
-                  src={selectedImage}
-                  alt={`Birth chart artwork for ${chartData.sun.sign} Sun`}
-                  className="w-full"
-                  style={{ borderRadius: '2px' }}
-                />
-                {hotspots.map((h) => {
-                  const isActive = activeHotspot === h.id;
-                  return (
-                    <button
-                      key={h.id}
-                      onClick={() => {
-                        setActiveHotspot(h.id);
-                        // Scroll the right-side card into view
-                        const el = document.getElementById(`desktop-hotspot-${h.id}`);
-                        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                      }}
-                      className="absolute flex items-center justify-center transition-all duration-300 cursor-pointer z-10"
-                      style={{
-                        top: h.position.top,
-                        left: h.position.left,
-                        transform: 'translate(-50%, -50%)',
-                        width: isActive ? 28 : 24,
-                        height: isActive ? 28 : 24,
-                        borderRadius: 41,
-                        padding: 2,
-                        backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.5)',
-                        border: '1px solid #6e5200',
-                        boxShadow: isActive
-                          ? '0 2px 8px rgba(255, 191, 0, 0.4)'
-                          : 'none',
-                      }}
-                      aria-label={`Hotspot ${h.id}: ${h.title}`}
-                    >
-                      <span className="font-body text-center" style={{ fontSize: 12, fontWeight: 400, lineHeight: '113%', letterSpacing: '-0.42px', color: '#000' }}>
-                        {h.id}
-                      </span>
-                    </button>
-                  );
-                })}
+              <img
+                src={selectedImage}
+                alt={`Birth chart artwork for ${chartData?.sun?.sign || ''} Sun`}
+                className="w-full"
+                style={{ borderRadius: '2px' }}
+              />
+              {hotspots.map((h) => {
+                const isActive = activeHotspot === h.id;
+                return (
+                  <button
+                    key={h.id}
+                    onClick={() => {
+                      setActiveHotspot(h.id);
+                      const el = document.getElementById(`desktop-hotspot-${h.id}`);
+                      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }}
+                    className="absolute flex items-center justify-center transition-all duration-300 cursor-pointer z-10"
+                    style={{
+                      top: h.position.top,
+                      left: h.position.left,
+                      transform: 'translate(-50%, -50%)',
+                      width: isActive ? 28 : 24,
+                      height: isActive ? 28 : 24,
+                      borderRadius: 41,
+                      padding: 2,
+                      backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.5)',
+                      border: '1px solid #6e5200',
+                      boxShadow: isActive ? '0 2px 8px rgba(255, 191, 0, 0.4)' : 'none',
+                    }}
+                    aria-label={`Hotspot ${h.id}: ${h.title}`}
+                  >
+                    <span className="font-body text-center" style={{ fontSize: 12, color: '#000' }}>
+                      {h.id}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Right: heading + scrolling explanation cards */}
-          <div className="w-1/2 relative" ref={rightContentRef}>
-           <div ref={rightInnerRef} className="flex flex-col gap-10">
-            <div className="flex flex-col gap-2.5">
-              <h1 className="text-a1 text-white font-display">
-                Meet Your Cosmic Masterpiece
-              </h1>
-              <p className="text-body font-body" style={{ color: '#c7c7c7' }}>
-                {subjectExplanation}
-              </p>
-            </div>
+          {/* Right: content column */}
+          <div className="flex-1 min-w-0" ref={rightContentRef}>
+            <div ref={rightInnerRef} className="flex flex-col gap-10">
+              {/* Title + Subtitle */}
+              <div className="flex flex-col gap-5">
+                <h1 className="text-a1 text-white font-display">
+                  Meet Your Cosmic Masterpiece
+                </h1>
+                <p className="text-body font-body" style={{ color: '#c7c7c7', lineHeight: '1.6' }}>
+                  {subjectExplanation}
+                </p>
+              </div>
 
-            <div className="flex flex-col gap-5">
-              {hotspots.map((h, i) => (
-                <div
-                  key={h.id}
-                  id={`desktop-hotspot-${h.id}`}
-                  ref={(el) => (desktopCardRefs.current[i] = el)}
-                  className="w-full pt-4"
-                  style={{ borderTop: '1px solid rgba(255, 255, 255, 0.12)' }}
-                >
-                  <div className="flex items-center gap-3 mb-5">
-                    <span
-                      className="flex items-center justify-center font-body flex-shrink-0"
-                      style={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: 41,
-                        border: '1px solid #FFF',
-                        padding: 2,
-                        fontSize: 13,
-                        color: '#FFF',
-                      }}
-                    >
-                      {h.id}
-                    </span>
-                    <div className="flex flex-col gap-1">
-                      <p className="text-subtitle font-display text-white uppercase tracking-normal" style={{ fontSize: 11 }}>
-                        {h.title.split('·')[0]?.trim() || h.title}
-                      </p>
-                      <p className="text-a5 font-display text-white" style={{ fontFamily: 'var(--font-serif, Erode, serif)', fontWeight: 600 }}>
-                        {h.title.split('·')[1]?.trim() || ''}
+              {/* Explanation cards — vertical with right border */}
+              <div className="flex flex-col gap-5">
+                {hotspots.map((h, i) => (
+                  <div
+                    key={h.id}
+                    id={`desktop-hotspot-${h.id}`}
+                    ref={(el) => (desktopCardRefs.current[i] = el)}
+                    className="w-full"
+                    style={{ borderRight: '1px solid #3f3f3f', paddingRight: 16 }}
+                  >
+                    <div className="flex flex-col gap-5">
+                      <div className="flex items-center gap-3">
+                        <span
+                          className="flex items-center justify-center font-body flex-shrink-0"
+                          style={{ width: 28, height: 28, borderRadius: 41, border: '1px solid #FFF', padding: 2, fontSize: 13, color: '#FFF' }}
+                        >
+                          {h.id}
+                        </span>
+                        <div className="flex flex-col gap-1">
+                          <p className="font-display text-white uppercase" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.05em' }}>
+                            {h.title.split('·')[0]?.trim() || h.title}
+                          </p>
+                          <p className="font-display text-white" style={{ fontSize: 16, fontWeight: 500, fontFamily: 'var(--font-serif, Erode, serif)', lineHeight: '14px' }}>
+                            {h.title.split('·')[1]?.trim() || ''}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7' }}>
+                        {h.explanation}
                       </p>
                     </div>
                   </div>
-                  <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7' }}>
-                    {h.explanation}
+                ))}
+              </div>
+
+              {/* Action buttons — side by side */}
+              <div className="flex gap-4 w-full">
+                {onBackToStyle && (
+                  <button onClick={onBackToStyle} className="btn-base btn-dark flex-1 gap-2.5">
+                    <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
+                  </button>
+                )}
+                {onReimagine && (
+                  <button onClick={onReimagine} disabled={isReimagining} className="btn-base btn-dark flex-1 gap-2.5">
+                    {isReimagining ? <><RefreshCw size={16} className="animate-spin flex-shrink-0" /> Loading...</> : variationsExhausted ? <><RefreshCw size={16} className="flex-shrink-0" /> Generate New</> : <><RefreshCw size={16} className="flex-shrink-0" /> Reimagine</>}
+                  </button>
+                )}
+              </div>
+
+              {/* CTA Card — dark with golden glow, rounded */}
+              <div className="relative rounded-xl overflow-hidden px-8 py-8 flex flex-col items-center gap-6 text-center w-full">
+                <div className="absolute inset-0 bg-black pointer-events-none rounded-xl" aria-hidden />
+                <img aria-hidden src={galaxyBg} alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none rounded-xl" />
+                <div className="absolute inset-0 bg-black/70 pointer-events-none rounded-xl" aria-hidden />
+                <div className="absolute inset-0 pointer-events-none rounded-xl" aria-hidden style={{ boxShadow: 'inset 0 0 114px 0 rgba(255,191,0,0.4)' }} />
+
+                <div className="relative flex flex-col gap-4 items-center text-center text-white w-full">
+                  <HangingFrameIcon />
+                  <h2 className="text-a1 text-white font-display">
+                    Frame it. Hang it. Treasure it forever
+                  </h2>
+                  <p className="text-body-sm font-body text-white/70" style={{ maxWidth: 281 }}>
+                    Gallery-quality printing. Solid wood frames. Ready to hang. Built to last 100 years.
                   </p>
                 </div>
-              ))}
-            </div>
 
-            {/* CTA Banner — inside right column on desktop */}
-            <div
-              className="mt-8 py-12 px-6 text-center bg-cover bg-center rounded-sm"
-              style={{ backgroundImage: `url(${galaxyBg})`, backgroundColor: '#121212' }}
-            >
-              <HangingFrameIcon />
-              <div className="max-w-md mx-auto space-y-4">
-                <h2 className="text-a1 text-white font-display">
-                  Frame it. Hang it.{'\n'}Treasure it forever
-                </h2>
-                <p className="text-body font-body text-white/70">
-                  Museum-grade archival canvas. Gallery-quality 12-color printing.{'\n'}Ready to display. Built to last 100 years.
-                </p>
-                <div className="space-y-3 pt-2">
-                  <button
-                    onClick={onGetFramed}
-                    className="btn-base btn-primary w-full"
-                  >
-                    Select Size Options ($79 - $179)
-                  </button>
-                  <button
-                    onClick={() => setShowEmailModal(true)}
-                    className="btn-base w-full"
-                    style={{
-                      backgroundColor: '#333333',
-                      color: '#FFFFFF',
-                      border: 'none',
-                    }}
-                  >
-                    Download Preview (Free)
-                  </button>
+                <div className="relative flex flex-col gap-4 items-center w-full">
+                  <div className="flex gap-2.5 w-full">
+                    <button onClick={onGetFramed} className="btn-base btn-primary flex-1">
+                      See Sizes ($79 - $179)
+                    </button>
+                    <button onClick={() => setShowEmailModal(true)} className="btn-base btn-dark-outline flex-1">
+                      Download Preview (Free)
+                    </button>
+                  </div>
+                  <p className="text-body-sm font-body text-white/70 text-center">
+                    ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
+                  </p>
+                </div>
+
+                <div className="relative w-full">
+                  <RotatingBanner />
+                </div>
+              </div>
+
+              {/* Reviews — list layout */}
+              <div className="flex flex-col gap-2.5 pt-8 pb-12 w-full">
+                <div className="flex items-end gap-3 mb-2">
+                  <span className="text-a2 font-display" style={{ color: '#FFBF00' }}>★★★★★</span>
+                  <span className="text-a2 font-display text-white">4.9/5</span>
+                  <span className="text-subtitle font-display text-white/50 uppercase">from 287 customers</span>
+                </div>
+                <div className="flex flex-col">
+                  {TESTIMONIALS.map((t, i) => (
+                    <div key={i} className="flex gap-6 items-start py-6" style={{ borderBottom: i < TESTIMONIALS.length - 1 ? '1px solid #3f3f3f' : 'none' }}>
+                      <img src={t.img} alt={t.name} className="w-20 h-20 object-cover flex-shrink-0" />
+                      <div className="flex-1 min-w-0 flex flex-col gap-2">
+                        <p className="text-body font-body text-white leading-relaxed">{t.quote}</p>
+                        <p className="text-subtitle text-white/50 uppercase" style={{ fontSize: 10 }}>{t.name}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-
-            {/* Trust badges — inside right column on desktop */}
-            <div className="pb-6 text-center space-y-3" style={{ paddingTop: 0 }}>
-              <p className="text-body-sm font-body text-white/70">
-                ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
-              </p>
-              <RotatingBanner />
-              <div className="flex items-center justify-center gap-4">
-                {onReimagine && (
-                  <button
-                    onClick={onReimagine}
-                    disabled={isReimagining}
-                    className="btn-base btn-tertiary"
-                    style={{ color: '#c7c7c7' }}
-                  >
-                    {isReimagining ? '↻ Loading...' : variationsExhausted ? '✦ Generate New Artwork' : '↻ Reimagine'}
-                  </button>
-                )}
-                {onBackToStyle && (
-                  <button
-                    onClick={onBackToStyle}
-                    className="btn-base btn-tertiary"
-                    style={{ color: '#c7c7c7' }}
-                  >
-                    ↻ Try a Different Style
-                  </button>
-                )}
-              </div>
-             </div>
-
-             {/* Testimonials — desktop with arrows */}
-             <div style={{ paddingTop: 0 }}>
-               <TestimonialsSection showArrows topSpace={0} />
-             </div>
-           </div>
           </div>
         </div>
+
+
 
         {/* ===== MOBILE LAYOUT: dark theme ===== */}
         <div
