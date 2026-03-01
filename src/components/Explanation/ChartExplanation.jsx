@@ -850,6 +850,7 @@ export function ChartExplanation({
             </div>
           </div>
         </div>
+       </div>
 
       {/* Footer */}
       <div style={{ height: 64 }} />
