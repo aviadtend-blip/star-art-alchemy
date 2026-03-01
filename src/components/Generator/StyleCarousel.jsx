@@ -98,10 +98,10 @@ export default function StyleCarousel({
         className="flex items-end overflow-x-auto overflow-y-hidden scrollbar-hide"
         style={{
           scrollSnapType: 'x mandatory',
-          padding: `0 ${PAD}px 20px`,
+          padding: `0 ${PAD}px 8px`,
           gap: `${GAP}px`,
           WebkitOverflowScrolling: 'touch',
-          height: ACTIVE_H + 20,
+          height: ACTIVE_H + 8,
         }}
       >
         {styles.map((style, i) => {
