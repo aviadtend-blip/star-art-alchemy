@@ -4,7 +4,7 @@ import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowLeftRight, RefreshCw } from 'lucide-react';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import womanHolding from '@/assets/gallery/woman-holding.jpg';
 import lifestyleImg from '@/assets/gallery/lifestyle.jpg';
@@ -740,7 +740,7 @@ export function ChartExplanation({
                   borderRadius: '40px',
                 }}
               >
-                ↻ Different Style
+                <ArrowLeftRight size={20} /> Try a Different Style
               </button>
             )}
             {onReimagine && (
@@ -756,7 +756,7 @@ export function ChartExplanation({
                   borderRadius: '40px',
                 }}
               >
-                {isReimagining ? '↻ Loading...' : variationsExhausted ? '✦ Generate New' : '✦ Reimagine'}
+                {isReimagining ? <><RefreshCw size={20} className="animate-spin" /> Loading...</> : variationsExhausted ? <><RefreshCw size={20} /> Generate New</> : <><RefreshCw size={20} /> Reimagine</>}
               </button>
             )}
           </div>
