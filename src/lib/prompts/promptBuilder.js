@@ -53,13 +53,8 @@ export async function buildConcretePrompt(chartData, style) {
   // Get the AI scene narrative
   const aiNarrative = await getAIInterpretation(chartData);
 
-  // Build zodiac keywords
-  const sunSubject = SUN_SUBJECTS[chartData.sun.sign] || 'mysterious figure';
-  const moonTexture = MOON_TEXTURES[chartData.moon.sign] || 'shifting light';
-  const risingEnv = RISING_ENVIRONMENTS[chartData.rising] || 'vast landscape';
-
-  // Combine into a single flat prompt string — no headers, no sections
-  const contentPrompt = `cosmic collage, ${aiNarrative}, ${sunSubject}, ${moonTexture}, ${risingEnv}`;
+  // Combine into a clean prompt — AI narrative already encodes all zodiac symbolism
+  const contentPrompt = `cosmic collage, ${aiNarrative}`;
 
   // Trim to ~500 chars max (before params)
   const trimmed = contentPrompt.length > 500 ? contentPrompt.substring(0, 497) + '...' : contentPrompt;
