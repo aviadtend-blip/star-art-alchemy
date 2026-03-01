@@ -32,11 +32,18 @@ import paper2 from '@/assets/gallery/styles/paper-carnival-2.webp';
 import paper3 from '@/assets/gallery/styles/paper-carnival-3.webp';
 import paper4 from '@/assets/gallery/styles/paper-carnival-4.webp';
 
+// Red Eclipse images
+import redThumb from '@/assets/gallery/styles/red-eclipse-thumb.webp';
+import red2 from '@/assets/gallery/styles/red-eclipse-2.webp';
+import red3 from '@/assets/gallery/styles/red-eclipse-3.webp';
+import red4 from '@/assets/gallery/styles/red-eclipse-4.webp';
+
 const STYLE_IMAGES = {
   'prism-storm': prismThumb,
   'folk-oracle': folkThumb,
   'cosmic-fable': fableThumb,
   'paper-carnival': paperThumb,
+  'red-eclipse': redThumb,
 };
 
 const STYLE_GALLERY = {
@@ -44,6 +51,7 @@ const STYLE_GALLERY = {
   'folk-oracle': [folkThumb, folk2, folk3, folk4],
   'cosmic-fable': [fableThumb, fable2, fable3, fable4],
   'paper-carnival': [paperThumb, paper2, paper3, paper4],
+  'red-eclipse': [redThumb, red2, red3, red4],
 };
 
 const STYLE_LABELS = {
@@ -51,6 +59,7 @@ const STYLE_LABELS = {
   'folk-oracle': { title: 'FOLK ORACLE', sub: 'Dark folklore, rich warmth' },
   'cosmic-fable': { title: 'COSMIC FABLE', sub: 'Retro cosmic storytelling' },
   'paper-carnival': { title: 'PAPER CARNIVAL', sub: 'Bright naive wonder' },
+  'red-eclipse': { title: 'RED ECLIPSE', sub: 'Bold ink, crimson fire' },
 };
 
 const toCarouselShape = (s) => ({

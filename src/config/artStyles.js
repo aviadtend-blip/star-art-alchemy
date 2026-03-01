@@ -37,6 +37,14 @@ export const ADDITIONAL_STYLES = [
     preview: '🎪',
     accentColor: 'from-yellow-400 to-orange-400',
   },
+  {
+    id: 'red-eclipse',
+    name: 'Red Eclipse',
+    description: 'Bold ink and crimson fire — dramatic woodcut-style cosmic illustration.',
+    sref: '6815708',
+    preview: '🔴',
+    accentColor: 'from-red-500 to-red-700',
+  },
 ];
 
 /**
