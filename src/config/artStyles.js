@@ -45,11 +45,19 @@ export const ADDITIONAL_STYLES = [
     preview: '🔴',
     accentColor: 'from-red-500 to-red-700',
   },
+  {
+    id: 'cosmic-collision',
+    name: 'Cosmic Collision',
+    description: 'Explosive mixed-media surrealism — ink, watercolor, and nebula dreamscapes.',
+    sref: '2987498144',
+    preview: '💥',
+    accentColor: 'from-indigo-400 to-purple-500',
+  },
 ];
 
 /**
  * Get a style by its ID
  */
 export function getStyleById(id) {
-  return ART_STYLES.find((s) => s.id === id) ?? ART_STYLES[0];
+  return ART_STYLES.find((s) => s.id === id) ?? ADDITIONAL_STYLES.find((s) => s.id === id) ?? ART_STYLES[0];
 }
