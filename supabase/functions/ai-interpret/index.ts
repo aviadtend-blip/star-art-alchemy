@@ -36,15 +36,16 @@ serve(async (req) => {
             .join(", ")
         : "none";
 
-    const prompt = `You are writing visual art direction for an abstract collage artwork. Use only concrete nouns, textures, materials, and spatial relationships. No abstract concepts, emotions, or psychological language.
+    const prompt = `You are a mythic scene painter. Given an astrological chart, write a single vivid scene description (max 350 characters) of a symbolic figure in a landscape. The figure and setting must embody the chart's dominant placements.
 
-Write exactly 3 sentences:
-Sentence 1: How the dominant chart feature should control the overall composition — describe it as objects, shapes, and materials.
-Sentence 2: Translate the single tightest aspect into one specific visual contrast, object detail, or material juxtaposition.
-Sentence 3: One visual instruction for a tension that the sun, moon, and rising placements alone don't capture.
-
-Forbidden words: hyper, vibrant, intricate, tapestry, struggle, journey, energy, essence, dynamic, balance, harmony, represent, symbolize.
-Only use: concrete nouns, textures, materials, spatial relationships, physical states (fraying, cracking, dissolving, pressing, cutting).
+Rules:
+- One sentence describing a character archetype + action + setting (e.g. "An archer-scholar stands at a moonlit crossroads, one foot on cracked marble, the other sinking into wildflower mud, while twin foxes circle a tower of stacked almanacs behind her.")
+- Use the dominant feature to define the character's core identity
+- Use the tightest aspect to create a visible tension or contradiction in the scene
+- Use dignity tensions to add a flaw or wound to the character or landscape
+- No abstract words. Only visible, paintable details: objects, weather, animals, architecture, clothing, posture, light.
+- Forbidden: energy, essence, vibrant, intricate, dynamic, balance, harmony, journey, tapestry, represent, symbolize, ethereal, celestial.
+- Max 350 characters total.
 
 Chart facts:
 - Dominant feature: ${interpretation.dominantFeature}
@@ -54,7 +55,7 @@ Chart facts:
 - Moon: ${chartData.moon?.sign} House ${chartData.moon?.house}
 - Rising: ${chartData.rising}
 
-Output only the 3 sentences. No headers, no preamble.`;
+Output only the scene description. No headers, no preamble.`;
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
