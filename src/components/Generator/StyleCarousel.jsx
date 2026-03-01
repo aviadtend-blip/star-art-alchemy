@@ -197,7 +197,7 @@ export default function StyleCarousel({
           </p>
           <button
             onClick={() => onShowMore?.()}
-            className="btn-tertiary font-body"
+            className="btn-secondary font-body"
             style={{
               marginTop: 17,
               padding: '12px 16px',
