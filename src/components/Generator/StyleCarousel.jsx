@@ -209,7 +209,7 @@ export default function StyleCarousel({
                 backgroundColor: '#FFFFFF',
               }}
             >
-              Show 2 additional styles
+              Show 3 additional styles
             </button>
           </div>
         )}

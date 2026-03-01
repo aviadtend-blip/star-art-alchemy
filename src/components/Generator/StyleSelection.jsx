@@ -38,12 +38,19 @@ import red2 from '@/assets/gallery/styles/red-eclipse-2.webp';
 import red3 from '@/assets/gallery/styles/red-eclipse-3.webp';
 import red4 from '@/assets/gallery/styles/red-eclipse-4.webp';
 
+// Cosmic Collision images
+import collisionThumb from '@/assets/gallery/styles/cosmic-collision-thumb.webp';
+import collision2 from '@/assets/gallery/styles/cosmic-collision-2.webp';
+import collision3 from '@/assets/gallery/styles/cosmic-collision-3.webp';
+import collision4 from '@/assets/gallery/styles/cosmic-collision-4.webp';
+
 const STYLE_IMAGES = {
   'prism-storm': prismThumb,
   'folk-oracle': folkThumb,
   'cosmic-fable': fableThumb,
   'paper-carnival': paperThumb,
   'red-eclipse': redThumb,
+  'cosmic-collision': collisionThumb,
 };
 
 const STYLE_GALLERY = {
@@ -52,6 +59,7 @@ const STYLE_GALLERY = {
   'cosmic-fable': [fableThumb, fable2, fable3, fable4],
   'paper-carnival': [paperThumb, paper2, paper3, paper4],
   'red-eclipse': [redThumb, red2, red3, red4],
+  'cosmic-collision': [collisionThumb, collision2, collision3, collision4],
 };
 
 const STYLE_LABELS = {
@@ -60,6 +68,7 @@ const STYLE_LABELS = {
   'cosmic-fable': { title: 'COSMIC FABLE', sub: 'Retro cosmic storytelling' },
   'paper-carnival': { title: 'PAPER CARNIVAL', sub: 'Bright naive wonder' },
   'red-eclipse': { title: 'RED ECLIPSE', sub: 'Bold ink, crimson fire' },
+  'cosmic-collision': { title: 'COSMIC COLLISION', sub: 'Explosive mixed-media surrealism' },
 };
 
 const toCarouselShape = (s) => ({
