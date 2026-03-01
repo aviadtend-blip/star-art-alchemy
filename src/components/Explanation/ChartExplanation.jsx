@@ -256,6 +256,7 @@ export function ChartExplanation({
 }) {
   // Use AI analysis if available, otherwise fall back to static rule-based explanations
   const explanation = artworkAnalysis || generateChartExplanation(chartData);
+  const subjectExplanation = explanation.subjectExplanation || 'A one-of-a-kind artwork, uniquely crafted from your celestial blueprint.';
   const [activeHotspot, setActiveHotspot] = useState(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const artworkRef = useRef(null);
@@ -455,7 +456,7 @@ export function ChartExplanation({
                 Meet Your Cosmic Masterpiece
               </h1>
               <p className="text-body font-body text-surface-muted">
-                Every symbol, color, and shape represents your exact planetary positions at birth.
+                {subjectExplanation}
               </p>
             </div>
 
@@ -586,7 +587,7 @@ export function ChartExplanation({
               Meet Your Cosmic{'\n'}Masterpiece
             </h1>
             <p className="text-body font-body text-surface-muted max-w-sm mx-auto">
-              Swipe through to discover why each element was chosen — every detail was inspired by your birth chart.
+              {subjectExplanation}
             </p>
           </div>
 

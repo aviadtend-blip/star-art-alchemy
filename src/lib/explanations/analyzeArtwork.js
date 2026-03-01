@@ -37,6 +37,7 @@ export async function analyzeArtwork(imageUrl, chartData) {
 
     return {
       overview: fallback.overview,
+      subjectExplanation: analysis.subjectExplanation || null,
       elements: [
         {
           ...fallback.elements[0],

@@ -54,6 +54,7 @@ The person's chart: Sun in ${sunSign}, Moon in ${moonSign}, ${rising} Rising, do
 
 Write JSON (no markdown, no backticks):
 {
+  "subjectExplanation": "1-2 sentences, MAX 30 words. Format: 'Your birth chart reveals [key personality insight] — we chose [subject/creature/figure visible in the artwork] as your cosmic guardian because it embodies your [specific chart qualities].' Be specific to their ${sunSign} Sun, ${moonSign} Moon, ${rising} Rising combination. Reference the actual main subject/creature/figure you see in the image.",
   "sun": {
     "explanation": "1-2 SHORT punchy sentences. What you see in the sun/central element and how their ${sunSign} Sun inspired it. Mystical tone, not academic.",
     "insight": "1 sentence — a specific visual detail you're proud of.",
@@ -78,6 +79,7 @@ Write JSON (no markdown, no backticks):
 
 STYLE RULES:
 - Each explanation must be readable in 3-4 seconds. Max 25 words per sentence.
+- subjectExplanation MUST be max 30 words and reference the actual visible subject/creature/figure
 - Mystical and warm, NOT academic or verbose. Example: "Your fire-dominant chart blazes through in amber and crimson — pure passion made visible."
 - Use dashes, fragments, and poetic compression. Avoid filler words.
 - First person as the artist ("I chose...", "I let...")
