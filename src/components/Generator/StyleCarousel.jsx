@@ -203,6 +203,8 @@ export default function StyleCarousel({
               padding: '12px 16px',
               fontSize: 16,
               width: 'calc(100% - 48px)',
+              borderRadius: 40,
+              backgroundColor: '#FFFFFF',
             }}
           >
             Show 3 additional styles
