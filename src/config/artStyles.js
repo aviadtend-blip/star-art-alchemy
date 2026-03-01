@@ -1,33 +1,29 @@
-// Art style definitions — MVP uses 3 "Cosmic Collage" variants.
-// Only "Bold & Vibrant" has a trained LoRA. The other two route to the same model for now.
+// Art style definitions — each style maps to a Midjourney --sref code.
 
 export const ART_STYLES = [
   {
-    id: 'bold-vibrant',
-    name: 'Galaxy Bloom — Bold & Vibrant',
-    description: 'Rich, saturated layers of celestial imagery with bold textures and warm, vivid tones.',
-    model: 'aviadtend-blip/galaxy-bloom',
-    triggerWord: 'galaxybloom',
-    preview: '🎀',
+    id: 'prism-storm',
+    name: 'Prism Storm',
+    description: 'Abstract expressionist cosmos with bold, saturated layers of celestial imagery.',
+    sref: '3498857616',
+    preview: '🎆',
     accentColor: 'from-pink-400 to-rose-500',
   },
   {
-    id: 'minimal-architectural',
-    name: 'Cosmic Collision — Minimal & Architectural',
-    description: 'Explosive celestial collisions rendered in dramatic ink and color splatter with raw, visceral detail.',
-    model: 'aviadtend-blip/cosmic-collision',
-    triggerWord: 'cosmiccollision',
-    preview: '🏛️',
-    accentColor: 'from-slate-400 to-zinc-500',
+    id: 'folk-oracle',
+    name: 'Folk Oracle',
+    description: 'Dark folklore with rich warmth — mystical scenes rendered in earthy, intimate tones.',
+    sref: '560113199',
+    preview: '🦌',
+    accentColor: 'from-amber-400 to-orange-500',
     popular: true,
   },
   {
-    id: 'organic-flowing',
-    name: 'Nebula Flow — Organic & Flowing',
-    description: 'Fluid, natural forms with soft gradients and gentle movement inspired by water and growth.',
-    model: 'aviadtend-blip/galaxy-bloom', // routes to same model for MVP
-    triggerWord: 'galaxybloom',
-    preview: '🌊',
+    id: 'cosmic-fable',
+    name: 'Cosmic Fable',
+    description: 'Retro cosmic storytelling with whimsical, illustrative charm and bold graphic shapes.',
+    sref: '2849659324',
+    preview: '📖',
     accentColor: 'from-teal-400 to-cyan-500',
   },
 ];
