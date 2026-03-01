@@ -5,8 +5,8 @@ import { ART_STYLES } from '@/config/artStyles';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Footer from '@/components/Layout/Footer';
-import PopularTag from '@/components/ui/PopularTag';
 import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
+import StyleCarousel from '@/components/Generator/StyleCarousel';
 
 import boldImg from '@/assets/gallery/taurus-artwork.jpg';
 import minimalImg from '@/assets/gallery/cosmic-collision-preview.png';
@@ -35,15 +35,33 @@ const STYLE_LABELS = {
   'organic-flowing': { title: 'NEBULA FLOW', sub: 'Organic & Flowing' },
 };
 
+// Map ART_STYLES to carousel data shape
+const carouselStyles = ART_STYLES.map((s) => ({
+  id: s.id,
+  name: STYLE_LABELS[s.id]?.title || s.name,
+  subtitle: STYLE_LABELS[s.id]?.sub || '',
+  imageSrc: STYLE_IMAGES[s.id],
+  mostPopular: !!s.popular,
+}));
+
 export default function StyleSelection({ onSelect, onBack, chartData, formData, onEditBirthData }) {
-  const [selected, setSelected] = useState(null);
-  const [lightbox, setLightbox] = useState(null); // { styleId, index }
-  const [lightboxVisible, setLightboxVisible] = useState(false); // for animation
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [lightbox, setLightbox] = useState(null);
+  const [lightboxVisible, setLightboxVisible] = useState(false);
+  const [prevLabel, setPrevLabel] = useState(null); // for crossfade
   const touchStartRef = useRef({ x: 0, y: 0 });
   const swipeHandledRef = useRef(false);
 
+  const currentStyle = carouselStyles[activeIndex];
+  const selectedStyleId = currentStyle?.id;
+
+  // Crossfade label transition
+  useEffect(() => {
+    setPrevLabel(null); // reset on index change — triggers fade-in
+  }, [activeIndex]);
+
   const handleContinue = () => {
-    if (selected) onSelect(selected);
+    if (selectedStyleId) onSelect(selectedStyleId);
   };
 
   const handleSurpriseMe = () => {
@@ -59,16 +77,14 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
     onSelect(autoId);
   };
 
-  const openLightbox = (styleId, e) => {
-    e.stopPropagation();
+  const openLightbox = (styleId) => {
     setLightbox({ styleId, index: 0 });
-    // Trigger enter animation on next frame
     requestAnimationFrame(() => setLightboxVisible(true));
   };
 
   const closeLightbox = useCallback(() => {
     setLightboxVisible(false);
-    setTimeout(() => setLightbox(null), 250); // match transition duration
+    setTimeout(() => setLightbox(null), 250);
   }, []);
 
   const lightboxImages = lightbox ? STYLE_GALLERY[lightbox.styleId] || [] : [];
@@ -80,6 +96,10 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
       ...prev,
       index: (prev.index + dir + len) % len,
     }));
+  };
+
+  const handleShowMore = () => {
+    toast({ title: 'Coming soon', description: 'Additional styles are being developed.' });
   };
 
   return (
@@ -101,7 +121,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
       </div>
 
       {/* Main content */}
-      <div className="flex-1 max-w-5xl mx-auto w-full px-4 py-10 md:py-14">
+      <div className="flex-1 w-full py-10 md:py-14">
         <div className="text-center mb-10 max-w-[230px] mx-auto" style={{ paddingTop: 60, paddingBottom: 60 }}>
           <h2 className="font-display text-a2 md:text-[40px] text-surface-foreground tracking-tight mb-3" style={{ fontWeight: 400 }}>
             Choose your artistic expression
@@ -111,82 +131,42 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
           </p>
         </div>
 
-        {/* Style cards — horizontal scroll on mobile */}
-        <div className="flex gap-[10px] md:gap-4 mb-10 overflow-x-auto snap-x snap-mandatory pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-3 md:overflow-visible scrollbar-hide">
-          {ART_STYLES.map((style) => {
-            const isSelected = selected === style.id;
-            const labels = STYLE_LABELS[style.id];
+        {/* Carousel */}
+        <StyleCarousel
+          styles={carouselStyles}
+          activeIndex={activeIndex}
+          onActiveChange={setActiveIndex}
+          onZoom={openLightbox}
+          onShowMore={handleShowMore}
+        />
 
-            return (
-              <div
-                key={style.id}
-                className="snap-center shrink-0 flex flex-col w-[290px] md:w-[304px] relative"
-              >
-                <button
-                  onClick={() => setSelected(style.id)}
-                  className={`
-                    relative text-left overflow-hidden transition-all duration-200 group cursor-pointer border-2
-                    ${isSelected
-                      ? 'border-primary shadow-lg shadow-primary/15 ring-1 ring-primary/30'
-                      : 'border-transparent hover:border-surface-muted/30'
-                    }
-                    bg-white
-                  `}
-                  style={{ borderRadius: '2px' }}
-                >
-                  {/* Magnifying glass */}
-                  <div
-                    onClick={(e) => openLightbox(style.id, e)}
-                    className="absolute z-10 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-white transition-colors"
-                    style={{ bottom: '10px', right: '10px' }}
-                  >
-                    <Search className="w-4 h-4 text-surface-foreground" />
-                  </div>
-
-                  {/* Image */}
-                  <div className="w-full h-[348px] md:h-[323px] overflow-hidden">
-                    <img
-                      src={STYLE_IMAGES[style.id]}
-                      alt={style.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                </button>
-
-                {/* Popular tag — centered, straddling bottom edge of image */}
-                {style.popular && (
-                  <>
-                    <div className="absolute z-20 left-1/2 -translate-x-1/2 md:hidden" style={{ top: '339px' }}>
-                      <PopularTag />
-                    </div>
-                    <div className="absolute z-20 left-1/2 -translate-x-1/2 hidden md:block" style={{ top: '314px' }}>
-                      <PopularTag />
-                    </div>
-                  </>
-                )}
-
-                {/* Label below card */}
-                <div className="text-center pt-3 pb-1" style={{ marginTop: '12px', gap: '2px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <h3 className="text-subtitle text-surface-foreground">{labels.title}</h3>
-                  <p className="text-body-sm text-surface-muted font-body">{labels.sub}</p>
-                </div>
-              </div>
-            );
-          })}
+        {/* Title + subtitle below carousel — crossfade */}
+        <div className="text-center mt-3 relative" style={{ minHeight: 44 }}>
+          <div
+            key={activeIndex}
+            className="animate-in fade-in slide-in-from-bottom-1 duration-300"
+          >
+            <h3
+              className="font-display"
+              style={{ fontSize: 12, letterSpacing: '-0.36px', color: '#000000', textTransform: 'uppercase' }}
+            >
+              {currentStyle?.name}
+            </h3>
+            <p
+              className="font-body"
+              style={{ fontSize: 14, color: '#727272', opacity: 0.7, marginTop: 2 }}
+            >
+              {currentStyle?.subtitle}
+            </p>
+          </div>
         </div>
 
         {/* CTAs */}
-        <div className="text-center space-y-4 mt-6">
+        <div className="text-center space-y-4 mt-8 px-4">
           <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4">
             <button
-              onClick={() => {
-                if (!selected) {
-                  toast({ title: 'Please select a style first', description: 'Tap one of the artwork styles above to continue.' });
-                  return;
-                }
-                handleContinue();
-              }}
-              className={`btn-base ${selected ? 'btn-primary' : 'btn-primary opacity-50'}`}
+              onClick={handleContinue}
+              className="btn-base btn-primary"
             >
               Select Style
             </button>
@@ -229,20 +209,16 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
             const t = e.touches[0];
             const dx = t.clientX - touchStartRef.current.x;
             const dy = t.clientY - touchStartRef.current.y;
-
-            // Horizontal swipe (navigate images)
             if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
               swipeHandledRef.current = true;
               navigateLightbox(dx < 0 ? 1 : -1);
             }
-            // Vertical swipe down (close)
             if (dy > 80 && Math.abs(dy) > Math.abs(dx) * 1.5) {
               swipeHandledRef.current = true;
               closeLightbox();
             }
           }}
         >
-          {/* Close button */}
           <button
             onClick={closeLightbox}
             className="absolute top-5 right-5 z-60 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
@@ -250,13 +226,11 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
             <X className="w-5 h-5 text-white" />
           </button>
 
-          {/* Style title */}
           <div className="absolute top-6 left-6 text-white/80">
             <p className="text-a4 font-display">{STYLE_LABELS[lightbox.styleId]?.title}</p>
             <p className="text-body text-white/50">{STYLE_LABELS[lightbox.styleId]?.sub}</p>
           </div>
 
-          {/* Main image */}
           <div
             className="flex-1 flex items-center justify-center w-full px-0 md:px-16 py-10 md:py-20 transition-transform duration-200"
             onClick={(e) => e.stopPropagation()}
@@ -269,7 +243,6 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
             />
           </div>
 
-          {/* Navigation arrows (desktop) */}
           {lightboxImages.length > 1 && (
             <>
               <button
@@ -287,7 +260,6 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
             </>
           )}
 
-          {/* Thumbnail strip */}
           <div className="pb-6" onClick={(e) => e.stopPropagation()}>
             <ThumbnailStrip
               images={lightboxImages}
