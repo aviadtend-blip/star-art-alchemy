@@ -8,31 +8,40 @@ import Footer from '@/components/Layout/Footer';
 import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
 import StyleCarousel from '@/components/Generator/StyleCarousel';
 
-import boldImg from '@/assets/gallery/taurus-artwork.jpg';
-import minimalImg from '@/assets/gallery/cosmic-collision-preview.png';
-import organicImg from '@/assets/gallery/virgo-artwork.jpg';
+// Prism Storm images
+import prismThumb from '@/assets/gallery/styles/prism-storm-thumb.webp';
+import prism2 from '@/assets/gallery/styles/prism-storm-2.webp';
+import prism3 from '@/assets/gallery/styles/prism-storm-3.webp';
+import prism4 from '@/assets/gallery/styles/prism-storm-4.webp';
 
-// Gallery images for the lightbox per style
-import galaxyBloom1 from '@/assets/gallery/galaxy-bloom-1.png';
-import galaxyBloom2 from '@/assets/gallery/galaxy-bloom-2.png';
-import galaxyBloom3 from '@/assets/gallery/galaxy-bloom-3.png';
+// Folk Oracle images
+import folkThumb from '@/assets/gallery/styles/folk-oracle-thumb.webp';
+import folk2 from '@/assets/gallery/styles/folk-oracle-2.webp';
+import folk3 from '@/assets/gallery/styles/folk-oracle-3.webp';
+import folk4 from '@/assets/gallery/styles/folk-oracle-4.webp';
+
+// Cosmic Fable images
+import fableThumb from '@/assets/gallery/styles/cosmic-fable-thumb.webp';
+import fable2 from '@/assets/gallery/styles/cosmic-fable-2.webp';
+import fable3 from '@/assets/gallery/styles/cosmic-fable-3.webp';
+import fable4 from '@/assets/gallery/styles/cosmic-fable-4.webp';
 
 const STYLE_IMAGES = {
-  'bold-vibrant': boldImg,
-  'minimal-architectural': minimalImg,
-  'organic-flowing': organicImg,
+  'prism-storm': prismThumb,
+  'folk-oracle': folkThumb,
+  'cosmic-fable': fableThumb,
 };
 
 const STYLE_GALLERY = {
-  'bold-vibrant': [boldImg, galaxyBloom1, galaxyBloom2, galaxyBloom3],
-  'minimal-architectural': [minimalImg],
-  'organic-flowing': [organicImg],
+  'prism-storm': [prismThumb, prism2, prism3, prism4],
+  'folk-oracle': [folkThumb, folk2, folk3, folk4],
+  'cosmic-fable': [fableThumb, fable2, fable3, fable4],
 };
 
 const STYLE_LABELS = {
-  'bold-vibrant': { title: 'GALAXY BLOOM', sub: 'Bold & Vibrant' },
-  'minimal-architectural': { title: 'COSMIC COLLISION', sub: 'Dramatic & Raw' },
-  'organic-flowing': { title: 'NEBULA FLOW', sub: 'Organic & Flowing' },
+  'prism-storm': { title: 'PRISM STORM', sub: 'Abstract expressionist cosmos' },
+  'folk-oracle': { title: 'FOLK ORACLE', sub: 'Dark folklore, rich warmth' },
+  'cosmic-fable': { title: 'COSMIC FABLE', sub: 'Retro cosmic storytelling' },
 };
 
 // Map ART_STYLES to carousel data shape
@@ -68,11 +77,11 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
     const dominantElement = chartData?.dominant_element;
     let autoId = ART_STYLES[0].id;
     if (dominantElement === 'Water' || dominantElement === 'Earth') {
-      autoId = 'organic-flowing';
+      autoId = 'folk-oracle';
     } else if (dominantElement === 'Air') {
-      autoId = 'minimal-architectural';
+      autoId = 'cosmic-fable';
     } else {
-      autoId = 'bold-vibrant';
+      autoId = 'prism-storm';
     }
     onSelect(autoId);
   };
