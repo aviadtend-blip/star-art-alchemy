@@ -210,7 +210,7 @@ function HangingFrameIcon() {
     if (!el) return;
     const obs = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold: 0.5 }
+      { threshold: 1.0 }
     );
     obs.observe(el);
     return () => obs.disconnect();
