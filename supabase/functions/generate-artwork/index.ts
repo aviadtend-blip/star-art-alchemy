@@ -12,7 +12,7 @@ const APIFRAME_IMAGINE_URL = "https://api.apiframe.ai/imagine";
 const APIFRAME_FETCH_URL = "https://api.apiframe.ai/fetch";
 
 // Midjourney personalization code (applied to all styles)
-const MJ_PERSONALIZATION = "--p m7426009495576248339";
+const MJ_PERSONALIZATION = "--p jv7b3wn";
 // Default sref fallback
 const DEFAULT_SREF = "3498857616";
 const MJ_PARAMS = "--ar 3:4";
