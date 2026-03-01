@@ -108,6 +108,23 @@ const TESTIMONIALS = [
   },
 ];
 
+function RotatingBanner() {
+  const messages = [
+    '🚀 Order by 5pm for same-day processing',
+    '✨ 47 artworks generated today',
+  ];
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => setIndex((prev) => (prev + 1) % messages.length), 5000);
+    return () => clearInterval(interval);
+  }, [messages.length]);
+  return (
+    <div className="rounded-sm flex items-center justify-center px-3 py-2" style={{ backgroundColor: '#2e2e2e' }}>
+      <p className="text-body-sm font-body text-white text-center">{messages[index]}</p>
+    </div>
+  );
+}
+
 function TestimonialsSection({ showArrows = false, bleed = false, topSpace = 32 }) {
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -259,6 +276,7 @@ export function ChartExplanation({
   const subjectExplanation = explanation.subjectExplanation || 'A one-of-a-kind artwork, uniquely crafted from your celestial blueprint.';
   const [activeHotspot, setActiveHotspot] = useState(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
+  const [showHotspots, setShowHotspots] = useState(true);
   const artworkRef = useRef(null);
   const rightContentRef = useRef(null);
   const rightInnerRef = useRef(null);
@@ -579,27 +597,54 @@ export function ChartExplanation({
           </div>
         </div>
 
-        {/* ===== MOBILE LAYOUT: horizontal scroll carousel ===== */}
-        <div className="md:hidden">
+        {/* ===== MOBILE LAYOUT: dark theme ===== */}
+        <div
+          className="md:hidden"
+          style={{
+            backgroundColor: '#191919',
+            backgroundImage: 'radial-gradient(ellipse at top left, rgba(255,255,255,0.08) 0%, transparent 50%), radial-gradient(ellipse at top right, rgba(255,255,255,0.06) 0%, transparent 50%)',
+          }}
+        >
           {/* Hero heading */}
-          <div className="text-center px-6 pt-12 pb-8">
-            <h1 className="text-a1 text-surface-foreground font-display mb-3">
+          <div className="text-center px-6 pt-12 pb-8 flex flex-col items-center gap-6">
+            <h1 className="text-a1 font-display text-white" style={{ maxWidth: 264 }}>
               Meet Your Cosmic{'\n'}Masterpiece
             </h1>
-            <p className="text-body font-body text-surface-muted max-w-sm mx-auto">
+            <p className="text-body font-body max-w-[264px]" style={{ color: '#c7c7c7', lineHeight: '1.5' }}>
               {subjectExplanation}
             </p>
           </div>
 
-          <div className="px-6 max-w-md mx-auto">
-            <div className="relative">
+          <div className="px-5 max-w-md mx-auto flex flex-col items-center gap-8">
+            {/* Hotspot toggle */}
+            <button
+              onClick={() => setShowHotspots((p) => !p)}
+              className="flex items-center gap-3"
+            >
+              <span
+                className="flex items-center justify-center rounded-full transition-colors"
+                style={{
+                  width: 44,
+                  height: 44,
+                  backgroundColor: showHotspots ? '#FFBF00' : '#2c2c2c',
+                  border: '1px solid rgba(255,191,0,0.3)',
+                }}
+              >
+                <span style={{ fontSize: 18, color: showHotspots ? '#000' : '#999' }}>⊙</span>
+              </span>
+              <span className="text-body font-body text-white">
+                {showHotspots ? 'Hide' : 'Show'} Hotspots
+              </span>
+            </button>
+
+            {/* Artwork image */}
+            <div className="relative w-full overflow-hidden" style={{ borderRadius: '2px' }}>
               <img
                 src={selectedImage}
-                alt={`Birth chart artwork for ${chartData.sun.sign} Sun`}
+                alt={`Birth chart artwork for ${chartData?.sun?.sign || ''} Sun`}
                 className="w-full"
-                style={{ borderRadius: '2px' }}
               />
-              {hotspots.map((h) => {
+              {showHotspots && hotspots.map((h) => {
                 const isActive = activeHotspot === h.id;
                 return (
                   <button
@@ -616,16 +661,13 @@ export function ChartExplanation({
                       width: isActive ? 28 : 24,
                       height: isActive ? 28 : 24,
                       borderRadius: 41,
-                      padding: 2,
-                      backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.85)',
-                      border: isActive ? '1px solid rgba(255, 191, 0, 0.32)' : '1px solid rgba(0, 0, 0, 0.12)',
-                      boxShadow: isActive
-                        ? '0 2px 8px rgba(255, 191, 0, 0.4)'
-                        : '0 1px 4px rgba(0, 0, 0, 0.15)',
+                      backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.5)',
+                      border: '1px solid #6e5200',
+                      boxShadow: isActive ? '0 2px 8px rgba(255, 191, 0, 0.4)' : 'none',
                     }}
                     aria-label={`Hotspot ${h.id}: ${h.title}`}
                   >
-                    <span className="font-body text-center" style={{ fontSize: 12, fontWeight: 400, lineHeight: '113%', letterSpacing: '-0.42px', color: '#000' }}>
+                    <span className="font-body text-center" style={{ fontSize: 12, color: '#000' }}>
                       {h.id}
                     </span>
                   </button>
@@ -633,28 +675,29 @@ export function ChartExplanation({
               })}
             </div>
 
-            {/* Horizontal scroll explanation cards */}
+            {/* Horizontal scroll explanation cards — dark */}
             <div
               ref={scrollContainerRef}
-              className="flex overflow-x-auto scrollbar-hide -mx-6 px-6 snap-x snap-mandatory mt-6 pb-2"
-              style={{ scrollPaddingInline: '24px', gap: '20px' }}
+              className="flex overflow-x-auto scrollbar-hide -mx-5 px-5 snap-x snap-mandatory pb-2"
+              style={{ scrollPaddingInline: '20px', gap: '20px' }}
             >
               {hotspots.map((h, i) => (
                 <div
                   key={h.id}
                   ref={(el) => (cardRefs.current[i] = el)}
                   className="flex-shrink-0 snap-center flex"
-                  style={{ width: 'calc(100vw - 80px)', maxWidth: 340 }}
+                  style={{ width: 'calc(100vw - 80px)', maxWidth: 296 }}
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-3 mb-5">
                       <span
-                        className="flex items-center justify-center font-body"
+                        className="flex items-center justify-center font-body flex-shrink-0"
                         style={{
                           width: 28,
                           height: 28,
-                          borderRadius: 41,
-                          border: '1px solid rgba(0, 0, 0, 0.1)',
+                          borderRadius: '50%',
+                          border: '1px solid #6e5200',
+                          backgroundColor: 'rgba(255,255,255,0.5)',
                           fontSize: 12,
                           color: '#000',
                         }}
@@ -662,105 +705,151 @@ export function ChartExplanation({
                         {h.id}
                       </span>
                       <div>
-                        <p className="text-subtitle font-display text-surface-foreground uppercase tracking-wider" style={{ fontSize: 11 }}>
+                        <p className="font-display text-white uppercase" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.05em' }}>
                           {h.title.split('·')[0]?.trim() || h.title}
                         </p>
-                        <p className="text-a5 font-display text-surface-foreground" style={{ fontFamily: 'var(--font-serif, Erode, serif)' }}>
+                        <p className="font-display text-white" style={{ fontSize: 16, fontWeight: 500, fontFamily: 'var(--font-serif, Erode, serif)', lineHeight: '14px', marginTop: 4 }}>
                           {h.title.split('·')[1]?.trim() || ''}
                         </p>
                       </div>
                     </div>
-                    <p className="text-body font-body text-surface-muted leading-relaxed">
+                    <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7' }}>
                       {h.explanation}
                     </p>
                   </div>
                   {/* Vertical divider */}
                   <div
                     className="flex-shrink-0 self-stretch"
-                    style={{ width: 1, backgroundColor: 'rgba(0, 0, 0, 0.12)', marginLeft: 16 }}
+                    style={{ width: 1, backgroundColor: '#3f3f3f', marginLeft: 16 }}
                   />
                 </div>
               ))}
             </div>
           </div>
-        </div>
 
-        {/* CTA Banner — mobile only (desktop version is inside right column) */}
-        <div
-          className="md:hidden mt-12 py-12 px-6 text-center bg-cover bg-center"
-          style={{ backgroundImage: `url(${galaxyBg})`, backgroundColor: '#121212' }}
-        >
-          <HangingFrameIcon />
-          <div className="max-w-md mx-auto space-y-4">
-            <h2 className="text-a1 text-white font-display">
-              Frame it. Hang it.{'\n'}Treasure it forever
-            </h2>
-            <p className="text-body font-body text-white/70">
-              Museum-grade archival canvas. Gallery-quality 12-color printing.{'\n'}Ready to display. Built to last 100 years.
-            </p>
-            <div className="space-y-3 pt-2">
+          {/* Action buttons — side by side */}
+          <div className="flex gap-4 px-4 pt-4 pb-10">
+            {onBackToStyle && (
               <button
-                onClick={onGetFramed}
-                className="btn-base btn-primary w-full"
-              >
-                Select Size Options ($79 - $179)
-              </button>
-              <button
-                onClick={() => setShowEmailModal(true)}
-                className="btn-base w-full"
+                onClick={onBackToStyle}
+                className="flex-1 flex items-center justify-center gap-2 text-body font-body transition-colors"
                 style={{
-                  backgroundColor: '#333333',
-                  color: '#FFFFFF',
-                  border: 'none',
+                  backgroundColor: '#2c2c2c',
+                  border: '1px solid #2c2c2c',
+                  color: '#f5f5f5',
+                  padding: '14px 8px',
+                  borderRadius: '8px',
                 }}
               >
-                Download Preview (Free)
+                ↻ Different Style
               </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Trust badges — mobile only */}
-        <div className="md:hidden px-6 py-6 text-center space-y-3">
-          <p className="text-body-sm font-body text-surface-foreground">
-            ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
-          </p>
-          <div
-            className="py-3 px-4 text-center"
-            style={{ backgroundColor: '#DAEEFF', borderRadius: '2px' }}
-          >
-            <p className="text-body-sm font-body" style={{ color: '#333333' }}>
-              🚀 Order by 5pm for same-day processing
-            </p>
-          </div>
-          <div className="flex items-center justify-center gap-4">
+            )}
             {onReimagine && (
               <button
                 onClick={onReimagine}
                 disabled={isReimagining}
-                className="btn-base btn-tertiary"
-                style={{ color: '#333333' }}
+                className="flex-1 flex items-center justify-center gap-2 text-body font-body transition-colors"
+                style={{
+                  backgroundColor: '#2c2c2c',
+                  border: '1px solid #2c2c2c',
+                  color: '#f5f5f5',
+                  padding: '14px 8px',
+                  borderRadius: '8px',
+                }}
               >
-                {isReimagining ? '↻ Loading...' : variationsExhausted ? '✦ Generate New Artwork' : '↻ Reimagine'}
-              </button>
-            )}
-            {onBackToStyle && (
-              <button
-                onClick={onBackToStyle}
-                className="btn-base btn-tertiary"
-                style={{ color: '#333333' }}
-              >
-                ↻ Try a Different Style
+                {isReimagining ? '↻ Loading...' : variationsExhausted ? '✦ Generate New' : '✦ Reimagine'}
               </button>
             )}
           </div>
-         </div>
 
-         {/* Testimonials — mobile */}
-         <div className="md:hidden px-6">
-           <TestimonialsSection bleed />
-         </div>
-       </div>
+          {/* CTA Banner — dark with golden glow */}
+          <div
+            className="relative w-full py-10 px-8 flex flex-col items-center gap-6"
+            style={{ overflow: 'hidden' }}
+          >
+            <div className="absolute inset-0 bg-black pointer-events-none" aria-hidden />
+            <img
+              aria-hidden
+              src={galaxyBg}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+            />
+            <div className="absolute inset-0 bg-black/50 pointer-events-none" aria-hidden />
+            <div
+              className="absolute inset-0 pointer-events-none"
+              aria-hidden
+              style={{ boxShadow: 'inset 0 0 114px 0 rgba(255,191,0,0.4)' }}
+            />
+
+            <div className="relative flex flex-col gap-5 items-center w-full">
+              <div className="flex flex-col gap-4 items-center text-center text-white" style={{ maxWidth: 250 }}>
+                <HangingFrameIcon />
+                <h2 className="text-a1 text-white font-display" style={{ maxWidth: 191 }}>
+                  Frame it. Hang it.{'\n'}Treasure it forever
+                </h2>
+                <p className="text-body-sm font-body text-white/70">
+                  Gallery-quality printing. Solid wood frames.{'\n'}Ready to hang. Built to last 100 years.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-2.5 w-full">
+                <button
+                  onClick={onGetFramed}
+                  className="w-full text-body font-body transition-colors"
+                  style={{
+                    backgroundColor: '#2c2c2c',
+                    border: '1px solid #2c2c2c',
+                    color: '#f5f5f5',
+                    padding: '14px',
+                    borderRadius: '8px',
+                  }}
+                >
+                  See Available Sizes ($79 - $179)
+                </button>
+                <button
+                  onClick={() => setShowEmailModal(true)}
+                  className="w-full text-body font-body transition-colors"
+                  style={{
+                    backgroundColor: '#2c2c2c',
+                    border: '1px solid #2c2c2c',
+                    color: '#f5f5f5',
+                    padding: '14px',
+                    borderRadius: '8px',
+                  }}
+                >
+                  Download Preview (Free)
+                </button>
+              </div>
+              <p className="text-body-sm font-body text-white/70 text-center">
+                ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
+              </p>
+            </div>
+
+            <div className="relative w-full">
+              <RotatingBanner />
+            </div>
+          </div>
+
+          {/* Reviews — dark */}
+          <div className="px-4 pt-12 pb-12">
+            <div className="flex items-end gap-3 mb-2">
+              <span className="text-a2 font-display text-white" style={{ color: '#FFBF00' }}>★★★★★</span>
+              <span className="text-a2 font-display text-white">4.9/5</span>
+              <span className="text-subtitle font-display text-white/50 uppercase">from 287 customers</span>
+            </div>
+            <div className="flex flex-col">
+              {TESTIMONIALS.map((t, i) => (
+                <div key={i} className="flex gap-5 items-start py-5" style={{ borderBottom: i < TESTIMONIALS.length - 1 ? '1px solid #3f3f3f' : 'none' }}>
+                  <img src={t.img} alt={t.name} className="w-20 h-20 object-cover flex-shrink-0" />
+                  <div className="flex-1 min-w-0 flex flex-col gap-2">
+                    <p className="text-body font-body text-white leading-relaxed">{t.quote}</p>
+                    <p className="text-subtitle text-white/50 uppercase" style={{ fontSize: 10 }}>{t.name}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
       {/* Footer */}
       <div style={{ height: 64 }} />
