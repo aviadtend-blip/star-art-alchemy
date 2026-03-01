@@ -95,7 +95,7 @@ export default function StyleCarousel({
     <div className="w-full overflow-hidden">
       <div
         ref={scrollRef}
-        className="flex items-end overflow-x-auto scrollbar-hide"
+        className="flex items-end overflow-x-auto overflow-y-hidden scrollbar-hide"
         style={{
           scrollSnapType: 'x mandatory',
           padding: `0 ${PAD}px`,
