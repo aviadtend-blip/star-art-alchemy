@@ -38,7 +38,7 @@ serve(async (req) => {
 
     const prompt = `You are a visual storyteller who translates astrological birth charts into vivid scene descriptions for artwork generation.
 
-Given this natal chart data, write a SINGLE paragraph of 2-3 sentences (MAX 350 characters total) describing a vivid cosmic scene that captures who this person is.
+Given this natal chart data, write 1-2 sentences in exactly 60-80 words describing a vivid cosmic scene that captures who this person is. MAXIMUM 80 words.
 
 RULES:
 - Describe a SCENE with a subject, environment, and mood — NOT art materials or craft supplies
