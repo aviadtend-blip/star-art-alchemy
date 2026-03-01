@@ -727,36 +727,36 @@ export function ChartExplanation({
           </div>
 
           {/* Action buttons — side by side */}
-          <div className="flex gap-4 px-4 pt-4 pb-10">
+          <div className="flex gap-3 px-5 pt-4 pb-10">
             {onBackToStyle && (
               <button
                 onClick={onBackToStyle}
-                className="flex-1 flex items-center justify-center gap-2 text-body font-body transition-colors"
+                className="flex-1 flex items-center justify-center gap-2.5 text-body-sm font-body transition-colors whitespace-nowrap"
                 style={{
                   backgroundColor: '#2c2c2c',
-                  border: '1px solid #2c2c2c',
                   color: '#f5f5f5',
-                  padding: '14px 8px',
+                  padding: '16px 12px',
                   borderRadius: '40px',
+                  minHeight: 56,
                 }}
               >
-                <ArrowLeftRight size={20} /> Try a Different Style
+                <ArrowLeftRight size={18} className="flex-shrink-0" /> Try a Different Style
               </button>
             )}
             {onReimagine && (
               <button
                 onClick={onReimagine}
                 disabled={isReimagining}
-                className="flex-1 flex items-center justify-center gap-2 text-body font-body transition-colors"
+                className="flex-1 flex items-center justify-center gap-2.5 text-body-sm font-body transition-colors whitespace-nowrap"
                 style={{
                   backgroundColor: '#2c2c2c',
-                  border: '1px solid #2c2c2c',
                   color: '#f5f5f5',
-                  padding: '14px 8px',
+                  padding: '16px 12px',
                   borderRadius: '40px',
+                  minHeight: 56,
                 }}
               >
-                {isReimagining ? <><RefreshCw size={20} className="animate-spin" /> Loading...</> : variationsExhausted ? <><RefreshCw size={20} /> Generate New</> : <><RefreshCw size={20} /> Reimagine</>}
+                {isReimagining ? <><RefreshCw size={18} className="animate-spin flex-shrink-0" /> Loading...</> : variationsExhausted ? <><RefreshCw size={18} className="flex-shrink-0" /> Generate New</> : <><RefreshCw size={18} className="flex-shrink-0" /> Reimagine</>}
               </button>
             )}
           </div>
