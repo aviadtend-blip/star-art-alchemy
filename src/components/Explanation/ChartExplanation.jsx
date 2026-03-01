@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Link } from 'react-router-dom';
 import { generateChartExplanation } from '@/lib/explanations/generateExplanation';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
+import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import logoHorizontal from '@/assets/logo-horizontal.svg';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import womanHolding from '@/assets/gallery/woman-holding.jpg';
 import lifestyleImg from '@/assets/gallery/lifestyle.jpg';
