@@ -148,6 +148,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
           >
             <h3
               className="font-display text-subtitle"
+              style={{ color: '#000000' }}
             >
               {currentStyle?.name}
             </h3>
