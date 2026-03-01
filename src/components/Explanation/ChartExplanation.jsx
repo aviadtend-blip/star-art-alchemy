@@ -489,13 +489,13 @@ export function ChartExplanation({
                     <span
                       className="flex items-center justify-center font-body flex-shrink-0"
                       style={{
-                        width: 32,
-                        height: 32,
+                        width: 28,
+                        height: 28,
                         borderRadius: 41,
-                        border: '1px solid #6e5200',
+                        border: '1px solid #FFF',
+                        padding: 2,
                         fontSize: 13,
-                        color: '#000',
-                        backgroundColor: 'rgba(255,255,255,0.5)',
+                        color: '#FFF',
                       }}
                     >
                       {h.id}
@@ -694,11 +694,11 @@ export function ChartExplanation({
                         style={{
                           width: 28,
                           height: 28,
-                          borderRadius: '50%',
-                          border: '1px solid #6e5200',
-                          backgroundColor: 'rgba(255,255,255,0.5)',
+                          borderRadius: 41,
+                          border: '1px solid #FFF',
+                          padding: 2,
                           fontSize: 12,
-                          color: '#000',
+                          color: '#FFF',
                         }}
                       >
                         {h.id}
