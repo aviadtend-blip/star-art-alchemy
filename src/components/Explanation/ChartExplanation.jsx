@@ -605,7 +605,7 @@ export function ChartExplanation({
             </p>
           </div>
 
-          <div className="px-5 max-w-md mx-auto flex flex-col items-center gap-8">
+          <div className="px-5 max-w-md mx-auto flex flex-col items-center gap-6">
             {/* Hotspot toggle */}
             <button
               onClick={() => setShowHotspots((p) => !p)}
