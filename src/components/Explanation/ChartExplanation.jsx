@@ -622,18 +622,27 @@ export function ChartExplanation({
               className="flex items-center gap-3"
             >
               <span
-                className="flex items-center justify-center rounded-full transition-colors"
+                className="relative flex items-center justify-center rounded-full transition-colors"
                 style={{
-                  width: 44,
-                  height: 44,
-                  backgroundColor: showHotspots ? '#FFBF00' : '#2c2c2c',
-                  border: '1px solid rgba(255,191,0,0.3)',
+                  width: 48,
+                  height: 26,
+                  backgroundColor: showHotspots ? '#FFBF00' : '#3f3f3f',
+                  borderRadius: 13,
                 }}
               >
-                <span style={{ fontSize: 18, color: showHotspots ? '#000' : '#999' }}>⊙</span>
+                <span
+                  className="absolute rounded-full bg-white transition-transform"
+                  style={{
+                    width: 20,
+                    height: 20,
+                    top: 3,
+                    left: showHotspots ? 25 : 3,
+                    transition: 'left 0.2s ease',
+                  }}
+                />
               </span>
               <span className="text-body font-body text-white">
-                {showHotspots ? 'Hide' : 'Show'} Hotspots
+                Show Hotspots
               </span>
             </button>
 
@@ -678,15 +687,15 @@ export function ChartExplanation({
             {/* Horizontal scroll explanation cards — dark */}
             <div
               ref={scrollContainerRef}
-              className="flex overflow-x-auto scrollbar-hide -mx-5 px-5 snap-x snap-mandatory pb-2"
-              style={{ scrollPaddingInline: '20px', gap: '20px' }}
+              className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 w-full"
+              style={{ gap: '16px' }}
             >
               {hotspots.map((h, i) => (
                 <div
                   key={h.id}
                   ref={(el) => (cardRefs.current[i] = el)}
-                  className="flex-shrink-0 snap-center flex"
-                  style={{ width: 'calc(100vw - 80px)', maxWidth: 296 }}
+                  className="flex-shrink-0 snap-start flex"
+                  style={{ width: 280 }}
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-5">
@@ -738,7 +747,7 @@ export function ChartExplanation({
                   border: '1px solid #2c2c2c',
                   color: '#f5f5f5',
                   padding: '14px 8px',
-                  borderRadius: '8px',
+                  borderRadius: '40px',
                 }}
               >
                 ↻ Different Style
@@ -754,7 +763,7 @@ export function ChartExplanation({
                   border: '1px solid #2c2c2c',
                   color: '#f5f5f5',
                   padding: '14px 8px',
-                  borderRadius: '8px',
+                  borderRadius: '40px',
                 }}
               >
                 {isReimagining ? '↻ Loading...' : variationsExhausted ? '✦ Generate New' : '✦ Reimagine'}
@@ -784,7 +793,7 @@ export function ChartExplanation({
             <div className="relative flex flex-col gap-5 items-center w-full">
               <div className="flex flex-col gap-4 items-center text-center text-white" style={{ maxWidth: 250 }}>
                 <HangingFrameIcon />
-                <h2 className="text-a1 text-white font-display" style={{ maxWidth: 191 }}>
+                <h2 className="text-a1 text-white font-display">
                   Frame it. Hang it.{'\n'}Treasure it forever
                 </h2>
                 <p className="text-body-sm font-body text-white/70">
@@ -795,14 +804,8 @@ export function ChartExplanation({
               <div className="flex flex-col gap-2.5 w-full">
                 <button
                   onClick={onGetFramed}
-                  className="w-full text-body font-body transition-colors"
-                  style={{
-                    backgroundColor: '#2c2c2c',
-                    border: '1px solid #2c2c2c',
-                    color: '#f5f5f5',
-                    padding: '14px',
-                    borderRadius: '8px',
-                  }}
+                  className="btn-base btn-primary w-full"
+                  style={{ borderRadius: '40px' }}
                 >
                   See Available Sizes ($79 - $179)
                 </button>
@@ -810,11 +813,11 @@ export function ChartExplanation({
                   onClick={() => setShowEmailModal(true)}
                   className="w-full text-body font-body transition-colors"
                   style={{
-                    backgroundColor: '#2c2c2c',
-                    border: '1px solid #2c2c2c',
+                    backgroundColor: 'transparent',
+                    border: '1px solid rgba(255,255,255,0.3)',
                     color: '#f5f5f5',
                     padding: '14px',
-                    borderRadius: '8px',
+                    borderRadius: '40px',
                   }}
                 >
                   Download Preview (Free)
@@ -853,7 +856,6 @@ export function ChartExplanation({
        </div>
 
       {/* Footer */}
-      <div style={{ height: 64 }} />
       <Footer />
 
       {/* Email capture modal (placeholder) */}
