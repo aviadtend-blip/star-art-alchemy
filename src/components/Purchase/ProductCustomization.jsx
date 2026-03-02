@@ -8,7 +8,7 @@ import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
 import useCompositedMockups, { useBackgroundPreload } from '@/hooks/useCompositedMockups';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import canvasDetail from '@/assets/gallery/canvas-detail.jpg';
-import womanHolding from '@/assets/gallery/woman-holding.jpg';
+import womanHolding from '@/assets/gallery/woman-holding.webp';
 import ReviewsList from '@/components/ui/ReviewsList';
 
 // 12x18 mockups
