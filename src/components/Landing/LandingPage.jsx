@@ -5,6 +5,7 @@ import BirthDataFormCard from "./BirthDataFormCard";
 import heroMobile from "@/assets/hero-mobile.webp";
 import heroMobileTall from "@/assets/hero-mobile-tall.jpg";
 import heroDesktop from "@/assets/hero-desktop.webp";
+import emmaChart from "@/assets/gallery/emma-chart.webp";
 import capricornWall from "@/assets/gallery/capricorn-wall.jpg";
 import taurusArtwork from "@/assets/gallery/taurus-artwork.jpg";
 import womanHolding from "@/assets/gallery/woman-holding.jpg";
@@ -211,10 +212,15 @@ export default function LandingPage() {
             <div aria-hidden="true" className="w-6 min-w-6 flex-shrink-0 snap-center lg:hidden" />
             {[
               {
-                img: taurusArtwork, name: "Sarah", signs: "Leo Sun, Pisces Moon",
+                img: emmaChart, name: "Emma", signs: "Sagittarius Sun, Pisces Moon",
                 explanations: [
-                  { icon: "☀️", title: "Taurus Sun · Grounded", description: "The large golden-orange circular sun represents his Taurus sun—material stability, sensual beauty, and grounded presence." },
-                  { icon: "⬆️", title: "Sagittarius Rising · Abundance", description: "Notice how it's positioned solidly in the upper left, like an anchor, surrounded by lush botanical abundance." },
+                  { icon: "☀️", title: "Sagittarius Sun · Expansion", description: "The explosive burst of color erupting upward captures her Sagittarius sun—boundless curiosity, a hunger for meaning, and energy that refuses to be contained." },
+                  { icon: "🌙", title: "Pisces Moon · Depth", description: "The rippling water and floating island speak to her Pisces moon's dreamy inner world—emotionally vast, intuitive, and rooted in something deeper than what's seen on the surface." },
+                  { icon: "⬆️", title: "Leo Rising · Presence", description: "The crowned figure standing tall at the peak radiates her Leo ascendant—a natural magnetism and quiet command that draws every eye in the room." },
+                  { icon: "🔴", title: "Mars in Aries · Fire", description: "Those bold red and orange splashes erupting outward reflect her Mars in Aries—raw drive, fearless initiative, and an instinct to lead rather than follow." },
+                  { icon: "💙", title: "Neptune in Aquarius · Vision", description: "The scattered cosmic particles and deep teal tones dissolving into space mirror her Neptune placement—an imagination that doesn't just dream but reimagines what's possible." },
+                  { icon: "🌲", title: "Saturn in Capricorn · Foundation", description: "The ancient stone base and steadfast trees grounding the floating island reveal her Saturn in Capricorn—no matter how high she soars, she's built on discipline and quiet endurance." },
+                  { icon: "✨", title: "Jupiter in Sagittarius · Abundance", description: "Jupiter at home in Sagittarius amplifies everything—the sheer scale of the color explosion, the sense that her world is always expanding beyond its own edges." },
                 ],
               },
               {
