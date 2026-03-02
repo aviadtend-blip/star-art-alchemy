@@ -7,7 +7,7 @@ import { ChevronUp } from 'lucide-react';
  */
 const FAQSection = forwardRef(function FAQSection({ items, title = 'Frequently asked questions' }, ref) {
   return (
-    <section ref={ref} className="bg-surface pt-[120px] pb-20">
+    <section ref={ref} className="pt-[120px] pb-20" style={{ backgroundColor: '#FFFFFF' }}>
       <div className="max-w-4xl mx-auto px-4">
         <h2 className="text-a2 text-center text-surface-foreground mb-[30px]">{title}</h2>
         <div className="divide-y divide-surface-border">
