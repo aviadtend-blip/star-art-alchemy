@@ -133,7 +133,7 @@ export function GeneratorProvider({ children }) {
 
     try {
       const { data, error: fnError } = await supabase.functions.invoke('create-payment', {
-        body: { orderDetails: details, chartData },
+        body: { orderDetails: details, chartData, artworkImageUrl: generatedImage, customerName: formData?.name },
       });
 
       if (fnError) throw new Error(fnError.message);
