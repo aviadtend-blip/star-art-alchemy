@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 
@@ -27,10 +28,14 @@ const ELEMENT_DESCRIPTIONS = {
  * White background, header, progress bar, circular spinner,
  * stacked Big Three cards, 2×2 element grid, dominant callout, fun facts.
  */
-export default function LoadingScreen({ chartData, selectedStyle, generationProgress }) {
+export default function LoadingScreen({ chartData, selectedStyle, generationProgress, isComplete, onNavigateToPreview }) {
   const [factIndex, setFactIndex] = useState(0);
   const [headlineIndex, setHeadlineIndex] = useState(0);
-  const [visibleSteps, setVisibleSteps] = useState(0); // 0=none, 1=sun, 2=moon, 3=rising, 4=elements, 5=dominant
+  const [visibleSteps, setVisibleSteps] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [showFinalizing, setShowFinalizing] = useState(false);
+  const startTime = useRef(Date.now());
+  const hasTriggeredComplete = useRef(false);
 
   const sunSign = chartData?.sun?.sign || 'your';
 
@@ -65,6 +70,33 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
     return () => timers.forEach(clearTimeout);
   }, []);
 
+  // Simulated progress bar
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const elapsed = (Date.now() - startTime.current) / 1000;
+      let p;
+      if (elapsed <= 5) p = (elapsed / 5) * 30;
+      else if (elapsed <= 15) p = 30 + ((elapsed - 5) / 10) * 25;
+      else if (elapsed <= 30) p = 55 + ((elapsed - 15) / 15) * 20;
+      else if (elapsed <= 45) p = 75 + ((elapsed - 30) / 15) * 10;
+      else p = 85 + Math.min((elapsed - 45) / 30, 1) * 3;
+      setProgress(Math.min(p, 88));
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Handle completion: jump to 100%, wait, then navigate
+  useEffect(() => {
+    if (!isComplete || hasTriggeredComplete.current) return;
+    hasTriggeredComplete.current = true;
+    setProgress(100);
+    const t1 = setTimeout(() => setShowFinalizing(true), 500);
+    const t2 = setTimeout(() => {
+      onNavigateToPreview?.();
+    }, 2000); // 500ms pause + 1500ms "Finalizing" text
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [isComplete, onNavigateToPreview]);
+
   const elements = chartData?.element_balance || {};
   const sortedElements = Object.entries(elements).sort(([, a], [, b]) => b - a);
   const dominantElements = sortedElements.filter(([, v]) => v === sortedElements[0]?.[1]).map(([k]) => k);
@@ -79,10 +111,26 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
       <div className="flex-1 flex flex-col items-center px-6 py-12 max-w-lg mx-auto w-full">
         {/* Headline */}
         <h2 className="text-a2 text-surface-foreground font-display text-center mb-2 transition-opacity duration-500">
-          {HEADLINES[headlineIndex]}
+          {showFinalizing ? 'Finalizing your artwork...' : HEADLINES[headlineIndex]}
         </h2>
-        <p className="text-body font-body text-surface-muted mb-12">
+        <p className="text-body font-body text-surface-muted mb-6">
           Typical generation time: 30-45 seconds
+        </p>
+
+        {/* Progress bar */}
+        <div className="w-full mb-2" style={{ height: 6, backgroundColor: '#E5E7EB', borderRadius: 9999 }}>
+          <div
+            style={{
+              height: '100%',
+              width: `${progress}%`,
+              borderRadius: 9999,
+              background: 'linear-gradient(90deg, #FE6781, #E5507A)',
+              transition: 'width 0.3s ease',
+            }}
+          />
+        </div>
+        <p className="text-body-sm font-body text-surface-muted mb-10">
+          {Math.round(progress)}% complete
         </p>
 
         {/* Circular spinner */}
