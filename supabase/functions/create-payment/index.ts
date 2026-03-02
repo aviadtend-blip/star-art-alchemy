@@ -29,6 +29,15 @@ serve(async (req) => {
     const productImages = artworkImageUrl ? [artworkImageUrl] : [];
     console.log('productImages being sent to Stripe:', JSON.stringify(productImages));
 
+    // Build dynamic product name and description
+    const sizeLabel = orderDetails.sizeLabel || orderDetails.size || "";
+    const productName = `Celestial Artwork — ${sizeLabel} Canvas`;
+    const descParts = [
+      customerName ? `Personalized birth chart artwork for ${customerName}` : "Personalized birth chart artwork",
+      chartData?.sun?.sign ? `${chartData.sun.sign} Sun` : null,
+    ].filter(Boolean);
+    const description = descParts.join(" · ");
+
     const session = await stripe.checkout.sessions.create({
       customer_email: email || undefined,
       line_items: [
