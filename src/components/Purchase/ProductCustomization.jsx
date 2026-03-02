@@ -462,7 +462,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           <OrderSummary />
         </div>
         {/* Mobile — Materials + Gift */}
-        <div className="px-4 pb-16 flex flex-col gap-16" style={{ paddingTop: '32px' }}>
+        <div className="px-4 pb-16 flex flex-col gap-16" style={{ paddingTop: '60px' }}>
           <div>
             <img src={canvasDetail} alt="Close-up of museum-quality canvas print detail" className="w-full object-cover" style={{ borderRadius: 2, aspectRatio: '40/29' }} loading="lazy" />
             <div className="mt-4">
@@ -504,7 +504,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
             </div>
 
             {/* Right — scrollable content */}
-            <div className="flex-1" style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            <div className="flex-1" style={{ display: 'flex', flexDirection: 'column', gap: '60px' }}>
               <SizeSelector vertical />
               <div id="order-summary-desktop"><OrderSummary /></div>
 
