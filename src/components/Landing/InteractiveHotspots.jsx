@@ -185,7 +185,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
         <p className="text-body mb-0" style={{ color: "#c7c7c7", maxWidth: 420 }}>
           Every element in your artwork corresponds to a specific astrological placement.
         </p>
-        <div style={{ width: 1, height: 50, backgroundColor: "#666666", marginTop: 32, marginBottom: 32 }} />
+        <div style={{ height: 40 }} />
       </div>
 
       {/* ===== DESKTOP: two-column layout ===== */}
@@ -241,7 +241,6 @@ export default function InteractiveHotspots({ onScrollToForm }) {
         </div>
       </div>
 
-      {/* ===== MOBILE LAYOUT ===== */}
       <div className="md:hidden px-5 max-w-md mx-auto flex flex-col items-center">
         {/* Artwork */}
         <div className="relative w-full overflow-hidden" style={{ borderRadius: "2px" }}>
@@ -262,7 +261,10 @@ export default function InteractiveHotspots({ onScrollToForm }) {
           ))}
         </div>
 
-        <div style={{ height: 24 }} />
+        {/* Intro text */}
+        <p className="text-subtitle tracking-widest text-center mt-6 mb-4" style={{ color: "#999" }}>
+          AMANDA TORRES &nbsp;·&nbsp; DECEMBER 29, 1994 &nbsp;·&nbsp; 7:40 AM &nbsp;·&nbsp; SANTA FE, NEW MEXICO
+        </p>
 
         {/* Horizontal scroll cards */}
         <div
