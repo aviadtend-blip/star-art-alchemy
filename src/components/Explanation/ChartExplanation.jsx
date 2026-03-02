@@ -490,7 +490,7 @@ export function ChartExplanation({
                   style={{ width: 39, height: 24, top: 2, left: showHotspots ? 23 : 2, borderRadius: 100, backgroundColor: showHotspots ? '#191919' : '#b3b3b3' }}
                 />
               </span>
-              <span className="text-a4 text-white">Hotspot markers</span>
+              <span className="text-a5 text-white">Hotspot markers</span>
             </button>
           </div>
 
@@ -689,7 +689,7 @@ export function ChartExplanation({
                   }}
                 />
               </span>
-              <span className="text-a4 text-white">
+              <span className="text-a5 text-white">
                 Hotspot markers
               </span>
             </button>
