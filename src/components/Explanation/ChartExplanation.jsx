@@ -461,12 +461,15 @@ export function ChartExplanation({
                       top: h.position.top,
                       left: h.position.left,
                       transform: 'translate(-50%, -50%)',
-                      width: isActive ? 28 : 24,
-                      height: isActive ? 28 : 24,
+                      width: isActive ? 34 : 28,
+                      height: isActive ? 34 : 28,
                       borderRadius: 41,
                       padding: 2,
-                      backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.5)',
-                      border: '1px solid #6e5200',
+                      backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 191, 0, 0.85)',
+                      border: isActive ? '2px solid #b38600' : '2px solid #6e5200',
+                      boxShadow: isActive
+                        ? '0 0 12px 4px rgba(255, 191, 0, 0.5)'
+                        : '0 0 8px 2px rgba(0, 0, 0, 0.4)',
                     }}
                     aria-label={`Hotspot ${h.id}: ${h.title}`}
                   >
@@ -731,11 +734,14 @@ export function ChartExplanation({
                       top: h.position.top,
                       left: h.position.left,
                       transform: 'translate(-50%, -50%)',
-                      width: isActive ? 28 : 24,
-                      height: isActive ? 28 : 24,
+                      width: isActive ? 34 : 28,
+                      height: isActive ? 34 : 28,
                       borderRadius: 41,
-                      backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.5)',
-                      border: '1px solid #6e5200',
+                      backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 191, 0, 0.85)',
+                      border: isActive ? '2px solid #b38600' : '2px solid #6e5200',
+                      boxShadow: isActive
+                        ? '0 0 12px 4px rgba(255, 191, 0, 0.5)'
+                        : '0 0 8px 2px rgba(0, 0, 0, 0.4)',
                     }}
                     aria-label={`Hotspot ${h.id}: ${h.title}`}
                   >
