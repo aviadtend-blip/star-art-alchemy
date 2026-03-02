@@ -437,7 +437,7 @@ export function ChartExplanation({
                       const el = document.getElementById(`desktop-hotspot-${h.id}`);
                       el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }}
-                    className="absolute flex items-center justify-center transition-all duration-300 cursor-pointer z-10"
+                    className={`absolute flex items-center justify-center transition-all duration-300 cursor-pointer z-10 ${isActive ? 'hotspot-pulse' : ''}`}
                     style={{
                       top: h.position.top,
                       left: h.position.left,
@@ -649,7 +649,7 @@ export function ChartExplanation({
                       setActiveHotspot(h.id);
                       scrollToCard(h.id);
                     }}
-                    className="absolute flex items-center justify-center transition-all duration-300 cursor-pointer z-10"
+                    className={`absolute flex items-center justify-center transition-all duration-300 cursor-pointer z-10 ${isActive ? 'hotspot-pulse' : ''}`}
                     style={{
                       top: h.position.top,
                       left: h.position.left,
