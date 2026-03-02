@@ -185,7 +185,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
         <p className="text-body mb-0" style={{ color: "#c7c7c7", maxWidth: 420 }}>
           Every element in your artwork corresponds to a specific astrological placement.
         </p>
-        <div style={{ height: 40 }} />
+        <div style={{ height: 60 }} />
       </div>
 
       {/* ===== DESKTOP: two-column layout ===== */}
@@ -294,7 +294,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
       </div>
 
       {/* CTA */}
-      <div className="text-center pt-[60px] pb-[80px] px-6 space-y-3">
+      <div className="text-center pt-[60px] pb-[70px] px-6" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
         <p className="text-body" style={{ color: "#c7c7c7" }}>
           Want to see what symbols appear in YOUR chart?
         </p>
