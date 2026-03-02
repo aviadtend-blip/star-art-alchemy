@@ -521,5 +521,6 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
       </div>
 
       <Footer />
+    </div>
   );
 }
