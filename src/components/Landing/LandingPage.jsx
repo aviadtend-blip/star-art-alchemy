@@ -16,6 +16,7 @@ import saturnPlanet from "@/assets/gallery/saturn-planet.jpg";
 import canvasDetail from "@/assets/gallery/canvas-detail.jpg";
 import libraWall from "@/assets/gallery/libra-wall.jpg";
 import virgoArtwork from "@/assets/gallery/virgo-artwork.jpg";
+import jamesChart from "@/assets/gallery/james-chart.webp";
 import gallery2 from "@/assets/gallery/example-2.jpg";
 import gallery3 from "@/assets/gallery/example-3.jpg";
 import moonSurface from "@/assets/gallery/moon-surface.jpg";
@@ -252,10 +253,16 @@ export default function LandingPage() {
                 ],
               },
               {
-                img: libraWall, name: "Amanda", signs: "Libra Sun, Aquarius Moon",
+                img: jamesChart, name: "James", signs: "Aries Sun, Cancer Moon",
                 explanations: [
-                  { icon: "☀️", title: "Libra Sun · Harmony", description: "Balanced, symmetrical composition with elegant curves reflects her Libra sun—beauty, partnership, and aesthetic refinement." },
-                  { icon: "🌙", title: "Aquarius Moon · Vision", description: "Electric accents and unconventional color choices hint at her Aquarius moon's innovative, independent spirit." },
+                  { icon: "☀️", title: "Aries Sun · Fire", description: "The blazing red sun crowning the mountain peak is pure Aries energy—a born leader who charges forward, plants his flag at the summit, and dares the world to keep up." },
+                  { icon: "🌙", title: "Cancer Moon · Cauldron", description: "The swirling teal pool at the base holds everything together, reflecting his Cancer moon—beneath the warrior exterior is an emotional depth that nurtures, protects, and carries the memories of everyone he loves." },
+                  { icon: "⬆️", title: "Scorpio Rising · Third Eye", description: "The all-seeing eye at the center of the forehead channels his Scorpio ascendant—others feel seen in his presence, sometimes uncomfortably so. He reads what's unspoken before a word is said." },
+                  { icon: "🌿", title: "Venus in Taurus · Growth", description: "The lush branches, flowers, and botanical life exploding outward in every direction mirror his Venus in Taurus—he loves through abundance, through making things grow, through surrounding the people he cares about with beauty." },
+                  { icon: "🔴", title: "Mars in Aries · Summit", description: "The snow-capped mountain rising from the crown of the head doubles down on his Mars at home in Aries—relentless ambition, a need to conquer, and the stamina to climb no matter how steep the path." },
+                  { icon: "🌊", title: "Neptune in Pisces · Spiral", description: "The hypnotic spiral in the pool below speaks to his Neptune in Pisces—a spiritual undertow pulling him toward meaning, mysticism, and questions most people are afraid to sit with." },
+                  { icon: "🪐", title: "Jupiter in Sagittarius · Abundance", description: "The sheer maximalism of the composition—every corner overflowing with life, color, and detail—reflects Jupiter in Sagittarius at its fullest. His world is never small, never quiet, never enough." },
+                  { icon: "🦌", title: "North Node in Capricorn · Antlers", description: "The antler-like branches extending from the temples echo his North Node in Capricorn—a life path growing toward wisdom, authority, and the kind of ancient strength that only comes from enduring seasons." },
                 ],
               },
             ].map((item) => (
