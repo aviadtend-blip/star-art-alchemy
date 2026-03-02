@@ -16,6 +16,58 @@ const ELEMENT_ICONS = {
   Air: '💨',
 };
 
+const SUN_TRAITS = {
+  Aries: "you lead with instinct — decisions come fast and rarely wrong",
+  Taurus: "you build things that last — patience is your quiet superpower",
+  Gemini: "you see every side of everything — your mind never stops connecting dots",
+  Cancer: "you feel the room before you enter it — emotional intelligence is your first language",
+  Leo: "you were born to be seen — not from ego, but because your energy genuinely lights things up",
+  Virgo: "you notice what others miss — the details matter and you know why",
+  Libra: "you seek harmony instinctively — beauty and balance aren't luxuries to you, they're necessities",
+  Scorpio: "you go deeper than most people dare — surface-level has never been enough",
+  Sagittarius: "you need meaning more than comfort — the big questions keep you moving forward",
+  Capricorn: "you play the long game — discipline isn't forced, it's just how you're wired",
+  Aquarius: "you think in systems others can't see yet — being ahead of your time is lonely but natural",
+  Pisces: "boundaries blur for you in the most beautiful way — empathy is your art form",
+};
+
+const MOON_TRAITS = {
+  Aries: "your emotional reactions are instant and honest — you process by doing, not dwelling",
+  Taurus: "you need emotional stability like oxygen — once you feel safe, you're unshakable",
+  Gemini: "your inner world moves fast — you process emotions by talking them through",
+  Cancer: "your emotional depth is oceanic — you remember how things felt long after others forget",
+  Leo: "you need to feel appreciated at your core — recognition isn't vanity, it's emotional fuel",
+  Virgo: "you analyze your feelings before you feel them — your inner world is precise and sometimes overthought",
+  Libra: "you process emotions through relationships — being understood by someone is how you understand yourself",
+  Scorpio: "your emotional life runs deep and private — you feel everything at full intensity but show almost nothing",
+  Sagittarius: "your emotions need space and movement — you heal through adventure and new perspectives",
+  Capricorn: "you handle emotions with composure — people think you're stoic but you just process privately",
+  Aquarius: "you observe your own emotions from a distance — feeling things doesn't mean being controlled by them",
+  Pisces: "your emotional world has no walls — you absorb what others feel and sometimes lose yourself in it",
+};
+
+const RISING_TRAITS = {
+  Aries: "bold, direct, and a little intimidating — you walk into rooms like you own them",
+  Taurus: "calm, grounded, and effortlessly put-together — people feel stable around you",
+  Gemini: "quick, curious, and instantly engaging — you make everyone feel like the conversation just got interesting",
+  Cancer: "warm, approachable, and nurturing — strangers open up to you without knowing why",
+  Leo: "magnetic, confident, and impossible to ignore — you have natural presence",
+  Virgo: "composed, thoughtful, and quietly competent — people trust your judgment immediately",
+  Libra: "graceful, charming, and diplomatically skilled — you make hard things look easy",
+  Scorpio: "intense, perceptive, and a little mysterious — people sense there's much more beneath the surface",
+  Sagittarius: "adventurous, optimistic, and free-spirited — your enthusiasm is genuinely contagious",
+  Capricorn: "serious, capable, and quietly ambitious — people respect you before they even know you",
+  Aquarius: "unique, independent, and slightly unconventional — you stand out without trying",
+  Pisces: "dreamy, gentle, and subtly creative — there's something ethereal about your presence",
+};
+
+const ELEMENT_TRAITS = {
+  Fire: "a warmth and urgency — you don't just exist, you burn",
+  Earth: "a grounded solidity — you build real things in a world of noise",
+  Air: "an intellectual electricity — ideas are your native currency",
+  Water: "an emotional depth — you navigate by feeling what others only think about",
+};
+
 const ELEMENT_DESCRIPTIONS = {
   Fire: 'warm, bold tones with dynamic energy',
   Water: 'deep blues and flowing, fluid forms',
@@ -38,6 +90,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
   const startTime = useRef(Date.now());
   const hasTriggeredComplete = useRef(false);
   const [rarityPct] = useState(() => (Math.random() * 0.03 + 0.04).toFixed(2));
+  const [visibleProfileLines, setVisibleProfileLines] = useState(0);
 
   const sunSign = chartData?.sun?.sign || 'your';
 
@@ -72,6 +125,15 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
     const delays = [500, 1500, 2500, 3500, 4500, 5750];
     const timers = delays.map((delay, i) =>
       setTimeout(() => setVisibleSteps(i + 1), delay)
+    );
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  // Cosmic Profile reveal timers
+  useEffect(() => {
+    const profileDelays = [7500, 8000, 13000, 18000, 23000]; // header at 7.5s, lines at 8s, 13s, 18s, 23s
+    const timers = profileDelays.map((delay, i) =>
+      setTimeout(() => setVisibleProfileLines(i + 1), delay)
     );
     return () => timers.forEach(clearTimeout);
   }, []);
@@ -249,6 +311,52 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
               <p className="text-body-sm font-body text-surface-muted">
                 Out of 1,728 possible combinations, yours is truly one of a kind
               </p>
+            </div>
+
+            {/* Your Cosmic Profile */}
+            <div className="w-full space-y-4 mt-4">
+              {/* Section header */}
+              <h3
+                className="text-a3 text-surface-foreground font-display text-center"
+                style={{
+                  opacity: visibleProfileLines >= 1 ? 1 : 0,
+                  transform: visibleProfileLines >= 1 ? 'translateY(0)' : 'translateY(12px)',
+                  transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+                }}
+              >
+                ✨ Your Cosmic Profile
+              </h3>
+
+              {/* Personality lines */}
+              {[
+                chartData.sun?.sign && SUN_TRAITS[chartData.sun.sign]
+                  ? `Your ${chartData.sun.sign} Sun suggests ${SUN_TRAITS[chartData.sun.sign]}`
+                  : null,
+                chartData.moon?.sign && MOON_TRAITS[chartData.moon.sign]
+                  ? `With a ${chartData.moon.sign} Moon, your inner world — ${MOON_TRAITS[chartData.moon.sign]}`
+                  : null,
+                chartData.rising && RISING_TRAITS[chartData.rising]
+                  ? `A ${chartData.rising} Rising means others first see you as ${RISING_TRAITS[chartData.rising]}`
+                  : null,
+                dominantElements[0] && ELEMENT_TRAITS[dominantElements[0]]
+                  ? `Your ${dominantElements[0]}-dominant chart gives everything ${ELEMENT_TRAITS[dominantElements[0]]}`
+                  : null,
+              ]
+                .filter(Boolean)
+                .map((line, i) => (
+                  <p
+                    key={i}
+                    className="text-body font-body text-surface-foreground text-center leading-relaxed"
+                    style={{
+                      fontStyle: 'italic',
+                      opacity: visibleProfileLines >= i + 2 ? 1 : 0,
+                      transform: visibleProfileLines >= i + 2 ? 'translateY(0)' : 'translateY(12px)',
+                      transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
+                    }}
+                  >
+                    {line}
+                  </p>
+                ))}
             </div>
           </div>
         )}
