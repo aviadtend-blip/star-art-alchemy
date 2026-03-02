@@ -51,7 +51,7 @@ const FAQS = [
   { q: 'Need to make a change?', a: 'Contact us within 24 hours to modify your order:\nhello@celestialartworks.com' },
   { q: 'When will it ship?', a: "Within 5-7 business days. You'll get tracking automatically." },
   { q: 'Can I see a preview before it ships?', a: "We'll email you a preview within 1-2 days. Reply if you want any adjustments." },
-  { q: "Worried it won't match your space?", a: "30-day money-back guarantee. If you don't love it, return it for a full refund—no questions asked." },
+  { q: "Worried it won't match your space?", a: "30-day quality guarantee. If your print arrives damaged or defective, we'll reprint it for free or issue a full refund — your choice." },
 ];
 
 export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNewChart }) {

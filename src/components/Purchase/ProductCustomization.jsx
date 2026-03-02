@@ -417,8 +417,8 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           <div className="flex items-start gap-3">
             <span style={{ fontSize: '18px' }}>🔄</span>
             <div>
-              <p className="text-a5" style={{ color: '#FFFFFF' }}>30-day money-back guarantee.</p>
-              <p className="text-body-sm" style={{ color: '#999999', marginTop: '2px' }}>Love it or your money back. No questions asked.</p>
+              <p className="text-a5" style={{ color: '#FFFFFF' }}>30-day quality guarantee.</p>
+              <p className="text-body-sm" style={{ color: '#999999', marginTop: '2px' }}>Damaged or defective? We'll reprint or refund.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">

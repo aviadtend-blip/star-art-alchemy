@@ -550,7 +550,7 @@ export function ChartExplanation({
                     </button>
                   </div>
                   <p className="text-body-sm font-body text-white/70 text-center">
-                    ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
+                    ✓ Free shipping · 📦 30-day quality guarantee · 🔒 Secure checkout
                   </p>
                 </div>
 
@@ -798,7 +798,7 @@ export function ChartExplanation({
                 </button>
               </div>
               <p className="text-body-sm font-body text-white/70 text-center">
-                ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
+                ✓ Free shipping · 📦 30-day quality guarantee · 🔒 Secure checkout
               </p>
             </div>
 
