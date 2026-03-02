@@ -543,7 +543,7 @@ export function ChartExplanation({
               </div>
 
               {/* Action buttons — side by side */}
-              <div className="flex gap-4 w-full">
+              <div className="flex flex-wrap gap-4 w-full">
                 {onBackToStyle && (
                   <button onClick={onBackToStyle} className="btn-base btn-dark flex-1 gap-2.5">
                     <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
