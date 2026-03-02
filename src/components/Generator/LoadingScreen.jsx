@@ -34,6 +34,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
   const [visibleSteps, setVisibleSteps] = useState(0);
   const [progress, setProgress] = useState(0);
   const [showFinalizing, setShowFinalizing] = useState(false);
+  const [factFading, setFactFading] = useState(false);
   const startTime = useRef(Date.now());
   const hasTriggeredComplete = useRef(false);
 
@@ -49,8 +50,12 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setFactIndex((prev) => (prev + 1) % FUN_FACTS.length);
-    }, 4000);
+      setFactFading(true);
+      setTimeout(() => {
+        setFactIndex((prev) => (prev + 1) % FUN_FACTS.length);
+        setFactFading(false);
+      }, 300);
+    }, 3500);
     return () => clearInterval(interval);
   }, []);
 
@@ -231,7 +236,14 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
           className="w-full py-4 px-5 text-center"
           style={{ backgroundColor: '#DAEEFF', borderRadius: '2px' }}
         >
-          <p className="text-body-sm font-body" style={{ color: '#333333' }}>
+          <p
+            className="text-body-sm font-body"
+            style={{
+              color: '#333333',
+              opacity: factFading ? 0 : 1,
+              transition: 'opacity 0.3s ease',
+            }}
+          >
             {FUN_FACTS[factIndex].startsWith('Fun fact') ? '💡 ' : ''}{FUN_FACTS[factIndex]}
           </p>
         </div>
