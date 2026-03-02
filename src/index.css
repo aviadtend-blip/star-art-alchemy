@@ -136,6 +136,13 @@
     line-height: 38px;
     letter-spacing: -0.96px;
   }
+  .text-body-big {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 28px;
+    letter-spacing: -0.38px;
+  }
   .text-a1 {
     font-family: var(--font-display);
     font-weight: 400;
