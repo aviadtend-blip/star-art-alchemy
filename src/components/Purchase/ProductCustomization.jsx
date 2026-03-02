@@ -324,7 +324,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   const SizeSelector = ({ vertical = false }) => (
     <div>
-      <h2 className="text-a2" style={{ color: '#333333', marginBottom: 16 }}>
+      <h2 className="text-a2" style={{ color: '#333333', marginBottom: 0 }}>
         Choose Your Size
       </h2>
       {vertical ? (
