@@ -19,7 +19,7 @@ function CircularSpinner() {
 
 export default function FloatingProgressBar({ progress = 0, statusText = '' }) {
   return (
-    <div className="bg-white/50 border-t border-[#e5e5e5] backdrop-blur-sm flex flex-col gap-2 px-5 py-3.5 w-full">
+    <div className="bg-white/70 border-t border-[#e5e5e5] backdrop-blur-sm flex flex-col gap-2 px-5 py-3.5 w-full">
       {/* Top row: spinner + progress bar + label */}
       <div className="flex gap-4 items-end w-full">
         <CircularSpinner />
@@ -44,7 +44,7 @@ export default function FloatingProgressBar({ progress = 0, statusText = '' }) {
 
       {/* Status text */}
       {statusText && (
-        <p className="text-body font-body text-surface-muted opacity-70">
+        <p className="text-body font-body text-surface-muted opacity-70 text-center">
           {statusText}
         </p>
       )}

@@ -158,7 +158,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
 
   // Sequential reveal timers
   useEffect(() => {
-    const delays = [500, 1500, 2500, 3500, 4500, 5750];
+    const delays = [300, 900, 1500, 2100, 2700, 3300];
     const timers = delays.map((delay, i) =>
       setTimeout(() => setVisibleSteps(i + 1), delay)
     );
@@ -167,7 +167,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
 
   // Cosmic Profile reveal timers
   useEffect(() => {
-    const profileDelays = [7500, 8000, 13000, 18000, 23000];
+    const profileDelays = [4500, 5000, 8000, 11000, 14000];
     const timers = profileDelays.map((delay, i) =>
       setTimeout(() => setVisibleProfileLines(i + 1), delay)
     );
@@ -176,7 +176,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
 
   // "What to Look For" reveal timers
   useEffect(() => {
-    const hintDelays = [26000, 29000, 32000, 35000];
+    const hintDelays = [16000, 18000, 20000, 22000];
     const timers = hintDelays.map((delay, i) =>
       setTimeout(() => setVisibleHints(i + 1), delay)
     );
@@ -281,13 +281,13 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
             <img
               src={artistGif}
               alt="Artist painting"
-              className="w-[120px] h-auto rounded-lg mt-[27px]"
+              className="w-[160px] h-auto rounded-md mt-[27px]"
             />
             <h2 className="text-a3 text-surface-foreground font-display text-center mt-4">
               Your Birth Chart Summary
             </h2>
 
-            <div className="flex flex-col items-center mt-[27px] w-full max-w-[350px]">
+            <div className="flex flex-col items-center mt-5 w-full max-w-[350px]">
               {/* Big Three — horizontal row */}
               <div
                 className="flex gap-[25px] items-center justify-center py-2.5 rounded-[2px] w-full"
@@ -368,6 +368,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
                   transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
                 }}
               >
+                <p className="text-[20px] mb-1">💡</p>
                 <p className="text-a4 text-surface-foreground font-display opacity-70 text-center w-full">
                   Only {rarityPct}% of people share your Sun‑Moon‑Rising combination
                 </p>
