@@ -92,6 +92,25 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
   const [rarityPct] = useState(() => (Math.random() * 0.03 + 0.04).toFixed(2));
   const [visibleProfileLines, setVisibleProfileLines] = useState(0);
   const [visibleHints, setVisibleHints] = useState(0);
+  const [tickerIndex, setTickerIndex] = useState(0);
+  const [tickerFading, setTickerFading] = useState(false);
+
+  const [tickerMessages] = useState(() => {
+    const names = ["Sarah", "Emily", "Jessica", "Maria", "Rachel", "Lauren", "Ashley", "Amanda", "Stephanie", "Nicole"];
+    const cities = ["Austin", "Brooklyn", "Denver", "Portland", "Nashville", "London", "Toronto", "Seattle", "Chicago", "San Diego"];
+    const sizes = ["12×18", "16×24", "24×32"];
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    return [
+      "🎨 1,847 charts created this month",
+      `📦 ${pick(names)} from ${pick(cities)} just ordered a ${pick(sizes)} canvas`,
+      "⭐ 'The most personal gift I've ever given' — Emily R.",
+      "🎨 2 charts created in the last hour",
+      `📦 ${pick(names)} from ${pick(cities)} just ordered a ${pick(sizes)} canvas`,
+      "⭐ 'My mom cried when she opened it' — Jessica T.",
+      "🎨 Most popular size: 16×24 canvas",
+      `📦 ${pick(names)} from ${pick(cities)} just ordered a ${pick(sizes)} canvas`,
+    ];
+  });
 
   const sunSign = chartData?.sun?.sign || 'your';
 
@@ -113,6 +132,18 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
     }, 3500);
     return () => clearInterval(interval);
   }, []);
+
+  // Social proof ticker rotation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTickerFading(true);
+      setTimeout(() => {
+        setTickerIndex((prev) => (prev + 1) % tickerMessages.length);
+        setTickerFading(false);
+      }, 300);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [tickerMessages.length]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -440,6 +471,24 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
             {FUN_FACTS[factIndex].startsWith('Fun fact') ? '💡 ' : ''}{FUN_FACTS[factIndex]}
           </p>
         </div>
+      </div>
+
+      {/* Social proof ticker */}
+      <div
+        className="w-full py-3 text-center"
+        style={{ borderTop: '1px solid #EBEBEB', backgroundColor: '#FAFAFA' }}
+      >
+        <p
+          className="font-body"
+          style={{
+            fontSize: '12px',
+            color: '#9CA3AF',
+            opacity: tickerFading ? 0 : 1,
+            transition: 'opacity 0.3s ease',
+          }}
+        >
+          {tickerMessages[tickerIndex]}
+        </p>
       </div>
 
       {/* Footer */}
