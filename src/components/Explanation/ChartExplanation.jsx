@@ -417,7 +417,7 @@ export function ChartExplanation({
         </div>
 
         {/* ===== DESKTOP LAYOUT: two-column ===== */}
-        <div className="hidden md:flex mx-auto px-8 pt-16 gap-12 items-start w-full" style={{ maxWidth: 880 }}>
+        <div className="hidden md:flex mx-auto px-8 pt-16 gap-12 items-start w-full" style={{ maxWidth: 1060 }}>
           {/* Left: sticky artwork */}
           <div className="w-[379px] flex-shrink-0 sticky" style={{ top: '132px', height: 'fit-content' }}>
             <div className="relative" ref={artworkRef}>
@@ -482,7 +482,7 @@ export function ChartExplanation({
                     id={`desktop-hotspot-${h.id}`}
                     ref={(el) => (desktopCardRefs.current[i] = el)}
                     className="w-full"
-                    style={{ borderRight: '1px solid #3f3f3f', paddingRight: 16 }}
+                    style={{ borderBottom: '1px solid #3f3f3f', paddingBottom: 20 }}
                   >
                     <div className="flex flex-col gap-5">
                       <div className="flex items-center gap-3">
