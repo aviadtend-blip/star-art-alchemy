@@ -63,7 +63,7 @@ export default function GeneratePreview() {
   const {
     chartData, generatedImage, formData,
     handleGetFramed, handleEditBirthData, handleBackToStyle,
-    artworkAnalysis, setGeneratedImage, handleStyleSelect,
+    artworkAnalysis, setArtworkAnalysis, setGeneratedImage, handleStyleSelect,
     selectedStyle,
   } = useGenerator();
 
@@ -127,6 +127,10 @@ export default function GeneratePreview() {
         // Start preloading mockups with new artwork
         preloadCleanup.current?.();
         preloadCleanup.current = preloadAllMockups(ALL_MOCKUP_SETS, next.imageUrl);
+        // Re-analyze artwork for updated hotspots
+        analyzeArtwork(next.imageUrl, chartData)
+          .then((result) => { if (result) setArtworkAnalysis(result); })
+          .catch(console.error);
       }, remaining);
     };
     img.onerror = () => {

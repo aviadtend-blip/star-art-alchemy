@@ -158,7 +158,7 @@ export function GeneratorProvider({ children }) {
     chartData, formData, selectedStyle, generatedImage,
     error, generationProgress, orderDetails, isCheckingOut,
     artworkAnalysis,
-    setFormData, setChartData, setError, setGeneratedImage,
+    setFormData, setChartData, setError, setGeneratedImage, setArtworkAnalysis,
     handleFormSubmit, handleStyleSelect, handleRetry,
     handleEditBirthData, handleBackToStyle, handleGetFramed,
     handleBackToPreview, handleCheckout, handleTestCheckout,
