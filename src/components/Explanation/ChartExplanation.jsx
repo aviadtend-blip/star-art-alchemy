@@ -416,8 +416,20 @@ export function ChartExplanation({
           <div style={{ height: '40px', background: 'linear-gradient(to bottom, #191919, transparent)' }} />
         </div>
 
+        {/* ===== DESKTOP: Title + intro above two-column layout ===== */}
+        <div className="hidden md:flex flex-col items-center text-center pt-16 pb-0 px-8" style={{ maxWidth: 500, margin: '0 auto' }}>
+          <h1 className="text-a1-special text-white">
+            Meet Your Cosmic Masterpiece
+          </h1>
+          <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 32 }} />
+          <p className="text-body-big" style={{ color: '#c7c7c7' }}>
+            {subjectExplanation}
+          </p>
+          <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 32 }} />
+        </div>
+
         {/* ===== DESKTOP LAYOUT: two-column ===== */}
-        <div className="hidden md:flex mx-auto px-8 pt-16 gap-12 items-start w-full" style={{ maxWidth: 1060 }}>
+        <div className="hidden md:flex mx-auto px-8 gap-12 items-start w-full" style={{ maxWidth: 1060 }}>
           {/* Left: sticky artwork */}
           <div className="w-[379px] flex-shrink-0 sticky flex flex-col items-start justify-center" style={{ top: '116px', height: 'calc(100vh - 116px)' }}>
             <div className="relative" ref={artworkRef}>
@@ -496,15 +508,6 @@ export function ChartExplanation({
           {/* Right: content column */}
           <div className="flex-1 min-w-0" ref={rightContentRef}>
             <div ref={rightInnerRef} className="flex flex-col gap-10">
-              {/* Title + Subtitle */}
-              <div className="flex flex-col gap-5">
-                <h1 className="text-a1-special text-white">
-                  Meet Your Cosmic Masterpiece
-                </h1>
-                <p className="text-body-big" style={{ color: '#c7c7c7' }}>
-                  {subjectExplanation}
-                </p>
-              </div>
 
               {/* Explanation cards — vertical with right border */}
               <div className="flex flex-col gap-5">
