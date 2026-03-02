@@ -39,6 +39,7 @@ import PrimaryButton from "@/components/ui/PrimaryButton";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 import GalleryTile from "./GalleryTile";
+import TestimonialCarousel from "./TestimonialCarousel";
 
 /* ─── Static data ─── */
 
@@ -456,6 +457,9 @@ export default function LandingPage() {
 
       {/* ═══════════════════ FAQ ═══════════════════ */}
       <FAQSection items={faqs} />
+
+      {/* ═══════════════════ TESTIMONIALS ═══════════════════ */}
+      <TestimonialCarousel />
 
       {/* ═══════════════════ FOOTER ═══════════════════ */}
       <Footer onScrollToForm={scrollToForm} />
