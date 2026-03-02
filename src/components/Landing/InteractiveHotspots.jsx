@@ -217,7 +217,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
         <div className="flex-1 min-w-0 py-12">
           {/* Introduction */}
           <div className="mb-8">
-            <p className="text-subtitle tracking-widest mb-5" style={{ color: "#999" }}>
+            <p className="text-subtitle tracking-widest mb-5" style={{ color: "#fff" }}>
               AMANDA TORRES &nbsp;·&nbsp; DECEMBER 29, 1994 &nbsp;·&nbsp; 7:40 AM &nbsp;·&nbsp; SANTA FE, NEW MEXICO
             </p>
             <p className="text-body leading-relaxed" style={{ color: "#c7c7c7" }}>
@@ -262,7 +262,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
         </div>
 
         {/* Intro text */}
-        <p className="text-subtitle tracking-widest text-center mt-6 mb-4" style={{ color: "#999" }}>
+        <p className="text-subtitle tracking-widest text-center mt-6 mb-4" style={{ color: "#fff" }}>
           AMANDA TORRES &nbsp;·&nbsp; DECEMBER 29, 1994 &nbsp;·&nbsp; 7:40 AM &nbsp;·&nbsp; SANTA FE, NEW MEXICO
         </p>
 
