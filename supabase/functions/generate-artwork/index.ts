@@ -67,13 +67,13 @@ serve(async (req) => {
     const taskId = imagineData.task_id;
     console.log(`Apiframe task submitted: ${taskId}`);
 
-    // Step 2: Poll for completion (max 120 seconds, check every 5 seconds)
-    const maxAttempts = 24;
+    // Step 2: Poll for completion (max 120 seconds, check every 2 seconds)
+    const maxAttempts = 60;
     let attempts = 0;
     let result = null;
 
     while (attempts < maxAttempts) {
-      await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2 seconds
       attempts++;
 
       const fetchResponse = await fetch(APIFRAME_FETCH_URL, {

@@ -70,16 +70,20 @@ export function GeneratorProvider({ children }) {
 
       setGeneratedImage(result.imageUrl);
 
-      // Run artwork analysis and image preload in parallel
+      // Pre-load image into browser cache before navigating
+      setGenerationProgress('Preparing your artwork...');
+      const preloadImg = new Image();
+      preloadImg.src = result.imageUrl;
+      await new Promise((resolve) => {
+        preloadImg.onload = resolve;
+        preloadImg.onerror = resolve;
+        setTimeout(resolve, 5000);
+      });
+
+      // Run artwork analysis in parallel (don't block navigation)
       setGenerationProgress('Preparing your artist notes...');
       const [analysisResult] = await Promise.allSettled([
         analyzeArtwork(result.imageUrl, chartData),
-        new Promise((resolve) => {
-          const img = new Image();
-          img.onload = resolve;
-          img.onerror = resolve;
-          img.src = result.imageUrl;
-        }),
       ]);
 
       // Store analysis if it succeeded (fallback is built into analyzeArtwork)
