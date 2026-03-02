@@ -8,6 +8,7 @@ import { ChevronLeft, ChevronRight, ArrowLeftRight, RefreshCw } from 'lucide-rea
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import womanHolding from '@/assets/gallery/woman-holding.jpg';
 import lifestyleImg from '@/assets/gallery/lifestyle.jpg';
+import CTARoomMockup from '@/components/Explanation/CTARoomMockup';
 
 /**
  * Fallback hotspot positions derived from the prompt positioning data.
@@ -569,38 +570,44 @@ export function ChartExplanation({
               </div>
 
               {/* CTA Card — dark with golden glow, rounded */}
-              <div className="relative rounded-xl overflow-hidden px-8 py-8 flex flex-col items-center gap-6 text-center w-full">
-                <div className="absolute inset-0 bg-black pointer-events-none rounded-xl" aria-hidden />
-                <img aria-hidden src={galaxyBg} alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none rounded-xl" />
-                <div className="absolute inset-0 bg-black/70 pointer-events-none rounded-xl" aria-hidden />
-                <div className="absolute inset-0 pointer-events-none rounded-xl" aria-hidden style={{ boxShadow: 'inset 0 0 114px 0 rgba(255,191,0,0.4)' }} />
+              <div className="relative rounded-xl overflow-hidden flex flex-col items-center w-full">
+                {/* Room mockup with composited artwork */}
+                <CTARoomMockup artworkSrc={selectedImage} className="rounded-t-xl" />
 
-                <div className="relative flex flex-col gap-4 items-center text-center text-white w-full">
-                  <HangingFrameIcon />
-                  <h2 className="text-a1 text-white font-display">
-                    Frame it. Hang it. Treasure it forever
-                  </h2>
-                  <p className="text-body-sm font-body text-white/70" style={{ maxWidth: 281 }}>
-                    Gallery-quality printing. Solid wood frames. Ready to hang. Built to last 100 years.
-                  </p>
-                </div>
+                {/* Dark content section */}
+                <div className="relative bg-[#2b2b2b] flex flex-col gap-6 items-center justify-center pt-8 pb-[34px] px-8 w-full">
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ boxShadow: 'inset 0px 0px 114px 0px black' }}
+                  />
 
-                <div className="relative flex flex-col gap-4 items-center w-full">
-                  <div className="flex flex-wrap gap-2.5 w-full">
-                    <button onClick={onGetFramed} className="btn-base btn-primary flex-1">
-                      See Sizes ($79 - $179)
-                    </button>
-                    <button onClick={() => setShowEmailModal(true)} className="btn-base btn-dark-outline flex-1">
-                      Download Preview (Free)
-                    </button>
+                  <div className="relative flex flex-col gap-4 items-center text-center text-white w-full">
+                    <h2 className="text-a1 text-white font-display">
+                      Frame it. Hang it. Treasure it forever
+                    </h2>
+                    <p className="text-body-sm font-body text-white/70" style={{ maxWidth: 281 }}>
+                      Gallery-quality printing. Solid wood frames. Ready to hang. Built to last 100 years.
+                    </p>
                   </div>
-                  <p className="text-body-sm font-body text-white/70 text-center">
-                    ✓ Free shipping  📦 30-day quality guarantee  🔒 Secure checkout
-                  </p>
-                </div>
 
-                <div className="relative w-full">
-                  <RotatingBanner />
+                  <div className="relative flex flex-col gap-4 items-center w-full">
+                    <div className="flex flex-wrap gap-2.5 w-full">
+                      <button onClick={onGetFramed} className="btn-base btn-primary flex-1">
+                        See Sizes ($79 - $179)
+                      </button>
+                      <button onClick={() => setShowEmailModal(true)} className="btn-base btn-dark-outline flex-1">
+                        Download Preview (Free)
+                      </button>
+                    </div>
+                    <p className="text-body-sm font-body text-white/70 text-center">
+                      ✓ Free shipping  📦 30-day quality guarantee  🔒 Secure checkout
+                    </p>
+                  </div>
+
+                  <div className="relative w-full">
+                    <RotatingBanner />
+                  </div>
                 </div>
               </div>
 
@@ -828,28 +835,20 @@ export function ChartExplanation({
             )}
           </div>
 
-          {/* CTA Banner — dark with golden glow */}
-          <div
-            className="relative w-full py-10 px-8 flex flex-col items-center gap-6"
-            style={{ overflow: 'hidden' }}
-          >
-            <div className="absolute inset-0 bg-black pointer-events-none" aria-hidden />
-            <img
-              aria-hidden
-              src={galaxyBg}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-            />
-            <div className="absolute inset-0 bg-black/50 pointer-events-none" aria-hidden />
-            <div
-              className="absolute inset-0 pointer-events-none"
-              aria-hidden
-              style={{ boxShadow: 'inset 0 0 114px 0 rgba(255,191,0,0.4)' }}
-            />
+          {/* CTA Banner — room mockup + dark content */}
+          <div className="relative w-full flex flex-col items-center overflow-hidden">
+            {/* Room mockup with composited artwork */}
+            <CTARoomMockup artworkSrc={selectedImage} />
 
-            <div className="relative flex flex-col gap-5 items-center w-full">
-              <div className="flex flex-col gap-4 items-center text-center text-white" style={{ maxWidth: 250 }}>
-                <HangingFrameIcon />
+            {/* Dark content section */}
+            <div className="relative bg-[#2b2b2b] flex flex-col gap-6 items-center justify-center pt-8 pb-[34px] px-8 w-full">
+              <div
+                aria-hidden
+                className="absolute inset-0 pointer-events-none"
+                style={{ boxShadow: 'inset 0px 0px 114px 0px black' }}
+              />
+
+              <div className="relative flex flex-col gap-4 items-center text-center text-white" style={{ maxWidth: 250 }}>
                 <h2 className="text-a1 text-white font-display">
                   Frame it. Hang it.{'\n'}Treasure it forever
                 </h2>
@@ -858,7 +857,7 @@ export function ChartExplanation({
                 </p>
               </div>
 
-              <div className="flex flex-col gap-2.5 w-full">
+              <div className="relative flex flex-col gap-2.5 w-full">
                 <button
                   onClick={onGetFramed}
                   className="btn-base btn-primary w-full"
@@ -872,13 +871,13 @@ export function ChartExplanation({
                   Download Preview (Free)
                 </button>
               </div>
-              <p className="text-body-sm font-body text-white/70 text-center">
+              <p className="relative text-body-sm font-body text-white/70 text-center">
                 ✓ Free shipping  📦 30-day quality guarantee  🔒 Secure checkout
               </p>
-            </div>
 
-            <div className="relative w-full">
-              <RotatingBanner />
+              <div className="relative w-full">
+                <RotatingBanner />
+              </div>
             </div>
           </div>
 
