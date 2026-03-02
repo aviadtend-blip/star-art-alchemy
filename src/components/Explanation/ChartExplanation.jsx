@@ -560,7 +560,7 @@ export function ChartExplanation({
               </div>
 
               {/* Reviews — list layout */}
-              <div className="flex flex-col gap-2.5 pt-8 pb-12 w-full">
+              <div className="flex flex-col gap-2.5 pt-8 pb-[60px] w-full">
                 <div className="flex items-end gap-3 mb-2">
                   <span className="text-a2 font-display" style={{ color: '#FFBF00' }}>★★★★★</span>
                   <span className="text-a2 font-display text-white">4.9/5</span>
