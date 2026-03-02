@@ -790,7 +790,7 @@ export function ChartExplanation({
           </div>
 
           {/* Action buttons — side by side */}
-          <div className="flex gap-3 px-5 pt-4 pb-10">
+          <div className="flex gap-3 px-5 pt-7 pb-10">
             {onBackToStyle && (
               <button
                 onClick={onBackToStyle}
