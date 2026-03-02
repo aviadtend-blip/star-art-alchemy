@@ -206,9 +206,11 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
     goTo(index);
   }, [activeThumb, goTo]);
 
+  // On first mount only, scroll to the selected card on mobile
   useEffect(() => {
     const carousel = sizeCarouselRef.current;
     if (!carousel || window.innerWidth >= 768) return;
+    if (!isFirstSizeScroll.current) return;
 
     const selectedCard = carousel.querySelector(`[data-size-card="${selectedSize}"]`);
     if (!selectedCard) return;
@@ -218,11 +220,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
       selectedCard.offsetLeft - (carousel.clientWidth - selectedCard.offsetWidth) / 2
     );
 
-    carousel.scrollTo({
-      left: targetLeft,
-      behavior: isFirstSizeScroll.current ? 'auto' : 'smooth',
-    });
-
+    carousel.scrollTo({ left: targetLeft, behavior: 'auto' });
     isFirstSizeScroll.current = false;
   }, [selectedSize]);
 
@@ -328,7 +326,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
       ) : (
         <div className="-mx-4" style={{ overflow: 'clip visible' }}>
           <div ref={sizeCarouselRef} className="overflow-x-auto scrollbar-hide" style={{ overflowY: 'visible', overflow: 'auto visible' }}>
-            <div className="flex w-max pb-2 pt-4 pl-4 pr-4" style={{ gap: 10 }}>
+            <div className="flex w-max pb-2 pt-4 pl-4 pr-4" style={{ gap: 8 }}>
               {SIZE_OPTIONS.map((size) => (
                 <SizeCard key={size.id} size={size} />
               ))}
