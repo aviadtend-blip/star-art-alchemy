@@ -448,7 +448,7 @@ export function ChartExplanation({
                       padding: 2,
                       backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.5)',
                       border: '1px solid #6e5200',
-                      boxShadow: isActive ? '0 2px 8px rgba(255, 191, 0, 0.4)' : 'none',
+                      boxShadow: isActive ? undefined : 'none',
                     }}
                     aria-label={`Hotspot ${h.id}: ${h.title}`}
                   >
@@ -659,7 +659,7 @@ export function ChartExplanation({
                       borderRadius: 41,
                       backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.5)',
                       border: '1px solid #6e5200',
-                      boxShadow: isActive ? '0 2px 8px rgba(255, 191, 0, 0.4)' : 'none',
+                      boxShadow: isActive ? undefined : 'none',
                     }}
                     aria-label={`Hotspot ${h.id}: ${h.title}`}
                   >
