@@ -8,6 +8,7 @@ import heroDesktop from "@/assets/hero-desktop.webp";
 import emmaChart from "@/assets/gallery/emma-chart.webp";
 import danielChart from "@/assets/gallery/daniel-chart.webp";
 import capricornWall from "@/assets/gallery/capricorn-wall.jpg";
+import mariaChart from "@/assets/gallery/maria-chart.webp";
 import taurusArtwork from "@/assets/gallery/taurus-artwork.jpg";
 import womanHolding from "@/assets/gallery/woman-holding.jpg";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
@@ -238,10 +239,16 @@ export default function LandingPage() {
                 ],
               },
               {
-                img: virgoArtwork, name: "Tyler", signs: "Virgo Sun, Pisces Moon",
+                img: mariaChart, name: "Maria", signs: "Cancer Sun, Taurus Moon",
                 explanations: [
-                  { icon: "☀️", title: "Virgo Sun · Precision", description: "Intricate linework and precise geometric patterns embody his Virgo sun—analytical, detail-oriented, and purposeful." },
-                  { icon: "🌙", title: "Pisces Moon · Dreaming", description: "Ethereal washes of blue and violet flow beneath the structure, capturing his Pisces moon's boundless imagination." },
+                  { icon: "☀️", title: "Cancer Sun · Legacy", description: "The vintage sewing machine at the heart of the piece channels her Cancer sun—a soul woven from family memory, ancestral warmth, and the quiet power of keeping loved ones stitched together." },
+                  { icon: "🌙", title: "Taurus Moon · Craft", description: "The wooden spools and tangible threads grounding the composition reflect her Taurus moon—she finds emotional safety in what she can touch, build, and shape with her own hands." },
+                  { icon: "⬆️", title: "Pisces Rising · Dissolve", description: "The figure emerging from flowing cosmic color on the right reveals her Pisces ascendant—the way she appears to others is fluid, ethereal, as though she's always half in this world and half somewhere beyond it." },
+                  { icon: "🔴", title: "Mars in Scorpio · Thread", description: "The needles and pins bristling outward from the globe mirror her Mars in Scorpio—a fierce protectiveness that's always working beneath the surface, precise, deliberate, and not to be underestimated." },
+                  { icon: "🌍", title: "North Node in Sagittarius · World", description: "The Earth wrapped in thread at the center speaks to her North Node in Sagittarius—a life path pulling her to expand beyond the familiar, to stitch her personal story into something universal." },
+                  { icon: "💛", title: "Venus in Leo · Color", description: "The golden and rose streams pouring through the machine capture her Venus in Leo—she loves boldly, generously, and transforms everything she touches into something more vivid than it was before." },
+                  { icon: "💙", title: "Neptune in Aquarius · Vision", description: "The starfield dissolving into the silhouette's profile echoes her Neptune in Aquarius—an imagination that doesn't just dream of beauty but envisions entirely new ways of creating it." },
+                  { icon: "🪐", title: "Saturn in Cancer · Roots", description: "The ornate gold detailing on the machine itself reflects Saturn in Cancer—tradition carried forward with reverence, the understanding that the most enduring things are made with patience and love passed down through generations." },
                 ],
               },
               {
