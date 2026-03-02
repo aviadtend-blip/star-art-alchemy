@@ -6,9 +6,16 @@ import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { ChevronLeft, ChevronRight, ArrowLeftRight, RefreshCw } from 'lucide-react';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
-import womanHolding from '@/assets/gallery/woman-holding.jpg';
-import lifestyleImg from '@/assets/gallery/lifestyle.jpg';
 import CTARoomMockup from '@/components/Explanation/CTARoomMockup';
+import review1 from '@/assets/gallery/reviews/review-1.webp';
+import review2 from '@/assets/gallery/reviews/review-2.webp';
+import review3 from '@/assets/gallery/reviews/review-3.webp';
+import review4 from '@/assets/gallery/reviews/review-4.webp';
+import review5 from '@/assets/gallery/reviews/review-5.webp';
+import review6 from '@/assets/gallery/reviews/review-6.webp';
+import review7 from '@/assets/gallery/reviews/review-7.webp';
+import review8 from '@/assets/gallery/reviews/review-8.webp';
+import review9 from '@/assets/gallery/reviews/review-9.webp';
 
 /**
  * Fallback hotspot positions derived from the prompt positioning data.
@@ -87,26 +94,15 @@ function getStaticPositions(chartData) {
 }
 
 const TESTIMONIALS = [
-  {
-    img: womanHolding,
-    quote: '"This is the most meaningful piece of art I own"',
-    name: 'SARAH M, VERIFIED BUYER',
-  },
-  {
-    img: lifestyleImg,
-    quote: '"As a Taurus sun it spoke to me instantly. I get compliments every time someone visits"',
-    name: 'JENNIFER K, VERIFIED BUYER',
-  },
-  {
-    img: womanHolding,
-    quote: '"I bought one for myself and two more as gifts. Everyone was blown away"',
-    name: 'EMMA R, VERIFIED BUYER',
-  },
-  {
-    img: lifestyleImg,
-    quote: '"The detail is incredible — every symbol actually means something about my chart"',
-    name: 'MICHAEL T, VERIFIED BUYER',
-  },
+  { img: review1, quote: '"got this for my mom\'s birthday and she literally cried when she opened it. best gift ive ever given her"', name: 'SARAH M, VERIFIED BUYER' },
+  { img: review2, quote: '"i was skeptical at first but wow the quality is insane, it looks so good on my wall"', name: 'JESSICA L, VERIFIED BUYER' },
+  { img: review3, quote: '"ordered this last minute for valentines day and it came in time!! my girlfriend loved it"', name: 'AMANDA R, VERIFIED BUYER' },
+  { img: review4, quote: '"ok i dont usually leave reviews but this was too beautiful not to. the colors are gorgeous"', name: 'BRIANNA K, VERIFIED BUYER' },
+  { img: review5, quote: '"bought one for myself and now ive ordered three more as gifts lol everyone keeps asking where i got it"', name: 'TAYLOR W, VERIFIED BUYER' },
+  { img: review6, quote: '"my sister is super into astrology so i got her this for christmas and she says its her favorite gift ever"', name: 'MEGAN D, VERIFIED BUYER' },
+  { img: review7, quote: '"the framing is really high quality, not what i expected at this price honestly. very impressed"', name: 'RACHEL H, VERIFIED BUYER' },
+  { img: review8, quote: '"i stare at mine every morning lol its so unique, nothing like anything youll find at target or wherever"', name: 'DANIELLE P, VERIFIED BUYER' },
+  { img: review9, quote: '"got one for me and my best friend with our birth charts and we\'re obsessed. such a cool concept"', name: 'COURTNEY B, VERIFIED BUYER' },
 ];
 
 function RotatingBanner() {
@@ -208,7 +204,7 @@ function TestimonialsSection({ showArrows = false, bleed = false, topSpace = 32 
             className="flex-shrink-0 snap-center"
             style={{ width: 280, borderRadius: '2px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}
           >
-            <img src={t.img} alt={t.name} className="w-full h-[160px] object-cover" />
+            <img src={t.img} alt={t.name} className="w-full object-cover" style={{ aspectRatio: '3/4' }} />
             <div className="p-4">
               <p className="text-body-sm font-body text-white mb-2 line-clamp-3">{t.quote}</p>
               <p className="text-subtitle text-white/50" style={{ fontSize: '10px' }}>{t.name}</p>
@@ -621,7 +617,7 @@ export function ChartExplanation({
                 <div className="flex flex-col">
                   {TESTIMONIALS.map((t, i) => (
                     <div key={i} className="flex gap-6 items-start py-6" style={{ borderBottom: i < TESTIMONIALS.length - 1 ? '1px solid #3f3f3f' : 'none' }}>
-                      <img src={t.img} alt={t.name} className="w-20 h-20 object-cover flex-shrink-0" />
+                      <img src={t.img} alt={t.name} className="w-20 object-cover flex-shrink-0" style={{ aspectRatio: '3/4', borderRadius: 2 }} />
                       <div className="flex-1 min-w-0 flex flex-col gap-2">
                         <p className="text-body font-body text-white leading-relaxed">{t.quote}</p>
                         <p className="text-subtitle text-white/50 uppercase" style={{ fontSize: 10 }}>{t.name}</p>
@@ -891,7 +887,7 @@ export function ChartExplanation({
             <div className="flex flex-col">
               {TESTIMONIALS.map((t, i) => (
                 <div key={i} className="flex gap-5 items-start py-5" style={{ borderBottom: i < TESTIMONIALS.length - 1 ? '1px solid #3f3f3f' : 'none' }}>
-                  <img src={t.img} alt={t.name} className="w-20 h-20 object-cover flex-shrink-0" />
+                  <img src={t.img} alt={t.name} className="w-20 object-cover flex-shrink-0" style={{ aspectRatio: '3/4', borderRadius: 2 }} />
                   <div className="flex-1 min-w-0 flex flex-col gap-2">
                     <p className="text-body font-body text-white leading-relaxed">{t.quote}</p>
                     <p className="text-subtitle text-white/50 uppercase" style={{ fontSize: 10 }}>{t.name}</p>
