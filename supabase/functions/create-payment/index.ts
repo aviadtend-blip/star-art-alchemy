@@ -26,6 +26,7 @@ serve(async (req) => {
 
     // Upload artwork to Supabase Storage for a permanent URL
     let permanentImageUrl = "";
+    console.log('Received artworkImageUrl:', artworkImageUrl);
     if (artworkImageUrl) {
       try {
         const supabase = createClient(
@@ -34,12 +35,15 @@ serve(async (req) => {
         );
 
         const imageResponse = await fetch(artworkImageUrl);
+        console.log('Image fetch status:', imageResponse.status, imageResponse.statusText);
         if (imageResponse.ok) {
           const imageBlob = await imageResponse.blob();
           const fileName = `checkout-thumbs/${crypto.randomUUID()}.png`;
-          const { error: uploadError } = await supabase.storage
+          const { data: uploadData, error: uploadError } = await supabase.storage
             .from("demo-assets")
             .upload(fileName, imageBlob, { contentType: "image/png", upsert: false });
+
+          console.log('Storage upload result:', JSON.stringify({ data: uploadData, error: uploadError }));
 
           if (!uploadError) {
             const { data: urlData } = supabase.storage.from("demo-assets").getPublicUrl(fileName);
@@ -65,6 +69,7 @@ serve(async (req) => {
     const description = descParts.join(" · ");
 
     const productImages = permanentImageUrl ? [permanentImageUrl] : [];
+    console.log('productImages being sent to Stripe:', JSON.stringify(productImages));
 
     const session = await stripe.checkout.sessions.create({
       customer_email: email || undefined,
