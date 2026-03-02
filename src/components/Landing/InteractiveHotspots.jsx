@@ -191,7 +191,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
       {/* ===== DESKTOP: two-column layout ===== */}
       <div className="hidden md:flex mx-auto px-8 gap-12 items-start w-full" style={{ maxWidth: 1060 }}>
         {/* Left: sticky artwork */}
-        <div className="w-1/2 flex-shrink-0 sticky flex flex-col items-center justify-center" style={{ top: "80px", height: "calc(100vh - 80px)" }}>
+        <div className="w-1/2 flex-shrink-0 sticky flex flex-col items-center justify-center" style={{ top: "80px", alignSelf: "start" }}>
           <div className="relative">
             <img
               src={hotspotExample}
