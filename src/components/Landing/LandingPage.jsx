@@ -23,6 +23,16 @@ import moonSurface from "@/assets/gallery/moon-surface.jpg";
 import earthSpace from "@/assets/gallery/earth-space.jpg";
 import capricornGallery from "@/assets/gallery/capricorn-gallery.jpg";
 import taurusExample from "@/assets/gallery/taurus-example.jpg";
+import customerDisplay1 from "@/assets/gallery/customer-display-1.webp";
+import customerDisplay2 from "@/assets/gallery/customer-display-2.webp";
+import customerDisplay3 from "@/assets/gallery/customer-display-3.webp";
+import customerDisplay4 from "@/assets/gallery/customer-display-4.webp";
+import customerDisplay5 from "@/assets/gallery/customer-display-5.webp";
+import customerDisplay6 from "@/assets/gallery/customer-display-6.webp";
+import customerDisplay7 from "@/assets/gallery/customer-display-7.webp";
+import customerDisplay8 from "@/assets/gallery/customer-display-8.webp";
+import customerDisplay9 from "@/assets/gallery/customer-display-9.webp";
+import customerDisplay10 from "@/assets/gallery/customer-display-10.webp";
 import ProgressBar from "@/components/ui/ProgressBar";
 import InteractiveHotspots from "./InteractiveHotspots";
 import PrimaryButton from "@/components/ui/PrimaryButton";
@@ -64,14 +74,16 @@ const faqs = [
 ];
 
 const galleryItems = [
-  { img: taurusArtwork, label: "☀️ Taurus Sun • 🌙 Scorpio Moon" },
-  { img: moonSurface, label: "" },
-  { img: capricornGallery, label: "☀️ Capricorn Sun • 🌙 Cancer Moon" },
-  { img: earthSpace, label: "" },
-  { img: taurusExample, label: "☀️ Pisces Sun • 🌙 Aries Moon" },
-  { img: virgoArtwork, label: "☀️ Virgo Sun • 🌙 Pisces Moon" },
-  { img: saturnPlanet, label: "" },
-  { img: libraWall, label: "☀️ Libra Sun • 🌙 Aquarius Moon" },
+  { img: customerDisplay1, label: "Colorful eye artwork on wall" },
+  { img: customerDisplay2, label: "Cosmic machine artwork in living room" },
+  { img: customerDisplay3, label: "Meditating figure artwork" },
+  { img: customerDisplay4, label: "Elephant cosmic journey artwork" },
+  { img: customerDisplay5, label: "Colorful fish artwork" },
+  { img: customerDisplay6, label: "Piano player cosmic artwork" },
+  { img: customerDisplay7, label: "Face with sunglasses artwork" },
+  { img: customerDisplay8, label: "Cosmic forest landscape artwork" },
+  { img: customerDisplay9, label: "Mountain meditation artwork" },
+  { img: customerDisplay10, label: "Astronaut artwork on brick wall" },
 ];
 
 /* ─── Component ─── */
@@ -379,7 +391,7 @@ export default function LandingPage() {
           </h2>
 
           {/* Desktop: 4-col 2-row grid. Mobile: 2-row horizontal scroll */}
-          <div className="hidden md:grid md:grid-cols-4 gap-[15px] max-w-[1140px] mx-auto">
+          <div className="hidden md:grid md:grid-cols-5 gap-[15px] max-w-[1140px] mx-auto">
             {galleryItems.map((item, i) => (
               <div key={i} className="overflow-hidden rounded-[2px]">
                 <img
