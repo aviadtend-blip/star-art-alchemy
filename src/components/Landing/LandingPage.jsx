@@ -10,7 +10,7 @@ import danielChart from "@/assets/gallery/daniel-chart.webp";
 import capricornWall from "@/assets/gallery/capricorn-wall.jpg";
 import mariaChart from "@/assets/gallery/maria-chart.webp";
 import taurusArtwork from "@/assets/gallery/taurus-artwork.jpg";
-import womanHolding from "@/assets/gallery/woman-holding.jpg";
+import womanHolding from "@/assets/gallery/woman-holding.webp";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
 import saturnPlanet from "@/assets/gallery/saturn-planet.jpg";
 import canvasDetail from "@/assets/gallery/canvas-detail.jpg";
