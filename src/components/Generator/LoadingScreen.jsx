@@ -345,13 +345,12 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
                 <div
                   className="rounded-[2px] flex items-center justify-center p-2 w-full"
                   style={{
-                    backgroundColor: '#f2f1ef',
                     opacity: visibleSteps >= 5 ? 1 : 0,
                     transform: visibleSteps >= 5 ? 'translateY(0)' : 'translateY(20px)',
                     transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
                   }}
                 >
-                  <p className="text-body-sm font-body text-surface-foreground opacity-70 text-center">
+                  <p className="text-body font-body text-surface-muted opacity-70 text-center">
                     Your dominant elements: {dominantElements.join(' & ')} → Expect{' '}
                     {dominantElements.map(e => ELEMENT_DESCRIPTIONS[e]).filter(Boolean).join(', ')}
                   </p>
@@ -509,7 +508,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
 
       {/* Floating progress bar */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-50 transition-all duration-300"
+        className="fixed bottom-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out"
         style={{
           transform: showFloating ? 'translateY(0)' : 'translateY(100%)',
           opacity: showFloating ? 1 : 0,
