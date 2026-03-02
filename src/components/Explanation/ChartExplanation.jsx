@@ -281,6 +281,7 @@ export function ChartExplanation({
   const rightContentRef = useRef(null);
   const rightInnerRef = useRef(null);
   const [rightPadding, setRightPadding] = useState(0);
+  const [artworkTopOffset, setArtworkTopOffset] = useState(0);
 
   const staticPositions = getStaticPositions(chartData);
 
@@ -313,6 +314,12 @@ export function ChartExplanation({
       const contentH = innerEl.offsetHeight;
       const diff = Math.max(0, artworkH - contentH);
       setRightPadding(diff);
+      // Compute artwork's top offset within its vertically-centered sticky container
+      const containerH = window.innerHeight - 116; // sticky container height
+      const toggleH = 52; // approximate hotspot toggle height + margin
+      const totalArtworkH = artworkH + toggleH;
+      const topOffset = Math.max(0, (containerH - totalArtworkH) / 2);
+      setArtworkTopOffset(topOffset);
     };
     // Wait for images to load before measuring
     const img = artworkEl.querySelector('img');
@@ -505,8 +512,8 @@ export function ChartExplanation({
             </button>
           </div>
 
-          {/* Right: content column */}
-          <div className="flex-1 min-w-0" ref={rightContentRef}>
+          {/* Right: content column — aligned to artwork top */}
+          <div className="flex-1 min-w-0" ref={rightContentRef} style={{ paddingTop: artworkTopOffset }}>
             <div ref={rightInnerRef} className="flex flex-col gap-10">
 
               {/* Explanation cards — vertical with right border */}
