@@ -30,6 +30,7 @@ const ELEMENT_DESCRIPTIONS = {
 export default function LoadingScreen({ chartData, selectedStyle, generationProgress }) {
   const [factIndex, setFactIndex] = useState(0);
   const [headlineIndex, setHeadlineIndex] = useState(0);
+  const [visibleSteps, setVisibleSteps] = useState(0); // 0=none, 1=sun, 2=moon, 3=rising, 4=elements, 5=dominant
 
   const sunSign = chartData?.sun?.sign || 'your';
 
@@ -54,6 +55,15 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
     }, 3000);
     return () => clearInterval(interval);
   }, [HEADLINES.length]);
+
+  // Sequential reveal timers
+  useEffect(() => {
+    const delays = [500, 1500, 2500, 3500, 4500];
+    const timers = delays.map((delay, i) =>
+      setTimeout(() => setVisibleSteps(i + 1), delay)
+    );
+    return () => timers.forEach(clearTimeout);
+  }, []);
 
   const elements = chartData?.element_balance || {};
   const sortedElements = Object.entries(elements).sort(([, a], [, b]) => b - a);
@@ -102,14 +112,20 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
             {/* Big Three — stacked cards */}
             <div className="space-y-3">
               {[
-                { icon: '☀️', label: `Sun in ${chartData.sun?.sign}`, sub: `House ${chartData.sun?.house}` },
-                { icon: '🌙', label: `Moon in ${chartData.moon?.sign}`, sub: `House ${chartData.moon?.house}` },
-                { icon: '⬆️', label: `${chartData.rising} Rising`, sub: 'Your Ascendant' },
+                { icon: '☀️', label: `Sun in ${chartData.sun?.sign}`, sub: `House ${chartData.sun?.house}`, step: 1 },
+                { icon: '🌙', label: `Moon in ${chartData.moon?.sign}`, sub: `House ${chartData.moon?.house}`, step: 2 },
+                { icon: '⬆️', label: `${chartData.rising} Rising`, sub: 'Your Ascendant', step: 3 },
               ].map((item, i) => (
                 <div
                   key={i}
                   className="flex flex-col items-center py-5 px-4"
-                  style={{ backgroundColor: '#F9F5F0', borderRadius: '2px' }}
+                  style={{
+                    backgroundColor: '#F9F5F0',
+                    borderRadius: '2px',
+                    opacity: visibleSteps >= item.step ? 1 : 0,
+                    transform: visibleSteps >= item.step ? 'translateY(0)' : 'translateY(20px)',
+                    transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+                  }}
                 >
                   <span className="text-2xl mb-1">{item.icon}</span>
                   <span className="text-a5 text-surface-foreground font-display">{item.label}</span>
@@ -119,7 +135,14 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
             </div>
 
             {/* Element Balance — 2×2 grid */}
-            <div className="grid grid-cols-2 gap-3">
+            <div
+              className="grid grid-cols-2 gap-3"
+              style={{
+                opacity: visibleSteps >= 4 ? 1 : 0,
+                transform: visibleSteps >= 4 ? 'translateY(0)' : 'translateY(20px)',
+                transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+              }}
+            >
               {['Fire', 'Water', 'Earth', 'Air'].map((key) => (
                 <div
                   key={key}
@@ -138,7 +161,13 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
             {dominantElements.length > 0 && (
               <div
                 className="py-4 px-5 text-center"
-                style={{ backgroundColor: '#F0F0F0', borderRadius: '2px' }}
+                style={{
+                  backgroundColor: '#F0F0F0',
+                  borderRadius: '2px',
+                  opacity: visibleSteps >= 5 ? 1 : 0,
+                  transform: visibleSteps >= 5 ? 'translateY(0)' : 'translateY(20px)',
+                  transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+                }}
               >
                 <p className="text-body-sm font-body text-surface-foreground">
                   Your dominant elements: {dominantElements.join(' & ')} → Expect{' '}
