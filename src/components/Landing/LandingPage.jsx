@@ -6,6 +6,7 @@ import heroMobile from "@/assets/hero-mobile.webp";
 import heroMobileTall from "@/assets/hero-mobile-tall.jpg";
 import heroDesktop from "@/assets/hero-desktop.webp";
 import emmaChart from "@/assets/gallery/emma-chart.webp";
+import danielChart from "@/assets/gallery/daniel-chart.webp";
 import capricornWall from "@/assets/gallery/capricorn-wall.jpg";
 import taurusArtwork from "@/assets/gallery/taurus-artwork.jpg";
 import womanHolding from "@/assets/gallery/woman-holding.jpg";
@@ -224,10 +225,16 @@ export default function LandingPage() {
                 ],
               },
               {
-                img: capricornWall, name: "Simone", signs: "Capricorn Sun, Cancer Moon",
+                img: danielChart, name: "Daniel", signs: "Capricorn Sun, Scorpio Moon",
                 explanations: [
-                  { icon: "☀️", title: "Capricorn Sun · Ambition", description: "The angular geometric structures represent her Capricorn sun—discipline, structure, and the drive to build something lasting." },
-                  { icon: "🌙", title: "Cancer Moon · Nurture", description: "Soft lunar tones weave through the composition, reflecting her deeply nurturing emotional core." },
+                  { icon: "☀️", title: "Capricorn Sun · Endurance", description: "The monumental stone face carved from angular, weathered rock embodies his Capricorn sun—built to last, shaped by time, and carrying a quiet authority that doesn't need to announce itself." },
+                  { icon: "🌙", title: "Scorpio Moon · Intensity", description: "The piercing blue eye gazing out from beneath layers of stone reveals his Scorpio moon—still waters that run dangerously deep, with an emotional intensity he lets few people see." },
+                  { icon: "⬆️", title: "Aquarius Rising · Fracture", description: "The geometric, fragmented construction of the face reflects his Aquarius ascendant—he presents to the world as someone who thinks differently, unconventional in structure, impossible to categorize." },
+                  { icon: "🔴", title: "Mars in Leo · Color", description: "The vivid reds and golds exploding across the right side channel his Mars in Leo—when he acts, it's bold, dramatic, and impossible to ignore." },
+                  { icon: "💧", title: "Venus in Pisces · Flow", description: "The rushing stream at the base softens all that stone, mirroring his Venus in Pisces—beneath the composed exterior lives a romantic tenderness that moves like water, finding its way through every crack." },
+                  { icon: "🌲", title: "Saturn in Virgo · Detail", description: "Every precise fold and facet of the sculpted face speaks to his Saturn in Virgo—a perfectionist's discipline, the patience to refine something until every angle is exactly right." },
+                  { icon: "🔺", title: "Pluto in Sagittarius · Transformation", description: "The triangle framing the entire composition points upward like an arrow, echoing his Pluto in Sagittarius—a life defined by profound transformation through seeking truth and pushing past known horizons." },
+                  { icon: "✨", title: "Mercury in Capricorn · Structure", description: "The trees rooted at the very crown of his mind reflect Mercury in Capricorn—thoughts that grow slowly, deliberately, always reaching higher from a foundation of logic and lived experience." },
                 ],
               },
               {
