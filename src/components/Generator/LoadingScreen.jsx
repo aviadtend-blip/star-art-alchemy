@@ -4,6 +4,7 @@ import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import artistGif from '@/assets/artist-painting.gif';
+import FloatingProgressBar from '@/components/Generator/FloatingProgressBar';
 
 const FUN_FACTS = [
   "Fun fact: Your chart has never been created as artwork before today.",
@@ -95,6 +96,8 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
   const [visibleHints, setVisibleHints] = useState(0);
   const [tickerIndex, setTickerIndex] = useState(0);
   const [tickerFading, setTickerFading] = useState(false);
+  const [showFloating, setShowFloating] = useState(false);
+  const progressBarRef = useRef(null);
 
   const [tickerMessages] = useState(() => {
     const names = ["Sarah", "Emily", "Jessica", "Maria", "Rachel", "Lauren", "Ashley", "Amanda", "Stephanie", "Nicole"];
@@ -195,6 +198,17 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
     return () => clearInterval(interval);
   }, []);
 
+  // Show floating bar when main progress bar scrolls out of view
+  useEffect(() => {
+    if (!progressBarRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowFloating(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(progressBarRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   // Handle completion: jump to 100%, wait, then navigate
   useEffect(() => {
     if (!isComplete || hasTriggeredComplete.current) return;
@@ -236,7 +250,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
         </div>
 
         {/* Progress Bar (linear) */}
-        <div className="flex flex-col gap-2 items-center mt-[27px]">
+        <div ref={progressBarRef} className="flex flex-col gap-2 items-center mt-[27px]">
           <div className="w-[301px] h-[6px] bg-[#e5e7eb] rounded-[15px] overflow-hidden">
             <div
               className="h-full rounded-[15px] transition-all duration-500"
@@ -492,7 +506,20 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
         </div>
       </div>
 
+      {/* Floating progress bar */}
+      <div
+        className="fixed bottom-0 left-0 right-0 z-50 transition-all duration-300"
+        style={{
+          transform: showFloating ? 'translateY(0)' : 'translateY(100%)',
+          opacity: showFloating ? 1 : 0,
+        }}
+      >
+        <FloatingProgressBar
+          progress={progress}
+          statusText={tickerMessages[tickerIndex]}
+        />
+      </div>
+
       <Footer />
-    </div>
   );
 }
