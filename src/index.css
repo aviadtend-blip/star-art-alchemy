@@ -129,6 +129,13 @@
   .font-body {
     font-family: var(--font-body);
   }
+  .text-a1-special {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 38px;
+    letter-spacing: -0.96px;
+  }
   .text-a1 {
     font-family: var(--font-display);
     font-weight: 400;

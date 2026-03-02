@@ -466,7 +466,7 @@ export function ChartExplanation({
             <div ref={rightInnerRef} className="flex flex-col gap-10">
               {/* Title + Subtitle */}
               <div className="flex flex-col gap-5">
-                <h1 className="text-a1 text-white font-display">
+                <h1 className="text-a1-special text-white">
                   Meet Your Cosmic Masterpiece
                 </h1>
                 <p className="text-body font-body" style={{ color: '#c7c7c7', lineHeight: '1.6' }}>
@@ -593,7 +593,7 @@ export function ChartExplanation({
         >
           {/* Hero heading */}
           <div className="text-center px-6 pt-12 pb-8 flex flex-col items-center gap-6">
-            <h1 className="text-a1 font-display text-white" style={{ maxWidth: 264 }}>
+            <h1 className="text-a1-special text-white" style={{ maxWidth: 264 }}>
               Meet Your Cosmic{'\n'}Masterpiece
             </h1>
             <p className="text-body font-body max-w-[264px]" style={{ color: '#c7c7c7', lineHeight: '1.5' }}>
