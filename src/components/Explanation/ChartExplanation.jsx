@@ -630,12 +630,12 @@ export function ChartExplanation({
               Meet Your Cosmic{'\n'}Masterpiece
             </h1>
             {/* Vertical separator line */}
-            <div style={{ width: 1, height: 50, backgroundColor: '#3f3f3f', marginTop: 32, marginBottom: 32 }} />
+            <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 32 }} />
             <p className="text-body-big max-w-[264px]" style={{ color: '#c7c7c7' }}>
               {subjectExplanation}
             </p>
             {/* Vertical separator line */}
-            <div style={{ width: 1, height: 50, backgroundColor: '#3f3f3f', marginTop: 32, marginBottom: 32 }} />
+            <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 32 }} />
           </div>
 
           <div className="px-5 max-w-md mx-auto flex flex-col items-center">
