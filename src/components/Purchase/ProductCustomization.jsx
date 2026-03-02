@@ -9,6 +9,7 @@ import useCompositedMockups, { useBackgroundPreload } from '@/hooks/useComposite
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import canvasDetail from '@/assets/gallery/canvas-detail.jpg';
 import womanHolding from '@/assets/gallery/woman-holding.jpg';
+import ReviewsList from '@/components/ui/ReviewsList';
 
 // 12x18 mockups
 import mockup12x18_1 from '@/assets/mockups/12x18/mockup-1.webp';
@@ -489,6 +490,8 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
             </div>
           </div>
         </div>
+        {/* Reviews — light theme */}
+        <ReviewsList theme="light" gap={5} py={5} className="px-4 pb-16" />
       </div>
 
       {/* Desktop layout — two columns, left sticky */}
@@ -534,6 +537,9 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
                   </button>
                 </div>
               </div>
+
+              {/* Reviews — light theme */}
+              <ReviewsList theme="light" gap={6} py={6} />
             </div>
           </div>
         </div>
