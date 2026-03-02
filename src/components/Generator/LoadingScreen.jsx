@@ -238,7 +238,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
             }}
           />
         </div>
-        <p className="text-body-sm font-body text-surface-muted mb-10">
+        <p className="text-body font-body text-surface-muted mb-10">
           {Math.round(progress)}% complete
         </p>
 
@@ -326,7 +326,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
                   transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
                 }}
               >
-                <p className="text-body-sm font-body text-surface-foreground">
+                <p className="text-body font-body text-surface-foreground">
                   Your dominant elements: {dominantElements.join(' & ')} → Expect{' '}
                   {dominantElements.map(e => ELEMENT_DESCRIPTIONS[e]).filter(Boolean).join(', ')}
                 </p>
@@ -349,7 +349,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
               <p className="text-a5 text-surface-foreground font-display mb-1">
                 Only {rarityPct}% of people share your Sun‑Moon‑Rising combination
               </p>
-              <p className="text-body-sm font-body text-surface-muted">
+              <p className="text-body font-body text-surface-muted">
                 Out of 1,728 possible combinations, yours is truly one of a kind
               </p>
             </div>
@@ -461,7 +461,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
           style={{ backgroundColor: '#DAEEFF', borderRadius: '2px' }}
         >
           <p
-            className="text-body-sm font-body"
+            className="text-body font-body"
             style={{
               color: '#333333',
               opacity: factFading ? 0 : 1,
@@ -479,10 +479,8 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
         style={{ borderTop: '1px solid #EBEBEB', backgroundColor: '#FAFAFA' }}
       >
         <p
-          className="font-body"
+          className="text-body font-body text-surface-muted"
           style={{
-            fontSize: '12px',
-            color: '#9CA3AF',
             opacity: tickerFading ? 0 : 1,
             transition: 'opacity 0.3s ease',
           }}
