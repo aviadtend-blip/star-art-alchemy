@@ -610,25 +610,49 @@ export function ChartExplanation({
               style={{ padding: '10px 21px' }}
             >
               <span
-                className="relative flex-shrink-0 transition-colors"
+                className="relative flex-shrink-0 flex items-center transition-colors overflow-hidden"
                 style={{
                   width: 64,
                   height: 28,
                   borderRadius: 100,
                   padding: 2,
-                  backgroundColor: showHotspots ? '#FFBF00' : '#3f3f3f',
+                  backgroundColor: showHotspots ? '#e3e3e3' : '#000000',
                 }}
               >
+                {/* "|" tick — left side, visible when ON */}
+                <span className="absolute left-0 w-[23px] flex items-center justify-center h-full">
+                  <span
+                    className="transition-opacity duration-200"
+                    style={{
+                      width: 1,
+                      height: 10,
+                      backgroundColor: '#191919',
+                      opacity: showHotspots ? 1 : 0,
+                    }}
+                  />
+                </span>
+                {/* "○" circle — right side, visible when OFF */}
+                <span className="absolute right-0 w-[21px] flex items-center justify-center h-full">
+                  <svg
+                    width="21"
+                    height="10"
+                    viewBox="0 0 21 10"
+                    className="transition-opacity duration-200"
+                    style={{ opacity: showHotspots ? 0 : 1 }}
+                  >
+                    <circle cx="10.5" cy="5" r="4" fill="none" stroke="#b3b3b3" strokeWidth="1.5" />
+                  </svg>
+                </span>
+                {/* Knob */}
                 <span
-                  className="absolute transition-all"
+                  className="absolute transition-all duration-200"
                   style={{
-                    width: 24,
+                    width: 39,
                     height: 24,
                     top: 2,
-                    left: showHotspots ? 38 : 2,
-                    borderRadius: 12,
-                    backgroundColor: showHotspots ? '#fff' : '#191919',
-                    transition: 'left 0.2s ease',
+                    left: showHotspots ? 23 : 2,
+                    borderRadius: 100,
+                    backgroundColor: showHotspots ? '#191919' : '#b3b3b3',
                   }}
                 />
               </span>
