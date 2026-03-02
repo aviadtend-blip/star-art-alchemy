@@ -427,7 +427,7 @@ export function ChartExplanation({
                 className="w-full"
                 style={{ borderRadius: '2px' }}
               />
-              {hotspots.map((h) => {
+              {showHotspots && hotspots.map((h) => {
                 const isActive = activeHotspot === h.id;
                 return (
                   <button
@@ -459,6 +459,39 @@ export function ChartExplanation({
                 );
               })}
             </div>
+            {/* Desktop hotspot toggle — 24px below artwork */}
+            <button
+              onClick={() => setShowHotspots((p) => !p)}
+              className="flex items-center gap-2.5 mt-6"
+            >
+              <span
+                className="relative flex-shrink-0 flex items-center overflow-hidden"
+                style={{
+                  width: 64,
+                  height: 28,
+                  borderRadius: 100,
+                  padding: 2,
+                  backgroundColor: showHotspots ? '#e3e3e3' : '#000000',
+                }}
+              >
+                <span className="absolute left-0 w-[23px] flex items-center justify-center h-full">
+                  <span
+                    className="transition-opacity duration-200"
+                    style={{ width: 1, height: 10, backgroundColor: '#191919', opacity: showHotspots ? 1 : 0 }}
+                  />
+                </span>
+                <span className="absolute right-0 w-[21px] flex items-center justify-center h-full">
+                  <svg width="21" height="10" viewBox="0 0 21 10" className="transition-opacity duration-200" style={{ opacity: showHotspots ? 0 : 1 }}>
+                    <circle cx="10.5" cy="5" r="4" fill="none" stroke="#b3b3b3" strokeWidth="1.5" />
+                  </svg>
+                </span>
+                <span
+                  className="absolute transition-all duration-200"
+                  style={{ width: 39, height: 24, top: 2, left: showHotspots ? 23 : 2, borderRadius: 100, backgroundColor: showHotspots ? '#191919' : '#b3b3b3' }}
+                />
+              </span>
+              <span className="text-a4 text-white">Hotspot markers</span>
+            </button>
           </div>
 
           {/* Right: content column */}
