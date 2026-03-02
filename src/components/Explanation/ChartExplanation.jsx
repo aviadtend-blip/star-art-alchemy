@@ -678,6 +678,8 @@ export function ChartExplanation({
               })}
             </div>
 
+            <div style={{ height: 24 }} />
+
             {/* Horizontal scroll explanation cards — dark */}
             <div
               ref={scrollContainerRef}
