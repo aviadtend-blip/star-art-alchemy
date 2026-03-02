@@ -581,6 +581,7 @@ export function ChartExplanation({
             </div>
           </div>
         </div>
+        <div className="hidden md:block" style={{ height: 60 }} />
 
 
 
