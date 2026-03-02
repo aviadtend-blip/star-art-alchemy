@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import StepProgressBar from '@/components/ui/StepProgressBar';
+import artistGif from '@/assets/artist-painting.gif';
 
 const FUN_FACTS = [
   "Fun fact: Your chart has never been created as artwork before today.",
@@ -263,7 +264,12 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
         {/* Birth Chart Summary */}
         {chartData && (
           <div className="flex flex-col items-center w-full px-5">
-            <h2 className="text-a3 text-surface-foreground font-display text-center mt-[27px]">
+            <img
+              src={artistGif}
+              alt="Artist painting"
+              className="w-[120px] h-auto rounded-lg mt-[27px]"
+            />
+            <h2 className="text-a3 text-surface-foreground font-display text-center mt-4">
               Your Birth Chart Summary
             </h2>
 
