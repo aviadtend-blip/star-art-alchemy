@@ -354,3 +354,13 @@
   from { transform: translateX(-100%); }
   to { transform: translateX(0); }
 }
+
+/* Hotspot pulse ring */
+@keyframes hotspot-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 191, 0, 0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(255, 191, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 191, 0, 0); }
+}
+.hotspot-pulse {
+  animation: hotspot-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
