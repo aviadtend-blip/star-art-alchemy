@@ -425,7 +425,7 @@ export function ChartExplanation({
         </div>
 
         {/* ===== DESKTOP: Title + intro above two-column layout ===== */}
-        <div className="hidden md:flex flex-col items-center text-center pt-16 pb-0 px-8" style={{ maxWidth: 500, margin: '0 auto' }}>
+        <div className="hidden md:flex flex-col items-center text-center pb-0 px-8" style={{ maxWidth: 500, margin: '0 auto', paddingTop: 100 }}>
           <h1 className="text-a1-special text-white">
             Meet Your Cosmic Masterpiece
           </h1>
