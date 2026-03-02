@@ -69,7 +69,7 @@ const getMockupSrcs = (sizeId) => (MOCKUPS_BY_NUMBER[sizeId] || []).map(m => m.s
 const getMockupNums = (sizeId) => (MOCKUPS_BY_NUMBER[sizeId] || []).map(m => m.num);
 
 export function ProductCustomization({ chartData, artworkImage, onCheckout, onBack, formData, onEditBirthData }) {
-  const [selectedSize, setSelectedSize] = useState('16x24');
+  const [selectedSize, setSelectedSize] = useState('12x18');
   const [activeThumb, setActiveThumb] = useState(0);
   const sizeCarouselRef = useRef(null);
   const isFirstSizeScroll = useRef(true);
@@ -316,11 +316,11 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   const SizeSelector = ({ vertical = false }) => (
     <div>
-      <h2 className="text-a4" style={{ color: '#333333' }}>
+      <h2 className="text-a2" style={{ color: '#333333', marginBottom: 16 }}>
         Choose Your Size
       </h2>
       {vertical ? (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col" style={{ gap: 10 }}>
           {SIZE_OPTIONS.map((size) => (
             <SizeCard key={size.id} size={size} vertical />
           ))}
@@ -328,7 +328,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
       ) : (
         <div className="-mx-4" style={{ overflow: 'clip visible' }}>
           <div ref={sizeCarouselRef} className="overflow-x-auto scrollbar-hide" style={{ overflowY: 'visible', overflow: 'auto visible' }}>
-            <div className="flex w-max gap-3 pb-2 pt-4 pl-4 pr-4">
+            <div className="flex w-max pb-2 pt-4 pl-4 pr-4" style={{ gap: 10 }}>
               {SIZE_OPTIONS.map((size) => (
                 <SizeCard key={size.id} size={size} />
               ))}
@@ -437,9 +437,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
     <div className="min-h-screen relative" style={{ backgroundColor: '#FFFFFF' }}>
       <div>
         <Header variant="dark" />
-        <div className="pt-14">
-          <StepProgressBar currentStep={3} />
-        </div>
+        <StepProgressBar currentStep={3} />
       </div>
       
 
