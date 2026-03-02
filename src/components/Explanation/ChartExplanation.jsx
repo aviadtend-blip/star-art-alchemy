@@ -120,7 +120,7 @@ function RotatingBanner() {
     return () => clearInterval(interval);
   }, [messages.length]);
   return (
-    <div className="rounded-sm flex items-center justify-center px-3 py-2" style={{ backgroundColor: '#2e2e2e' }}>
+    <div className="rounded-sm flex items-center justify-center px-3 py-2" style={{ backgroundColor: '#30434B' }}>
       <p className="text-body-sm font-body text-white text-center">{messages[index]}</p>
     </div>
   );
