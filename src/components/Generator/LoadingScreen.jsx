@@ -91,6 +91,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
   const hasTriggeredComplete = useRef(false);
   const [rarityPct] = useState(() => (Math.random() * 0.03 + 0.04).toFixed(2));
   const [visibleProfileLines, setVisibleProfileLines] = useState(0);
+  const [visibleHints, setVisibleHints] = useState(0);
 
   const sunSign = chartData?.sun?.sign || 'your';
 
@@ -134,6 +135,15 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
     const profileDelays = [7500, 8000, 13000, 18000, 23000]; // header at 7.5s, lines at 8s, 13s, 18s, 23s
     const timers = profileDelays.map((delay, i) =>
       setTimeout(() => setVisibleProfileLines(i + 1), delay)
+    );
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  // "What to Look For" reveal timers
+  useEffect(() => {
+    const hintDelays = [26000, 29000, 32000, 35000]; // header at 26s, hints at 29s, 32s, 35s
+    const timers = hintDelays.map((delay, i) =>
+      setTimeout(() => setVisibleHints(i + 1), delay)
     );
     return () => timers.forEach(clearTimeout);
   }, []);
@@ -357,6 +367,59 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
                     {line}
                   </p>
                 ))}
+            </div>
+
+            {/* What to Look For */}
+            <div
+              className="w-full mt-6 py-5 px-5 space-y-4"
+              style={{
+                border: '1.5px dashed rgba(254, 103, 129, 0.35)',
+                borderRadius: '4px',
+                backgroundColor: '#FDFBF9',
+              }}
+            >
+              <h3
+                className="text-a4 text-surface-foreground font-display text-center"
+                style={{
+                  opacity: visibleHints >= 1 ? 1 : 0,
+                  transform: visibleHints >= 1 ? 'translateY(0)' : 'translateY(12px)',
+                  transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+                }}
+              >
+                🔍 When your artwork appears, look for...
+              </h3>
+
+              {(() => {
+                const ELEMENT_HINTS = {
+                  Fire: "Bold, warm tones — reds, oranges, and golds reflecting your fire energy",
+                  Earth: "Rich, grounded textures — deep greens, browns, and amber from your earth placements",
+                  Air: "Light, layered compositions — cool blues and silvers echoing your air-dominant chart",
+                  Water: "Fluid, flowing forms — deep blues and teals channeling your water energy",
+                };
+                const planetKeys = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
+                const planetCount = chartData ? planetKeys.filter(k => chartData[k]?.sign).length : 10;
+                const elementHint = ELEMENT_HINTS[dominantElements[0]] || ELEMENT_HINTS.Fire;
+
+                const hints = [
+                  `→ ${elementHint}`,
+                  `→ Layered details representing your ${planetCount} planetary placements — each one means something`,
+                  `→ A composition that's never existed before and never will again — this is yours alone`,
+                ];
+
+                return hints.map((hint, i) => (
+                  <p
+                    key={i}
+                    className="text-body font-body text-surface-foreground text-center leading-relaxed"
+                    style={{
+                      opacity: visibleHints >= i + 2 ? 1 : 0,
+                      transform: visibleHints >= i + 2 ? 'translateY(0)' : 'translateY(12px)',
+                      transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
+                    }}
+                  >
+                    {hint}
+                  </p>
+                ));
+              })()}
             </div>
           </div>
         )}
