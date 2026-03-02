@@ -612,19 +612,22 @@ export function ChartExplanation({
               <span
                 className="relative flex-shrink-0 transition-colors"
                 style={{
-                  width: 42,
-                  height: 24,
-                  borderRadius: 12,
+                  width: 64,
+                  height: 28,
+                  borderRadius: 100,
+                  padding: 2,
                   backgroundColor: showHotspots ? '#FFBF00' : '#3f3f3f',
                 }}
               >
                 <span
-                  className="absolute rounded-full bg-white transition-all"
+                  className="absolute transition-all"
                   style={{
-                    width: 18,
-                    height: 18,
-                    top: 3,
-                    left: showHotspots ? 21 : 3,
+                    width: 24,
+                    height: 24,
+                    top: 2,
+                    left: showHotspots ? 38 : 2,
+                    borderRadius: 12,
+                    backgroundColor: showHotspots ? '#fff' : '#191919',
                     transition: 'left 0.2s ease',
                   }}
                 />
