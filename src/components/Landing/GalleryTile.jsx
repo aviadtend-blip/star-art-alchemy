@@ -35,7 +35,7 @@ export default function GalleryTile({ image, name, signs, explanations = [] }) {
         {/* Hover / tap overlay */}
         <div
           className={`
-            absolute inset-0 flex flex-col items-start p-5 gap-5 transition-opacity duration-300
+            absolute inset-0 flex flex-col items-start p-5 gap-4 transition-opacity duration-300 overflow-y-auto
             md:opacity-0 md:group-hover:opacity-100
             ${tapped ? 'opacity-100' : 'opacity-0 md:opacity-0'}
           `}
