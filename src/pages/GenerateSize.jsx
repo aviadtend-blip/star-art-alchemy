@@ -11,9 +11,9 @@ export default function GenerateSize() {
     isCheckingOut,
   } = useGenerator();
 
-  useEffect(() => {
-    if (!chartData) navigate('/');
-  }, [chartData, navigate]);
+  // useEffect(() => {
+  //   if (!chartData) navigate('/');
+  // }, [chartData, navigate]);
 
   if (!chartData) return null;
 
