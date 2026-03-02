@@ -437,7 +437,7 @@ export function ChartExplanation({
                       const el = document.getElementById(`desktop-hotspot-${h.id}`);
                       el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }}
-                    className={`absolute flex items-center justify-center transition-all duration-300 cursor-pointer z-10 ${isActive ? 'hotspot-pulse' : ''}`}
+                    className={`absolute flex items-center justify-center transition-[width,height,background-color] duration-300 cursor-pointer z-10 ${isActive ? 'hotspot-pulse' : ''}`}
                     style={{
                       top: h.position.top,
                       left: h.position.left,
@@ -448,7 +448,6 @@ export function ChartExplanation({
                       padding: 2,
                       backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.5)',
                       border: '1px solid #6e5200',
-                      boxShadow: isActive ? undefined : 'none',
                     }}
                     aria-label={`Hotspot ${h.id}: ${h.title}`}
                   >
@@ -713,7 +712,7 @@ export function ChartExplanation({
                       setActiveHotspot(h.id);
                       scrollToCard(h.id);
                     }}
-                    className={`absolute flex items-center justify-center transition-all duration-300 cursor-pointer z-10 ${isActive ? 'hotspot-pulse' : ''}`}
+                    className={`absolute flex items-center justify-center transition-[width,height,background-color] duration-300 cursor-pointer z-10 ${isActive ? 'hotspot-pulse' : ''}`}
                     style={{
                       top: h.position.top,
                       left: h.position.left,
@@ -723,7 +722,6 @@ export function ChartExplanation({
                       borderRadius: 41,
                       backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 255, 255, 0.5)',
                       border: '1px solid #6e5200',
-                      boxShadow: isActive ? undefined : 'none',
                     }}
                     aria-label={`Hotspot ${h.id}: ${h.title}`}
                   >
