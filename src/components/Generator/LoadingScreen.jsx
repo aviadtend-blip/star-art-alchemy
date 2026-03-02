@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
+import StepProgressBar from '@/components/ui/StepProgressBar';
 
 const FUN_FACTS = [
   "Fun fact: Your chart has never been created as artwork before today.",
@@ -77,8 +78,7 @@ const ELEMENT_DESCRIPTIONS = {
 
 /**
  * Full-page loading screen shown between Step 2 and Step 3.
- * White background, header, progress bar, circular spinner,
- * stacked Big Three cards, 2×2 element grid, dominant callout, fun facts.
+ * White background, spinner, progress bar, birth chart summary, cosmic profile.
  */
 export default function LoadingScreen({ chartData, selectedStyle, generationProgress, isComplete, onNavigateToPreview }) {
   const [factIndex, setFactIndex] = useState(0);
@@ -163,7 +163,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
 
   // Cosmic Profile reveal timers
   useEffect(() => {
-    const profileDelays = [7500, 8000, 13000, 18000, 23000]; // header at 7.5s, lines at 8s, 13s, 18s, 23s
+    const profileDelays = [7500, 8000, 13000, 18000, 23000];
     const timers = profileDelays.map((delay, i) =>
       setTimeout(() => setVisibleProfileLines(i + 1), delay)
     );
@@ -172,7 +172,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
 
   // "What to Look For" reveal timers
   useEffect(() => {
-    const hintDelays = [26000, 29000, 32000, 35000]; // header at 26s, hints at 29s, 32s, 35s
+    const hintDelays = [26000, 29000, 32000, 35000];
     const timers = hintDelays.map((delay, i) =>
       setTimeout(() => setVisibleHints(i + 1), delay)
     );
@@ -202,7 +202,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
     const t1 = setTimeout(() => setShowFinalizing(true), 500);
     const t2 = setTimeout(() => {
       onNavigateToPreview?.();
-    }, 2000); // 500ms pause + 1500ms "Finalizing" text
+    }, 2000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [isComplete, onNavigateToPreview]);
 
@@ -212,284 +212,280 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#FFFFFF' }}>
-      {/* Header */}
       <Header variant="dark" />
 
-
       {/* Main content */}
-      <div className="flex-1 flex flex-col items-center px-6 py-12 max-w-lg mx-auto w-full">
-        {/* Headline */}
-        <h2 className="text-a2 text-surface-foreground font-display text-center mb-2 transition-opacity duration-500">
-          {showFinalizing ? 'Finalizing your artwork...' : HEADLINES[headlineIndex]}
-        </h2>
-        <p className="text-body font-body text-surface-muted mb-6">
-          Typical generation time: 30-45 seconds
-        </p>
+      <div className="flex-1 flex flex-col items-center w-full">
 
-        {/* Progress bar */}
-        <div className="w-full mb-2" style={{ height: 6, backgroundColor: '#E5E7EB', borderRadius: 9999 }}>
-          <div
-            style={{
-              height: '100%',
-              width: `${progress}%`,
-              borderRadius: 9999,
-              background: 'linear-gradient(90deg, #FE6781, #E5507A)',
-              transition: 'width 0.3s ease',
-            }}
-          />
+        {/* Spinner */}
+        <div className="pt-[27px]">
+          <div className="relative w-10 h-10">
+            <svg className="w-10 h-10" viewBox="0 0 40 40" fill="none">
+              <circle cx="20" cy="20" r="17" stroke="#e5e7eb" strokeWidth="3" />
+            </svg>
+            <svg className="w-10 h-10 absolute inset-0 animate-spin" viewBox="0 0 40 40" fill="none" style={{ animationDuration: '1.2s' }}>
+              <path
+                d="M20 3a17 17 0 0 1 12 5"
+                stroke="#fe6781"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
         </div>
-        <p className="text-body font-body text-surface-muted mb-10">
-          {Math.round(progress)}% complete
-        </p>
 
-        {/* Circular spinner */}
-        <div className="relative w-16 h-16 mb-12">
-          {/* Track */}
-          <svg className="w-full h-full" viewBox="0 0 64 64">
-            <circle cx="32" cy="32" r="28" fill="none" stroke="#F5F5F5" strokeWidth="4" />
-          </svg>
-          {/* Animated arc */}
-          <svg className="w-full h-full absolute inset-0 animate-spin" viewBox="0 0 64 64" style={{ animationDuration: '1.2s' }}>
-            <circle
-              cx="32" cy="32" r="28" fill="none"
-              stroke="#FE6781" strokeWidth="4"
-              strokeLinecap="round"
-              strokeDasharray="44 132"
+        {/* Progress Bar (linear) */}
+        <div className="flex flex-col gap-2 items-center mt-[27px]">
+          <div className="w-[301px] h-[6px] bg-[#e5e7eb] rounded-[15px] overflow-hidden">
+            <div
+              className="h-full rounded-[15px] transition-all duration-500"
+              style={{
+                width: `${Math.min(progress, 100)}%`,
+                background: 'linear-gradient(90deg, #FE6781, #E5507A)',
+              }}
             />
-          </svg>
+          </div>
+          <p className="text-body font-body text-surface-muted text-center">
+            {Math.round(progress)}% complete
+          </p>
+        </div>
+
+        {/* Status Message */}
+        <div className="flex flex-col gap-2.5 items-center text-center w-[230px] pt-6">
+          <h1 className="text-a2 text-surface-foreground font-display text-center transition-opacity duration-500">
+            {showFinalizing ? 'Finalizing your artwork...' : HEADLINES[headlineIndex]}
+          </h1>
+          <p className="text-body font-body text-surface-muted">
+            Typical generation time: 30-45 seconds
+          </p>
         </div>
 
         {/* Birth Chart Summary */}
         {chartData && (
-          <div className="w-full space-y-3 mb-8">
-             <h3 className="text-a2 text-surface-foreground font-display text-center mb-4">
-               Your Birth Chart Summary
-             </h3>
+          <div className="flex flex-col items-center w-full px-5">
+            <h2 className="text-a3 text-surface-foreground font-display text-center mt-[27px]">
+              Your Birth Chart Summary
+            </h2>
 
-            {/* Big Three — stacked cards */}
-            <div className="space-y-3">
-              {[
-                { icon: '☀️', label: `Sun in ${chartData.sun?.sign}`, sub: `House ${chartData.sun?.house}`, step: 1 },
-                { icon: '🌙', label: `Moon in ${chartData.moon?.sign}`, sub: `House ${chartData.moon?.house}`, step: 2 },
-                { icon: '⬆️', label: `${chartData.rising} Rising`, sub: 'Your Ascendant', step: 3 },
-              ].map((item, i) => (
+            <div className="flex flex-col items-center mt-[27px] w-full max-w-[350px]">
+              {/* Big Three — horizontal row */}
+              <div
+                className="flex gap-[25px] items-center justify-center py-2.5 rounded-[2px] w-full"
+                style={{
+                  opacity: visibleSteps >= 1 ? 1 : 0,
+                  transform: visibleSteps >= 1 ? 'translateY(0)' : 'translateY(20px)',
+                  transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+                }}
+              >
+                {[
+                  { icon: '☀️', label: `Sun in ${chartData.sun?.sign}`, sub: `House ${chartData.sun?.house}` },
+                  { icon: '🌙', label: `Moon in ${chartData.moon?.sign}`, sub: `House ${chartData.moon?.house}` },
+                  { icon: '⬆️', label: `${chartData.rising} Rising`, sub: 'Your Ascendant' },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex flex-col items-center gap-px"
+                    style={{
+                      opacity: visibleSteps >= i + 1 ? 1 : 0,
+                      transform: visibleSteps >= i + 1 ? 'translateY(0)' : 'translateY(12px)',
+                      transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+                    }}
+                  >
+                    <span className="text-a5 text-surface-foreground font-display">{item.icon}</span>
+                    <span className="text-a5 text-surface-foreground font-display">{item.label}</span>
+                    <span className="text-body font-body text-surface-muted text-center">{item.sub}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Element Balance — single row of 4 */}
+              <div
+                className="flex items-start w-full"
+                style={{
+                  opacity: visibleSteps >= 4 ? 1 : 0,
+                  transform: visibleSteps >= 4 ? 'translateY(0)' : 'translateY(20px)',
+                  transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+                }}
+              >
+                {['Fire', 'Water', 'Earth', 'Air'].map((key) => (
+                  <div
+                    key={key}
+                    className="flex-1 flex flex-col items-center justify-center h-[80px] rounded-[2px]"
+                  >
+                    <span className="text-a5 text-surface-foreground font-display mb-3">{ELEMENT_ICONS[key]}</span>
+                    <span className="text-a5 text-surface-foreground font-display text-center">
+                      {key}: {elements[key] || 0}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Dominant elements banner */}
+              {dominantElements.length > 0 && (
                 <div
-                  key={i}
-                  className="flex flex-col items-center py-5 px-4"
+                  className="rounded-[2px] flex items-center justify-center p-2 w-full"
                   style={{
-                    backgroundColor: '#F9F5F0',
-                    borderRadius: '2px',
-                    opacity: visibleSteps >= item.step ? 1 : 0,
-                    transform: visibleSteps >= item.step ? 'translateY(0)' : 'translateY(20px)',
+                    backgroundColor: '#f2f1ef',
+                    opacity: visibleSteps >= 5 ? 1 : 0,
+                    transform: visibleSteps >= 5 ? 'translateY(0)' : 'translateY(20px)',
                     transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
                   }}
                 >
-                  <span className="text-2xl mb-1">{item.icon}</span>
-                  <span className="text-a5 text-surface-foreground font-display">{item.label}</span>
-                  <span className="text-body font-body text-surface-muted">{item.sub}</span>
+                  <p className="text-body-sm font-body text-surface-foreground opacity-70 text-center">
+                    Your dominant elements: {dominantElements.join(' & ')} → Expect{' '}
+                    {dominantElements.map(e => ELEMENT_DESCRIPTIONS[e]).filter(Boolean).join(', ')}
+                  </p>
                 </div>
-              ))}
-            </div>
+              )}
 
-            {/* Element Balance — 2×2 grid */}
-            <div
-              className="grid grid-cols-2 gap-3"
-              style={{
-                opacity: visibleSteps >= 4 ? 1 : 0,
-                transform: visibleSteps >= 4 ? 'translateY(0)' : 'translateY(20px)',
-                transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
-              }}
-            >
-              {['Fire', 'Water', 'Earth', 'Air'].map((key) => (
-                <div
-                  key={key}
-                  className="flex flex-col items-center py-4 px-3"
-                  style={{ backgroundColor: '#F9F5F0', borderRadius: '2px' }}
-                >
-                  <span className="text-xl mb-1">{ELEMENT_ICONS[key]}</span>
-                  <span className="text-a5 text-surface-foreground font-display">
-                    {key}: {elements[key] || 0}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Dominant Element Callout */}
-            {dominantElements.length > 0 && (
+              {/* Rarity highlight banner */}
               <div
-                className="py-4 px-5 text-center"
+                className="rounded-[2px] flex flex-col gap-2.5 items-center justify-center p-2 w-full mt-4"
                 style={{
-                  backgroundColor: '#F0F0F0',
-                  borderRadius: '2px',
-                  opacity: visibleSteps >= 5 ? 1 : 0,
-                  transform: visibleSteps >= 5 ? 'translateY(0)' : 'translateY(20px)',
+                  backgroundColor: '#daeeff',
+                  opacity: visibleSteps >= 6 ? 1 : 0,
+                  transform: visibleSteps >= 6 ? 'translateY(0)' : 'translateY(20px)',
                   transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
                 }}
               >
-                <p className="text-body font-body text-surface-foreground">
-                  Your dominant elements: {dominantElements.join(' & ')} → Expect{' '}
-                  {dominantElements.map(e => ELEMENT_DESCRIPTIONS[e]).filter(Boolean).join(', ')}
+                <p className="text-a4 text-surface-foreground font-display opacity-70 text-center w-full">
+                  Only {rarityPct}% of people share your Sun‑Moon‑Rising combination
+                </p>
+                <p className="text-body font-body text-surface-muted opacity-70 text-center w-full">
+                  Out of 1,728 possible combinations, yours is truly one of a kind
                 </p>
               </div>
-            )}
-
-            {/* Rarity card */}
-            <div
-              className="py-5 px-5 text-center"
-              style={{
-                background: 'linear-gradient(135deg, #FFF8F0, #FFF0F5)',
-                borderRadius: '2px',
-                border: '1px solid rgba(254, 103, 129, 0.25)',
-                opacity: visibleSteps >= 6 ? 1 : 0,
-                transform: visibleSteps >= 6 ? 'translateY(0)' : 'translateY(20px)',
-                transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
-              }}
-            >
-              <span className="text-2xl mb-1 block">✨</span>
-              <p className="text-a5 text-surface-foreground font-display mb-1">
-                Only {rarityPct}% of people share your Sun‑Moon‑Rising combination
-              </p>
-              <p className="text-body font-body text-surface-muted">
-                Out of 1,728 possible combinations, yours is truly one of a kind
-              </p>
             </div>
 
-            {/* Your Cosmic Profile */}
-            <div className="w-full space-y-4 mt-4">
-              {/* Section header */}
-              <h3
-                className="text-a3 text-surface-foreground font-display text-center"
-                style={{
-                  opacity: visibleProfileLines >= 1 ? 1 : 0,
-                  transform: visibleProfileLines >= 1 ? 'translateY(0)' : 'translateY(12px)',
-                  transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
-                }}
+            {/* Cosmic Profile + Look For */}
+            <div className="flex flex-col gap-[27px] items-center w-full max-w-[350px] mt-[27px]">
+              {/* Cosmic Profile */}
+              <div className="flex flex-col gap-4 items-start text-center w-full">
+                <h2
+                  className="text-a3 text-surface-foreground font-display w-full"
+                  style={{
+                    opacity: visibleProfileLines >= 1 ? 1 : 0,
+                    transform: visibleProfileLines >= 1 ? 'translateY(0)' : 'translateY(12px)',
+                    transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+                  }}
+                >
+                  Your Cosmic Profile
+                </h2>
+                <div className="text-body font-body text-surface-foreground opacity-70 w-full">
+                  {[
+                    chartData.sun?.sign && SUN_TRAITS[chartData.sun.sign]
+                      ? `Your ${chartData.sun.sign} Sun suggests ${SUN_TRAITS[chartData.sun.sign]}`
+                      : null,
+                    chartData.moon?.sign && MOON_TRAITS[chartData.moon.sign]
+                      ? `With a ${chartData.moon.sign} Moon, your inner world — ${MOON_TRAITS[chartData.moon.sign]}`
+                      : null,
+                    chartData.rising && RISING_TRAITS[chartData.rising]
+                      ? `A ${chartData.rising} Rising means others first see you as ${RISING_TRAITS[chartData.rising]}`
+                      : null,
+                    dominantElements[0] && ELEMENT_TRAITS[dominantElements[0]]
+                      ? `Your ${dominantElements[0]}-dominant chart gives everything ${ELEMENT_TRAITS[dominantElements[0]]}`
+                      : null,
+                  ]
+                    .filter(Boolean)
+                    .map((line, i) => (
+                      <p
+                        key={i}
+                        className={i < 3 ? 'mb-3' : ''}
+                        style={{
+                          opacity: visibleProfileLines >= i + 2 ? 1 : 0,
+                          transform: visibleProfileLines >= i + 2 ? 'translateY(0)' : 'translateY(12px)',
+                          transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
+                        }}
+                      >
+                        {line}
+                      </p>
+                    ))}
+                </div>
+              </div>
+
+              {/* Look For */}
+              <div className="flex flex-col gap-4 items-start text-center w-full">
+                <h2
+                  className="text-a3 text-surface-foreground font-display w-full"
+                  style={{
+                    opacity: visibleHints >= 1 ? 1 : 0,
+                    transform: visibleHints >= 1 ? 'translateY(0)' : 'translateY(12px)',
+                    transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+                  }}
+                >
+                  🔍 When your artwork appears, look for...
+                </h2>
+                <div className="text-body font-body text-surface-foreground opacity-70 w-full">
+                  {(() => {
+                    const ELEMENT_HINTS = {
+                      Fire: "Bold, warm tones — reds, oranges, and golds reflecting your fire energy",
+                      Earth: "Rich, grounded textures — deep greens, browns, and amber from your earth placements",
+                      Air: "Light, layered compositions — cool blues and silvers echoing your air-dominant chart",
+                      Water: "Fluid, flowing forms — deep blues and teals channeling your water energy",
+                    };
+                    const planetKeys = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
+                    const planetCount = chartData ? planetKeys.filter(k => chartData[k]?.sign).length : 10;
+                    const elementHint = ELEMENT_HINTS[dominantElements[0]] || ELEMENT_HINTS.Fire;
+
+                    const hints = [
+                      `→ ${elementHint}`,
+                      `→ Layered details representing your ${planetCount} planetary placements — each one means something`,
+                      `→ A composition that's never existed before and never will again — this is yours alone`,
+                    ];
+
+                    return hints.map((hint, i) => (
+                      <p
+                        key={i}
+                        className={i < hints.length - 1 ? 'mb-3' : ''}
+                        style={{
+                          opacity: visibleHints >= i + 2 ? 1 : 0,
+                          transform: visibleHints >= i + 2 ? 'translateY(0)' : 'translateY(12px)',
+                          transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
+                        }}
+                      >
+                        {hint}
+                      </p>
+                    ));
+                  })()}
+                </div>
+              </div>
+
+              {/* Data points banner */}
+              <div
+                className="rounded-[2px] flex items-center justify-center p-2 w-full"
+                style={{ backgroundColor: '#daeeff' }}
               >
-                ✨ Your Cosmic Profile
-              </h3>
-
-              {/* Personality lines */}
-              {[
-                chartData.sun?.sign && SUN_TRAITS[chartData.sun.sign]
-                  ? `Your ${chartData.sun.sign} Sun suggests ${SUN_TRAITS[chartData.sun.sign]}`
-                  : null,
-                chartData.moon?.sign && MOON_TRAITS[chartData.moon.sign]
-                  ? `With a ${chartData.moon.sign} Moon, your inner world — ${MOON_TRAITS[chartData.moon.sign]}`
-                  : null,
-                chartData.rising && RISING_TRAITS[chartData.rising]
-                  ? `A ${chartData.rising} Rising means others first see you as ${RISING_TRAITS[chartData.rising]}`
-                  : null,
-                dominantElements[0] && ELEMENT_TRAITS[dominantElements[0]]
-                  ? `Your ${dominantElements[0]}-dominant chart gives everything ${ELEMENT_TRAITS[dominantElements[0]]}`
-                  : null,
-              ]
-                .filter(Boolean)
-                .map((line, i) => (
-                  <p
-                    key={i}
-                    className="text-body font-body text-surface-foreground text-center leading-relaxed"
-                    style={{
-                      fontStyle: 'italic',
-                      opacity: visibleProfileLines >= i + 2 ? 1 : 0,
-                      transform: visibleProfileLines >= i + 2 ? 'translateY(0)' : 'translateY(12px)',
-                      transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
-                    }}
-                  >
-                    {line}
-                  </p>
-                ))}
-            </div>
-
-            {/* What to Look For */}
-            <div
-              className="w-full mt-6 py-5 px-5 space-y-4"
-              style={{
-                border: '1.5px dashed rgba(254, 103, 129, 0.35)',
-                borderRadius: '4px',
-                backgroundColor: '#FDFBF9',
-              }}
-            >
-              <h3
-                className="text-a4 text-surface-foreground font-display text-center"
-                style={{
-                  opacity: visibleHints >= 1 ? 1 : 0,
-                  transform: visibleHints >= 1 ? 'translateY(0)' : 'translateY(12px)',
-                  transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
-                }}
-              >
-                🔍 When your artwork appears, look for...
-              </h3>
-
-              {(() => {
-                const ELEMENT_HINTS = {
-                  Fire: "Bold, warm tones — reds, oranges, and golds reflecting your fire energy",
-                  Earth: "Rich, grounded textures — deep greens, browns, and amber from your earth placements",
-                  Air: "Light, layered compositions — cool blues and silvers echoing your air-dominant chart",
-                  Water: "Fluid, flowing forms — deep blues and teals channeling your water energy",
-                };
-                const planetKeys = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
-                const planetCount = chartData ? planetKeys.filter(k => chartData[k]?.sign).length : 10;
-                const elementHint = ELEMENT_HINTS[dominantElements[0]] || ELEMENT_HINTS.Fire;
-
-                const hints = [
-                  `→ ${elementHint}`,
-                  `→ Layered details representing your ${planetCount} planetary placements — each one means something`,
-                  `→ A composition that's never existed before and never will again — this is yours alone`,
-                ];
-
-                return hints.map((hint, i) => (
-                  <p
-                    key={i}
-                    className="text-body font-body text-surface-foreground text-center leading-relaxed"
-                    style={{
-                      opacity: visibleHints >= i + 2 ? 1 : 0,
-                      transform: visibleHints >= i + 2 ? 'translateY(0)' : 'translateY(12px)',
-                      transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
-                    }}
-                  >
-                    {hint}
-                  </p>
-                ));
-              })()}
+                <p
+                  className="text-body font-body text-surface-muted opacity-70 text-center w-full"
+                  style={{
+                    opacity: factFading ? 0 : 1,
+                    transition: 'opacity 0.3s ease',
+                  }}
+                >
+                  {FUN_FACTS[factIndex].startsWith('Fun fact') ? '💡 ' : ''}{FUN_FACTS[factIndex]}
+                </p>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Rotating Fun Facts */}
+        {/* Social proof ticker */}
         <div
-          className="w-full py-4 px-5 text-center"
-          style={{ backgroundColor: '#DAEEFF', borderRadius: '2px' }}
+          className="w-full py-3 text-center mt-[27px]"
+          style={{ borderTop: '1px solid #EBEBEB', backgroundColor: '#FAFAFA' }}
         >
           <p
-            className="text-body font-body"
+            className="text-body font-body text-surface-muted"
             style={{
-              color: '#333333',
-              opacity: factFading ? 0 : 1,
+              opacity: tickerFading ? 0 : 1,
               transition: 'opacity 0.3s ease',
             }}
           >
-            {FUN_FACTS[factIndex].startsWith('Fun fact') ? '💡 ' : ''}{FUN_FACTS[factIndex]}
+            {tickerMessages[tickerIndex]}
           </p>
         </div>
       </div>
 
-      {/* Social proof ticker */}
-      <div
-        className="w-full py-3 text-center"
-        style={{ borderTop: '1px solid #EBEBEB', backgroundColor: '#FAFAFA' }}
-      >
-        <p
-          className="text-body font-body text-surface-muted"
-          style={{
-            opacity: tickerFading ? 0 : 1,
-            transition: 'opacity 0.3s ease',
-          }}
-        >
-          {tickerMessages[tickerIndex]}
-        </p>
-      </div>
-
-      {/* Footer */}
       <Footer />
     </div>
   );
