@@ -15,7 +15,7 @@ export default function GenerateSize() {
   //   if (!chartData) navigate('/');
   // }, [chartData, navigate]);
 
-  if (!chartData) return null;
+  // if (!chartData) return null;
 
   return (
     <>
