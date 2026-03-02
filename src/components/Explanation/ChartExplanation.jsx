@@ -574,7 +574,7 @@ export function ChartExplanation({
                 </div>
 
                 <div className="relative flex flex-col gap-4 items-center w-full">
-                  <div className="flex gap-2.5 w-full">
+                  <div className="flex flex-wrap gap-2.5 w-full">
                     <button onClick={onGetFramed} className="btn-base btn-primary flex-1">
                       See Sizes ($79 - $179)
                     </button>
