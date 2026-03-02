@@ -37,6 +37,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
   const [factFading, setFactFading] = useState(false);
   const startTime = useRef(Date.now());
   const hasTriggeredComplete = useRef(false);
+  const [rarityPct] = useState(() => (Math.random() * 0.03 + 0.04).toFixed(2));
 
   const sunSign = chartData?.sun?.sign || 'your';
 
@@ -68,7 +69,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
 
   // Sequential reveal timers
   useEffect(() => {
-    const delays = [500, 1500, 2500, 3500, 4500];
+    const delays = [500, 1500, 2500, 3500, 4500, 5750];
     const timers = delays.map((delay, i) =>
       setTimeout(() => setVisibleSteps(i + 1), delay)
     );
@@ -228,6 +229,27 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
                 </p>
               </div>
             )}
+
+            {/* Rarity card */}
+            <div
+              className="py-5 px-5 text-center"
+              style={{
+                background: 'linear-gradient(135deg, #FFF8F0, #FFF0F5)',
+                borderRadius: '2px',
+                border: '1px solid rgba(254, 103, 129, 0.25)',
+                opacity: visibleSteps >= 6 ? 1 : 0,
+                transform: visibleSteps >= 6 ? 'translateY(0)' : 'translateY(20px)',
+                transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+              }}
+            >
+              <span className="text-2xl mb-1 block">✨</span>
+              <p className="text-a5 text-surface-foreground font-display mb-1">
+                Only {rarityPct}% of people share your Sun‑Moon‑Rising combination
+              </p>
+              <p className="text-body-sm font-body text-surface-muted">
+                Out of 1,728 possible combinations, yours is truly one of a kind
+              </p>
+            </div>
           </div>
         )}
 
