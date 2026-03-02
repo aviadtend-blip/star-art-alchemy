@@ -482,7 +482,7 @@ export function ChartExplanation({
                     id={`desktop-hotspot-${h.id}`}
                     ref={(el) => (desktopCardRefs.current[i] = el)}
                     className="w-full"
-                    style={{ borderBottom: '1px solid #3f3f3f', paddingBottom: 20 }}
+                    style={{ borderBottom: i < hotspots.length - 1 ? '1px solid #3f3f3f' : 'none', paddingBottom: i < hotspots.length - 1 ? 20 : 0 }}
                   >
                     <div className="flex flex-col gap-5">
                       <div className="flex items-center gap-3">
