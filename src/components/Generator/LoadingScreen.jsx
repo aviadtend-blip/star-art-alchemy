@@ -283,7 +283,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
               alt="Artist painting"
               className="w-[160px] h-auto rounded-md mt-[27px]"
             />
-            <h2 className="text-a3 text-surface-foreground font-display text-center mt-4">
+            <h2 className="text-a3 text-surface-foreground font-display text-center mt-12">
               Your Birth Chart Summary
             </h2>
 
