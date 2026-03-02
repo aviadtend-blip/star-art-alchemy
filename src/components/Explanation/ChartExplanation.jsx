@@ -462,7 +462,7 @@ export function ChartExplanation({
             {/* Desktop hotspot toggle — 24px below artwork */}
             <button
               onClick={() => setShowHotspots((p) => !p)}
-              className="flex items-center gap-2.5 mt-6"
+              className="flex items-center gap-2.5 mt-6 self-center"
             >
               <span
                 className="relative flex-shrink-0 flex items-center overflow-hidden"
