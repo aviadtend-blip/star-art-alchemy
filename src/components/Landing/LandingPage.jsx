@@ -455,11 +455,11 @@ export default function LandingPage() {
       </section>
 
 
-      {/* ═══════════════════ FAQ ═══════════════════ */}
-      <FAQSection items={faqs} />
-
       {/* ═══════════════════ TESTIMONIALS ═══════════════════ */}
       <TestimonialCarousel />
+
+      {/* ═══════════════════ FAQ ═══════════════════ */}
+      <FAQSection items={faqs} />
 
       {/* ═══════════════════ FOOTER ═══════════════════ */}
       <Footer onScrollToForm={scrollToForm} />
