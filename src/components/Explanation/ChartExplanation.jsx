@@ -602,36 +602,40 @@ export function ChartExplanation({
             </p>
           </div>
 
-          <div className="px-5 max-w-md mx-auto flex flex-col items-center gap-6">
+          <div className="px-5 max-w-md mx-auto flex flex-col items-center">
             {/* Hotspot toggle */}
             <button
               onClick={() => setShowHotspots((p) => !p)}
-              className="flex items-center gap-3"
+              className="flex items-center justify-center gap-2.5 flex-1"
+              style={{ padding: '10px 21px' }}
             >
               <span
-                className="relative flex items-center justify-center rounded-full transition-colors"
+                className="relative flex-shrink-0 transition-colors"
                 style={{
-                  width: 48,
-                  height: 26,
+                  width: 42,
+                  height: 24,
+                  borderRadius: 12,
                   backgroundColor: showHotspots ? '#FFBF00' : '#3f3f3f',
-                  borderRadius: 13,
                 }}
               >
                 <span
-                  className="absolute rounded-full bg-white transition-transform"
+                  className="absolute rounded-full bg-white transition-all"
                   style={{
-                    width: 20,
-                    height: 20,
+                    width: 18,
+                    height: 18,
                     top: 3,
-                    left: showHotspots ? 25 : 3,
+                    left: showHotspots ? 21 : 3,
                     transition: 'left 0.2s ease',
                   }}
                 />
               </span>
-              <span className="text-body font-body text-white">
-                Show Hotspots
+              <span className="text-a4 text-white">
+                Hotspot markers
               </span>
             </button>
+
+            {/* 8px space above artwork */}
+            <div style={{ height: 8 }} />
 
             {/* Artwork image */}
             <div className="relative w-full overflow-hidden" style={{ borderRadius: '2px' }}>
