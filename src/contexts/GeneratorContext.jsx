@@ -32,6 +32,7 @@ export function GeneratorProvider({ children }) {
   const [selectedStyle, setSelectedStyle] = useState(cached.selectedStyle || null);
   const [generatedImage, setGeneratedImage] = useState(cached.generatedImage || null);
   const [error, setError] = useState(null);
+  const [generationComplete, setGenerationComplete] = useState(false);
   const [generationProgress, setGenerationProgress] = useState('');
   const [orderDetails, setOrderDetails] = useState(cached.orderDetails || null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -91,7 +92,8 @@ export function GeneratorProvider({ children }) {
         setArtworkAnalysis(analysisResult.value);
       }
 
-      navigate('/generate/preview');
+      // Signal loading screen that generation is complete (it handles the delay + navigation)
+      setGenerationComplete(true);
     } catch (err) {
       console.error('❌ Generation error:', err);
       setError(err.message);
@@ -161,8 +163,9 @@ export function GeneratorProvider({ children }) {
   const value = {
     chartData, formData, selectedStyle, generatedImage,
     error, generationProgress, orderDetails, isCheckingOut,
-    artworkAnalysis,
+    artworkAnalysis, generationComplete,
     setFormData, setChartData, setError, setGeneratedImage, setArtworkAnalysis,
+    setGenerationComplete,
     handleFormSubmit, handleStyleSelect, handleRetry,
     handleEditBirthData, handleBackToStyle, handleGetFramed,
     handleBackToPreview, handleCheckout, handleTestCheckout,
