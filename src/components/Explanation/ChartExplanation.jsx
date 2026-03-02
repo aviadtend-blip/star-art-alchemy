@@ -469,7 +469,7 @@ export function ChartExplanation({
                 <h1 className="text-a1-special text-white">
                   Meet Your Cosmic Masterpiece
                 </h1>
-                <p className="text-body font-body" style={{ color: '#c7c7c7', lineHeight: '1.6' }}>
+                <p className="text-body-big" style={{ color: '#c7c7c7' }}>
                   {subjectExplanation}
                 </p>
               </div>
@@ -596,7 +596,7 @@ export function ChartExplanation({
             <h1 className="text-a1-special text-white" style={{ maxWidth: 264 }}>
               Meet Your Cosmic{'\n'}Masterpiece
             </h1>
-            <p className="text-body font-body max-w-[264px]" style={{ color: '#c7c7c7', lineHeight: '1.5' }}>
+            <p className="text-body-big max-w-[264px]" style={{ color: '#c7c7c7' }}>
               {subjectExplanation}
             </p>
           </div>
