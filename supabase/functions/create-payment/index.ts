@@ -24,51 +24,9 @@ serve(async (req) => {
       throw new Error("Missing order details");
     }
 
-    // Upload artwork to Supabase Storage for a permanent URL
-    let permanentImageUrl = "";
+    // Pass artwork image directly to Stripe (CDN URLs last long enough for checkout)
     console.log('Received artworkImageUrl:', artworkImageUrl);
-    if (artworkImageUrl) {
-      try {
-        const supabase = createClient(
-          Deno.env.get("SUPABASE_URL") ?? "",
-          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-        );
-
-        const imageResponse = await fetch(artworkImageUrl);
-        console.log('Image fetch status:', imageResponse.status, imageResponse.statusText);
-        if (imageResponse.ok) {
-          const imageBlob = await imageResponse.blob();
-          const fileName = `checkout-thumbs/${crypto.randomUUID()}.png`;
-          const { data: uploadData, error: uploadError } = await supabase.storage
-            .from("demo-assets")
-            .upload(fileName, imageBlob, { contentType: "image/png", upsert: false });
-
-          console.log('Storage upload result:', JSON.stringify({ data: uploadData, error: uploadError }));
-
-          if (!uploadError) {
-            const { data: urlData } = supabase.storage.from("demo-assets").getPublicUrl(fileName);
-            permanentImageUrl = urlData?.publicUrl || "";
-          } else {
-            console.error("Storage upload error:", uploadError.message);
-          }
-        }
-      } catch (uploadErr) {
-        console.error("Image upload failed, proceeding without thumbnail:", uploadErr.message);
-      }
-    }
-
-    // Build dynamic product name with size
-    const sizeLabel = orderDetails.sizeLabel || orderDetails.size || "";
-    const productName = `Celestial Artwork — ${sizeLabel} Canvas`;
-
-    // Build description
-    const descParts = [
-      customerName ? `Personalized birth chart artwork for ${customerName}` : "Personalized birth chart artwork",
-      chartData?.sun?.sign ? `${chartData.sun.sign} Sun` : null,
-    ].filter(Boolean);
-    const description = descParts.join(" · ");
-
-    const productImages = permanentImageUrl ? [permanentImageUrl] : [];
+    const productImages = artworkImageUrl ? [artworkImageUrl] : [];
     console.log('productImages being sent to Stripe:', JSON.stringify(productImages));
 
     const session = await stripe.checkout.sessions.create({
