@@ -33,7 +33,7 @@ const Footer = forwardRef(function Footer({ onScrollToForm }, ref) {
             <p className="text-white/60 mb-3">✦</p>
             <p className="text-body-sm text-white/80 mb-1.5">hello@celestialartworks.com</p>
             <p className="text-body-sm text-white/60 mb-1.5">Available Mon-Fri 9am-6pm EST</p>
-            <p className="text-body-sm text-white/80">(555) 123-4567</p>
+            <p className="text-body-sm text-white/80">(+1) 407-768-4186</p>
           </div>
         </div>
 
