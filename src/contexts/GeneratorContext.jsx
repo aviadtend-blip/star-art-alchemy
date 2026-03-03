@@ -50,7 +50,10 @@ export function GeneratorProvider({ children }) {
       setGenerationProgress('Calculating your birth chart...');
       const chart = await calculateNatalChart(data);
       setChartData(chart);
-      navigate('/generate/style');
+      // Only navigate if we're not already on the style page
+      if (window.location.pathname !== '/generate/style') {
+        navigate('/generate/style');
+      }
     } catch (err) {
       console.error('❌ Chart calculation error:', err);
       setError(err.message);

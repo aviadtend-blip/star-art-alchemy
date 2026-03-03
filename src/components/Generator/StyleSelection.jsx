@@ -84,7 +84,7 @@ const baseStyles = ART_STYLES.map(toCarouselShape);
 const additionalStyles = ADDITIONAL_STYLES.map(toCarouselShape);
 const allStyles = [...baseStyles, ...additionalStyles];
 
-export default function StyleSelection({ onSelect, onBack, chartData, formData, onEditBirthData }) {
+export default function StyleSelection({ onSelect, onBack, chartData, formData, onEditBirthData, isLoading = false }) {
   const [showAll, setShowAll] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightbox, setLightbox] = useState(null);
@@ -103,10 +103,18 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
   }, [activeIndex]);
 
   const handleContinue = () => {
+    if (isLoading) {
+      toast({ title: 'Almost ready…', description: 'Still calculating your birth chart. Try again in a moment.' });
+      return;
+    }
     if (selectedStyleId) onSelect(selectedStyleId);
   };
 
   const handleSurpriseMe = () => {
+    if (isLoading) {
+      toast({ title: 'Almost ready…', description: 'Still calculating your birth chart. Try again in a moment.' });
+      return;
+    }
     const dominantElement = chartData?.dominant_element;
     let autoId = ART_STYLES[0].id;
     if (dominantElement === 'Water' || dominantElement === 'Earth') {
