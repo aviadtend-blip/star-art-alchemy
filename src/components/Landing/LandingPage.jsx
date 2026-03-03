@@ -106,7 +106,7 @@ export default function LandingPage() {
       ...(params.lat != null ? { lat: String(params.lat) } : {}),
       ...(params.lng != null ? { lng: String(params.lng) } : {}),
     });
-    navigate(`/generate?${searchParams.toString()}`);
+    navigate(`/generate/style?${searchParams.toString()}`);
   };
 
   const scrollToForm = () => {
