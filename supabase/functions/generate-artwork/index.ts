@@ -11,8 +11,8 @@ const APIFRAME_API_KEY = Deno.env.get("APIFRAME_API_KEY");
 const APIFRAME_IMAGINE_URL = "https://api.apiframe.ai/imagine";
 const APIFRAME_FETCH_URL = "https://api.apiframe.ai/fetch";
 
-// Midjourney personalization code (applied to all styles)
-const MJ_PERSONALIZATION = "--p jv7b3wn";
+// Default personalization fallback (used when style has no specific --p code)
+const DEFAULT_PERSONALIZATION = "jv7b3wn";
 // Default sref fallback
 const DEFAULT_SREF = "3498857616";
 const MJ_PARAMS = "--ar 3:4";
@@ -24,7 +24,7 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, sref } = await req.json();
+    const { prompt, sref, personalization } = await req.json();
 
     if (!prompt) {
       return new Response(
@@ -42,7 +42,8 @@ serve(async (req) => {
 
     // Build the full Midjourney prompt with style reference and personalization
     const styleRef = sref || DEFAULT_SREF;
-    const fullPrompt = `${prompt} ${MJ_PARAMS} --sref ${styleRef} ${MJ_PERSONALIZATION}`;
+    const pCode = personalization || DEFAULT_PERSONALIZATION;
+    const fullPrompt = `${prompt} ${MJ_PARAMS} --sref ${styleRef} --p ${pCode}`;
     console.log(`Full MJ prompt: ${fullPrompt}`);
 
     // Step 1: Submit imagine task to Apiframe

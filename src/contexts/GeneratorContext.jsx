@@ -70,7 +70,7 @@ export function GeneratorProvider({ children }) {
       const prompt = await buildConcretePrompt(chartData, style);
 
       setGenerationProgress(`Creating your ${style.name} artwork...`);
-      const result = await generateImage(prompt, style.sref);
+      const result = await generateImage(prompt, style.sref, style.personalization);
 
       setGeneratedImage(result.imageUrl);
 

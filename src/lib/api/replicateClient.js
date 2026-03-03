@@ -19,7 +19,7 @@ let currentGenerationCache = {
  * Generate artwork via the Supabase edge function
  * Returns the primary image URL and caches all 4 variations
  */
-export async function generateImage(prompt, sref) {
+export async function generateImage(prompt, sref, personalization) {
   console.log('Prompt preview:', prompt.substring(0, 100) + '...');
   console.log('Style ref:', sref);
 
@@ -31,7 +31,7 @@ export async function generateImage(prompt, sref) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
       },
-      body: JSON.stringify({ prompt, sref }),
+      body: JSON.stringify({ prompt, sref, personalization }),
     }
   );
 
