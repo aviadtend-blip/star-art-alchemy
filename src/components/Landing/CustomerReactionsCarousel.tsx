@@ -130,7 +130,7 @@ export default function CustomerReactionsCarousel({
   const current = testimonials[activeIndex];
 
   return (
-    <section className="flex flex-col gap-8 items-center justify-center px-[164px] py-[61px] w-full">
+    <section className="flex flex-col gap-8 items-center justify-center px-[164px] py-[61px] w-full bg-white">
       {/* Quote row: arrow — content — arrow */}
       <div className="flex gap-8 items-center justify-center w-full">
         <ArrowButton direction="left" onClick={goLeft} />
