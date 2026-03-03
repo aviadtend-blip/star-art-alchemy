@@ -84,6 +84,7 @@ const galleryItems = [
   { img: customerDisplay7, label: "Piano player cosmic artwork" },
   { img: customerDisplay8, label: "Colorful fish artwork" },
   { img: customerDisplay9, label: "Face with sunglasses artwork" },
+  { img: customerDisplay10, label: "Mountain sunset mixed media artwork" },
 ];
 
 /* ─── Component ─── */
