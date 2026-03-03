@@ -40,7 +40,8 @@ import PrimaryButton from "@/components/ui/PrimaryButton";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 import GalleryTile from "./GalleryTile";
-import TestimonialCarousel from "./TestimonialCarousel";
+import CustomerReactionsCarousel from "./CustomerReactionsCarousel";
+import CustomerReactionsCarouselMobile from "./CustomerReactionsCarouselMobile";
 
 /* ─── Static data ─── */
 
@@ -457,7 +458,12 @@ export default function LandingPage() {
 
 
       {/* ═══════════════════ TESTIMONIALS ═══════════════════ */}
-      <TestimonialCarousel />
+      <div className="hidden md:block">
+        <CustomerReactionsCarousel />
+      </div>
+      <div className="md:hidden">
+        <CustomerReactionsCarouselMobile />
+      </div>
 
       {/* ═══════════════════ FAQ ═══════════════════ */}
       <FAQSection items={faqs} />
