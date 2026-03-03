@@ -155,7 +155,7 @@ export default function LandingPage() {
               padding: '36px 28px',
             }}
           >
-            <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} />
+            <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" />
           </div>
         </div>
       </section>
