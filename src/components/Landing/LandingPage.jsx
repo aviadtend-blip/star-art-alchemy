@@ -32,6 +32,7 @@ import customerDisplay6 from "@/assets/gallery/customer-display-6.webp";
 import customerDisplay7 from "@/assets/gallery/customer-display-7.webp";
 import customerDisplay8 from "@/assets/gallery/customer-display-8.webp";
 import customerDisplay9 from "@/assets/gallery/customer-display-9.webp";
+import customerDisplay10 from "@/assets/gallery/customer-display-10.webp";
 
 import ProgressBar from "@/components/ui/ProgressBar";
 import InteractiveHotspots from "./InteractiveHotspots";
@@ -84,6 +85,7 @@ const galleryItems = [
   { img: customerDisplay7, label: "Piano player cosmic artwork" },
   { img: customerDisplay8, label: "Colorful fish artwork" },
   { img: customerDisplay9, label: "Face with sunglasses artwork" },
+  { img: customerDisplay10, label: "Mountain sunset mixed media artwork" },
 ];
 
 /* ─── Component ─── */
