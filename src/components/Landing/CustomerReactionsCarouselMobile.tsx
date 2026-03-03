@@ -154,7 +154,7 @@ export default function CustomerReactionsCarouselMobile({
 
   return (
     <section
-      className="flex flex-col gap-8 items-center justify-center px-5 py-[61px] w-full"
+      className="flex flex-col gap-8 items-center justify-center px-5 py-[61px] w-full bg-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
