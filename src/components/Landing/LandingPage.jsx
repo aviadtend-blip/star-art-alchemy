@@ -32,6 +32,7 @@ import customerDisplay6 from "@/assets/gallery/customer-display-6.webp";
 import customerDisplay7 from "@/assets/gallery/customer-display-7.webp";
 import customerDisplay8 from "@/assets/gallery/customer-display-8.webp";
 import customerDisplay9 from "@/assets/gallery/customer-display-9.webp";
+import customerDisplay10 from "@/assets/gallery/customer-display-10.webp";
 
 import ProgressBar from "@/components/ui/ProgressBar";
 import InteractiveHotspots from "./InteractiveHotspots";
