@@ -32,7 +32,7 @@ import customerDisplay6 from "@/assets/gallery/customer-display-6.webp";
 import customerDisplay7 from "@/assets/gallery/customer-display-7.webp";
 import customerDisplay8 from "@/assets/gallery/customer-display-8.webp";
 import customerDisplay9 from "@/assets/gallery/customer-display-9.webp";
-import customerDisplay10 from "@/assets/gallery/customer-display-10.webp";
+
 import ProgressBar from "@/components/ui/ProgressBar";
 import InteractiveHotspots from "./InteractiveHotspots";
 import PrimaryButton from "@/components/ui/PrimaryButton";
@@ -75,16 +75,15 @@ const faqs = [
 ];
 
 const galleryItems = [
-  { img: customerDisplay1, label: "Colorful eye artwork on wall" },
-  { img: customerDisplay2, label: "Cosmic machine artwork in living room" },
-  { img: customerDisplay3, label: "Meditating figure artwork" },
-  { img: customerDisplay4, label: "Elephant cosmic journey artwork" },
-  { img: customerDisplay5, label: "Colorful fish artwork" },
-  { img: customerDisplay6, label: "Piano player cosmic artwork" },
-  { img: customerDisplay7, label: "Face with sunglasses artwork" },
-  { img: customerDisplay8, label: "Cosmic forest landscape artwork" },
-  { img: customerDisplay9, label: "Mountain meditation artwork" },
-  { img: customerDisplay10, label: "Astronaut artwork on brick wall" },
+  { img: customerDisplay1, label: "Colorful face artwork in loft" },
+  { img: customerDisplay2, label: "Mountain island artwork on wall" },
+  { img: customerDisplay3, label: "Botanical moth woodcut artwork" },
+  { img: customerDisplay4, label: "Vibrant face artwork with brick wall" },
+  { img: customerDisplay5, label: "Astronaut artwork in cozy room" },
+  { img: customerDisplay6, label: "Mountain meditation artwork" },
+  { img: customerDisplay7, label: "Piano player cosmic artwork" },
+  { img: customerDisplay8, label: "Colorful fish artwork" },
+  { img: customerDisplay9, label: "Face with sunglasses artwork" },
 ];
 
 /* ─── Component ─── */
