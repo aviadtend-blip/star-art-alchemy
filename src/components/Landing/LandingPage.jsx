@@ -167,9 +167,9 @@ export default function LandingPage() {
         <div className="absolute inset-0">
           <img src={heroDesktop} alt="" className="w-full h-full object-cover" />
         </div>
-        <div className="relative z-20 flex flex-col justify-end min-h-[700px] px-10 pb-0">
+        <div className="relative z-20 flex flex-col justify-end min-h-[700px] pb-0 px-6">
           {/* Bottom row: text left + form bar right */}
-          <div className="flex items-end gap-10 pb-10">
+          <div className="flex items-end gap-10 pb-10 max-w-5xl mx-auto w-full">
             {/* Left: text */}
             <div className="flex-shrink-0">
               <h1 className="text-a1 text-foreground mb-4 leading-[1.05]" style={{ fontSize: '38px', lineHeight: '42px' }}>
