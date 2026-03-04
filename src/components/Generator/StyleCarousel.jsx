@@ -93,8 +93,65 @@ export default function StyleCarousel({
     };
   }, [detectCenter]);
 
+  const canScrollLeft = activeIndex > 0;
+  const canScrollRight = activeIndex < styles.length - 1;
+
+  const goLeft = () => {
+    if (activeIndex > 0) {
+      onActiveChange(activeIndex - 1);
+      scrollToIndex(activeIndex - 1);
+    }
+  };
+
+  const goRight = () => {
+    if (activeIndex < styles.length - 1) {
+      onActiveChange(activeIndex + 1);
+      scrollToIndex(activeIndex + 1);
+    }
+  };
+
   return (
-    <div className="w-full flex justify-center" style={{ overflow: 'clip' }}>
+    <div className="w-full flex justify-center relative" style={{ overflow: 'clip' }}>
+      {/* Left arrow — desktop only, when all styles shown */}
+      {showingAll && (
+        <button
+          onClick={goLeft}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center transition-opacity"
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: '50%',
+            backgroundColor: 'rgba(255,255,255,0.9)',
+            opacity: canScrollLeft ? 1 : 0.3,
+            cursor: canScrollLeft ? 'pointer' : 'default',
+          }}
+          disabled={!canScrollLeft}
+          aria-label="Previous style"
+        >
+          <ChevronLeft className="w-5 h-5" style={{ color: '#191919' }} />
+        </button>
+      )}
+
+      {/* Right arrow — desktop only, when all styles shown */}
+      {showingAll && (
+        <button
+          onClick={goRight}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center transition-opacity"
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: '50%',
+            backgroundColor: 'rgba(255,255,255,0.9)',
+            opacity: canScrollRight ? 1 : 0.3,
+            cursor: canScrollRight ? 'pointer' : 'default',
+          }}
+          disabled={!canScrollRight}
+          aria-label="Next style"
+        >
+          <ChevronRight className="w-5 h-5" style={{ color: '#191919' }} />
+        </button>
+      )}
+
       <div
         ref={scrollRef}
         className="flex items-end overflow-x-auto overflow-y-hidden scrollbar-hide justify-start lg:justify-center"
