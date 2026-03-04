@@ -458,7 +458,7 @@ export function ChartExplanation({
                         ? '0 0 12px 4px rgba(255, 191, 0, 0.5)'
                         : '0 0 8px 2px rgba(0, 0, 0, 0.4)',
                     }}
-                    aria-label={`Hotspot ${h.id}: ${h.title}`}
+                    aria-label={`Hotspot ${h.id}: ${h.chartElement}`}
                   >
                     <span className="font-body text-center" style={{ fontSize: 12, color: '#000' }}>
                       {h.id}
@@ -717,7 +717,7 @@ export function ChartExplanation({
                         ? '0 0 12px 4px rgba(255, 191, 0, 0.5)'
                         : '0 0 8px 2px rgba(0, 0, 0, 0.4)',
                     }}
-                    aria-label={`Hotspot ${h.id}: ${h.title}`}
+                    aria-label={`Hotspot ${h.id}: ${h.chartElement}`}
                   >
                     <span className="font-body text-center" style={{ fontSize: 12, color: '#000' }}>
                       {h.id}

@@ -168,8 +168,8 @@ POSITION RULES:
     // Validate structure
     const required = ["sun", "moon", "rising", "element"];
     for (const key of required) {
-      if (!analysis[key]?.explanation || !analysis[key]?.insight) {
-        console.error(`Missing ${key}.explanation or ${key}.insight in response`);
+      if (!analysis[key]?.explanation || !analysis[key]?.artworkElement) {
+        console.error(`Missing ${key}.explanation or ${key}.artworkElement in response`);
         throw new Error(`Incomplete analysis: missing ${key}`);
       }
     }
