@@ -463,7 +463,7 @@ export default function LandingPage() {
         <div className="relative z-10 hidden md:block mt-8">
           <CustomerReactionsCarousel />
         </div>
-        <div className="relative z-10 md:hidden mt-8">
+        <div className="relative z-10 md:hidden mt-6">
           <CustomerReactionsCarouselMobile />
         </div>
       </section>
