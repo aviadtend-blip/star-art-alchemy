@@ -5,8 +5,8 @@ import starsBg from '@/assets/stars-bg.jpg';
 
 /**
  * Horizontal snap-scroll carousel for style selection.
- * Active (centered) card is larger; inactive cards are smaller.
- * Includes a "Show More" CTA as the final card.
+ * The selected card is always centered above its title.
+ * Navigation via arrows (desktop) or swipe (mobile).
  */
 export default function StyleCarousel({
   styles,        // [{ id, name, subtitle, imageSrc, mostPopular? }]
@@ -21,15 +21,9 @@ export default function StyleCarousel({
   const isScrollingRef = useRef(false);
   const userScrollRef = useRef(false);
 
-  const ACTIVE_W = 304;
-  const ACTIVE_H = 450;
-  const INACTIVE_W = 290;
-  const INACTIVE_H = 425;
+  const CARD_W = 290;
+  const CARD_H = 425;
   const GAP = 8;
-  const PAD = 36;
-
-  // Total items = styles + optional show-more card
-  const totalCards = showingAll ? styles.length : styles.length + 1;
 
   // Detect which card is centered after scroll
   const detectCenter = useCallback(() => {
@@ -54,7 +48,7 @@ export default function StyleCarousel({
     }
   }, [activeIndex, onActiveChange, styles.length]);
 
-  // Scroll to active card programmatically
+  // Scroll to active card programmatically (centers it)
   const scrollToIndex = useCallback((idx) => {
     const card = cardRefs.current[idx];
     const el = scrollRef.current;
@@ -110,6 +104,9 @@ export default function StyleCarousel({
     }
   };
 
+  // Padding so first/last cards can reach the center
+  const sidePad = `calc(50% - ${CARD_W / 2}px)`;
+
   return (
     <div className="w-full flex justify-center relative" style={{ overflow: 'clip' }}>
       {/* Left arrow — desktop only */}
@@ -155,7 +152,9 @@ export default function StyleCarousel({
           scrollSnapType: 'x mandatory',
           gap: `${GAP}px`,
           WebkitOverflowScrolling: 'touch',
-          height: ACTIVE_H + 8,
+          height: CARD_H + 8,
+          paddingLeft: sidePad,
+          paddingRight: sidePad,
           paddingBottom: 8,
         }}
       >
@@ -166,14 +165,13 @@ export default function StyleCarousel({
             <div
               key={style.id}
               ref={(el) => (cardRefs.current[i] = el)}
-              className="shrink-0 relative group"
+              className="shrink-0 relative"
               style={{
-                width: INACTIVE_W,
-                height: INACTIVE_H,
+                width: CARD_W,
+                height: CARD_H,
                 scrollSnapAlign: 'center',
                 borderRadius: 2,
                 overflow: 'visible',
-                transition: 'transform 0.2s ease',
                 cursor: 'pointer',
               }}
               onClick={() => {
@@ -210,6 +208,19 @@ export default function StyleCarousel({
                   <Search className="w-4 h-4" style={{ color: '#191919' }} />
                 </button>
               )}
+
+              {/* Most popular badge */}
+              {style.mostPopular && (
+                <div
+                  className="absolute left-1/2"
+                  style={{
+                    bottom: -8,
+                    transform: 'translateX(-50%)',
+                  }}
+                >
+                  <PopularTag />
+                </div>
+              )}
             </div>
           );
         })}
@@ -220,8 +231,8 @@ export default function StyleCarousel({
             ref={(el) => (cardRefs.current[styles.length] = el)}
             className="shrink-0 flex flex-col items-center justify-center"
             style={{
-              width: INACTIVE_W,
-              height: INACTIVE_H,
+              width: CARD_W,
+              height: CARD_H,
               scrollSnapAlign: 'center',
               borderRadius: 2,
               backgroundImage: `url(${starsBg})`,
