@@ -515,7 +515,7 @@ export function ChartExplanation({
                     className="w-full"
                     style={{ borderBottom: i < hotspots.length - 1 ? '1px solid #3f3f3f' : 'none', paddingBottom: i < hotspots.length - 1 ? 20 : 0 }}
                   >
-                      <div className="flex flex-col gap-3">
+                      <div className="flex flex-col" style={{ gap: 4 }}>
                         <p className="text-subtitle text-white/50">
                           {h.chartElement}
                         </p>
@@ -737,7 +737,7 @@ export function ChartExplanation({
                   style={{ width: 280 }}
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col" style={{ gap: 4 }}>
                       <p className="text-subtitle text-white/50">
                         {h.chartElement}
                       </p>
