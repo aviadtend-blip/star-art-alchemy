@@ -112,45 +112,41 @@ export default function StyleCarousel({
 
   return (
     <div className="w-full flex justify-center relative" style={{ overflow: 'clip' }}>
-      {/* Left arrow — desktop only, when all styles shown */}
-      {showingAll && (
-        <button
-          onClick={goLeft}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center transition-opacity"
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: '50%',
-            backgroundColor: 'rgba(255,255,255,0.9)',
-            opacity: canScrollLeft ? 1 : 0.3,
-            cursor: canScrollLeft ? 'pointer' : 'default',
-          }}
-          disabled={!canScrollLeft}
-          aria-label="Previous style"
-        >
-          <ChevronLeft className="w-5 h-5" style={{ color: '#191919' }} />
-        </button>
-      )}
+      {/* Left arrow — desktop only */}
+      <button
+        onClick={goLeft}
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center transition-opacity"
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: '50%',
+          backgroundColor: 'rgba(255,255,255,0.9)',
+          opacity: canScrollLeft ? 1 : 0.3,
+          cursor: canScrollLeft ? 'pointer' : 'default',
+        }}
+        disabled={!canScrollLeft}
+        aria-label="Previous style"
+      >
+        <ChevronLeft className="w-5 h-5" style={{ color: '#191919' }} />
+      </button>
 
-      {/* Right arrow — desktop only, when all styles shown */}
-      {showingAll && (
-        <button
-          onClick={goRight}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center transition-opacity"
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: '50%',
-            backgroundColor: 'rgba(255,255,255,0.9)',
-            opacity: canScrollRight ? 1 : 0.3,
-            cursor: canScrollRight ? 'pointer' : 'default',
-          }}
-          disabled={!canScrollRight}
-          aria-label="Next style"
-        >
-          <ChevronRight className="w-5 h-5" style={{ color: '#191919' }} />
-        </button>
-      )}
+      {/* Right arrow — desktop only */}
+      <button
+        onClick={goRight}
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center transition-opacity"
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: '50%',
+          backgroundColor: 'rgba(255,255,255,0.9)',
+          opacity: canScrollRight ? 1 : 0.3,
+          cursor: canScrollRight ? 'pointer' : 'default',
+        }}
+        disabled={!canScrollRight}
+        aria-label="Next style"
+      >
+        <ChevronRight className="w-5 h-5" style={{ color: '#191919' }} />
+      </button>
 
       <div
         ref={scrollRef}
@@ -173,7 +169,7 @@ export default function StyleCarousel({
             <div
               key={style.id}
               ref={(el) => (cardRefs.current[i] = el)}
-              className="shrink-0 relative group md:hover:scale-[1.04] md:hover:z-10"
+              className="shrink-0 relative group"
               style={{
                 width: INACTIVE_W,
                 height: INACTIVE_H,
@@ -198,19 +194,6 @@ export default function StyleCarousel({
                 style={{ borderRadius: 2, display: 'block' }}
               />
 
-              {/* Hover overlay — desktop only */}
-              <div
-                className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 hidden md:flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none"
-                style={{ borderRadius: 2 }}
-              >
-                <div
-                  className="flex items-center justify-center bg-white/90 backdrop-blur-sm shadow-md"
-                  style={{ width: 36, height: 36, borderRadius: '50%' }}
-                >
-                  <Search className="w-4 h-4" style={{ color: '#191919' }} />
-                </div>
-              </div>
-
               {/* Zoom button — active card only */}
               {isActive && (
                 <button
@@ -230,32 +213,6 @@ export default function StyleCarousel({
                   <Search className="w-4 h-4" style={{ color: '#191919' }} />
                 </button>
               )}
-
-              {/* Most popular badge */}
-              {style.mostPopular && (
-                <div
-                  className="absolute left-1/2"
-                  style={{
-                    bottom: -8,
-                    transform: 'translateX(-50%)',
-                  }}
-                >
-                  <PopularTag />
-                </div>
-              )}
-
-              {/* Hover label — desktop only, below card */}
-              <div
-                className="absolute left-0 right-0 hidden md:block text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-                style={{ top: '100%', paddingTop: style.mostPopular ? 20 : 10 }}
-              >
-                <h3 className="font-display text-subtitle" style={{ color: '#000000' }}>
-                  {style.name}
-                </h3>
-                <p className="font-body" style={{ fontSize: 14, color: '#727272', opacity: 0.7, marginTop: 2 }}>
-                  {style.subtitle}
-                </p>
-              </div>
             </div>
           );
         })}
