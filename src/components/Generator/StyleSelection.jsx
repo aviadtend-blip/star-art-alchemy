@@ -85,7 +85,7 @@ const additionalStyles = ADDITIONAL_STYLES.map(toCarouselShape);
 const allStyles = [...baseStyles, ...additionalStyles];
 
 export default function StyleSelection({ onSelect, onBack, chartData, formData, onEditBirthData, isLoading = false }) {
-  const [showAll, setShowAll] = useState(false);
+  const [showAll, setShowAll] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightbox, setLightbox] = useState(null);
   const [lightboxVisible, setLightboxVisible] = useState(false);
