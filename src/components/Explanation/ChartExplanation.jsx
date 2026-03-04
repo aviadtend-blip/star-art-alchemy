@@ -415,7 +415,7 @@ export function ChartExplanation({
           <p className="text-body-big" style={{ color: '#c7c7c7' }}>
             {subjectExplanation}
           </p>
-          <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 32 }} />
+          <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 60 }} />
         </div>
 
         {/* ===== DESKTOP LAYOUT: two-column ===== */}
