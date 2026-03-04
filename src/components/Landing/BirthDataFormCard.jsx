@@ -136,6 +136,27 @@ export default function BirthDataFormCard({
   };
 
   if (showTimeStep) {
+    // Native time value for mobile picker (24h format)
+    const nativeHour24 = (() => {
+      let h = Number(birthHour) || 12;
+      if (birthAmPm === 'PM' && h !== 12) h += 12;
+      if (birthAmPm === 'AM' && h === 12) h = 0;
+      return h;
+    })();
+    const nativeTimeValue = `${String(nativeHour24).padStart(2, '0')}:${String(birthMinute).padStart(2, '0')}`;
+
+    const handleNativeTimeChange = (e) => {
+      const val = e.target.value;
+      if (!val) return;
+      const [h, m] = val.split(':').map(Number);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      let h12 = h % 12;
+      if (h12 === 0) h12 = 12;
+      setBirthHour(String(h12));
+      setBirthMinute(String(m).padStart(2, '0'));
+      setBirthAmPm(ampm);
+    };
+
     const checkboxEl = (
       <div className="flex items-start gap-3">
         <div
@@ -159,7 +180,7 @@ export default function BirthDataFormCard({
       </div>
     );
 
-    const timeInputs = (
+    const timeInputsDesktop = (
       <div className={`flex items-end gap-4 transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
         <div className="flex-1 min-w-0">
           <input type="text" inputMode="numeric" maxLength={2} value={birthHour}
@@ -184,6 +205,17 @@ export default function BirthDataFormCard({
       </div>
     );
 
+    const timeInputMobile = (
+      <div className={`transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
+        <input
+          type="time"
+          value={nativeTimeValue}
+          onChange={handleNativeTimeChange}
+          className={INPUT_CLASS}
+        />
+      </div>
+    );
+
     return (
       <div className="flex flex-col" style={{ gap }}>
         <div>
@@ -192,7 +224,7 @@ export default function BirthDataFormCard({
           {/* Desktop: fields + button inline, checkbox/back below */}
           <div className="hidden md:block">
             <div className="flex items-end gap-4">
-              <div className="flex-1 min-w-0">{timeInputs}</div>
+              <div className="flex-1 min-w-0">{timeInputsDesktop}</div>
               <PrimaryButton onClick={handleStep1bSubmit} className="flex-shrink-0">
                 Choose style
               </PrimaryButton>
@@ -201,7 +233,7 @@ export default function BirthDataFormCard({
 
           {/* Mobile: fields → checkbox → buttons (back + choose style) */}
           <div className="md:hidden flex flex-col gap-6">
-            {timeInputs}
+            {timeInputMobile}
             {checkboxEl}
             <div className="flex gap-3">
               <button type="button" onClick={() => setShowTimeStep(false)} className="flex-1 h-12 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10">
