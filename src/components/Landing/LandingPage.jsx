@@ -462,7 +462,7 @@ export default function LandingPage() {
 
 
       {/* ═══════════════════ TESTIMONIALS ═══════════════════ */}
-      <div className="hidden md:block">
+      <div className="hidden md:block max-w-5xl mx-auto px-6">
         <CustomerReactionsCarousel />
       </div>
       <div className="md:hidden">
