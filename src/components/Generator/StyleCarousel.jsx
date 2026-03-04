@@ -104,7 +104,9 @@ export default function StyleCarousel({
           gap: `${GAP}px`,
           WebkitOverflowScrolling: 'touch',
           height: ACTIVE_H + 8,
-          maxWidth: showingAll ? (ACTIVE_W + (styles.length - 1) * (INACTIVE_W + GAP) + GAP + PAD * 2) : undefined,
+          maxWidth: showingAll
+            ? (ACTIVE_W + (styles.length - 1) * (INACTIVE_W + GAP) + GAP + PAD * 2)
+            : ((styles.length + 1) * (INACTIVE_W + GAP) + PAD * 2),
         }}
       >
         {styles.map((style, i) => {
