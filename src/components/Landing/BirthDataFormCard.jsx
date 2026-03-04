@@ -101,9 +101,10 @@ export default function BirthDataFormCard({
     let hour = 12;
     let minute = 0;
     if (!dontKnowTime) {
-      const [h, m] = birthTimeValue.split(":");
-      hour = Number(h);
-      minute = Number(m);
+      hour = Number(birthHour);
+      minute = Number(birthMinute);
+      if (birthAmPm === "PM" && hour !== 12) hour += 12;
+      if (birthAmPm === "AM" && hour === 12) hour = 0;
     }
     onSubmit({
       name: formData.name,
