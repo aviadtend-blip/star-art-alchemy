@@ -136,83 +136,89 @@ export default function BirthDataFormCard({
   };
 
   if (showTimeStep) {
+    const checkboxEl = (
+      <div className="flex items-start gap-3">
+        <div
+          className="w-5 h-5 mt-0.5 rounded flex items-center justify-center flex-shrink-0 cursor-pointer border border-white/10"
+          style={{ backgroundColor: dontKnowTime ? '#FFFFFF' : '#2C2C2C' }}
+          onClick={() => setDontKnowTime(!dontKnowTime)}
+        >
+          {dontKnowTime && (
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#191919" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          )}
+        </div>
+        <input type="checkbox" checked={dontKnowTime} onChange={(e) => setDontKnowTime(e.target.checked)} className="sr-only" />
+        <div>
+          <span className="text-a5 text-foreground">I don't know my birth time</span>
+          {dontKnowTime && (
+            <p className="text-body mt-1" style={{ color: '#6A6A6A' }}>
+              No worries! Your artwork will still be deeply personal and beautifully accurate.
+            </p>
+          )}
+        </div>
+      </div>
+    );
+
+    const timeInputs = (
+      <div className={`flex items-end gap-4 transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
+        <div className="flex-1 min-w-0">
+          <input type="text" inputMode="numeric" maxLength={2} value={birthHour}
+            onChange={(e) => { const v = e.target.value.replace(/\D/g, '').slice(0, 2); if (v === '' || (Number(v) >= 0 && Number(v) <= 12)) setBirthHour(v); }}
+            placeholder="12" className={INPUT_CLASS} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <input type="text" inputMode="numeric" maxLength={2} value={birthMinute}
+            onChange={(e) => { const v = e.target.value.replace(/\D/g, '').slice(0, 2); if (v === '' || (Number(v) >= 0 && Number(v) <= 59)) setBirthMinute(v); }}
+            placeholder="00" className={INPUT_CLASS} />
+        </div>
+        <div className="flex-1 min-w-0 relative">
+          <select value={birthAmPm} onChange={(e) => setBirthAmPm(e.target.value)}
+            className={`${INPUT_CLASS} appearance-none cursor-pointer pr-6`}>
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+          </select>
+          <svg className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M4 6l4 4 4-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    );
+
     return (
       <div className="flex flex-col" style={{ gap }}>
         <div>
           <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH TIME</label>
-          <div className="flex flex-col gap-6">
-            <div className={`flex items-end gap-4 transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
-              <div className="flex-1 min-w-0">
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={2}
-                  value={birthHour}
-                  onChange={(e) => {
-                    const v = e.target.value.replace(/\D/g, '').slice(0, 2);
-                    if (v === '' || (Number(v) >= 0 && Number(v) <= 12)) setBirthHour(v);
-                  }}
-                  placeholder="12"
-                  className={INPUT_CLASS}
-                />
-              </div>
-              <div className="flex-1 min-w-0">
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={2}
-                  value={birthMinute}
-                  onChange={(e) => {
-                    const v = e.target.value.replace(/\D/g, '').slice(0, 2);
-                    if (v === '' || (Number(v) >= 0 && Number(v) <= 59)) setBirthMinute(v);
-                  }}
-                  placeholder="00"
-                  className={INPUT_CLASS}
-                />
-              </div>
-              <div className="flex-1 min-w-0 relative">
-                <select
-                  value={birthAmPm}
-                  onChange={(e) => setBirthAmPm(e.target.value)}
-                  className={`${INPUT_CLASS} appearance-none cursor-pointer pr-6`}
-                >
-                  <option value="AM">AM</option>
-                  <option value="PM">PM</option>
-                </select>
-                <svg className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M4 6l4 4 4-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-            </div>
 
-            {/* Checkbox */}
-            <div className="flex items-start gap-3">
-              <div
-                className="w-5 h-5 mt-0.5 rounded flex items-center justify-center flex-shrink-0 cursor-pointer border border-white/10"
-                style={{ backgroundColor: dontKnowTime ? '#FFFFFF' : '#2C2C2C' }}
-                onClick={() => setDontKnowTime(!dontKnowTime)}
-              >
-                {dontKnowTime && (
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#191919" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                )}
-              </div>
-              <input type="checkbox" checked={dontKnowTime} onChange={(e) => setDontKnowTime(e.target.checked)} className="sr-only" />
-              <div>
-                <span className="text-a5 text-foreground">I don't know my birth time</span>
-                {dontKnowTime && (
-                  <p className="text-body mt-1" style={{ color: '#6A6A6A' }}>
-                    No worries! Your artwork will still be deeply personal and beautifully accurate.
-                  </p>
-                )}
-              </div>
+          {/* Desktop: fields + button inline, checkbox/back below */}
+          <div className="hidden md:block">
+            <div className="flex items-end gap-4">
+              <div className="flex-1 min-w-0">{timeInputs}</div>
+              <PrimaryButton onClick={handleStep1bSubmit} className="flex-shrink-0">
+                Choose style
+              </PrimaryButton>
             </div>
+          </div>
 
+          {/* Mobile: fields → checkbox → button stacked */}
+          <div className="md:hidden flex flex-col gap-6">
+            {timeInputs}
+            {checkboxEl}
             <PrimaryButton onClick={handleStep1bSubmit} className="w-full">
               Choose style
             </PrimaryButton>
           </div>
         </div>
-        <div className="flex justify-end">
+
+        {/* Desktop: checkbox + back row */}
+        <div className="hidden md:flex items-start justify-between">
+          {checkboxEl}
+          <button type="button" onClick={() => setShowTimeStep(false)} className="link-a5 font-body text-foreground py-0 flex-shrink-0" style={{ textDecoration: 'underline' }}>
+            Back
+          </button>
+        </div>
+
+        {/* Mobile: back link */}
+        <div className="md:hidden flex justify-end">
           <button type="button" onClick={() => setShowTimeStep(false)} className="link-a5 font-body text-foreground py-0 flex-shrink-0" style={{ textDecoration: 'underline' }}>
             Back
           </button>
