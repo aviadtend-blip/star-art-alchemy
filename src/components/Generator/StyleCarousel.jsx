@@ -114,7 +114,7 @@ export default function StyleCarousel({
             <div
               key={style.id}
               ref={(el) => (cardRefs.current[i] = el)}
-              className={`shrink-0 relative group ${!isActive ? 'md:hover:scale-[1.04] md:hover:z-10' : ''}`}
+              className="shrink-0 relative group md:hover:scale-[1.04] md:hover:z-10"
               style={{
                 width: INACTIVE_W,
                 height: INACTIVE_H,
@@ -139,20 +139,18 @@ export default function StyleCarousel({
                 style={{ borderRadius: 2, display: 'block' }}
               />
 
-              {/* Hover overlay — desktop only, non-active cards */}
-              {!isActive && (
+              {/* Hover overlay — desktop only */}
+              <div
+                className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 hidden md:flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none"
+                style={{ borderRadius: 2 }}
+              >
                 <div
-                  className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 hidden md:flex items-center justify-center opacity-0 group-hover:opacity-100"
-                  style={{ borderRadius: 2 }}
+                  className="flex items-center justify-center bg-white/90 backdrop-blur-sm shadow-md"
+                  style={{ width: 36, height: 36, borderRadius: '50%' }}
                 >
-                  <div
-                    className="flex items-center justify-center bg-white/90 backdrop-blur-sm shadow-md"
-                    style={{ width: 36, height: 36, borderRadius: '50%' }}
-                  >
-                    <Search className="w-4 h-4" style={{ color: '#191919' }} />
-                  </div>
+                  <Search className="w-4 h-4" style={{ color: '#191919' }} />
                 </div>
-              )}
+              </div>
 
               {/* Zoom button — active card only */}
               {isActive && (
