@@ -403,10 +403,9 @@ export default function LandingPage() {
                 <img
                   src={item.img}
                   alt={item.label || `Gallery image ${i + 1}`}
-                  className="w-full object-cover"
-                  style={{ aspectRatio: "169 / 200" }}
-                  loading="lazy"
-                />
+                   className="w-full object-cover"
+                   style={{ aspectRatio: "169 / 200" }}
+                 />
               </div>
             ))}
           </div>
@@ -419,10 +418,9 @@ export default function LandingPage() {
                   <img
                     src={item.img}
                     alt={item.label || `Gallery image ${i + 1}`}
-                    className="w-full object-cover"
-                    style={{ aspectRatio: "169 / 200" }}
-                    loading="lazy"
-                  />
+                     className="w-full object-cover"
+                     style={{ aspectRatio: "169 / 200" }}
+                   />
                 </div>
               ))}
             </div>
