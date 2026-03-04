@@ -89,7 +89,10 @@ export default function StyleCarousel({
 
 
   // Padding so first/last cards can reach the center
+  const sidePad = `calc(50% - ${CARD_W / 2}px)`;
 
+  return (
+    <div className="w-full flex justify-center relative" style={{ overflow: 'clip' }}>
       <div
         ref={scrollRef}
         className="flex items-end overflow-x-auto overflow-y-hidden scrollbar-hide"
