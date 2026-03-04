@@ -24,7 +24,7 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, sref, personalization } = await req.json();
+    const { prompt, sref, personalization, profileCode } = await req.json();
 
     if (!prompt) {
       return new Response(
@@ -42,8 +42,15 @@ serve(async (req) => {
 
     // Build the full Midjourney prompt with style reference and personalization
     const styleRef = sref || DEFAULT_SREF;
-    const pCode = personalization || DEFAULT_PERSONALIZATION;
-    const fullPrompt = `${prompt} ${MJ_PARAMS} --sref ${styleRef} --p ${pCode}`;
+    // Build personalization flags: --profile takes priority over --p
+    let personalizationFlag = '';
+    if (profileCode) {
+      personalizationFlag = `--profile ${profileCode}`;
+    } else {
+      const pCode = personalization || DEFAULT_PERSONALIZATION;
+      personalizationFlag = `--p ${pCode}`;
+    }
+    const fullPrompt = `${prompt} ${MJ_PARAMS} --sref ${styleRef} ${personalizationFlag}`;
     console.log(`Full MJ prompt: ${fullPrompt}`);
 
     // Step 1: Submit imagine task to Apiframe

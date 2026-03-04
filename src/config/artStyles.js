@@ -50,6 +50,7 @@ export const ADDITIONAL_STYLES = [
     name: 'Cosmic Collision',
     description: 'Explosive mixed-media surrealism — ink, watercolor, and nebula dreamscapes.',
     sref: '2987498144',
+    profileCode: '417q47r',
     preview: '💥',
     accentColor: 'from-indigo-400 to-purple-500',
   },
