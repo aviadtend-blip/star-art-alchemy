@@ -71,6 +71,54 @@ function getSunArtistNote(sign, visuals) {
   return notes[sign] || `Your ${sign} Sun shaped the heart of this piece.`;
 }
 
+function getMoonArtistNote(sign, visuals) {
+  const notes = {
+    'Aries': `Your ${sign} Moon burns bold — warm crescents with an ember glow that won't be tamed.`,
+    'Taurus': `A full, ripe moon nestled in blooming botanicals. Your ${sign} Moon craves beauty you can feel.`,
+    'Gemini': `Quicksilver moon phases shifting and splitting. Your ${sign} Moon never sits still.`,
+    'Cancer': `The most luminous moon in the piece — protective, enveloping. Your ${sign} Moon is home.`,
+    'Leo': `A golden heart-glow radiating warmth outward. Your ${sign} Moon needs to be seen and adored.`,
+    'Virgo': `Hexagonal crescent patterns, quietly perfect. Your ${sign} Moon finds peace in order.`,
+    'Libra': `A mirror-balanced moon, always seeking its reflection. Your ${sign} Moon wants equilibrium.`,
+    'Scorpio': `Almost eclipsed, shadowed, magnetic. Your ${sign} Moon holds secrets that deepen the whole piece.`,
+    'Sagittarius': `An ascending lunar arc reaching for the stars. Your ${sign} Moon is always chasing horizons.`,
+    'Capricorn': `Geometric, architectural, disciplined. Your ${sign} Moon builds emotional foundations from stone.`,
+    'Aquarius': `Lightning-zigzag moon, electric and unconventional. Your ${sign} Moon feels in frequencies.`,
+    'Pisces': `Edges dissolving into water, boundaries vanishing. Your ${sign} Moon lives between dreaming and waking.`,
+  };
+  return notes[sign] || `Your ${sign} Moon shaped the emotional undertone of this piece.`;
+}
+
+function getRisingArtistNote(sign, visuals) {
+  const notes = {
+    'Aries': `Sharp lines breaking the frame — your ${sign} Rising makes an entrance before the art even begins.`,
+    'Taurus': `Thick botanical framing, lush and grounded. Your ${sign} Rising wraps the whole piece in luxury.`,
+    'Gemini': `Playful asymmetric pairs throughout. Your ${sign} Rising keeps the eye dancing.`,
+    'Cancer': `Soft protective curves enclose everything. Your ${sign} Rising creates a safe harbor.`,
+    'Leo': `Ornate, regal borders that command attention. Your ${sign} Rising is the red carpet of the piece.`,
+    'Virgo': `Delicate fine linework, precise and intentional. Your ${sign} Rising whispers perfection.`,
+    'Libra': `Sweeping Art Nouveau curves in perfect balance. Your ${sign} Rising insists on elegance.`,
+    'Scorpio': `Layered hidden details revealing themselves slowly. Your ${sign} Rising has depth upon depth.`,
+    'Sagittarius': `The composition pulls outward, expansive. Your ${sign} Rising refuses to be contained.`,
+    'Capricorn': `Angular vertical structure, ambitious and rising. Your ${sign} Rising builds upward.`,
+    'Aquarius': `Rule-breaking patterns that challenge convention. Your ${sign} Rising rewrites the rules.`,
+    'Pisces': `Dissolving, boundary-less edges. Your ${sign} Rising exists in the liminal spaces.`,
+  };
+  return notes[sign] || `Your ${sign} Rising defined the first impression of this piece.`;
+}
+
+function getElementArtistNote(element, elementBalance, palette) {
+  const total = Object.values(elementBalance).reduce((a, b) => a + b, 0);
+  const percentage = Math.round((elementBalance[element] / total) * 100);
+  const notes = {
+    'Fire': `${percentage}% of your chart burns with Fire — so the palette blazes with reds, oranges, and golds throughout.`,
+    'Water': `${percentage}% of your chart flows with Water — expect deep blues, purples, and teals rippling through every layer.`,
+    'Earth': `${percentage}% of your chart is grounded in Earth — rich greens, warm browns, and natural textures anchor the piece.`,
+    'Air': `${percentage}% of your chart breathes Air — light blues, whites, and airy pastels create spaciousness throughout.`,
+  };
+  return notes[element] || `Your dominant ${element} element defined the color story of this artwork.`;
+}
+
 // ─── Artwork element names (what the hotspot visually points to) ───
 
 function getSunArtworkElement(sign) {
