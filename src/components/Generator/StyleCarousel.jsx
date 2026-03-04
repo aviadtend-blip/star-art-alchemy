@@ -94,10 +94,10 @@ export default function StyleCarousel({
   }, [detectCenter]);
 
   return (
-    <div className="w-full overflow-hidden">
+    <div className="w-full overflow-hidden flex justify-center">
       <div
         ref={scrollRef}
-        className="flex items-end overflow-x-auto overflow-y-hidden scrollbar-hide"
+        className="flex items-end overflow-x-auto overflow-y-hidden scrollbar-hide lg:justify-center"
         style={{
           scrollSnapType: 'x mandatory',
           padding: `0 ${PAD}px 8px`,
