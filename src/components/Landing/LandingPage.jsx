@@ -167,29 +167,32 @@ export default function LandingPage() {
         <div className="absolute inset-0">
           <img src={heroDesktop} alt="" className="w-full h-full object-cover" />
         </div>
-        <div className="relative z-20 flex items-end min-h-[700px] pb-20 px-10">
-          {/* Left: text */}
-          <div className="max-w-xl flex-1">
-            <h1 className="text-a1 text-foreground mb-5 leading-[1.05]">
-              Turn Your Birth<br />
-              Into Gallery-Worthy Art
-            </h1>
-            <p className="text-body max-w-md" style={{ color: '#ffffff' }}>
-              Every element in your artwork corresponds to a specific<br className="hidden lg:block" />
-              astrological placement.
-            </p>
-          </div>
-          {/* Right: form card */}
-          <div
-            className="w-[440px] flex-shrink-0 flex flex-col items-stretch rounded-[2px]"
-            style={{
-              background: 'rgba(17, 17, 17, 0.70)',
-              backdropFilter: 'blur(17px)',
-              WebkitBackdropFilter: 'blur(17px)',
-              padding: '40px 40px',
-            }}
-          >
-            <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" />
+        <div className="relative z-20 flex flex-col justify-end min-h-[700px] px-10 pb-0">
+          {/* Bottom row: text left + form bar right */}
+          <div className="flex items-end gap-10 pb-10">
+            {/* Left: text */}
+            <div className="flex-shrink-0">
+              <h1 className="text-a1 text-foreground mb-4 leading-[1.05]" style={{ fontSize: '38px', lineHeight: '42px' }}>
+                Turn Your Birth<br />
+                Into Gallery-Worthy Art
+              </h1>
+              <p className="text-body max-w-md" style={{ color: '#ffffff' }}>
+                Every element in your artwork corresponds to a specific<br className="hidden lg:block" />
+                astrological placement.
+              </p>
+            </div>
+            {/* Right: inline form bar */}
+            <div
+              className="flex-1 min-w-0 rounded-[2px]"
+              style={{
+                background: 'rgba(17, 17, 17, 0.70)',
+                backdropFilter: 'blur(17px)',
+                WebkitBackdropFilter: 'blur(17px)',
+                padding: '28px 32px',
+              }}
+            >
+              <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" inline />
+            </div>
           </div>
         </div>
       </section>
