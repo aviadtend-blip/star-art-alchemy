@@ -431,8 +431,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══════════════════ BIRTH DATA FORM (Step 1a) ═══════════════════ */}
-      <section className="py-24 md:py-32 relative overflow-hidden" id="birth-form">
+      {/* ═══════════════════ BIRTH DATA FORM + TESTIMONIALS ═══════════════════ */}
+      <section className="py-24 md:py-32 pb-12 md:pb-16 relative overflow-hidden" id="birth-form">
         {/* Galaxy background image */}
         <img src={galaxyBg} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
         <div className="absolute inset-0 bg-black/30" />
@@ -458,16 +458,15 @@ export default function LandingPage() {
             <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} gap={30} />
           </div>
         </div>
+
+        {/* Testimonials — same section, shares galaxy background */}
+        <div className="relative z-10 hidden md:block mt-20">
+          <CustomerReactionsCarousel />
+        </div>
+        <div className="relative z-10 md:hidden mt-16">
+          <CustomerReactionsCarouselMobile />
+        </div>
       </section>
-
-
-      {/* ═══════════════════ TESTIMONIALS ═══════════════════ */}
-      <div className="hidden md:block w-full">
-        <CustomerReactionsCarousel />
-      </div>
-      <div className="md:hidden">
-        <CustomerReactionsCarouselMobile />
-      </div>
 
       {/* ═══════════════════ FAQ ═══════════════════ */}
       <FAQSection items={faqs} />
