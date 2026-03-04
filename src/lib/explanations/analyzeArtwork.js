@@ -14,9 +14,13 @@ import { generateChartExplanation } from './generateExplanation';
 export async function analyzeArtwork(imageUrl, chartData) {
   // Always prepare the static fallback
   const fallback = generateChartExplanation(chartData);
+  const fallbackWithSource = {
+    ...fallback,
+    analyzedImageUrl: imageUrl || null,
+  };
 
   if (!imageUrl || !chartData) {
-    return fallback;
+    return fallbackWithSource;
   }
 
   try {
