@@ -91,7 +91,7 @@ function DotIndicators({
           aria-label={`Go to testimonial ${i + 1}`}
           onClick={() => onDotClick(i)}
           className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-            i === active ? "bg-[#fe6781]" : "bg-[#c1c1c1]"
+            i === active ? "bg-[#fe6781]" : "bg-white/40"
           }`}
         />
       ))}
@@ -153,9 +153,9 @@ export default function CustomerReactionsCarouselMobile({
   const current = testimonials[activeIndex];
 
   return (
-    <section
-      className="flex flex-col gap-8 items-center justify-center px-5 py-[61px] w-full bg-white"
-      style={{ minHeight: 400 }}
+    <div
+      className="flex flex-col gap-8 items-center justify-center px-5 pb-[61px] w-full"
+      style={{ minHeight: 300 }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -167,7 +167,7 @@ export default function CustomerReactionsCarouselMobile({
 
         {/* Quote */}
         <p
-          className="text-[24px] font-medium text-[#1e1e1e] text-center leading-[1.2] tracking-[-0.48px]"
+          className="text-[24px] font-medium text-white text-center leading-[1.2] tracking-[-0.48px]"
           style={{ fontFamily: "'TASA Explorer', sans-serif" }}
         >
           "{current.quote}"
@@ -175,7 +175,7 @@ export default function CustomerReactionsCarouselMobile({
 
         {/* Author */}
         <p
-          className="text-[12px] font-bold uppercase text-[#727272] tracking-normal leading-[1.13]"
+          className="text-[12px] font-bold uppercase text-white/50 tracking-normal leading-[1.13]"
           style={{ fontFamily: "'TASA Explorer', sans-serif" }}
         >
           — {current.author}
@@ -188,6 +188,6 @@ export default function CustomerReactionsCarouselMobile({
         active={activeIndex}
         onDotClick={goTo}
       />
-    </section>
+    </div>
   );
 }
