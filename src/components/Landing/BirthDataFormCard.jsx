@@ -224,7 +224,7 @@ export default function BirthDataFormCard({
           {/* Desktop: fields + button inline, checkbox/back below */}
           <div className="hidden md:block">
             <div className="flex items-end gap-4">
-              <div className="flex-1 min-w-0">{timeInputs}</div>
+              <div className="flex-1 min-w-0">{timeInputsDesktop}</div>
               <PrimaryButton onClick={handleStep1bSubmit} className="flex-shrink-0">
                 Choose style
               </PrimaryButton>
@@ -233,7 +233,7 @@ export default function BirthDataFormCard({
 
           {/* Mobile: fields → checkbox → buttons (back + choose style) */}
           <div className="md:hidden flex flex-col gap-6">
-            {timeInputs}
+            {timeInputMobile}
             {checkboxEl}
             <div className="flex gap-3">
               <button type="button" onClick={() => setShowTimeStep(false)} className="flex-1 h-12 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10">
