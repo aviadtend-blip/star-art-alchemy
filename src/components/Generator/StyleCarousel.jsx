@@ -109,32 +109,20 @@ export default function StyleCarousel({
       >
         {styles.map((style, i) => {
           const isActive = i === activeIndex;
-          // On desktop (md+), all cards same size. On mobile, active card is larger.
-          const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-          const w = (isActive && isMobile) ? ACTIVE_W : INACTIVE_W;
-          const h = (isActive && isMobile) ? ACTIVE_H : INACTIVE_H;
 
           return (
             <div
               key={style.id}
               ref={(el) => (cardRefs.current[i] = el)}
-              className="shrink-0 relative group"
+              className={`shrink-0 relative group ${!isActive ? 'md:hover:scale-[1.04]' : ''}`}
               style={{
-                width: w,
-                height: h,
+                width: INACTIVE_W,
+                height: INACTIVE_H,
                 scrollSnapAlign: 'center',
                 borderRadius: 2,
                 overflow: 'visible',
-                transition: 'width 0.3s ease, height 0.3s ease, transform 0.2s ease',
+                transition: 'transform 0.2s ease',
                 cursor: 'pointer',
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive && window.innerWidth >= 768) {
-                  e.currentTarget.style.transform = 'scale(1.04)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = '';
               }}
               onClick={() => {
                 if (!isActive) {
