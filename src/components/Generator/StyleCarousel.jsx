@@ -109,8 +109,10 @@ export default function StyleCarousel({
       >
         {styles.map((style, i) => {
           const isActive = i === activeIndex;
-          const w = isActive ? ACTIVE_W : INACTIVE_W;
-          const h = isActive ? ACTIVE_H : INACTIVE_H;
+          // On desktop (md+), all cards same size. On mobile, active card is larger.
+          const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+          const w = (isActive && isMobile) ? ACTIVE_W : INACTIVE_W;
+          const h = (isActive && isMobile) ? ACTIVE_H : INACTIVE_H;
 
           return (
             <div
@@ -125,7 +127,6 @@ export default function StyleCarousel({
                 overflow: 'visible',
                 transition: 'width 0.3s ease, height 0.3s ease, transform 0.2s ease',
                 cursor: 'pointer',
-                transform: !isActive ? undefined : undefined,
               }}
               onMouseEnter={(e) => {
                 if (!isActive && window.innerWidth >= 768) {
