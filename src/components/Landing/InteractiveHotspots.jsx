@@ -192,31 +192,8 @@ export default function InteractiveHotspots({ onScrollToForm }) {
       </div>
 
       {/* ===== DESKTOP: two-column layout ===== */}
-      <div className="hidden md:flex mx-auto px-8 gap-12 items-start w-full" style={{ maxWidth: 1060 }}>
-        {/* Left: sticky artwork */}
-        <div className="w-1/2 flex-shrink-0 sticky flex flex-col items-center justify-center" style={{ top: "80px" }}>
-          <div className="relative">
-            <img
-              src={hotspotExample}
-              alt="Example birth chart artwork with interactive hotspot markers"
-              className="w-full"
-              style={{ borderRadius: "2px" }}
-            />
-            {HOTSPOTS.map((h) => (
-              <HotspotMarker
-                key={h.id}
-                h={h}
-                onClick={() => {
-                  setActiveHotspot(h.id);
-                  const el = document.getElementById(`landing-hotspot-${h.id}`);
-                  el?.scrollIntoView({ behavior: "smooth", block: "center" });
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Right: intro + description cards */}
+      <div className="hidden md:flex mx-auto px-8 gap-12 w-full" style={{ maxWidth: 1060 }}>
+        {/* Left: description cards (scrollable) */}
         <div className="flex-1 min-w-0 py-12">
           {/* Introduction */}
           <div className="mb-8">
@@ -239,6 +216,29 @@ export default function InteractiveHotspots({ onScrollToForm }) {
               >
                 <DescriptionCard h={h} isLast={i === HOTSPOTS.length - 1} />
               </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right: sticky artwork, vertically centered */}
+        <div className="w-1/2 flex-shrink-0 self-start sticky" style={{ top: '50%', transform: 'translateY(-50%)' }}>
+          <div className="relative">
+            <img
+              src={hotspotExample}
+              alt="Example birth chart artwork with interactive hotspot markers"
+              className="w-full"
+              style={{ borderRadius: "2px" }}
+            />
+            {HOTSPOTS.map((h) => (
+              <HotspotMarker
+                key={h.id}
+                h={h}
+                onClick={() => {
+                  setActiveHotspot(h.id);
+                  const el = document.getElementById(`landing-hotspot-${h.id}`);
+                  el?.scrollIntoView({ behavior: "smooth", block: "center" });
+                }}
+              />
             ))}
           </div>
         </div>
