@@ -201,9 +201,10 @@ export default function StyleCarousel({
                 width: 'calc(100% - 48px)',
                 borderRadius: 40,
                 backgroundColor: '#FFFFFF',
-                border: '1px solid transparent',
+                color: '#000000',
+                border: '1px solid #000000',
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#F0F0F0'; }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#F5F5F5'; }}
               onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#FFFFFF'; }}
             >
               Show 3 additional styles
