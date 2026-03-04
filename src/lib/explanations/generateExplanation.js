@@ -13,48 +13,28 @@ export function generateChartExplanation(chartData) {
 
     elements: [
       {
-        title: `Sun in ${chartData.sun.sign}`,
-        subtitle: "The Heart of Your Piece",
+        chartElement: `Sun in ${chartData.sun.sign}, House ${chartData.sun.house}`,
+        artworkElement: getSunArtworkElement(chartData.sun.sign),
         icon: "☀️",
         explanation: getSunArtistNote(chartData.sun.sign, sunVisuals),
-        visualCues: [
-          `${sunVisuals.circleDescription}. Botanical elements: ${sunVisuals.botanicals}`,
-          getSunSymbolicCue(chartData.sun.sign)
-        ],
-        meaning: getSunArtistInsight(chartData.sun.sign),
       },
       {
-        title: `Moon in ${chartData.moon.sign}`,
-        subtitle: "The Mood & Atmosphere",
+        chartElement: `Moon in ${chartData.moon.sign}, House ${chartData.moon.house}`,
+        artworkElement: getMoonArtworkElement(chartData.moon.sign),
         icon: "🌙",
         explanation: getMoonArtistNote(chartData.moon.sign, moonVisuals),
-        visualCues: [
-          `${moonVisuals.circleDescription}. Atmospheric quality: ${moonVisuals.atmosphere}`,
-          getMoonSymbolicCue(chartData.moon.sign)
-        ],
-        meaning: getMoonArtistInsight(chartData.moon.sign),
       },
       {
-        title: `${chartData.rising} Rising`,
-        subtitle: "The Overall Style & Composition",
+        chartElement: `${chartData.rising} Rising`,
+        artworkElement: getRisingArtworkElement(chartData.rising),
         icon: "⬆️",
         explanation: getRisingArtistNote(chartData.rising, risingVisuals),
-        visualCues: [
-          getRisingVisualCue(chartData.rising),
-          getRisingSymbolicCue(chartData.rising)
-        ],
-        meaning: getRisingArtistInsight(chartData.rising),
       },
       {
-        title: `${dominantElement} Dominant`,
-        subtitle: "The Color Palette",
+        chartElement: `${dominantElement} Dominant`,
+        artworkElement: getElementArtworkElement(dominantElement),
         icon: getElementIcon(dominantElement),
         explanation: getElementArtistNote(dominantElement, chartData.element_balance, palette),
-        visualCues: [
-          getElementalVisualCue(chartData.element_balance, dominantElement),
-          `Overall atmosphere: ${palette.description}`
-        ],
-        meaning: getElementArtistInsight(dominantElement),
       }
     ]
   };

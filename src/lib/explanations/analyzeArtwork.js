@@ -41,26 +41,26 @@ export async function analyzeArtwork(imageUrl, chartData) {
       elements: [
         {
           ...fallback.elements[0],
+          artworkElement: analysis.sun.artworkElement || fallback.elements[0].artworkElement,
           explanation: analysis.sun.explanation,
-          meaning: analysis.sun.insight,
           aiPosition: normalizePosition(analysis.sun.position),
         },
         {
           ...fallback.elements[1],
+          artworkElement: analysis.moon.artworkElement || fallback.elements[1].artworkElement,
           explanation: analysis.moon.explanation,
-          meaning: analysis.moon.insight,
           aiPosition: normalizePosition(analysis.moon.position),
         },
         {
           ...fallback.elements[2],
+          artworkElement: analysis.rising.artworkElement || fallback.elements[2].artworkElement,
           explanation: analysis.rising.explanation,
-          meaning: analysis.rising.insight,
           aiPosition: normalizePosition(analysis.rising.position),
         },
         {
           ...fallback.elements[3],
+          artworkElement: analysis.element.artworkElement || fallback.elements[3].artworkElement,
           explanation: analysis.element.explanation,
-          meaning: analysis.element.insight,
           aiPosition: normalizePosition(analysis.element.position),
         },
       ],
