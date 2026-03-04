@@ -133,7 +133,7 @@ export default function CustomerReactionsCarousel({
   return (
     <div className="pb-[61px] px-4 w-full">
 
-      <div className="relative z-10 flex flex-col gap-8 items-center justify-center px-[164px] py-[61px] max-w-5xl mx-auto" style={{ minHeight: 280 }}>
+      <div className="relative z-10 flex flex-col gap-8 items-center justify-center max-w-[566px] mx-auto" style={{ minHeight: 200 }}>
       <div className="flex gap-8 items-center justify-center w-full">
         <ArrowButton direction="left" onClick={goLeft} />
 
