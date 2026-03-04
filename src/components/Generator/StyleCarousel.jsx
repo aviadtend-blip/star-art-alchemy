@@ -94,7 +94,7 @@ export default function StyleCarousel({
   }, [detectCenter]);
 
   return (
-    <div className="w-full overflow-hidden flex justify-center">
+    <div className="w-full flex justify-center" style={{ overflow: 'clip' }}>
       <div
         ref={scrollRef}
         className="flex items-end overflow-x-auto overflow-y-hidden scrollbar-hide justify-start lg:justify-center"
@@ -114,7 +114,7 @@ export default function StyleCarousel({
             <div
               key={style.id}
               ref={(el) => (cardRefs.current[i] = el)}
-              className={`shrink-0 relative group ${!isActive ? 'md:hover:scale-[1.04]' : ''}`}
+              className={`shrink-0 relative group ${!isActive ? 'md:hover:scale-[1.04] md:hover:z-10' : ''}`}
               style={{
                 width: INACTIVE_W,
                 height: INACTIVE_H,
