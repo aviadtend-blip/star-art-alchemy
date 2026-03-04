@@ -148,7 +148,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
 
 
   const DescriptionCard = ({ h, isLast }) => (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col" style={{ gap: 4 }}>
       {/* Eyebrow row: numbered circle + chart element */}
       <div className="flex items-center gap-3">
         <span
