@@ -70,7 +70,7 @@ export async function analyzeArtwork(imageUrl, chartData) {
     };
   } catch (err) {
     console.error('Artwork analysis failed, using static fallback:', err);
-    return fallback;
+    return fallbackWithSource;
   }
 }
 
@@ -83,10 +83,4 @@ function normalizePosition(pos) {
   const top = Math.max(5, Math.min(95, pos.top));
   const left = Math.max(5, Math.min(95, pos.left));
   return { top: `${top}%`, left: `${left}%` };
-}
-
-function getDominantElement(elementBalance) {
-  return Object.keys(elementBalance).reduce((a, b) =>
-    elementBalance[a] > elementBalance[b] ? a : b
-  );
 }
