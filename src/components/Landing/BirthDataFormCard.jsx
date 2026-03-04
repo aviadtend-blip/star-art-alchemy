@@ -184,32 +184,35 @@ export default function BirthDataFormCard({
                 </svg>
               </div>
             </div>
+
+            {/* Checkbox */}
+            <div className="flex items-start gap-3">
+              <div
+                className="w-5 h-5 mt-0.5 rounded flex items-center justify-center flex-shrink-0 cursor-pointer border border-white/10"
+                style={{ backgroundColor: dontKnowTime ? '#FFFFFF' : '#2C2C2C' }}
+                onClick={() => setDontKnowTime(!dontKnowTime)}
+              >
+                {dontKnowTime && (
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#191919" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                )}
+              </div>
+              <input type="checkbox" checked={dontKnowTime} onChange={(e) => setDontKnowTime(e.target.checked)} className="sr-only" />
+              <div>
+                <span className="text-a5 text-foreground">I don't know my birth time</span>
+                {dontKnowTime && (
+                  <p className="text-body mt-1" style={{ color: '#6A6A6A' }}>
+                    No worries! Your artwork will still be deeply personal and beautifully accurate.
+                  </p>
+                )}
+              </div>
+            </div>
+
             <PrimaryButton onClick={handleStep1bSubmit} className="w-full">
               Choose style
             </PrimaryButton>
           </div>
         </div>
-        <div className="flex items-start justify-between">
-          <div className="flex items-start gap-3">
-            <div
-              className="w-5 h-5 mt-0.5 rounded flex items-center justify-center flex-shrink-0 cursor-pointer border border-white/10"
-              style={{ backgroundColor: dontKnowTime ? '#FFFFFF' : '#2C2C2C' }}
-              onClick={() => setDontKnowTime(!dontKnowTime)}
-            >
-              {dontKnowTime && (
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#191919" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              )}
-            </div>
-            <input type="checkbox" checked={dontKnowTime} onChange={(e) => setDontKnowTime(e.target.checked)} className="sr-only" />
-            <div>
-              <span className="text-a5 text-foreground">I don't know my birth time</span>
-              {dontKnowTime && (
-                <p className="text-body mt-1" style={{ color: '#6A6A6A' }}>
-                  No worries! Your artwork will still be deeply personal and beautifully accurate.
-                </p>
-              )}
-            </div>
-          </div>
+        <div className="flex justify-end">
           <button type="button" onClick={() => setShowTimeStep(false)} className="link-a5 font-body text-foreground py-0 flex-shrink-0" style={{ textDecoration: 'underline' }}>
             Back
           </button>
