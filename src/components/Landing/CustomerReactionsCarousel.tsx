@@ -80,7 +80,7 @@ function DotIndicators({ total, active }: { total: number; active: number }) {
         <div
           key={i}
           className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-            i === active ? "bg-[#fe6781]" : "bg-[#c1c1c1]"
+            i === active ? "bg-[#fe6781]" : "bg-white/40"
           }`}
         />
       ))}
@@ -102,9 +102,9 @@ function ArrowButton({
     <button
       onClick={onClick}
       aria-label={`${direction === "left" ? "Previous" : "Next"} testimonial`}
-      className="flex items-center justify-center w-8 h-8 rounded-full border border-[#1e1e1e] hover:bg-gray-100 transition-colors shrink-0"
+      className="flex items-center justify-center w-8 h-8 rounded-full border border-white/40 hover:bg-white/10 transition-colors shrink-0"
     >
-      <Icon className="w-4 h-4 text-[#1e1e1e]" strokeWidth={1.5} />
+      <Icon className="w-4 h-4 text-white" strokeWidth={1.5} />
     </button>
   );
 }
@@ -133,26 +133,22 @@ export default function CustomerReactionsCarousel({
   return (
     <section className="relative overflow-hidden py-[61px] px-4 w-full" style={{ minHeight: 340, backgroundImage: `url(${galaxyBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
 
-      {/* White inner container */}
-      <div className="relative z-10 flex flex-col gap-8 items-center justify-center bg-white rounded-lg px-[164px] py-[61px] max-w-5xl mx-auto" style={{ minHeight: 280 }}>
+      <div className="relative z-10 flex flex-col gap-8 items-center justify-center px-[164px] py-[61px] max-w-5xl mx-auto" style={{ minHeight: 280 }}>
       <div className="flex gap-8 items-center justify-center w-full">
         <ArrowButton direction="left" onClick={goLeft} />
 
         <div className="flex-1 flex flex-col gap-5 items-center">
-          {/* Stars */}
           <StarRating count={current.rating} />
 
-          {/* Quote */}
           <p
-            className="text-[24px] font-medium text-[#1e1e1e] text-center leading-[1.2] tracking-[-0.48px]"
+            className="text-[24px] font-medium text-white text-center leading-[1.2] tracking-[-0.48px]"
             style={{ fontFamily: "'TASA Explorer', sans-serif" }}
           >
             "{current.quote}"
           </p>
 
-          {/* Author */}
           <p
-            className="text-[12px] font-bold uppercase text-[#727272] tracking-normal leading-[1.13]"
+            className="text-[12px] font-bold uppercase text-white/50 tracking-normal leading-[1.13]"
             style={{ fontFamily: "'TASA Explorer', sans-serif" }}
           >
             — {current.author}
@@ -162,7 +158,6 @@ export default function CustomerReactionsCarousel({
         <ArrowButton direction="right" onClick={goRight} />
       </div>
 
-      {/* Dot indicators */}
       <DotIndicators total={testimonials.length} active={activeIndex} />
       </div>
     </section>
