@@ -150,16 +150,13 @@ export default function StyleCarousel({
 
       <div
         ref={scrollRef}
-        className="flex items-end overflow-x-auto overflow-y-hidden scrollbar-hide justify-start lg:justify-center"
+        className="flex items-end overflow-x-auto overflow-y-hidden scrollbar-hide"
         style={{
           scrollSnapType: 'x mandatory',
-          padding: `0 ${PAD}px 8px`,
           gap: `${GAP}px`,
           WebkitOverflowScrolling: 'touch',
           height: ACTIVE_H + 8,
-          maxWidth: showingAll
-            ? (ACTIVE_W + (styles.length - 1) * (INACTIVE_W + GAP) + GAP + PAD * 2)
-            : ((styles.length + 1) * (INACTIVE_W + GAP) + PAD * 2),
+          paddingBottom: 8,
         }}
       >
         {styles.map((style, i) => {
