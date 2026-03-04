@@ -1,5 +1,4 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Search, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ART_STYLES, ADDITIONAL_STYLES } from '@/config/artStyles';
