@@ -48,7 +48,7 @@ serve(async (req) => {
       "Fire"
     );
 
-    const prompt = `You are the artist who created this birth chart artwork. Study the image and write punchy, mystical artist's notes.
+    const prompt = `You created this birth chart artwork. Study the image and write grounded, conversational hotspot notes.
 
 The person's chart: Sun in ${sunSign} (House ${chartData.sun?.house || '?'}), Moon in ${moonSign} (House ${chartData.moon?.house || '?'}), ${rising} Rising, dominant ${dominantElement} (${Object.entries(elementBalance).map(([k,v]) => `${k}: ${v}`).join(", ")}).
 
@@ -57,35 +57,43 @@ Write JSON (no markdown, no backticks):
   "subjectExplanation": "1-2 sentences, MAX 30 words. Format: 'Your birth chart reveals [key personality insight] — we chose [subject/creature/figure visible in the artwork] as your cosmic guardian because it embodies your [specific chart qualities].' Be specific to their ${sunSign} Sun, ${moonSign} Moon, ${rising} Rising combination. Reference the actual main subject/creature/figure you see in the image.",
   "sun": {
     "artworkElement": "A short name (3-6 words) for the specific visual element in the artwork this hotspot points to. Example: 'The gilded central sunburst', 'The blazing crimson petals'",
-    "explanation": "2-3 SHORT sentences explaining why their ${sunSign} Sun in House ${chartData.sun?.house || '?'} inspired this visual element. Mystical tone, not academic.",
+    "explanation": "2 sentences max about this person's Sun placement. See WRITING RULES below.",
     "position": { "top": <0-100>, "left": <0-100> }
   },
   "moon": {
     "artworkElement": "A short name (3-6 words) for the moon-inspired visual element. Example: 'The silvered crescent forms', 'The deep indigo undertow'",
-    "explanation": "2-3 SHORT sentences about the moon element and mood, inspired by Moon in ${moonSign} House ${chartData.moon?.house || '?'}.",
+    "explanation": "2 sentences max about this person's Moon placement. See WRITING RULES below.",
     "position": { "top": <0-100>, "left": <0-100> }
   },
   "rising": {
     "artworkElement": "A short name (3-6 words) for the composition/framing element. Example: 'The angular architectural edges', 'The flowing border tendrils'",
-    "explanation": "2-3 SHORT sentences about composition/framing inspired by ${rising} Rising.",
+    "explanation": "2 sentences max about this person's Rising sign. See WRITING RULES below.",
     "position": { "top": <0-100>, "left": <0-100> }
   },
   "element": {
     "artworkElement": "A short name (3-6 words) for the color palette element. Example: 'The warm amber-to-crimson wash', 'The oceanic blue depth'",
-    "explanation": "2-3 SHORT sentences about the color palette, inspired by ${dominantElement}-dominant chart.",
+    "explanation": "2 sentences max about this person's dominant element. See WRITING RULES below.",
     "position": { "top": <0-100>, "left": <0-100> }
   }
 }
 
+WRITING RULES FOR "explanation" FIELDS:
+- Write in second person ("You...")
+- Conversational and grounded. The reader should feel like they could read this once and then naturally explain it to a friend standing in their home looking at the artwork on the wall.
+- Most of the sentence should be about the PERSON — their personality, how they move through the world, what they value, how they relate to others — NOT about what's visually on the artwork.
+- Only briefly anchor to the artwork element at the end (one clause max), so the reader knows what to point at.
+- No mystical fluff. No "the cosmos," no "your journey," no "celestial," no "cosmic blueprint." Speak plainly.
+- Max 2 sentences per hotspot. Keep them short.
+- Tone: like a smart friend explaining something true about you, not a horoscope.
+- BAD example: "The silvered linework reflects the cosmic precision of your Virgo moon, weaving celestial intention into every carefully rendered detail of your birth map."
+- GOOD example: "You tend to notice the things other people miss — the small inconsistency, the better way to do something. That's your Virgo Moon, and it's why this section is built from fine, precise lines."
+
 STYLE RULES:
-- Each explanation should be 2-3 sentences. Max 25 words per sentence.
 - artworkElement MUST name a specific visible element in the artwork (3-6 words, title case)
 - subjectExplanation MUST be max 30 words and reference the actual visible subject/creature/figure
-- Mystical and warm, NOT academic or verbose. Example: "Your fire-dominant chart blazes through in amber and crimson — pure passion made visible."
-- Use dashes, fragments, and poetic compression. Avoid filler words.
-- First person as the artist ("I chose...", "I let...")
+- First person as the artist for subjectExplanation only ("I chose...", "I let...")
 - ONLY describe what's ACTUALLY VISIBLE — don't invent elements
-- Never use: represent, symbolize, vibrant, intricate, tapestry, journey, essence, energy, manifest
+- Never use: represent, symbolize, vibrant, intricate, tapestry, journey, essence, energy, manifest, celestial, cosmic
 
 POSITION RULES:
 - Position = approximate center of each element as percentage (0=top/left, 100=bottom/right)
