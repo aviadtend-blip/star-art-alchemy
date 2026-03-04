@@ -23,7 +23,9 @@ export default function BirthDataFormCard({
   inline = false,
 }) {
   const [showTimeStep, setShowTimeStep] = useState(false);
-  const [birthTimeValue, setBirthTimeValue] = useState("12:00");
+  const [birthHour, setBirthHour] = useState("12");
+  const [birthMinute, setBirthMinute] = useState("00");
+  const [birthAmPm, setBirthAmPm] = useState("AM");
   const [dontKnowTime, setDontKnowTime] = useState(false);
   const [locationError, setLocationError] = useState(false);
 
