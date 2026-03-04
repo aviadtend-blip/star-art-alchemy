@@ -54,20 +54,17 @@ export default function StyleCarousel({
     if (!card || !el) return;
     const cardCenter = card.offsetLeft + card.offsetWidth / 2;
     const scrollTarget = cardCenter - el.clientWidth / 2;
-    isScrollingRef.current = true;
+    isProgrammaticScroll.current = true;
     el.scrollTo({ left: scrollTarget, behavior: 'smooth' });
-    setTimeout(() => { isScrollingRef.current = false; }, 400);
+    setTimeout(() => { isProgrammaticScroll.current = false; }, 500);
   }, []);
 
-  // On mount and when activeIndex changes externally, scroll to it
+  // Always scroll to active card when activeIndex changes
   useEffect(() => {
-    if (!userScrollRef.current) {
-      scrollToIndex(activeIndex);
-    }
-    userScrollRef.current = false;
+    scrollToIndex(activeIndex);
   }, [activeIndex, scrollToIndex]);
 
-  // Scroll end detection
+  // Scroll end detection — only update activeIndex from manual (touch/swipe) scrolls
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -75,9 +72,10 @@ export default function StyleCarousel({
     const onScroll = () => {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
-        userScrollRef.current = true;
-        detectCenter();
-      }, 80);
+        if (!isProgrammaticScroll.current) {
+          detectCenter();
+        }
+      }, 100);
     };
     el.addEventListener('scroll', onScroll, { passive: true });
     return () => {
