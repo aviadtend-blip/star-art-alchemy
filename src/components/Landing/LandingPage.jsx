@@ -134,11 +134,11 @@ export default function LandingPage() {
 
       {/* ═══════════════════ HERO ═══════════════════ */}
       {/* Mobile hero */}
-      <section className="md:hidden relative overflow-hidden min-h-[640px]">
-        <div className="absolute inset-0 flex items-start justify-center">
-          <img src={heroMobile} alt="" className="w-[85%] h-auto object-contain mt-4" />
+      <section className="lg:hidden relative overflow-hidden min-h-[680px]">
+        <div className="absolute inset-0">
+          <img src={heroMobile} alt="" className="w-full h-full object-cover" />
         </div>
-        <div className="relative z-10 flex flex-col justify-end min-h-[640px] px-4 py-[15px]">
+        <div className="relative z-10 flex flex-col justify-end min-h-[680px] px-4 py-[15px]">
           {/* Title + Subtitle */}
           <div className="flex flex-col gap-3 text-center mb-4">
             <h1 className="text-a1 text-foreground">
@@ -166,11 +166,11 @@ export default function LandingPage() {
       </section>
 
       {/* Desktop hero — gallery wall */}
-      <section className="hidden md:block relative min-h-[700px] overflow-hidden">
+      <section className="hidden lg:block relative min-h-[740px] overflow-hidden">
         <div className="absolute inset-0">
           <img src={heroDesktop} alt="" className="w-full h-full object-cover" />
         </div>
-        <div className="relative z-20 flex flex-col justify-end min-h-[700px] pb-0 px-6">
+        <div className="relative z-20 flex flex-col justify-end min-h-[740px] pb-0 px-6">
           {/* Bottom row: text left + form bar right */}
           <div className="flex items-end gap-10 pb-10 max-w-5xl mx-auto w-full">
             {/* Left: text */}
