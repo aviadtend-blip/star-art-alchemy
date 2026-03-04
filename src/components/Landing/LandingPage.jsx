@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import FAQSection from "@/components/ui/FAQSection";
 import BirthDataFormCard from "./BirthDataFormCard";
 import heroMobile from "@/assets/hero-mobile.webp";
-import heroMobileTall from "@/assets/hero-mobile-tall.jpg";
+
 import heroDesktop from "@/assets/hero-desktop.webp";
 import emmaChart from "@/assets/gallery/emma-chart.webp";
 import danielChart from "@/assets/gallery/daniel-chart.webp";
@@ -134,30 +134,33 @@ export default function LandingPage() {
 
       {/* ═══════════════════ HERO ═══════════════════ */}
       {/* Mobile hero */}
-      <section className="md:hidden relative overflow-hidden">
+      <section className="md:hidden relative overflow-hidden min-h-[540px]">
         <div className="absolute inset-0">
-          <img src={heroMobileTall} alt="" className="w-full h-full object-cover" />
+          <img src={heroMobile} alt="" className="w-full h-full object-cover" />
         </div>
-        <div className="relative z-10 flex flex-col justify-end px-4 pt-[45vh] pb-10">
-          <h1 className="text-a1 text-foreground text-center mb-3">
-            Turn Your Birth<br />
-            Into Gallery-Worthy Art
-          </h1>
-          <p className="text-body text-center mb-8" style={{ color: '#ffffff' }}>
-            Every element in your artwork corresponds to a specific astrological placement.
-          </p>
+        <div className="relative z-10 flex flex-col justify-end min-h-[540px] px-4 py-[15px]">
+          {/* Title + Subtitle */}
+          <div className="flex flex-col gap-3 text-center mb-4">
+            <h1 className="text-a1 text-foreground">
+              Turn Your Birth<br />
+              Into Gallery-Worthy Art
+            </h1>
+            <p className="text-body mx-auto" style={{ color: '#ffffff', maxWidth: '344px' }}>
+              Every element in your artwork corresponds to a specific astrological placement.
+            </p>
+          </div>
 
-          {/* Glass card */}
+          {/* Glass form card */}
           <div
-            className="flex flex-col items-stretch rounded-[2px]"
+            className="flex flex-col items-stretch"
             style={{
               background: 'rgba(17, 17, 17, 0.70)',
               backdropFilter: 'blur(17px)',
               WebkitBackdropFilter: 'blur(17px)',
-              padding: '36px 28px',
+              padding: '16px',
             }}
           >
-            <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" />
+            <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" gap={9} />
           </div>
         </div>
       </section>
