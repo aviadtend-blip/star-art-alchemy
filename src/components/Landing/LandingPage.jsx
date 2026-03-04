@@ -460,10 +460,10 @@ export default function LandingPage() {
         </div>
 
         {/* Testimonials — same section, shares galaxy background */}
-        <div className="relative z-10 hidden md:block mt-20">
+        <div className="relative z-10 hidden md:block mt-8">
           <CustomerReactionsCarousel />
         </div>
-        <div className="relative z-10 md:hidden mt-16">
+        <div className="relative z-10 md:hidden mt-8">
           <CustomerReactionsCarouselMobile />
         </div>
       </section>
