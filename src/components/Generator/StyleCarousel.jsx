@@ -174,8 +174,8 @@ export default function StyleCarousel({
                 </button>
               )}
 
-              {/* Most popular badge — active card only */}
-              {isActive && style.mostPopular && (
+              {/* Most popular badge */}
+              {style.mostPopular && (
                 <div
                   className="absolute left-1/2"
                   style={{
@@ -186,6 +186,19 @@ export default function StyleCarousel({
                   <PopularTag />
                 </div>
               )}
+
+              {/* Hover label — desktop only, below card */}
+              <div
+                className="absolute left-0 right-0 hidden md:block text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+                style={{ top: '100%', paddingTop: style.mostPopular ? 20 : 10 }}
+              >
+                <h3 className="font-display text-subtitle" style={{ color: '#000000' }}>
+                  {style.name}
+                </h3>
+                <p className="font-body" style={{ fontSize: 14, color: '#727272', opacity: 0.7, marginTop: 2 }}>
+                  {style.subtitle}
+                </p>
+              </div>
             </div>
           );
         })}
