@@ -140,8 +140,8 @@ export default function BirthDataFormCard({
       <div className="flex flex-col" style={{ gap }}>
         <div>
           <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH TIME</label>
-          <div className="flex items-end gap-4">
-            <div className={`flex-1 flex items-end gap-4 transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
+          <div className="flex flex-col gap-6">
+            <div className={`flex items-end gap-4 transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
               <div className="flex-1 min-w-0">
                 <input
                   type="text"
@@ -184,7 +184,7 @@ export default function BirthDataFormCard({
                 </svg>
               </div>
             </div>
-            <PrimaryButton onClick={handleStep1bSubmit} className="flex-shrink-0">
+            <PrimaryButton onClick={handleStep1bSubmit} className="w-full">
               Choose style
             </PrimaryButton>
           </div>
