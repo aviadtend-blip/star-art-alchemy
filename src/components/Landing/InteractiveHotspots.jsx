@@ -192,7 +192,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
       </div>
 
       {/* ===== DESKTOP: two-column layout ===== */}
-      <div className="hidden md:flex mx-auto px-8 gap-12 w-full" style={{ maxWidth: 1060 }}>
+      <div className="hidden md:flex mx-auto px-8 gap-12 items-start w-full" style={{ maxWidth: 1060 }}>
         {/* Left: description cards (scrollable) */}
         <div className="flex-1 min-w-0 py-12">
           {/* Introduction */}
@@ -221,7 +221,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
         </div>
 
         {/* Right: sticky artwork, vertically centered */}
-        <div className="w-1/2 flex-shrink-0 self-start sticky" style={{ top: '50%', transform: 'translateY(-50%)' }}>
+        <div className="w-1/2 flex-shrink-0 flex items-center justify-center">
           <div className="relative">
             <img
               src={hotspotExample}
