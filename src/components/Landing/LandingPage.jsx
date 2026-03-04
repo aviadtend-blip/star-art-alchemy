@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import FAQSection from "@/components/ui/FAQSection";
 import BirthDataFormCard from "./BirthDataFormCard";
 import heroMobile from "@/assets/hero-mobile.webp";
-import heroMobileTall from "@/assets/hero-mobile-tall.jpg";
+
 import heroDesktop from "@/assets/hero-desktop.webp";
 import emmaChart from "@/assets/gallery/emma-chart.webp";
 import danielChart from "@/assets/gallery/daniel-chart.webp";
