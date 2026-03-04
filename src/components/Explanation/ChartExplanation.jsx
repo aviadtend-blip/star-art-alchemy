@@ -267,6 +267,10 @@ export function ChartExplanation({
   const hotspots = explanation.elements.map((el, i) => ({
     ...el,
     id: i + 1,
+    // Ensure new fields exist, falling back to legacy field names
+    chartElement: el.chartElement || el.title || '',
+    artworkElement: el.artworkElement || el.subtitle || 'Artwork element loading...',
+    explanation: el.explanation || '',
     position: el.aiPosition || staticPositions[i] || { top: '50%', left: '50%' },
   }));
 
