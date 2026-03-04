@@ -63,6 +63,7 @@ export function GeneratorProvider({ children }) {
   const handleStyleSelect = useCallback(async (styleId) => {
     const style = getStyleById(styleId);
     setSelectedStyle(style);
+    setArtworkAnalysis(null);
     navigate('/generate/loading');
 
     try {
@@ -108,6 +109,7 @@ export function GeneratorProvider({ children }) {
     setError(null);
     setGeneratedImage(null);
     setSelectedStyle(null);
+    setArtworkAnalysis(null);
     resetGenerationCache();
     navigate('/');
   }, [navigate]);

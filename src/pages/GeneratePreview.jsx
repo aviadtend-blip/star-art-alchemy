@@ -107,6 +107,9 @@ export default function GeneratePreview() {
       return;
     }
 
+    // Clear analysis immediately so old hotspot copy can't stick to a new image
+    setArtworkAnalysis(null);
+
     // Pick a random loading message
     const msg = REIMAGINE_MESSAGES[Math.floor(Math.random() * REIMAGINE_MESSAGES.length)];
     setReimagineMessage(msg);
