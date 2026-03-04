@@ -115,28 +115,32 @@ export default function GeneratePreview() {
     // Clear old mockup composites since artwork is changing
     clearCompositeCache();
 
-    // Preload image, then show it after min 2.5s loading state
+    // Preload image AND re-analyze artwork before dismissing loading state
     const startTime = Date.now();
-    const img = new Image();
-    img.onload = () => {
-      const elapsed = Date.now() - startTime;
-      const remaining = Math.max(0, 2500 - elapsed);
-      setTimeout(() => {
-        setGeneratedImage(next.imageUrl);
+    const imgPromise = new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = next.imageUrl;
+    });
+    const analysisPromise = analyzeArtwork(next.imageUrl, chartData).catch(() => null);
+
+    Promise.all([imgPromise, analysisPromise])
+      .then(([, analysisResult]) => {
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, 2500 - elapsed);
+        setTimeout(() => {
+          if (analysisResult) setArtworkAnalysis(analysisResult);
+          setGeneratedImage(next.imageUrl);
+          setIsReimagining(false);
+          // Start preloading mockups with new artwork
+          preloadCleanup.current?.();
+          preloadCleanup.current = preloadAllMockups(ALL_MOCKUP_SETS, next.imageUrl);
+        }, remaining);
+      })
+      .catch(() => {
         setIsReimagining(false);
-        // Start preloading mockups with new artwork
-        preloadCleanup.current?.();
-        preloadCleanup.current = preloadAllMockups(ALL_MOCKUP_SETS, next.imageUrl);
-        // Re-analyze artwork for updated hotspots
-        analyzeArtwork(next.imageUrl, chartData)
-          .then((result) => { if (result) setArtworkAnalysis(result); })
-          .catch(console.error);
-      }, remaining);
-    };
-    img.onerror = () => {
-      setIsReimagining(false);
-    };
-    img.src = next.imageUrl;
+      });
   }, [isDemo, isReimagining, setGeneratedImage]);
 
   const handleGenerateNew = useCallback(() => {
