@@ -37,9 +37,8 @@ export async function analyzeArtwork(imageUrl, chartData) {
 
     // Build the explanation object in the same shape as generateChartExplanation,
     // but with AI-generated text that references the actual image
-    const dominantElement = getDominantElement(chartData.element_balance);
-
     return {
+      analyzedImageUrl: imageUrl,
       overview: fallback.overview,
       subjectExplanation: analysis.subjectExplanation || null,
       elements: [
