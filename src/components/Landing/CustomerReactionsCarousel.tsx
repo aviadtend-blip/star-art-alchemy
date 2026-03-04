@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { ArrowLeft, ArrowRight, Star } from "lucide-react";
+import galaxyBg from "@/assets/galaxy-bg.jpg";
 
 // --- Types ---
 
@@ -130,8 +131,13 @@ export default function CustomerReactionsCarousel({
   const current = testimonials[activeIndex];
 
   return (
-    <section className="flex flex-col gap-8 items-center justify-center px-[164px] py-[61px] w-full bg-white" style={{ minHeight: 340 }}>
-      {/* Quote row: arrow — content — arrow */}
+    <section className="relative overflow-hidden py-[61px] px-4 w-full" style={{ minHeight: 340 }}>
+      {/* Starry background */}
+      <img src={galaxyBg} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
+      <div className="absolute inset-0 bg-black/30" />
+
+      {/* White inner container */}
+      <div className="relative z-10 flex flex-col gap-8 items-center justify-center bg-white rounded-lg px-[164px] py-[61px] max-w-5xl mx-auto" style={{ minHeight: 280 }}>
       <div className="flex gap-8 items-center justify-center w-full">
         <ArrowButton direction="left" onClick={goLeft} />
 
@@ -161,6 +167,7 @@ export default function CustomerReactionsCarousel({
 
       {/* Dot indicators */}
       <DotIndicators total={testimonials.length} active={activeIndex} />
+      </div>
     </section>
   );
 }
