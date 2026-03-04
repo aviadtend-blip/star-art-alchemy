@@ -134,11 +134,11 @@ export default function LandingPage() {
 
       {/* ═══════════════════ HERO ═══════════════════ */}
       {/* Mobile hero */}
-      <section className="md:hidden relative overflow-hidden min-h-[540px]">
+      <section className="md:hidden relative overflow-hidden min-h-[640px]">
         <div className="absolute inset-0">
           <img src={heroMobile} alt="" className="w-full h-full object-cover" />
         </div>
-        <div className="relative z-10 flex flex-col justify-end min-h-[540px] px-4 py-[15px]">
+        <div className="relative z-10 flex flex-col justify-end min-h-[640px] px-4 py-[15px]">
           {/* Title + Subtitle */}
           <div className="flex flex-col gap-3 text-center mb-4">
             <h1 className="text-a1 text-foreground">
@@ -152,7 +152,7 @@ export default function LandingPage() {
 
           {/* Glass form card */}
           <div
-            className="flex flex-col items-stretch"
+            className="flex flex-col items-stretch max-w-5xl mx-auto w-full"
             style={{
               background: 'rgba(17, 17, 17, 0.70)',
               backdropFilter: 'blur(17px)',
