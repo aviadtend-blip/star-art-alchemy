@@ -185,7 +185,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
         />
 
         {/* Title + subtitle below carousel — crossfade */}
-        <div className="text-center mt-3 relative" style={{ minHeight: 44 }}>
+        <div className="text-center mt-3 relative md:hidden" style={{ minHeight: 44 }}>
           <div
             key={activeIndex}
             className="animate-in fade-in slide-in-from-bottom-1 duration-300"
