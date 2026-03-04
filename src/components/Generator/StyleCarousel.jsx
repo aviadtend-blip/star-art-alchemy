@@ -116,7 +116,7 @@ export default function StyleCarousel({
             <div
               key={style.id}
               ref={(el) => (cardRefs.current[i] = el)}
-              className="shrink-0 relative"
+              className="shrink-0 relative group"
               style={{
                 width: w,
                 height: h,
@@ -140,6 +140,21 @@ export default function StyleCarousel({
                 className="w-full h-full object-cover"
                 style={{ borderRadius: 2, display: 'block' }}
               />
+
+              {/* Hover overlay — desktop only, non-active cards */}
+              {!isActive && (
+                <div
+                  className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 hidden md:flex items-center justify-center opacity-0 group-hover:opacity-100"
+                  style={{ borderRadius: 2 }}
+                >
+                  <div
+                    className="flex items-center justify-center bg-white/90 backdrop-blur-sm shadow-md"
+                    style={{ width: 36, height: 36, borderRadius: '50%' }}
+                  >
+                    <Search className="w-4 h-4" style={{ color: '#191919' }} />
+                  </div>
+                </div>
+              )}
 
               {/* Zoom button — active card only */}
               {isActive && (
