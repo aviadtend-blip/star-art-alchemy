@@ -76,6 +76,7 @@ export default function GeneratePreview() {
   const isDemo = !chartData;
   const displayChart = chartData || DEMO_CHART;
   const displayImage = generatedImage || (isDemo ? demoImage : taurusExample);
+  const matchedAnalysis = !isDemo && artworkAnalysis?.analyzedImageUrl === displayImage ? artworkAnalysis : null;
 
   // Run AI analysis for demo mode
   useEffect(() => {
@@ -144,7 +145,7 @@ export default function GeneratePreview() {
       .catch(() => {
         setIsReimagining(false);
       });
-  }, [isDemo, isReimagining, setGeneratedImage]);
+  }, [isDemo, isReimagining, chartData, setArtworkAnalysis, setGeneratedImage]);
 
   const handleGenerateNew = useCallback(() => {
     if (!selectedStyle) return;
@@ -162,7 +163,7 @@ export default function GeneratePreview() {
         formData={formData}
         onEditBirthData={handleEditBirthData || (() => navigate('/'))}
         onBackToStyle={handleBackToStyle || (() => navigate('/generate/style'))}
-        artworkAnalysis={isDemo ? demoAnalysis : artworkAnalysis}
+        artworkAnalysis={isDemo ? demoAnalysis : matchedAnalysis}
         onReimagine={!isDemo ? (variationsExhausted ? handleGenerateNew : handleReimagine) : undefined}
         isReimagining={isReimagining}
         variationsExhausted={variationsExhausted}
