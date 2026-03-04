@@ -123,8 +123,17 @@ export default function StyleCarousel({
                 scrollSnapAlign: 'center',
                 borderRadius: 2,
                 overflow: 'visible',
-                transition: 'width 0.3s ease, height 0.3s ease',
+                transition: 'width 0.3s ease, height 0.3s ease, transform 0.2s ease',
                 cursor: 'pointer',
+                transform: !isActive ? undefined : undefined,
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive && window.innerWidth >= 768) {
+                  e.currentTarget.style.transform = 'scale(1.04)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = '';
               }}
               onClick={() => {
                 if (!isActive) {
