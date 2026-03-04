@@ -422,7 +422,15 @@ export function ChartExplanation({
               <img
                 src={selectedImage}
                 alt={`Birth chart artwork for ${chartData?.sun?.sign || ''} Sun`}
-                className="w-full"
+                className="w-full pointer-events-none select-none"
+                style={{ borderRadius: '2px', WebkitUserDrag: 'none', userDrag: 'none' }}
+                onContextMenu={(e) => e.preventDefault()}
+                draggable={false}
+              />
+              {/* Transparent overlay to block long-press save on mobile */}
+              <div
+                className="absolute inset-0 z-[5]"
+                onContextMenu={(e) => e.preventDefault()}
                 style={{ borderRadius: '2px' }}
               />
               {showHotspots && hotspots.map((h) => {
@@ -686,7 +694,15 @@ export function ChartExplanation({
               <img
                 src={selectedImage}
                 alt={`Birth chart artwork for ${chartData?.sun?.sign || ''} Sun`}
-                className="w-full"
+                className="w-full pointer-events-none select-none"
+                style={{ WebkitUserDrag: 'none', userDrag: 'none' }}
+                onContextMenu={(e) => e.preventDefault()}
+                draggable={false}
+              />
+              {/* Transparent overlay to block long-press save on mobile */}
+              <div
+                className="absolute inset-0 z-[5]"
+                onContextMenu={(e) => e.preventDefault()}
               />
               {showHotspots && hotspots.map((h) => {
                 const isActive = activeHotspot === h.id;
