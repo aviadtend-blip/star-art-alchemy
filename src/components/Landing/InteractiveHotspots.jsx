@@ -4,26 +4,30 @@ import hotspotExample from "@/assets/gallery/hotspot-example.webp";
 const HOTSPOTS = [
   {
     id: 1,
-    title: "Sun in Capricorn",
-    explanation: "The Capricorn Sun appears as a blinding light-spiral—the ruthless clarity of ambition cutting through the chaos of the cosmos.",
+    eyebrow: "SUN IN CAPRICORN",
+    title: "The blinding light-spiral",
+    explanation: "You're someone who sets a goal and doesn't stop — not because you're rigid, but because you genuinely can't respect yourself if you quit. That drive is what this central spiral is built around.",
     position: { top: "38%", left: "58%" },
   },
   {
     id: 2,
-    title: "Moon in Scorpio",
-    explanation: "The Scorpio Moon lives in the dark, churning water below. Quiet, heavy, and full of secrets that rush beneath the surface.",
+    eyebrow: "MOON IN SCORPIO",
+    title: "The dark churning water",
+    explanation: "You feel things more intensely than most people around you, and you've learned to keep a lot of it below the surface. The water running through the bottom of the piece is that part of you.",
     position: { top: "65%", left: "48%" },
   },
   {
     id: 3,
-    title: "Taurus Rising",
-    explanation: "Taurus Rising anchors the composition. The scene is carved into a rugged geological shell, reflecting a deep need for beauty and physical permanence.",
+    eyebrow: "TAURUS RISING",
+    title: "The geological shell",
+    explanation: "The first impression you give people is calm, solid, unhurried — someone who looks like they've been here a while and isn't going anywhere. That's why the whole scene sits inside something that looks carved from the earth.",
     position: { top: "82%", left: "52%" },
   },
   {
     id: 4,
-    title: "Air Dominant",
-    explanation: "Air dominates here. Colorful spheres float like loose thoughts, drifting through the ether to balance the heavy earth energy below.",
+    eyebrow: "AIR DOMINANT",
+    title: "The floating color spheres",
+    explanation: "Your mind moves fast and jumps between ideas in a way that can look scattered from the outside, but actually connects things others miss. The loose spheres drifting around the edges reflect that.",
     position: { top: "14%", left: "32%" },
   },
 ];
