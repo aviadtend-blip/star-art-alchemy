@@ -192,7 +192,7 @@ export default function InteractiveHotspots({ onScrollToForm }) {
       </div>
 
       {/* ===== DESKTOP: two-column layout ===== */}
-      <div className="hidden md:flex mx-auto px-8 gap-12 w-full" style={{ maxWidth: 1060 }}>
+      <div className="hidden md:flex mx-auto px-8 gap-12 items-start w-full" style={{ maxWidth: 1060 }}>
         {/* Left: description cards (scrollable) */}
         <div className="flex-1 min-w-0 py-12">
           {/* Introduction */}
