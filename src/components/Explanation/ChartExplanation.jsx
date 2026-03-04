@@ -516,27 +516,17 @@ export function ChartExplanation({
                     className="w-full"
                     style={{ borderBottom: i < hotspots.length - 1 ? '1px solid #3f3f3f' : 'none', paddingBottom: i < hotspots.length - 1 ? 20 : 0 }}
                   >
-                    <div className="flex flex-col gap-5">
-                      <div className="flex items-center gap-3">
-                        <span
-                          className="flex items-center justify-center font-body flex-shrink-0"
-                          style={{ width: 28, height: 28, borderRadius: 41, border: '1px solid #FFF', padding: 2, fontSize: 13, color: '#FFF' }}
-                        >
-                          {h.id}
-                        </span>
-                        <div className="flex flex-col gap-1">
-                          <p className="font-display text-white uppercase" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.05em' }}>
-                            {h.title.split('·')[0]?.trim() || h.title}
-                          </p>
-                          <p className="font-display text-white" style={{ fontSize: 16, fontWeight: 500, fontFamily: 'var(--font-serif, Erode, serif)', lineHeight: '14px' }}>
-                            {h.title.split('·')[1]?.trim() || ''}
-                          </p>
-                        </div>
+                      <div className="flex flex-col gap-3">
+                        <p className="text-subtitle text-white/50">
+                          {h.chartElement}
+                        </p>
+                        <p className="text-a4 text-white">
+                          {h.artworkElement}
+                        </p>
+                        <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7' }}>
+                          {h.explanation}
+                        </p>
                       </div>
-                      <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7' }}>
-                        {h.explanation}
-                      </p>
-                    </div>
                   </div>
                 ))}
               </div>
@@ -753,33 +743,17 @@ export function ChartExplanation({
                   style={{ width: 280 }}
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-5">
-                      <span
-                        className="flex items-center justify-center font-body flex-shrink-0"
-                        style={{
-                          width: 28,
-                          height: 28,
-                          borderRadius: 41,
-                          border: '1px solid #FFF',
-                          padding: 2,
-                          fontSize: 12,
-                          color: '#FFF',
-                        }}
-                      >
-                        {h.id}
-                      </span>
-                      <div>
-                        <p className="font-display text-white uppercase" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.05em' }}>
-                          {h.title.split('·')[0]?.trim() || h.title}
-                        </p>
-                        <p className="font-display text-white" style={{ fontSize: 16, fontWeight: 500, fontFamily: 'var(--font-serif, Erode, serif)', lineHeight: '14px', marginTop: 4 }}>
-                          {h.title.split('·')[1]?.trim() || ''}
-                        </p>
-                      </div>
+                    <div className="flex flex-col gap-3">
+                      <p className="text-subtitle text-white/50">
+                        {h.chartElement}
+                      </p>
+                      <p className="text-a4 text-white">
+                        {h.artworkElement}
+                      </p>
+                      <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7' }}>
+                        {h.explanation}
+                      </p>
                     </div>
-                    <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7' }}>
-                      {h.explanation}
-                    </p>
                   </div>
                   {/* Vertical divider */}
                   <div

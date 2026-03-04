@@ -50,35 +50,36 @@ serve(async (req) => {
 
     const prompt = `You are the artist who created this birth chart artwork. Study the image and write punchy, mystical artist's notes.
 
-The person's chart: Sun in ${sunSign}, Moon in ${moonSign}, ${rising} Rising, dominant ${dominantElement} (${Object.entries(elementBalance).map(([k,v]) => `${k}: ${v}`).join(", ")}).
+The person's chart: Sun in ${sunSign} (House ${chartData.sun?.house || '?'}), Moon in ${moonSign} (House ${chartData.moon?.house || '?'}), ${rising} Rising, dominant ${dominantElement} (${Object.entries(elementBalance).map(([k,v]) => `${k}: ${v}`).join(", ")}).
 
 Write JSON (no markdown, no backticks):
 {
   "subjectExplanation": "1-2 sentences, MAX 30 words. Format: 'Your birth chart reveals [key personality insight] — we chose [subject/creature/figure visible in the artwork] as your cosmic guardian because it embodies your [specific chart qualities].' Be specific to their ${sunSign} Sun, ${moonSign} Moon, ${rising} Rising combination. Reference the actual main subject/creature/figure you see in the image.",
   "sun": {
-    "explanation": "1-2 SHORT punchy sentences. What you see in the sun/central element and how their ${sunSign} Sun inspired it. Mystical tone, not academic.",
-    "insight": "1 sentence — a specific visual detail you're proud of.",
+    "artworkElement": "A short name (3-6 words) for the specific visual element in the artwork this hotspot points to. Example: 'The gilded central sunburst', 'The blazing crimson petals'",
+    "explanation": "2-3 SHORT sentences explaining why their ${sunSign} Sun in House ${chartData.sun?.house || '?'} inspired this visual element. Mystical tone, not academic.",
     "position": { "top": <0-100>, "left": <0-100> }
   },
   "moon": {
-    "explanation": "1-2 SHORT punchy sentences about the moon element and mood, inspired by Moon in ${moonSign}.",
-    "insight": "1 sentence — a specific creative decision.",
+    "artworkElement": "A short name (3-6 words) for the moon-inspired visual element. Example: 'The silvered crescent forms', 'The deep indigo undertow'",
+    "explanation": "2-3 SHORT sentences about the moon element and mood, inspired by Moon in ${moonSign} House ${chartData.moon?.house || '?'}.",
     "position": { "top": <0-100>, "left": <0-100> }
   },
   "rising": {
-    "explanation": "1-2 SHORT punchy sentences about composition/framing inspired by ${rising} Rising.",
-    "insight": "1 sentence — a compositional choice.",
+    "artworkElement": "A short name (3-6 words) for the composition/framing element. Example: 'The angular architectural edges', 'The flowing border tendrils'",
+    "explanation": "2-3 SHORT sentences about composition/framing inspired by ${rising} Rising.",
     "position": { "top": <0-100>, "left": <0-100> }
   },
   "element": {
-    "explanation": "1-2 SHORT punchy sentences about the color palette, inspired by ${dominantElement}-dominant chart.",
-    "insight": "1 sentence — how the colors work together.",
+    "artworkElement": "A short name (3-6 words) for the color palette element. Example: 'The warm amber-to-crimson wash', 'The oceanic blue depth'",
+    "explanation": "2-3 SHORT sentences about the color palette, inspired by ${dominantElement}-dominant chart.",
     "position": { "top": <0-100>, "left": <0-100> }
   }
 }
 
 STYLE RULES:
-- Each explanation must be readable in 3-4 seconds. Max 25 words per sentence.
+- Each explanation should be 2-3 sentences. Max 25 words per sentence.
+- artworkElement MUST name a specific visible element in the artwork (3-6 words, title case)
 - subjectExplanation MUST be max 30 words and reference the actual visible subject/creature/figure
 - Mystical and warm, NOT academic or verbose. Example: "Your fire-dominant chart blazes through in amber and crimson — pure passion made visible."
 - Use dashes, fragments, and poetic compression. Avoid filler words.
