@@ -14,9 +14,13 @@ import { generateChartExplanation } from './generateExplanation';
 export async function analyzeArtwork(imageUrl, chartData) {
   // Always prepare the static fallback
   const fallback = generateChartExplanation(chartData);
+  const fallbackWithSource = {
+    ...fallback,
+    analyzedImageUrl: imageUrl || null,
+  };
 
   if (!imageUrl || !chartData) {
-    return fallback;
+    return fallbackWithSource;
   }
 
   try {
@@ -33,9 +37,8 @@ export async function analyzeArtwork(imageUrl, chartData) {
 
     // Build the explanation object in the same shape as generateChartExplanation,
     // but with AI-generated text that references the actual image
-    const dominantElement = getDominantElement(chartData.element_balance);
-
     return {
+      analyzedImageUrl: imageUrl,
       overview: fallback.overview,
       subjectExplanation: analysis.subjectExplanation || null,
       elements: [
@@ -67,7 +70,7 @@ export async function analyzeArtwork(imageUrl, chartData) {
     };
   } catch (err) {
     console.error('Artwork analysis failed, using static fallback:', err);
-    return fallback;
+    return fallbackWithSource;
   }
 }
 
@@ -80,10 +83,4 @@ function normalizePosition(pos) {
   const top = Math.max(5, Math.min(95, pos.top));
   const left = Math.max(5, Math.min(95, pos.left));
   return { top: `${top}%`, left: `${left}%` };
-}
-
-function getDominantElement(elementBalance) {
-  return Object.keys(elementBalance).reduce((a, b) =>
-    elementBalance[a] > elementBalance[b] ? a : b
-  );
 }
