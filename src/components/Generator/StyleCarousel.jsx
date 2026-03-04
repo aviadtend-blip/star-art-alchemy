@@ -18,8 +18,7 @@ export default function StyleCarousel({
 }) {
   const scrollRef = useRef(null);
   const cardRefs = useRef([]);
-  const isScrollingRef = useRef(false);
-  const userScrollRef = useRef(false);
+  const isProgrammaticScroll = useRef(false);
 
   const CARD_W = 290;
   const CARD_H = 425;
