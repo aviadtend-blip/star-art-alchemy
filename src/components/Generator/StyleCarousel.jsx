@@ -94,7 +94,7 @@ export default function StyleCarousel({
   }, [detectCenter]);
 
   return (
-    <div className="w-full overflow-hidden flex justify-center">
+    <div className="w-full flex justify-center" style={{ overflow: 'clip' }}>
       <div
         ref={scrollRef}
         className="flex items-end overflow-x-auto overflow-y-hidden scrollbar-hide justify-start lg:justify-center"
