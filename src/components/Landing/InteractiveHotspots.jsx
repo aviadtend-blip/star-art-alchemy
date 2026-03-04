@@ -192,9 +192,36 @@ export default function InteractiveHotspots({ onScrollToForm }) {
       </div>
 
       {/* ===== DESKTOP: two-column layout ===== */}
-      <div className="hidden md:flex mx-auto px-8 gap-12 items-start w-full" style={{ maxWidth: 1060 }}>
-        {/* Left: sticky artwork */}
-        <div className="w-1/2 flex-shrink-0 sticky flex flex-col items-center justify-center" style={{ top: "80px" }}>
+      <div className="hidden md:flex mx-auto px-8 gap-12 w-full" style={{ maxWidth: 1060 }}>
+        {/* Left: description cards (scrollable) */}
+        <div className="flex-1 min-w-0 py-12">
+          {/* Introduction */}
+          <div className="mb-8">
+            <p className="text-subtitle tracking-widest mb-5" style={{ color: "#fff" }}>
+              AMANDA TORRES &nbsp;·&nbsp; DECEMBER 29, 1994 &nbsp;·&nbsp; 7:40 AM &nbsp;·&nbsp; SANTA FE, NEW MEXICO
+            </p>
+            <p className="text-body leading-relaxed" style={{ color: "#c7c7c7" }}>
+              This birth chart reveals unshakable resolve and hidden depths — these towering granite peaks were chosen as the cosmic guardian because they embody the stoic Capricorn mountain and Scorpio intensity.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-5">
+            {HOTSPOTS.map((h, i) => (
+              <div
+                key={h.id}
+                id={`landing-hotspot-${h.id}`}
+                ref={(el) => (desktopCardRefs.current[i] = el)}
+                className="w-full"
+                style={{ borderBottom: i < HOTSPOTS.length - 1 ? "1px solid #3f3f3f" : "none", paddingBottom: i < HOTSPOTS.length - 1 ? 20 : 0 }}
+              >
+                <DescriptionCard h={h} isLast={i === HOTSPOTS.length - 1} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right: sticky artwork, vertically centered */}
+        <div className="w-1/2 flex-shrink-0 self-start sticky" style={{ top: '50%', transform: 'translateY(-50%)' }}>
           <div className="relative">
             <img
               src={hotspotExample}
