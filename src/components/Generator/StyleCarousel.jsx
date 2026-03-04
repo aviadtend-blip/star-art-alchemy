@@ -193,7 +193,7 @@ export default function StyleCarousel({
             </p>
             <button
               onClick={() => onShowMore?.()}
-              className="btn-secondary font-body"
+              className="font-body transition-colors"
               style={{
                 marginTop: 17,
                 padding: '12px 16px',
@@ -201,7 +201,10 @@ export default function StyleCarousel({
                 width: 'calc(100% - 48px)',
                 borderRadius: 40,
                 backgroundColor: '#FFFFFF',
+                border: '1px solid transparent',
               }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#F0F0F0'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#FFFFFF'; }}
             >
               Show 3 additional styles
             </button>
