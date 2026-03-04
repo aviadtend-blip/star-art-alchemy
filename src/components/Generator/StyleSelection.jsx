@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Search, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ART_STYLES, ADDITIONAL_STYLES } from '@/config/artStyles';
@@ -184,11 +185,31 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
           showingAll={showAll}
         />
 
-        {/* Title + subtitle below carousel — crossfade */}
-        <div className="text-center mt-3 relative" style={{ minHeight: 44 }}>
+        {/* Title + subtitle with arrows — crossfade */}
+        <div className="flex items-center justify-center mt-3 relative gap-4 px-4" style={{ minHeight: 44 }}>
+          {/* Left arrow */}
+          <button
+            onClick={() => { if (activeIndex > 0) setActiveIndex(activeIndex - 1); }}
+            className="flex items-center justify-center shrink-0 transition-opacity"
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: '50%',
+              backgroundColor: '#F5F5F5',
+              opacity: activeIndex > 0 ? 1 : 0.3,
+              cursor: activeIndex > 0 ? 'pointer' : 'default',
+            }}
+            disabled={activeIndex <= 0}
+            aria-label="Previous style"
+          >
+            <ChevronLeft className="w-4 h-4" style={{ color: '#191919' }} />
+          </button>
+
+          {/* Label */}
           <div
             key={activeIndex}
-            className="animate-in fade-in slide-in-from-bottom-1 duration-300"
+            className="animate-in fade-in slide-in-from-bottom-1 duration-300 text-center"
+            style={{ minWidth: 180 }}
           >
             <h3
               className="font-display text-subtitle"
@@ -203,6 +224,24 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
               {currentStyle?.subtitle}
             </p>
           </div>
+
+          {/* Right arrow */}
+          <button
+            onClick={() => { if (activeIndex < carouselStyles.length - 1) setActiveIndex(activeIndex + 1); }}
+            className="flex items-center justify-center shrink-0 transition-opacity"
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: '50%',
+              backgroundColor: '#F5F5F5',
+              opacity: activeIndex < carouselStyles.length - 1 ? 1 : 0.3,
+              cursor: activeIndex < carouselStyles.length - 1 ? 'pointer' : 'default',
+            }}
+            disabled={activeIndex >= carouselStyles.length - 1}
+            aria-label="Next style"
+          >
+            <ChevronRight className="w-4 h-4" style={{ color: '#191919' }} />
+          </button>
         </div>
 
         {/* CTAs */}
