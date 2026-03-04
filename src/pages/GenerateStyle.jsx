@@ -20,6 +20,8 @@ export default function GenerateStyle() {
 
     if (month && day && year && city) {
       autoSubmitted.current = true;
+      const lat = searchParams.get('lat');
+      const lng = searchParams.get('lng');
       handleFormSubmit({
         name: searchParams.get('name') || '',
         month: Number(month),
@@ -29,6 +31,8 @@ export default function GenerateStyle() {
         minute: Number(searchParams.get('minute') || '0'),
         city,
         nation: searchParams.get('nation') || 'US',
+        ...(lat != null ? { lat: Number(lat) } : {}),
+        ...(lng != null ? { lng: Number(lng) } : {}),
       });
     } else if (!chartData) {
       navigate('/');
