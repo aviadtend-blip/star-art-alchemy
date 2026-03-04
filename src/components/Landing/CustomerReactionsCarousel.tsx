@@ -167,6 +167,7 @@ export default function CustomerReactionsCarousel({
 
       {/* Dot indicators */}
       <DotIndicators total={testimonials.length} active={activeIndex} />
+      </div>
     </section>
   );
 }
