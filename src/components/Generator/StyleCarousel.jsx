@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
-import { Search } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import PopularTag from '@/components/ui/PopularTag';
 import starsBg from '@/assets/stars-bg.jpg';
 
