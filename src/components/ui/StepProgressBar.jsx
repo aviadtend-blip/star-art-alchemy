@@ -22,7 +22,7 @@ export default function StepProgressBar({ currentStep = 1, onBack }) {
   return (
     <div className="w-full relative" style={{ backgroundColor: '#121212', borderTop: '1px solid rgba(255,255,255,0.15)' }}>
       {/* Mobile: single step display */}
-      <div className="md:hidden" style={{ padding: '0 20px' }}>
+      <div className="hidden">{/* Mobile progress bar hidden */}
         {/* Segmented accent bar */}
         <div className="flex" style={{ gap: 3 }}>
           {STEPS.map((step) => (
