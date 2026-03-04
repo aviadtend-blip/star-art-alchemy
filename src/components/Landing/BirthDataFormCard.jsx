@@ -199,26 +199,24 @@ export default function BirthDataFormCard({
             </div>
           </div>
 
-          {/* Mobile: fields → checkbox → button stacked */}
+          {/* Mobile: fields → checkbox → buttons (back + choose style) */}
           <div className="md:hidden flex flex-col gap-6">
             {timeInputs}
             {checkboxEl}
-            <PrimaryButton onClick={handleStep1bSubmit} className="w-full">
-              Choose style
-            </PrimaryButton>
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setShowTimeStep(false)} className="flex-1 h-12 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10">
+                Back
+              </button>
+              <PrimaryButton onClick={handleStep1bSubmit} className="flex-1">
+                Choose style
+              </PrimaryButton>
+            </div>
           </div>
         </div>
 
         {/* Desktop: checkbox + back row */}
         <div className="hidden md:flex items-start justify-between">
           {checkboxEl}
-          <button type="button" onClick={() => setShowTimeStep(false)} className="link-a5 font-body text-foreground py-0 flex-shrink-0" style={{ textDecoration: 'underline' }}>
-            Back
-          </button>
-        </div>
-
-        {/* Mobile: back link */}
-        <div className="md:hidden flex justify-end">
           <button type="button" onClick={() => setShowTimeStep(false)} className="link-a5 font-body text-foreground py-0 flex-shrink-0" style={{ textDecoration: 'underline' }}>
             Back
           </button>
