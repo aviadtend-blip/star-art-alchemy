@@ -36,36 +36,27 @@ serve(async (req) => {
             .join(", ")
         : "none";
 
-    const prompt = `You are a visual storyteller who translates astrological birth charts into vivid scene descriptions for artwork generation.
+    const prompt = `You are a mythic scene painter. Given a birth chart, write ONE paragraph of 60-80 words describing a scene for artwork generation.
 
-Given this natal chart data, write a single paragraph of exactly 60-80 words describing a vivid cosmic scene that captures who this person is. MAXIMUM 80 words.
+The scene MUST be built from the chart's Big Three:
+- The SUBJECT (central figure/creature/form) must directly embody the Sun sign: ${chartData.sun?.sign}
+- The ENVIRONMENT/LANDSCAPE must reflect the Moon sign: ${chartData.moon?.sign}
+- The MOOD and SURFACE TEXTURE must channel the Rising sign: ${chartData.rising}
 
-CRITICAL RULES:
-- NEVER use jellyfish, octopus, squid, or any aquatic invertebrate as the subject — these are BANNED
-- The subject should be a symbolic figure, land creature, mythic entity, or architectural form that embodies their chart
-- Each zodiac sign should inspire a DIFFERENT kind of subject:
-  * Fire signs (Aries, Leo, Sagittarius): forge-workers, lions, phoenixes, volcanic figures, mounted riders
-  * Earth signs (Taurus, Virgo, Capricorn): stone giants, mountain guardians, clockwork architects, rooted trees
-  * Air signs (Gemini, Libra, Aquarius): twin figures, winged messengers, crystal towers, mirror-walkers
-  * Water signs (Cancer, Scorpio, Pisces): deep-sea leviathans, serpents, tidal wolves, coral thrones
-- The environment should reflect their inner world and tensions
-- Use the chart's unique features (stelliums, tight aspects, dignities) to drive SPECIFIC visual choices
-- Do NOT mention colors or color palettes — the style handles that
-- Do NOT use generic zodiac descriptions ("passionate fire sign") — be specific to THIS chart
-- Do NOT include technical astrology terms in the output
-- Write in a poetic but concrete visual style
-- Forbidden words: energy, essence, vibrant, intricate, dynamic, balance, harmony, journey, tapestry, represent, symbolize, ethereal, celestial, translucent, tentacle, drift, pulse
-
-Chart data:
-- Sun: ${chartData.sun?.sign} in House ${chartData.sun?.house}
-- Moon: ${chartData.moon?.sign} in House ${chartData.moon?.house}
-- Rising: ${chartData.rising}
-- Dominant feature: ${interpretation.dominantFeature}
+Additional chart features to weave in:
+- Dominant feature: ${interpretation.dominantFeature || 'none'}
 - Core tension: ${interpretation.coreParadox}
-- Key aspects: ${highPriorityAspects}
+- Key aspects: ${highPriorityAspects || 'none notable'}
 - Dignity issues: ${dignityText}
 
-Output ONLY the scene description paragraph. Nothing else.`;
+RULES:
+- Every visual choice must trace back to a specific chart placement — no generic fantasy
+- Use concrete materials, textures, and forms — not abstract concepts
+- Do NOT mention colors or palettes — the style handles that
+- Do NOT use astrology jargon in the output
+- Forbidden words: energy, essence, vibrant, intricate, dynamic, balance, harmony, journey, tapestry, represent, symbolize, ethereal, celestial
+
+Output ONLY the scene paragraph. Nothing else.`;
 
     console.log("AI interpret prompt built, calling gateway...");
 
