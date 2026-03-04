@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { ArrowLeft, ArrowRight, Star } from "lucide-react";
+import galaxyBg from "@/assets/galaxy-bg.jpg";
 
 // --- Types ---
 
