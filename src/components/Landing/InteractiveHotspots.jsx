@@ -148,7 +148,8 @@ export default function InteractiveHotspots({ onScrollToForm }) {
 
 
   const DescriptionCard = ({ h, isLast }) => (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-3">
+      {/* Eyebrow row: numbered circle + chart element */}
       <div className="flex items-center gap-3">
         <span
           className="flex items-center justify-center font-body flex-shrink-0"
@@ -156,18 +157,16 @@ export default function InteractiveHotspots({ onScrollToForm }) {
         >
           {h.id}
         </span>
-        <div className="flex flex-col gap-1">
-          <p className="font-display text-white uppercase" style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.05em" }}>
-            {h.title.split("·")[0]?.trim() || h.title}
-          </p>
-          {h.title.includes("·") && (
-            <p className="font-display text-white" style={{ fontSize: 16, fontWeight: 500, fontFamily: "var(--font-serif, Erode, serif)", lineHeight: "14px" }}>
-              {h.title.split("·")[1]?.trim()}
-            </p>
-          )}
-        </div>
+        <p className="text-subtitle" style={{ color: "#999" }}>
+          {h.eyebrow}
+        </p>
       </div>
-      <p className="text-body font-body leading-relaxed" style={{ color: "#c7c7c7" }}>
+      {/* Title: artwork element */}
+      <p className="text-a4 text-white" style={{ marginLeft: 40 }}>
+        {h.title}
+      </p>
+      {/* Body text */}
+      <p className="text-body font-body leading-relaxed" style={{ color: "#c7c7c7", marginLeft: 40 }}>
         {h.explanation}
       </p>
     </div>
