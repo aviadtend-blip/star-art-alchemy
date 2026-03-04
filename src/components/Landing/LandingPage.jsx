@@ -134,11 +134,11 @@ export default function LandingPage() {
 
       {/* ═══════════════════ HERO ═══════════════════ */}
       {/* Mobile hero */}
-      <section className="lg:hidden relative overflow-hidden min-h-[720px]">
+      <section className="lg:hidden relative overflow-hidden min-h-[780px]">
         <div className="absolute inset-0">
           <img src={heroMobile} alt="" className="w-full h-full object-cover" />
         </div>
-        <div className="relative z-10 flex flex-col justify-end min-h-[720px] px-4 py-[15px]">
+        <div className="relative z-10 flex flex-col justify-end min-h-[780px] px-4 py-[15px]">
           {/* Title + Subtitle */}
           <div className="flex flex-col gap-3 text-center mb-4">
             <h1 className="text-a1 text-foreground">
