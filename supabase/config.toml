@@ -26,3 +26,6 @@ verify_jwt = false
 
 [functions.upscale-artwork]
 verify_jwt = false
+
+[functions.capture-email]
+verify_jwt = false

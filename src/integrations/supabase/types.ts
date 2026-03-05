@@ -77,6 +77,81 @@ export type Database = {
         }
         Relationships: []
       }
+      email_captures: {
+        Row: {
+          artwork_expiry_date: string | null
+          artwork_id: string | null
+          artwork_url: string | null
+          capture_timestamp: string | null
+          converted: boolean | null
+          converted_at: string | null
+          cosmic10_expiry: string | null
+          created_at: string
+          dominant_element: string | null
+          element_balance: Json | null
+          email: string
+          email_mockup_url: string | null
+          first_name: string | null
+          id: string
+          moon_sign: string | null
+          nurture_branch: string | null
+          peak_season: string | null
+          rising_sign: string | null
+          session_id: string | null
+          status: string | null
+          sun_sign: string | null
+          updated_at: string
+        }
+        Insert: {
+          artwork_expiry_date?: string | null
+          artwork_id?: string | null
+          artwork_url?: string | null
+          capture_timestamp?: string | null
+          converted?: boolean | null
+          converted_at?: string | null
+          cosmic10_expiry?: string | null
+          created_at?: string
+          dominant_element?: string | null
+          element_balance?: Json | null
+          email: string
+          email_mockup_url?: string | null
+          first_name?: string | null
+          id?: string
+          moon_sign?: string | null
+          nurture_branch?: string | null
+          peak_season?: string | null
+          rising_sign?: string | null
+          session_id?: string | null
+          status?: string | null
+          sun_sign?: string | null
+          updated_at?: string
+        }
+        Update: {
+          artwork_expiry_date?: string | null
+          artwork_id?: string | null
+          artwork_url?: string | null
+          capture_timestamp?: string | null
+          converted?: boolean | null
+          converted_at?: string | null
+          cosmic10_expiry?: string | null
+          created_at?: string
+          dominant_element?: string | null
+          element_balance?: Json | null
+          email?: string
+          email_mockup_url?: string | null
+          first_name?: string | null
+          id?: string
+          moon_sign?: string | null
+          nurture_branch?: string | null
+          peak_season?: string | null
+          rising_sign?: string | null
+          session_id?: string | null
+          status?: string | null
+          sun_sign?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
