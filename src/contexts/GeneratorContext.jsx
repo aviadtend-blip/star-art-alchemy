@@ -6,6 +6,7 @@ import { generateImage, resetGenerationCache } from '@/lib/api/replicateClient';
 import { getStyleById } from '@/config/artStyles';
 import { supabase } from '@/integrations/supabase/client';
 import { analyzeArtwork } from '@/lib/explanations/analyzeArtwork';
+import { trackCheckoutStarted } from '@/lib/klaviyo';
 
 const GeneratorContext = createContext(null);
 
@@ -190,6 +191,17 @@ export function GeneratorProvider({ children }) {
       if (fnError) throw new Error(fnError.message);
       if (data?.error) throw new Error(data.error);
       if (!data?.url) throw new Error('No checkout URL returned');
+
+      const capturedEmail = sessionStorage.getItem('celestial_captured_email');
+      if (capturedEmail) {
+        trackCheckoutStarted({
+          email: capturedEmail,
+          artworkUrl: generatedImage,
+          size: enrichedDetails.size || '16x24',
+          price: enrichedDetails.price || 119,
+          checkoutUrl: data.url,
+        });
+      }
 
       window.location.href = data.url;
     } catch (err) {
