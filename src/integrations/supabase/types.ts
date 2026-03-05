@@ -14,7 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      artworks: {
+        Row: {
+          art_style: string
+          artwork_analysis: Json | null
+          artwork_url: string | null
+          birth_data: Json
+          chart_data: Json
+          created_at: string
+          customer_name: string | null
+          id: string
+          order_number: string | null
+          original_cdn_url: string | null
+          prompt_used: string | null
+          session_id: string | null
+          shopify_checkout_url: string | null
+          status: string | null
+        }
+        Insert: {
+          art_style?: string
+          artwork_analysis?: Json | null
+          artwork_url?: string | null
+          birth_data?: Json
+          chart_data?: Json
+          created_at?: string
+          customer_name?: string | null
+          id?: string
+          order_number?: string | null
+          original_cdn_url?: string | null
+          prompt_used?: string | null
+          session_id?: string | null
+          shopify_checkout_url?: string | null
+          status?: string | null
+        }
+        Update: {
+          art_style?: string
+          artwork_analysis?: Json | null
+          artwork_url?: string | null
+          birth_data?: Json
+          chart_data?: Json
+          created_at?: string
+          customer_name?: string | null
+          id?: string
+          order_number?: string | null
+          original_cdn_url?: string | null
+          prompt_used?: string | null
+          session_id?: string | null
+          shopify_checkout_url?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
