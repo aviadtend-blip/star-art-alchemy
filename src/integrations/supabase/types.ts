@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       artworks: {
         Row: {
+          apiframe_task_id: string | null
           art_style: string
           artwork_analysis: Json | null
           artwork_url: string | null
@@ -29,9 +30,13 @@ export type Database = {
           prompt_used: string | null
           session_id: string | null
           shopify_checkout_url: string | null
+          shopify_order_id: string | null
           status: string | null
+          upscale_status: string | null
+          upscaled_url: string | null
         }
         Insert: {
+          apiframe_task_id?: string | null
           art_style?: string
           artwork_analysis?: Json | null
           artwork_url?: string | null
@@ -45,9 +50,13 @@ export type Database = {
           prompt_used?: string | null
           session_id?: string | null
           shopify_checkout_url?: string | null
+          shopify_order_id?: string | null
           status?: string | null
+          upscale_status?: string | null
+          upscaled_url?: string | null
         }
         Update: {
+          apiframe_task_id?: string | null
           art_style?: string
           artwork_analysis?: Json | null
           artwork_url?: string | null
@@ -61,7 +70,10 @@ export type Database = {
           prompt_used?: string | null
           session_id?: string | null
           shopify_checkout_url?: string | null
+          shopify_order_id?: string | null
           status?: string | null
+          upscale_status?: string | null
+          upscaled_url?: string | null
         }
         Relationships: []
       }
