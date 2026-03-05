@@ -6,7 +6,7 @@ import StyleSelection from '@/components/Generator/StyleSelection';
 export default function GenerateStyle() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { chartData, formData, handleFormSubmit, handleStyleSelect, handleEditBirthData, handleRetry } = useGenerator();
+  const { chartData, formData, handleFormSubmit, handleStyleSelect, handleEditBirthData, handleRetry, isPortraitEdition } = useGenerator();
   const autoSubmitted = useRef(false);
 
   // If we arrived with query params (from landing page), start chart calculation
@@ -63,6 +63,7 @@ export default function GenerateStyle() {
       formData={displayFormData}
       onEditBirthData={handleEditBirthData}
       isLoading={!chartData}
+      isPortraitEdition={isPortraitEdition}
     />
   );
 }

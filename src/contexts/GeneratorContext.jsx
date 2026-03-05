@@ -39,17 +39,26 @@ export function GeneratorProvider({ children }) {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [artworkAnalysis, setArtworkAnalysis] = useState(cached.artworkAnalysis || null);
   const [artworkId, setArtworkId] = useState(cached.artworkId || null);
+  const [userPhotoUrl, setUserPhotoUrl] = useState(cached.userPhotoUrl || null);
+  const [isPortraitEdition, setIsPortraitEdition] = useState(cached.isPortraitEdition || false);
   const isGeneratingRef = useRef(false);
 
   // Persist critical state to sessionStorage
   useEffect(() => {
-    saveSession({ chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId });
-  }, [chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId]);
+    saveSession({ chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition });
+  }, [chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition]);
 
   const handleFormSubmit = useCallback(async (data) => {
     try {
       setError(null);
       setFormData(data);
+      if (data.userPhotoUrl) {
+        setUserPhotoUrl(data.userPhotoUrl);
+        setIsPortraitEdition(true);
+      } else {
+        setUserPhotoUrl(null);
+        setIsPortraitEdition(false);
+      }
       setGenerationProgress('Calculating your birth chart...');
       const chart = await calculateNatalChart(data);
       setChartData(chart);
@@ -79,7 +88,7 @@ export function GeneratorProvider({ children }) {
       const prompt = await buildConcretePrompt(chartData, style);
 
       setGenerationProgress(`Creating your ${style.name} artwork...`);
-      const result = await generateImage(prompt, style.sref, style.personalization, style.profileCode);
+      const result = await generateImage(prompt, style.sref, style.personalization, style.profileCode, userPhotoUrl);
       const apiframeTaskId = result.taskId;
 
       setGeneratedImage(result.imageUrl);
@@ -150,6 +159,8 @@ export function GeneratorProvider({ children }) {
     setSelectedStyle(null);
     setArtworkAnalysis(null);
     setArtworkId(null);
+    setUserPhotoUrl(null);
+    setIsPortraitEdition(false);
     isGeneratingRef.current = false;
     resetGenerationCache();
     navigate('/');
@@ -227,6 +238,7 @@ export function GeneratorProvider({ children }) {
     chartData, formData, selectedStyle, generatedImage,
     error, generationProgress, orderDetails, isCheckingOut,
     artworkAnalysis, generationComplete, artworkId,
+    userPhotoUrl, isPortraitEdition,
     setFormData, setChartData, setError, setGeneratedImage, setArtworkAnalysis,
     setGenerationComplete, setArtworkId,
     handleFormSubmit, handleStyleSelect, handleRetry,

@@ -84,7 +84,7 @@ const baseStyles = ART_STYLES.map(toCarouselShape);
 const additionalStyles = ADDITIONAL_STYLES.map(toCarouselShape);
 const allStyles = [...baseStyles, ...additionalStyles];
 
-export default function StyleSelection({ onSelect, onBack, chartData, formData, onEditBirthData, isLoading = false }) {
+export default function StyleSelection({ onSelect, onBack, chartData, formData, onEditBirthData, isLoading = false, isPortraitEdition = false }) {
   const [showAll, setShowAll] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightbox, setLightbox] = useState(null);
@@ -167,11 +167,20 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
       <div className="flex-1 w-full py-10 md:py-14">
         <div className="text-center max-w-[600px] mx-auto" style={{ paddingTop: 32, paddingBottom: 32 }}>
           <h2 className="font-display text-a2 md:text-[40px] text-surface-foreground tracking-tight" style={{ fontWeight: 400 }}>
-            Choose your artistic expression
+            {isPortraitEdition ? 'Choose your portrait style' : 'Choose your artistic expression'}
           </h2>
           <p className="text-body font-body text-surface-muted" style={{ marginTop: 10 }}>
-            Each style reveals your cosmic blueprint differently. Pick the one that resonates.
+            {isPortraitEdition
+              ? 'Each style will render YOUR face in a unique cosmic portrait. Pick the one that resonates.'
+              : 'Each style reveals your cosmic blueprint differently. Pick the one that resonates.'}
           </p>
+          {isPortraitEdition && (
+            <div className="inline-flex items-center justify-center gap-2 mt-3" style={{ padding: '6px 14px', borderRadius: '999px', backgroundColor: '#FFF5DD' }}>
+              <span style={{ fontSize: 14, color: '#C99700' }} className="font-body">
+                🧑 Portrait Edition — your face will be woven into the artwork
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Carousel */}
