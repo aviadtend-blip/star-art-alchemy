@@ -132,13 +132,19 @@ export function GeneratorProvider({ children }) {
   }, [navigate]);
 
   const handleCheckout = useCallback(async (details) => {
-    setOrderDetails(details);
+    const enrichedDetails = {
+      ...details,
+      orderNumber: `#CA-${Date.now().toString(36).toUpperCase()}`,
+      date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+      firstName: formData?.name || '',
+    };
+    setOrderDetails(enrichedDetails);
     setIsCheckingOut(true);
     setError(null);
 
     try {
-      const { data, error: fnError } = await supabase.functions.invoke('create-payment', {
-        body: { orderDetails: details, chartData, artworkImageUrl: generatedImage, customerName: formData?.name },
+      const { data, error: fnError } = await supabase.functions.invoke('create-shopify-checkout', {
+        body: { orderDetails: enrichedDetails, chartData, artworkImageUrl: generatedImage, customerName: formData?.name },
       });
 
       if (fnError) throw new Error(fnError.message);
@@ -151,7 +157,7 @@ export function GeneratorProvider({ children }) {
       setError(err.message);
       setIsCheckingOut(false);
     }
-  }, [chartData]);
+  }, [chartData, formData, generatedImage]);
 
   const handleTestCheckout = useCallback((details) => {
     setOrderDetails({

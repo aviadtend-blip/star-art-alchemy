@@ -34,7 +34,7 @@ const sections = [
         </ul>
 
         <h3 className="text-a5 text-surface-foreground mb-3 mt-6">C. Payment Information</h3>
-        <p className="text-body text-surface-muted mb-4">Payments are processed securely by Stripe, Inc. We do not store, access, or retain full credit card numbers, CVVs, or other sensitive payment credentials. Stripe collects and processes payment data in accordance with its own privacy policy.</p>
+        <p className="text-body text-surface-muted mb-4">Payments are processed securely through Shopify's checkout. We do not store, access, or retain full credit card numbers, CVVs, or other sensitive payment credentials. Shopify collects and processes payment data in accordance with its own privacy policy.</p>
 
         <h3 className="text-a5 text-surface-foreground mb-3 mt-6">D. Generated Data</h3>
         <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5">
@@ -120,7 +120,7 @@ const sections = [
       <>
         <p className="text-body text-surface-muted mb-4">We share personal data only with trusted third-party service providers necessary to operate our business:</p>
         <ul className="list-disc pl-6 text-body text-surface-muted space-y-1.5 mb-4">
-          <li>Stripe, Inc. — Payment processing</li>
+          <li>Shopify Inc. — Checkout and payment processing</li>
           <li>Prodigi Group Ltd. / Printful, Inc. — Print-on-demand fulfillment and shipping</li>
           <li>Email service provider — Transactional and marketing email delivery</li>
           <li>Cloud hosting providers — U.S.-based infrastructure and data storage</li>
