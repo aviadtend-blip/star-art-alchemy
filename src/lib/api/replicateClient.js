@@ -46,19 +46,27 @@ let currentGenerationCache = {
  * Generate artwork via the Supabase edge function
  * Returns the primary image URL and caches all 4 variations
  */
-export async function generateImage(prompt, sref, personalization, profileCode) {
+export async function generateImage(prompt, sref, personalization, profileCode, userPhotoUrl = null) {
   console.log('Prompt preview:', prompt.substring(0, 100) + '...');
   console.log('Style ref:', sref);
 
+  const endpoint = userPhotoUrl
+    ? `${SUPABASE_URL}/functions/v1/generate-portrait-artwork`
+    : `${SUPABASE_URL}/functions/v1/generate-artwork`;
+
+  const body = userPhotoUrl
+    ? { prompt, sref, personalization, profileCode, face_image_url: userPhotoUrl }
+    : { prompt, sref, personalization, profileCode };
+
   const response = await fetchWithRetry(
-    `${SUPABASE_URL}/functions/v1/generate-artwork`,
+    endpoint,
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
       },
-      body: JSON.stringify({ prompt, sref, personalization, profileCode }),
+      body: JSON.stringify(body),
     }
   );
 
