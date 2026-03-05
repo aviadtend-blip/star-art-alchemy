@@ -8,8 +8,8 @@ export async function buildConcretePrompt(chartData, style) {
   // Get the AI scene narrative
   const aiNarrative = await getAIInterpretation(chartData);
 
-  // Combine into a clean prompt — AI narrative already encodes all zodiac symbolism
-  const contentPrompt = `cosmic collage, ${aiNarrative}`;
+  // AI narrative already encodes all zodiac symbolism — no prefix needed
+  const contentPrompt = aiNarrative;
 
   // Trim to ~500 chars max (before params)
   const trimmed = contentPrompt.length > 500 ? contentPrompt.substring(0, 497) + '...' : contentPrompt;
