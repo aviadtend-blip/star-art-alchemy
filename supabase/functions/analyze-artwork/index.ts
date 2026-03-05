@@ -38,14 +38,22 @@ serve(async (req) => {
     const base64Image = btoa(binary);
     const contentType = imageResponse.headers.get("content-type") || "image/png";
 
+    // Sanitize values before interpolating into AI prompts
+    const sanitize = (val: string): string => {
+      if (!val || typeof val !== 'string') return 'Unknown';
+      return val.replace(/[^a-zA-Z0-9\s\-.,()°]/g, '').substring(0, 100);
+    };
+
     // Build chart context for the prompt
-    const sunSign = chartData.sun?.sign || "Unknown";
-    const moonSign = chartData.moon?.sign || "Unknown";
-    const rising = chartData.rising || "Unknown";
+    const sunSign = sanitize(chartData.sun?.sign);
+    const moonSign = sanitize(chartData.moon?.sign);
+    const rising = sanitize(chartData.rising);
     const elementBalance = chartData.element_balance || {};
-    const dominantElement = Object.keys(elementBalance).reduce(
-      (a, b) => (elementBalance[a] > elementBalance[b] ? a : b),
-      "Fire"
+    const dominantElement = sanitize(
+      Object.keys(elementBalance).reduce(
+        (a, b) => (elementBalance[a] > elementBalance[b] ? a : b),
+        "Fire"
+      )
     );
 
     const prompt = `You created this birth chart artwork. Study the image and write grounded, conversational hotspot notes.

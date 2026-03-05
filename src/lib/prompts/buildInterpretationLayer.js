@@ -19,6 +19,12 @@ const SUN_SIGN_QUALITIES = {
   Pisces: 'dissolving empathy',
 };
 
+// Sanitize values before they are interpolated into AI prompts
+function sanitizeForPrompt(value) {
+  if (!value || typeof value !== 'string') return 'Unknown';
+  return value.replace(/[^a-zA-Z0-9\s\-.,()°]/g, '').substring(0, 100);
+}
+
 export default function buildInterpretationLayer(chartData) {
   const interpretation = {};
 
@@ -44,9 +50,12 @@ export default function buildInterpretationLayer(chartData) {
     interpretation.dominantFeature = `${chartData.dominant_element}-${chartData.dominant_modality || 'Mixed'} dominant chart — ${chartData.dominant_element} energy filters all expression`;
   }
 
-  // 3. CORE PARADOX
+  // 3. CORE PARADOX (sanitized for prompt safety)
+  const risingClean = sanitizeForPrompt(chartData.rising);
+  const sunSignClean = sanitizeForPrompt(chartData.sun?.sign);
+  const moonSignClean = sanitizeForPrompt(chartData.moon?.sign);
   const sunQuality = SUN_SIGN_QUALITIES[chartData.sun?.sign] || 'essential nature';
-  interpretation.coreParadox = `${chartData.rising} Rising intensity on the surface, ${chartData.sun?.sign} ${sunQuality} at the core, ${chartData.moon?.sign} emotional restlessness underneath`;
+  interpretation.coreParadox = `${risingClean} Rising intensity on the surface, ${sunSignClean} ${sunQuality} at the core, ${moonSignClean} emotional restlessness underneath`;
 
   // 4. DIGNITY FLAGS
   interpretation.dignityFlags = [];

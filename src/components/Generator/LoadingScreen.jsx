@@ -183,20 +183,43 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
     return () => timers.forEach(clearTimeout);
   }, []);
 
-  // Simulated progress bar
+  // Stage-aware progress bar: maps generation progress keywords to target percentages
+  // Falls back to time-based crawl when no stage info is available
   useEffect(() => {
+    const stageTargets = {
+      'Building': 15,
+      'Creating': 35,
+      'Preparing your artwork': 70,
+      'Preparing your artist': 82,
+    };
+
     const interval = setInterval(() => {
-      const elapsed = (Date.now() - startTime.current) / 1000;
-      let p;
-      if (elapsed <= 5) p = (elapsed / 5) * 30;
-      else if (elapsed <= 15) p = 30 + ((elapsed - 5) / 10) * 25;
-      else if (elapsed <= 30) p = 55 + ((elapsed - 15) / 15) * 20;
-      else if (elapsed <= 45) p = 75 + ((elapsed - 30) / 15) * 10;
-      else p = 85 + Math.min((elapsed - 45) / 30, 1) * 3;
-      setProgress(Math.min(p, 88));
-    }, 500);
+      setProgress((prev) => {
+        // Find the highest matching stage target from generationProgress
+        let target = 10;
+        if (generationProgress) {
+          for (const [keyword, pct] of Object.entries(stageTargets)) {
+            if (generationProgress.includes(keyword)) {
+              target = Math.max(target, pct);
+            }
+          }
+        }
+
+        // Also blend with time-based minimum so bar never stalls completely
+        const elapsed = (Date.now() - startTime.current) / 1000;
+        const timeBased = Math.min(elapsed / 60 * 50, 50);
+        target = Math.max(target, timeBased);
+
+        // Cap at 88% until completion
+        target = Math.min(target, 88);
+
+        // Ease toward target
+        if (prev >= target) return prev;
+        return prev + (target - prev) * 0.08;
+      });
+    }, 200);
     return () => clearInterval(interval);
-  }, []);
+  }, [generationProgress]);
 
   // Show floating bar when main progress bar scrolls out of view
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { calculateNatalChart } from '@/lib/astrology/chartCalculator.js';
 import { buildConcretePrompt } from '@/lib/prompts/promptBuilder.js';
@@ -37,11 +37,13 @@ export function GeneratorProvider({ children }) {
   const [orderDetails, setOrderDetails] = useState(cached.orderDetails || null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [artworkAnalysis, setArtworkAnalysis] = useState(cached.artworkAnalysis || null);
+  const [artworkId, setArtworkId] = useState(cached.artworkId || null);
+  const isGeneratingRef = useRef(false);
 
   // Persist critical state to sessionStorage
   useEffect(() => {
-    saveSession({ chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis });
-  }, [chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis]);
+    saveSession({ chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId });
+  }, [chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId]);
 
   const handleFormSubmit = useCallback(async (data) => {
     try {
@@ -61,9 +63,14 @@ export function GeneratorProvider({ children }) {
   }, [navigate]);
 
   const handleStyleSelect = useCallback(async (styleId) => {
+    // Prevent double-click race condition
+    if (isGeneratingRef.current) return;
+    isGeneratingRef.current = true;
+
     const style = getStyleById(styleId);
     setSelectedStyle(style);
     setArtworkAnalysis(null);
+    setArtworkId(null);
     navigate('/generate/loading');
 
     try {
@@ -92,24 +99,55 @@ export function GeneratorProvider({ children }) {
       ]);
 
       // Store analysis if it succeeded (fallback is built into analyzeArtwork)
-      if (analysisResult.status === 'fulfilled' && analysisResult.value) {
-        setArtworkAnalysis(analysisResult.value);
+      const analysisValue = analysisResult.status === 'fulfilled' ? analysisResult.value : null;
+      if (analysisValue) {
+        setArtworkAnalysis(analysisValue);
       }
 
       // Signal loading screen that generation is complete (it handles the delay + navigation)
       setGenerationComplete(true);
+      isGeneratingRef.current = false;
+
+      // Fire-and-forget: persist artwork to Supabase Storage + database
+      const sessionId = sessionStorage.getItem('celestial_session_id') || crypto.randomUUID();
+      sessionStorage.setItem('celestial_session_id', sessionId);
+
+      supabase.functions.invoke('store-artwork', {
+        body: {
+          cdnUrl: result.imageUrl,
+          chartData,
+          formData,
+          artStyle: style.id,
+          promptUsed: prompt,
+          artworkAnalysis: analysisValue,
+          sessionId,
+        },
+      }).then(({ data: storeData, error: storeError }) => {
+        if (storeError) {
+          console.warn('⚠️ Artwork storage failed (non-blocking):', storeError.message);
+          return;
+        }
+        if (storeData?.permanentUrl) {
+          console.log('✅ Artwork stored permanently:', storeData.permanentUrl);
+          setGeneratedImage(storeData.permanentUrl);
+          setArtworkId(storeData.artworkId);
+        }
+      }).catch(err => console.warn('⚠️ Artwork storage failed (non-blocking):', err));
     } catch (err) {
       console.error('❌ Generation error:', err);
       setError(err.message);
+      isGeneratingRef.current = false;
       navigate('/generate/style');
     }
-  }, [chartData, navigate]);
+  }, [chartData, formData, navigate]);
 
   const handleRetry = useCallback(() => {
     setError(null);
     setGeneratedImage(null);
     setSelectedStyle(null);
     setArtworkAnalysis(null);
+    setArtworkId(null);
+    isGeneratingRef.current = false;
     resetGenerationCache();
     navigate('/');
   }, [navigate]);
@@ -174,9 +212,9 @@ export function GeneratorProvider({ children }) {
   const value = {
     chartData, formData, selectedStyle, generatedImage,
     error, generationProgress, orderDetails, isCheckingOut,
-    artworkAnalysis, generationComplete,
+    artworkAnalysis, generationComplete, artworkId,
     setFormData, setChartData, setError, setGeneratedImage, setArtworkAnalysis,
-    setGenerationComplete,
+    setGenerationComplete, setArtworkId,
     handleFormSubmit, handleStyleSelect, handleRetry,
     handleEditBirthData, handleBackToStyle, handleGetFramed,
     handleBackToPreview, handleCheckout, handleTestCheckout,

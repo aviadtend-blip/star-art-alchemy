@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.create-shopify-checkout]
 verify_jwt = false
+
+[functions.store-artwork]
+verify_jwt = false

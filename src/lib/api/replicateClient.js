@@ -7,6 +7,33 @@
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
+/**
+ * Fetch with retry for 5xx errors (exponential backoff)
+ */
+async function fetchWithRetry(url, options, maxRetries = 1) {
+  let lastError;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    if (attempt > 0) {
+      const delay = 3000 * attempt;
+      console.warn(`[replicateClient] Retry attempt ${attempt} after ${delay}ms...`);
+      await new Promise((r) => setTimeout(r, delay));
+    }
+    try {
+      const response = await fetch(url, options);
+      if (response.ok || response.status < 500) return response;
+      if (attempt < maxRetries) {
+        console.warn(`[replicateClient] Server error ${response.status}, retrying...`);
+        continue;
+      }
+      return response; // return the error response on final attempt
+    } catch (err) {
+      lastError = err;
+      if (attempt >= maxRetries) throw err;
+    }
+  }
+  throw lastError;
+}
+
 // Store generation results for reimagine feature
 let currentGenerationCache = {
   allOutputs: [],
@@ -23,7 +50,7 @@ export async function generateImage(prompt, sref, personalization, profileCode) 
   console.log('Prompt preview:', prompt.substring(0, 100) + '...');
   console.log('Style ref:', sref);
 
-  const response = await fetch(
+  const response = await fetchWithRetry(
     `${SUPABASE_URL}/functions/v1/generate-artwork`,
     {
       method: 'POST',

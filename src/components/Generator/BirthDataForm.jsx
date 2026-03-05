@@ -95,6 +95,12 @@ const BirthDataFormJsx = ({ onSubmit }) => {
     }
   };
 
+  // Returns max valid days for a given month/year (handles leap years)
+  const getMaxDaysInMonth = (month, year) => {
+    if (!month || month < 1 || month > 12) return 31;
+    return new Date(year || 2000, month, 0).getDate();
+  };
+
   const validate = (data) => {
     const errs = {};
     const month = Number(data.month);
@@ -104,7 +110,8 @@ const BirthDataFormJsx = ({ onSubmit }) => {
     const minute = Number(data.minute);
 
     if (!data.month || month < 1 || month > 12) errs.month = "Enter a valid month (1–12)";
-    if (!data.day || day < 1 || day > 31) errs.day = "Enter a valid day (1–31)";
+    const maxDay = getMaxDaysInMonth(month, year);
+    if (!data.day || day < 1 || day > maxDay) errs.day = `Enter a valid day (1–${maxDay})`;
     if (!data.year || year < 1900 || year > new Date().getFullYear()) errs.year = `Enter a valid year (1900–${new Date().getFullYear()})`;
     if (data.hour === "" || hour < 0 || hour > 23) errs.hour = "Enter a valid hour (0–23)";
     if (data.minute === "" || minute < 0 || minute > 59) errs.minute = "Enter a valid minute (0–59)";

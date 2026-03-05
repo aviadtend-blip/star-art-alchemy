@@ -6,6 +6,12 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+// Sanitize values before interpolating into AI prompts
+function sanitizeForPrompt(value: string): string {
+  if (!value || typeof value !== 'string') return 'Unknown';
+  return value.replace(/[^a-zA-Z0-9\s\-.,()°]/g, '').substring(0, 100);
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS")
     return new Response(null, { headers: corsHeaders });
@@ -39,9 +45,9 @@ serve(async (req) => {
     const prompt = `You are a mythic scene painter. Given a birth chart, write ONE paragraph of 60-80 words describing a scene for artwork generation.
 
 The scene MUST be built from the chart's Big Three:
-- The SUBJECT (central figure/creature/form) must directly embody the Sun sign: ${chartData.sun?.sign}
-- The ENVIRONMENT/LANDSCAPE must reflect the Moon sign: ${chartData.moon?.sign}
-- The MOOD and SURFACE TEXTURE must channel the Rising sign: ${chartData.rising}
+- The SUBJECT (central figure/creature/form) must directly embody the Sun sign: ${sanitizeForPrompt(chartData.sun?.sign)}
+- The ENVIRONMENT/LANDSCAPE must reflect the Moon sign: ${sanitizeForPrompt(chartData.moon?.sign)}
+- The MOOD and SURFACE TEXTURE must channel the Rising sign: ${sanitizeForPrompt(chartData.rising)}
 
 Additional chart features to weave in:
 - Dominant feature: ${interpretation.dominantFeature || 'none'}

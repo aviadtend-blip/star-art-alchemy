@@ -17,6 +17,47 @@ const DEFAULT_PERSONALIZATION = "jv7b3wn";
 const DEFAULT_SREF = "3498857616";
 const MJ_PARAMS = "--ar 3:4";
 
+// Submit imagine task with retry and exponential backoff
+async function submitImagineWithRetry(
+  fullPrompt: string,
+  maxRetries = 2,
+  baseDelay = 3000
+): Promise<string> {
+  let lastError: Error | null = null;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    if (attempt > 0) {
+      const delay = baseDelay * Math.pow(2, attempt - 1);
+      console.log(`[generate-artwork] Retry attempt ${attempt}, waiting ${delay}ms...`);
+      await new Promise((r) => setTimeout(r, delay));
+    }
+
+    try {
+      const imagineResponse = await fetch(APIFRAME_IMAGINE_URL, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${APIFRAME_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt: fullPrompt }),
+      });
+
+      const imagineData = await imagineResponse.json();
+
+      if (imagineData.errors) {
+        throw new Error(imagineData.errors[0]?.msg || "Apiframe generation failed");
+      }
+
+      return imagineData.task_id;
+    } catch (err) {
+      lastError = err;
+      console.error(`[generate-artwork] Imagine attempt ${attempt + 1} failed:`, err.message);
+    }
+  }
+
+  throw lastError || new Error("Image generation failed after retries");
+}
+
 serve(async (req) => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
@@ -53,32 +94,16 @@ serve(async (req) => {
     const fullPrompt = `${prompt} ${MJ_PARAMS} --sref ${styleRef} ${personalizationFlag}`;
     console.log(`Full MJ prompt: ${fullPrompt}`);
 
-    // Step 1: Submit imagine task to Apiframe
-    const imagineResponse = await fetch(APIFRAME_IMAGINE_URL, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${APIFRAME_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        prompt: fullPrompt,
-      }),
-    });
-
-    const imagineData = await imagineResponse.json();
-
-    if (imagineData.errors) {
-      console.error("Apiframe imagine error:", JSON.stringify(imagineData.errors));
-      throw new Error(imagineData.errors[0]?.msg || "Apiframe generation failed");
-    }
-
-    const taskId = imagineData.task_id;
+    // Step 1: Submit imagine task with retry
+    let taskId = await submitImagineWithRetry(fullPrompt);
     console.log(`Apiframe task submitted: ${taskId}`);
 
     // Step 2: Poll for completion (max 120 seconds, check every 2 seconds)
+    // If the task fails, resubmit once
     const maxAttempts = 60;
     let attempts = 0;
     let result = null;
+    let taskRetried = false;
 
     while (attempts < maxAttempts) {
       await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2 seconds
@@ -101,7 +126,14 @@ serve(async (req) => {
       }
 
       if (result.status === "failed") {
-        console.error("Apiframe task failed:", result.message);
+        if (!taskRetried) {
+          console.warn("Apiframe task failed, resubmitting once...");
+          taskRetried = true;
+          taskId = await submitImagineWithRetry(fullPrompt, 0); // single attempt
+          attempts = 0; // reset poll counter
+          continue;
+        }
+        console.error("Apiframe task failed after retry:", result.message);
         throw new Error(result.message || "Image generation failed");
       }
     }

@@ -157,7 +157,12 @@ async function getTimezoneOffset(lat: number, lng: number, year: number, month: 
   } catch (e) {
     console.warn("[calculate-natal-chart] Timezone lookup failed:", e);
   }
-  return 0;
+
+  // Final fallback: estimate timezone from longitude (15° per hour)
+  // This is approximate (±1 hour) but far better than UTC which can be off by 12 hours
+  const estimatedOffset = Math.round(lng / 15);
+  console.log(`[calculate-natal-chart] Using longitude-based TZ estimate: ${estimatedOffset}h (lng=${lng})`);
+  return estimatedOffset;
 }
 
 function formatTzOffset(offset: number): string {
