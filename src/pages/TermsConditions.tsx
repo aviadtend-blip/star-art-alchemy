@@ -71,7 +71,7 @@ const sections = [
         <p className="text-body text-surface-muted mb-4">All prices are displayed in U.S. Dollars (USD) unless otherwise indicated. The total price of your order, including Product price, any selected optional add-ons, and shipping charges, will be displayed on the checkout page before you submit payment.</p>
 
         <h3 className="text-a5 text-surface-foreground mb-3 mt-6">5.3 Payment</h3>
-        <p className="text-body text-surface-muted mb-4">Payment is processed through Stripe, Inc. at the time of order placement. All payments must be received in full before your order is submitted for production.</p>
+        <p className="text-body text-surface-muted mb-4">Payment is processed through Shopify Inc. at the time of order placement. All payments must be received in full before your order is submitted for production.</p>
 
         <h3 className="text-a5 text-surface-foreground mb-3 mt-6">5.4 Taxes</h3>
         <p className="text-body text-surface-muted mb-4">You are responsible for any applicable sales tax, VAT, GST, customs duties, import fees, and any other taxes or governmental charges associated with your purchase.</p>

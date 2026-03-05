@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { useSearchParams } from 'react-router-dom';
 import { Copy, Share2 } from 'lucide-react';
 import FAQSection from '@/components/ui/FAQSection';
 import Header from '@/components/Layout/Header';
@@ -55,9 +54,6 @@ const FAQS = [
 ];
 
 export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNewChart }) {
-  const [searchParams] = useSearchParams();
-  const sessionId = searchParams.get('session_id');
-
   const order = orderDetails || MOCK_ORDER;
   const sunSign = chartData?.sun?.sign || order.sun || 'Gemini';
   const moonSign = chartData?.moon?.sign || order.moon || 'Capricorn';
@@ -114,7 +110,7 @@ export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNew
         </p>
         <div className="mt-3 space-y-0.5">
           <p className="text-body-sm" style={{ color: '#888' }}>
-            Order {order.orderNumber || sessionId?.slice(0, 12) || '#CA-12345'}
+            Order {order.orderNumber || '#CA-12345'}
           </p>
           <p className="text-body-sm" style={{ color: '#888' }}>
             Placed: {order.date || new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
@@ -141,11 +137,8 @@ export function OrderConfirmation({ chartData, artworkImage, orderDetails, onNew
           <p className="text-body-sm" style={{ color: '#555' }}>
             Total Paid: ${order.total?.toFixed(2)}
           </p>
-          <p className="text-body-sm" style={{ color: '#555' }}>
-            Payment Method: ···· {order.paymentLast4 || '4242'}
-          </p>
-          <p className="text-body-sm" style={{ color: '#555' }}>
-            Shipping To: {order.shippingAddress || 'Your address'}
+          <p className="text-body-sm mt-2" style={{ color: '#888' }}>
+            A confirmation email with payment and shipping details has been sent to your inbox.
           </p>
         </div>
       </div>

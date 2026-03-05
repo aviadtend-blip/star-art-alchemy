@@ -5,7 +5,6 @@ import StyleSelection from "./StyleSelection.jsx";
 import LoadingScreen from "./LoadingScreen.jsx";
 import { ChartExplanation } from "../Explanation/ChartExplanation";
 import { ProductCustomization } from "../Purchase/ProductCustomization";
-import { OrderConfirmation } from "../Purchase/OrderConfirmation";
 import { calculateNatalChart } from "@/lib/astrology/chartCalculator.js";
 import { buildConcretePrompt } from "@/lib/prompts/promptBuilder.js";
 import { generateImage } from "@/lib/api/replicateClient";
@@ -115,7 +114,7 @@ const GeneratorFlowJsx = () => {
     setError(null);
 
     try {
-      const { data, error: fnError } = await supabase.functions.invoke('create-payment', {
+      const { data, error: fnError } = await supabase.functions.invoke('create-shopify-checkout', {
         body: { orderDetails: details, chartData, artworkImageUrl: generatedImage, customerName: formData?.name },
       });
 
@@ -134,20 +133,6 @@ const GeneratorFlowJsx = () => {
   const handleBackToExplanation = () => {
     setStep("explaining");
   };
-
-  // Check if returning from successful payment
-  const urlParams = new URLSearchParams(window.location.search);
-  const sessionId = urlParams.get('session_id');
-  if (sessionId && step !== "confirmed") {
-    return (
-      <OrderConfirmation
-        chartData={chartData}
-        artworkImage={generatedImage}
-        orderDetails={orderDetails}
-        onNewChart={handleRetry}
-      />
-    );
-  }
 
   // Loading screen is a full-page component
   if (step === "generating") {
