@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import EmailCaptureModal from '@/components/EmailCaptureModal';
 import { generateChartExplanation } from '@/lib/explanations/generateExplanation';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
@@ -837,34 +838,14 @@ export function ChartExplanation({
       {/* Footer */}
       <Footer />
 
-      {/* Email capture modal (placeholder) */}
-      {showEmailModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-6">
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full space-y-4">
-            <h3 className="text-a2 font-display text-surface-foreground text-center">
-              Get Your Free Preview
-            </h3>
-            <p className="text-body font-body text-surface-muted text-center">
-              Enter your email to download the high-resolution preview.
-            </p>
-            <input
-              type="email"
-              placeholder="your@email.com"
-              className="w-full border px-4 py-3 text-body font-body"
-              style={{ borderColor: '#D4D4D4', borderRadius: '2px' }}
-            />
-            <button className="btn-base btn-primary w-full">
-              Send My Preview
-            </button>
-            <button
-              onClick={() => setShowEmailModal(false)}
-              className="btn-base btn-tertiary w-full text-surface-muted"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Email capture modal */}
+      <EmailCaptureModal
+        isOpen={showEmailModal}
+        onClose={() => setShowEmailModal(false)}
+        chartData={chartData}
+        artworkUrl={selectedImage}
+        formData={formData}
+      />
     </div>
   );
 }
