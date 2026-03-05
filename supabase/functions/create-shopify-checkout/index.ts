@@ -24,7 +24,7 @@ serve(async (req) => {
       throw new Error("Shopify configuration is missing");
     }
 
-    const { orderDetails, chartData, artworkImageUrl, customerName } = await req.json();
+    const { orderDetails, chartData, artworkImageUrl, customerName, artworkId } = await req.json();
 
     if (!orderDetails || !orderDetails.total) {
       throw new Error("Missing order details");
@@ -42,6 +42,7 @@ serve(async (req) => {
 
     const attributes = [
       { key: "artwork_url", value: artworkImageUrl || "" },
+      { key: "artwork_id", value: artworkId || "" },
       { key: "customer_name", value: customerName || "" },
       { key: "sun_sign", value: chartData?.sun?.sign || "" },
       { key: "moon_sign", value: chartData?.moon?.sign || "" },

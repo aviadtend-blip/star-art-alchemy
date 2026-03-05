@@ -79,6 +79,7 @@ export function GeneratorProvider({ children }) {
 
       setGenerationProgress(`Creating your ${style.name} artwork...`);
       const result = await generateImage(prompt, style.sref, style.personalization, style.profileCode);
+      const apiframeTaskId = result.taskId;
 
       setGeneratedImage(result.imageUrl);
 
@@ -121,6 +122,7 @@ export function GeneratorProvider({ children }) {
           promptUsed: prompt,
           artworkAnalysis: analysisValue,
           sessionId,
+          taskId: apiframeTaskId,
         },
       }).then(({ data: storeData, error: storeError }) => {
         if (storeError) {
@@ -182,7 +184,7 @@ export function GeneratorProvider({ children }) {
 
     try {
       const { data, error: fnError } = await supabase.functions.invoke('create-shopify-checkout', {
-        body: { orderDetails: enrichedDetails, chartData, artworkImageUrl: generatedImage, customerName: formData?.name },
+        body: { orderDetails: enrichedDetails, chartData, artworkImageUrl: generatedImage, customerName: formData?.name, artworkId },
       });
 
       if (fnError) throw new Error(fnError.message);

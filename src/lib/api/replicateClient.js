@@ -86,6 +86,7 @@ export async function generateImage(prompt, sref, personalization, profileCode) 
   return {
     imageUrl: data.output,
     hasMoreVariations: currentGenerationCache.allOutputs.length > 1,
+    taskId: data.task_id || null,
   };
 }
 
