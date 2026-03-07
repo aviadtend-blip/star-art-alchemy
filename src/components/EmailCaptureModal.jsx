@@ -2,14 +2,16 @@ import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { identifyProfile, trackEmailCaptured, detectPeakSeason } from '@/lib/klaviyo';
+import PrimaryButton from '@/components/ui/PrimaryButton';
+
+const INPUT_CLASS = "w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-left text-foreground placeholder:text-[#B1B1B1] focus:border-primary focus:ring-0 transition outline-none";
 
 export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkUrl, formData }) {
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState(() => formData?.name?.split(' ')[0] || '');
-  const [status, setStatus] = useState('idle'); // idle | submitting | success | error
+  const [status, setStatus] = useState('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Reset state when modal opens
   useEffect(() => {
     if (isOpen) {
       setStatus('idle');
@@ -34,7 +36,6 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
       setErrorMsg('Please enter a valid email address.');
@@ -66,30 +67,22 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
     };
 
     try {
-      // Call edge function
       const { error } = await supabase.functions.invoke('capture-email', {
-        body: {
-          ...profileData,
-          sessionId,
-        },
+        body: { ...profileData, sessionId },
       });
 
       if (error) {
         console.warn('[EmailCaptureModal] Edge function error:', error);
-        // Non-blocking — still proceed with client-side tracking
       }
 
-      // Client-side Klaviyo backup
       identifyProfile(profileData);
       trackEmailCaptured(profileData);
 
-      // Persist to sessionStorage
       sessionStorage.setItem('celestial_captured_email', email.trim());
       sessionStorage.setItem('celestial_captured_first_name', firstName.trim());
 
       setStatus('success');
 
-      // After 2s, trigger download and close
       setTimeout(() => {
         if (artworkUrl) {
           const a = document.createElement('a');
@@ -112,35 +105,42 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-6">
-      <div className="bg-white rounded-lg p-6 max-w-sm w-full relative">
+      <div
+        className="relative w-full max-w-sm"
+        style={{
+          background: 'rgba(17, 17, 17, 0.70)',
+          backdropFilter: 'blur(17px)',
+          WebkitBackdropFilter: 'blur(17px)',
+          padding: '24px',
+          borderRadius: '12px',
+        }}
+      >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-surface-muted hover:text-surface-foreground transition-colors"
+          className="absolute top-3 right-3 text-white/40 hover:text-white/80 transition-colors"
           aria-label="Close"
         >
           <X size={20} />
         </button>
 
         {status === 'success' ? (
-          /* ---- Success State ---- */
           <div className="flex flex-col items-center text-center py-4 gap-3">
             <span className="text-4xl">✨</span>
-            <h3 className="text-a2 font-display text-surface-foreground">
+            <h3 className="text-a2 font-display text-foreground">
               Check your inbox!
             </h3>
-            <p className="text-body font-body text-surface-muted">
-              We've sent your hi-res preview and a little surprise to <strong>{email}</strong>.
+            <p className="text-body font-body text-white/60">
+              We've sent your hi-res preview and a little surprise to <strong className="text-foreground">{email}</strong>.
             </p>
           </div>
         ) : (
-          /* ---- Form State ---- */
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="flex flex-col" style={{ gap: 24 }}>
             <div className="text-center">
-              <h3 className="text-a2 font-display text-surface-foreground">
+              <h3 className="text-a2 font-display text-foreground">
                 Get Your Free Hi-Res Artwork
               </h3>
-              <p className="text-body font-body text-surface-muted mt-2">
+              <p className="text-body font-body text-white/60 mt-2">
                 Enter your email to download the full-resolution version — plus a surprise gift inside.
               </p>
             </div>
@@ -150,8 +150,8 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
               placeholder="First name (optional)"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="w-full border px-4 py-3 text-body font-body"
-              style={{ borderColor: '#D4D4D4', borderRadius: '2px' }}
+              className={INPUT_CLASS}
+              style={{ fontFamily: 'var(--font-body)' }}
             />
 
             <input
@@ -163,34 +163,33 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
                 if (status === 'error') setStatus('idle');
               }}
               required
-              className="w-full border px-4 py-3 text-body font-body"
+              className={INPUT_CLASS}
               style={{
-                borderColor: status === 'error' ? '#ef4444' : '#D4D4D4',
-                borderRadius: '2px',
+                fontFamily: 'var(--font-body)',
+                borderBottomColor: status === 'error' ? 'hsl(0 84.2% 60.2%)' : undefined,
               }}
             />
 
             {status === 'error' && errorMsg && (
-              <p className="text-body-sm text-red-500 -mt-2">{errorMsg}</p>
+              <p className="text-body-sm text-destructive -mt-3">{errorMsg}</p>
             )}
 
-            <button
+            <PrimaryButton
               type="submit"
               disabled={status === 'submitting'}
-              className="btn-base btn-primary w-full"
             >
               {status === 'submitting' ? 'Sending...' : 'Send My Preview ✦'}
-            </button>
+            </PrimaryButton>
 
             <button
               type="button"
               onClick={onClose}
-              className="btn-base btn-tertiary w-full text-surface-muted"
+              className="btn-base btn-dark-outline w-full"
             >
               Cancel
             </button>
 
-            <p className="text-center" style={{ fontSize: 11, color: '#999', lineHeight: 1.4 }}>
+            <p className="text-center text-white/40" style={{ fontSize: 11, lineHeight: 1.4 }}>
               We'll email you the download link and a $10 off code. Unsubscribe anytime.
             </p>
           </form>
