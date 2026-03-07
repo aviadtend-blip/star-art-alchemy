@@ -8,7 +8,7 @@ const corsHeaders = {
 
 const REPLICATE_API_TOKEN = Deno.env.get("REPLICATE_API_TOKEN");
 // InstantID model on Replicate
-const INSTANTID_VERSION = "5578b9b8a2d7ea9b5b93498cc999ece4229a1c0f";
+const INSTANTID_VERSION = "2e4785a4d80dadf580077b2244c8d7c05d8e3faac04a04c02d8e099dd2876789";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
