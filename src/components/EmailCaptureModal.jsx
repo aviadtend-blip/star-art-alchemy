@@ -215,6 +215,7 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
             </p>
           </form>
         )}
+        </div>
       </div>
     </div>
   );
