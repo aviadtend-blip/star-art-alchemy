@@ -21,7 +21,7 @@ serve(async (req) => {
     }
 
     // Only allow proxying from known CDN domains
-    const allowed = ['replicate.delivery', 'replicate.com', 'pbxt.replicate.delivery', 'cdn.apiframe.pro', 'apiframe.pro'];
+    const allowed = ['replicate.delivery', 'replicate.com', 'pbxt.replicate.delivery', 'cdn.apiframe.pro', 'apiframe.pro', 'supabase.co'];
     const parsed = new URL(url);
     if (!allowed.some(d => parsed.hostname.endsWith(d))) {
       return new Response(
