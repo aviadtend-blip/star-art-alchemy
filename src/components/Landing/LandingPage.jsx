@@ -100,7 +100,7 @@ export default function LandingPage() {
     birthCity: "", birthCountry: "US", lat: null, lng: null,
   });
 
-  const handleFormComplete = (params) => {
+  const [mobileHeroStep, setMobileHeroStep] = useState('date');
     const searchParams = new URLSearchParams({
       name: params.name, month: params.month, day: params.day,
       year: params.year, hour: params.hour, minute: params.minute,
