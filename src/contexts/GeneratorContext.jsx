@@ -88,7 +88,7 @@ export function GeneratorProvider({ children }) {
       const prompt = await buildConcretePrompt(chartData, style);
 
       setGenerationProgress(`Creating your ${style.name} artwork...`);
-      const result = await generateImage(prompt, style.sref, style.personalization, style.profileCode, userPhotoUrl);
+      const result = await generateImage(prompt, style.sref, style.personalization, style.profileCode, userPhotoUrl, style.id);
       const apiframeTaskId = result.taskId;
 
       setGeneratedImage(result.imageUrl);

@@ -7,8 +7,18 @@ const corsHeaders = {
 };
 
 const REPLICATE_API_TOKEN = Deno.env.get("REPLICATE_API_TOKEN");
-// InstantID model on Replicate
 const INSTANTID_VERSION = "2e4785a4d80dadf580077b2244c8d7c05d8e3faac04a04c02d8e099dd2876789";
+
+const STYLE_PROMPTS: Record<string, string> = {
+  'prism-storm': 'abstract expressionist cosmic portrait, bold saturated colors, layered nebula textures, electric magenta and violet hues, explosive painterly strokes',
+  'folk-oracle': 'dark folklore portrait, rich earthy tones, candlelit warmth, mystical forest atmosphere, deep amber and burnt sienna, intimate and moody',
+  'cosmic-fable': 'retro cosmic illustration portrait, whimsical storybook style, bold graphic shapes, teal and cyan palette, mid-century modern space art',
+  'paper-carnival': 'folk art portrait, bright naive illustration, joyful paper collage style, warm yellows and oranges, playful patterns and textures',
+  'red-eclipse': 'dramatic woodcut portrait, bold ink lines, crimson and black palette, high contrast, linocut printmaking style, fierce and graphic',
+  'cosmic-collision': 'surrealist mixed-media portrait, ink and watercolor washes, nebula dreamscape background, explosive cosmic energy, indigo and purple tones',
+};
+
+const DEFAULT_STYLE_PROMPT = 'cosmic mystical portrait, rich celestial atmosphere, painterly and ethereal';
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -16,7 +26,7 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, face_image_url, sref, personalization, profileCode } = await req.json();
+    const { prompt, face_image_url, sref, personalization, profileCode, style_id } = await req.json();
 
     if (!prompt || !face_image_url) {
       return new Response(
@@ -29,10 +39,12 @@ serve(async (req) => {
       throw new Error("REPLICATE_API_TOKEN not configured");
     }
 
-    // Note: The face_image_url must be a publicly accessible URL.
-    // The 'user-photos' Supabase Storage bucket must exist with public read access.
+    const styleId = style_id as string | undefined;
+    const stylePrompt = (styleId && STYLE_PROMPTS[styleId]) ? STYLE_PROMPTS[styleId] : DEFAULT_STYLE_PROMPT;
+    const styledPrompt = `${stylePrompt}, ${prompt}`;
 
-    // Submit prediction to Replicate
+    console.log(`InstantID style: ${styleId || 'default'}, prompt preview: ${styledPrompt.substring(0, 120)}...`);
+
     const createResponse = await fetch("https://api.replicate.com/v1/predictions", {
       method: "POST",
       headers: {
@@ -43,12 +55,12 @@ serve(async (req) => {
         version: INSTANTID_VERSION,
         input: {
           image: face_image_url,
-          prompt: prompt,
-          negative_prompt: "blurry, bad anatomy, distorted face, ugly, low quality",
+          prompt: styledPrompt,
+          negative_prompt: "blurry, bad anatomy, distorted face, ugly, low quality, cartoon, anime, illustration",
           ip_adapter_scale: 0.8,
           controlnet_conditioning_scale: 0.8,
           num_inference_steps: 30,
-          guidance_scale: 5,
+          guidance_scale: 7,
           width: 768,
           height: 1024,
         },
@@ -63,7 +75,6 @@ serve(async (req) => {
     const predictionId = prediction.id;
     console.log(`InstantID prediction submitted: ${predictionId}`);
 
-    // Poll for completion (max 120s)
     const maxAttempts = 60;
     for (let i = 0; i < maxAttempts; i++) {
       await new Promise((r) => setTimeout(r, 2000));
