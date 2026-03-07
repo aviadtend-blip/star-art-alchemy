@@ -244,20 +244,23 @@ export default function BirthDataFormCard({
           >
             Generate My Artwork
           </PrimaryButton>
-          <button
-            type="button"
-            onClick={handleSubmitWithoutPhoto}
-            className="w-full h-12 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10"
-          >
-            Skip — generate without photo
-          </button>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => { setShowPhotoStep(false); setShowTimeStep(true); }}
+              className="flex-1 h-12 rounded-full text-foreground text-a5 font-body transition hover:bg-white/10"
+            >
+              Back
+            </button>
+            <button
+              type="button"
+              onClick={handleSubmitWithoutPhoto}
+              className="flex-1 h-12 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10"
+            >
+              Skip — generate without photo
+            </button>
+          </div>
         </div>
-
-        {/* Back */}
-        <div className="flex justify-end">
-          <button type="button" onClick={() => { setShowPhotoStep(false); setShowTimeStep(true); }} className="link-a5 font-body text-foreground py-0" style={{ textDecoration: 'underline' }}>
-            Back
-          </button>
         </div>
       </div>
     );
