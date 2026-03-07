@@ -111,7 +111,7 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
           background: 'rgba(17, 17, 17, 0.70)',
           backdropFilter: 'blur(17px)',
           WebkitBackdropFilter: 'blur(17px)',
-          padding: '40px 24px 24px',
+          padding: '40px 24px 40px',
           borderRadius: '12px',
         }}
       >
