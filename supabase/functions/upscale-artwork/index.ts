@@ -15,6 +15,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const APIFRAME_API_KEY = Deno.env.get("APIFRAME_API_KEY");
 const APIFRAME_UPSCALE_URL = "https://api.apiframe.pro/upscale-highres";
 const APIFRAME_FETCH_URL = "https://api.apiframe.ai/fetch";
+const REPLICATE_API_TOKEN = Deno.env.get("REPLICATE_API_TOKEN");
+const REALESRGAN_VERSION = "42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -54,7 +56,7 @@ serve(async (req) => {
     // 1. Get artwork record
     const { data: artwork, error: fetchError } = await supabase
       .from("artworks")
-      .select("artwork_url, apiframe_task_id, upscale_status")
+      .select("artwork_url, apiframe_task_id, upscale_status, is_portrait_edition")
       .eq("id", artworkId)
       .single();
 
@@ -80,74 +82,125 @@ serve(async (req) => {
       .update({ upscale_status: "processing" })
       .eq("id", artworkId);
 
-    // 3. Submit upscale request to Apiframe
-    console.log(`[upscale-artwork] Submitting 4x upscale to Apiframe...`);
+    // 3. Branch upscale logic based on source engine
+    let upscaledCdnUrl: string | undefined;
 
-    const upscaleResponse = await fetch(APIFRAME_UPSCALE_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${APIFRAME_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        image_url: artwork.artwork_url,
-        type: "4x",
-      }),
-    });
+    if (artwork.is_portrait_edition) {
+      // Portrait path: Real-ESRGAN via Replicate
+      console.log(`[upscale-artwork] Portrait edition — using Real-ESRGAN via Replicate`);
 
-    const upscaleData = await upscaleResponse.json();
+      if (!REPLICATE_API_TOKEN) {
+        throw new Error("REPLICATE_API_TOKEN not configured");
+      }
 
-    if (upscaleData.errors || !upscaleData.task_id) {
-      throw new Error(
-        `Apiframe upscale failed: ${JSON.stringify(upscaleData.errors || upscaleData)}`
-      );
-    }
+      const createRes = await fetch("https://api.replicate.com/v1/predictions", {
+        method: "POST",
+        headers: {
+          Authorization: `Token ${REPLICATE_API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          version: REALESRGAN_VERSION,
+          input: {
+            image: artwork.artwork_url,
+            scale: 4,
+            face_enhance: true,
+          },
+        }),
+      });
 
-    const upscaleTaskId = upscaleData.task_id;
-    console.log(`[upscale-artwork] Upscale task submitted: ${upscaleTaskId}`);
+      const prediction = await createRes.json();
+      if (prediction.error) throw new Error(prediction.error);
 
-    // 4. Poll for completion (max 3 minutes, check every 3 seconds)
-    const maxAttempts = 60;
-    let attempts = 0;
-    let result: any = null;
+      console.log(`[upscale-artwork] Real-ESRGAN prediction submitted: ${prediction.id}`);
 
-    while (attempts < maxAttempts) {
-      await new Promise((r) => setTimeout(r, 3000));
-      attempts++;
+      const maxAttempts = 60;
+      for (let i = 0; i < maxAttempts; i++) {
+        await new Promise((r) => setTimeout(r, 3000));
 
-      const fetchResponse = await fetch(APIFRAME_FETCH_URL, {
+        const pollRes = await fetch(
+          `https://api.replicate.com/v1/predictions/${prediction.id}`,
+          { headers: { Authorization: `Token ${REPLICATE_API_TOKEN}` } }
+        );
+        const result = await pollRes.json();
+        console.log(`[upscale-artwork] Poll ${i + 1}: status=${result.status}`);
+
+        if (result.status === "succeeded") {
+          upscaledCdnUrl = Array.isArray(result.output) ? result.output[0] : result.output;
+          break;
+        }
+
+        if (result.status === "failed" || result.status === "canceled") {
+          throw new Error(result.error || "Real-ESRGAN upscale failed");
+        }
+      }
+    } else {
+      // Standard path: Apiframe 4x upscaler
+      console.log(`[upscale-artwork] Submitting 4x upscale to Apiframe...`);
+
+      if (!APIFRAME_API_KEY) {
+        throw new Error("APIFRAME_API_KEY not configured");
+      }
+
+      const upscaleResponse = await fetch(APIFRAME_UPSCALE_URL, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${APIFRAME_API_KEY}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ task_id: upscaleTaskId }),
+        body: JSON.stringify({
+          image_url: artwork.artwork_url,
+          type: "4x",
+        }),
       });
 
-      result = await fetchResponse.json();
-      console.log(
-        `[upscale-artwork] Poll ${attempts}: status=${result.status}`
-      );
+      const upscaleData = await upscaleResponse.json();
 
-      if (result.status === "finished") break;
-
-      if (result.status === "failed") {
+      if (upscaleData.errors || !upscaleData.task_id) {
         throw new Error(
-          `Upscale failed: ${result.message || "Unknown error"}`
+          `Apiframe upscale failed: ${JSON.stringify(upscaleData.errors || upscaleData)}`
         );
       }
-    }
 
-    if (!result || result.status !== "finished") {
-      throw new Error("Upscale timed out after 3 minutes");
-    }
+      const upscaleTaskId = upscaleData.task_id;
+      console.log(`[upscale-artwork] Upscale task submitted: ${upscaleTaskId}`);
 
-    // 5. Get the upscaled image URL
-    const upscaledCdnUrl =
-      result.image_url || result.image_urls?.[0] || result.output;
+      const maxAttempts = 60;
+      let attempts = 0;
+      let result: any = null;
+
+      while (attempts < maxAttempts) {
+        await new Promise((r) => setTimeout(r, 3000));
+        attempts++;
+
+        const fetchResponse = await fetch(APIFRAME_FETCH_URL, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${APIFRAME_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ task_id: upscaleTaskId }),
+        });
+
+        result = await fetchResponse.json();
+        console.log(`[upscale-artwork] Poll ${attempts}: status=${result.status}`);
+
+        if (result.status === "finished") break;
+
+        if (result.status === "failed") {
+          throw new Error(`Upscale failed: ${result.message || "Unknown error"}`);
+        }
+      }
+
+      if (!result || result.status !== "finished") {
+        throw new Error("Upscale timed out after 3 minutes");
+      }
+
+      upscaledCdnUrl = result.image_url || result.image_urls?.[0] || result.output;
+    }
 
     if (!upscaledCdnUrl) {
-      throw new Error("No upscaled image URL in Apiframe response");
+      throw new Error("No upscaled image URL in response");
     }
 
     console.log(`[upscale-artwork] Upscale complete, downloading from CDN...`);

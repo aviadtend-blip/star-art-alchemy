@@ -25,6 +25,7 @@ export type Database = {
           created_at: string
           customer_name: string | null
           id: string
+          is_portrait_edition: boolean
           order_number: string | null
           original_cdn_url: string | null
           prompt_used: string | null
@@ -45,6 +46,7 @@ export type Database = {
           created_at?: string
           customer_name?: string | null
           id?: string
+          is_portrait_edition?: boolean
           order_number?: string | null
           original_cdn_url?: string | null
           prompt_used?: string | null
@@ -65,6 +67,7 @@ export type Database = {
           created_at?: string
           customer_name?: string | null
           id?: string
+          is_portrait_edition?: boolean
           order_number?: string | null
           original_cdn_url?: string | null
           prompt_used?: string | null
