@@ -111,7 +111,7 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
           background: 'rgba(17, 17, 17, 0.70)',
           backdropFilter: 'blur(17px)',
           WebkitBackdropFilter: 'blur(17px)',
-          padding: '24px',
+          padding: '40px 24px 24px',
           borderRadius: '12px',
         }}
       >
@@ -174,7 +174,7 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
               <p className="text-body-sm text-destructive -mt-3">{errorMsg}</p>
             )}
 
-            <div className="flex flex-col" style={{ gap: 16 }}>
+            <div className="flex flex-col" style={{ gap: 8 }}>
               <PrimaryButton
                 type="submit"
                 disabled={status === 'submitting'}
