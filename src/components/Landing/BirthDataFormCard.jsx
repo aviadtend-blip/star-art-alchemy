@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import PopularTag from "@/components/ui/PopularTag";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 
 const INPUT_CLASS = "w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-left text-foreground placeholder:text-[#B1B1B1] focus:border-primary focus:ring-0 transition outline-none";
@@ -181,7 +182,7 @@ export default function BirthDataFormCard({
         <div>
           <div className="flex items-center gap-3 mb-2">
             <label className="block text-subtitle tracking-[3px]" style={{ color: '#FFFFFF' }}>ADD YOUR FACE TO THE ARTWORK</label>
-            <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#6A6A6A' }}>optional</span>
+            <PopularTag>optional</PopularTag>
           </div>
           <p className="text-body" style={{ color: '#B1B1B1' }}>
             Upload a clear photo and your face will be woven into the cosmic portrait.
