@@ -210,7 +210,7 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
               </button>
             </div>
 
-            <p className="text-body-sm text-center text-white/40">
+            <p className="text-body-sm text-center text-white/40 -mt-2">
               We'll email you the download link and a $10 off code. Unsubscribe anytime.
             </p>
           </form>
