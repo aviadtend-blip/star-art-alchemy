@@ -105,7 +105,7 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-6">
-      <div className="relative w-full max-w-sm" style={{ borderRadius: '12px', padding: '1px', background: 'linear-gradient(180deg, #666666, #151515, #202020, #666666)' }}>
+      <div className="relative w-full max-w-sm" style={{ borderRadius: '12px', padding: '1px', background: 'linear-gradient(45deg, #666666cc, #151515cc, #202020cc, #666666cc)' }}>
         <div
           className="relative w-full"
           style={{
