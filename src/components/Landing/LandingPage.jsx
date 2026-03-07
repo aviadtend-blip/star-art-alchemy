@@ -153,7 +153,7 @@ export default function LandingPage() {
             }}
           >
             {mobileHeroStep !== 'photo' && (
-              <div className="flex flex-col gap-3 text-center mb-4">
+              <div className="flex flex-col gap-3 text-center mb-6">
                 <h1 className="text-a1 text-foreground">
                   Turn Your Birth<br />
                   Into Gallery-Worthy Art
