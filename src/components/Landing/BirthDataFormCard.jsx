@@ -261,7 +261,6 @@ export default function BirthDataFormCard({
             </button>
           </div>
         </div>
-        </div>
       </div>
     );
   }
