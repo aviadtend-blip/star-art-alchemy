@@ -37,9 +37,33 @@ serve(async (req) => {
       throw new Error(`Failed to fetch image from CDN: ${imageResponse.status}`);
     }
 
-    const imageBuffer = await imageResponse.arrayBuffer();
-    const contentType = imageResponse.headers.get("content-type") || "image/png";
-    const extension = contentType.includes("webp") ? "webp" : contentType.includes("jpeg") ? "jpg" : "png";
+    const originalContentType = imageResponse.headers.get("content-type") || "image/png";
+    let imageBuffer: ArrayBuffer;
+    let contentType: string;
+    let extension: string;
+
+    // Convert WebP to JPEG for email client compatibility
+    if (originalContentType.includes("webp")) {
+      console.log("[store-artwork] WebP detected — converting to JPEG via wsrv.nl");
+      const convertUrl = `https://wsrv.nl/?url=${encodeURIComponent(cdnUrl)}&output=jpg&q=92`;
+      const jpegResponse = await fetch(convertUrl);
+      if (jpegResponse.ok) {
+        imageBuffer = await jpegResponse.arrayBuffer();
+        contentType = "image/jpeg";
+        extension = "jpg";
+        console.log(`[store-artwork] Converted to JPEG: ${imageBuffer.byteLength} bytes`);
+      } else {
+        console.warn(`[store-artwork] JPEG conversion failed (${jpegResponse.status}), falling back to original WebP`);
+        await jpegResponse.body?.cancel();
+        imageBuffer = await imageResponse.arrayBuffer();
+        contentType = originalContentType;
+        extension = "webp";
+      }
+    } else {
+      imageBuffer = await imageResponse.arrayBuffer();
+      contentType = originalContentType;
+      extension = originalContentType.includes("jpeg") ? "jpg" : "png";
+    }
 
     // Generate unique filename
     const artworkId = crypto.randomUUID();
