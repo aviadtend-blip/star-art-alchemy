@@ -4,16 +4,6 @@ import PrimaryButton from "@/components/ui/PrimaryButton";
 
 const INPUT_CLASS = "w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-left text-foreground placeholder:text-[#B1B1B1] focus:border-primary focus:ring-0 transition outline-none";
 
-/**
- * Shared birth data form card used in both hero sections and the bottom-of-page form.
- * Handles Step 1a (date + location) and Step 1b (time) inline.
- *
- * Props:
- *  - formData, setFormData — shared form state from parent
- *  - onSubmit(params) — called with final { name, month, day, year, hour, minute, city, nation, lat, lng }
- *  - submitLabel — label for Step 1a submit button (default: "Continue")
- *  - gap — CSS gap value (default: 24)
- */
 export default function BirthDataFormCard({
   formData,
   setFormData,
@@ -29,6 +19,16 @@ export default function BirthDataFormCard({
   const [dontKnowTime, setDontKnowTime] = useState(false);
   const [locationError, setLocationError] = useState(false);
 
+  // Photo step state
+  const [showPhotoStep, setShowPhotoStep] = useState(false);
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const [uploadedPhotoUrl, setUploadedPhotoUrl] = useState(null);
+  const [photoError, setPhotoError] = useState(null);
+  const fileInputRef = useRef(null);
+  const pendingSubmitRef = useRef(null);
+
   // City autocomplete
   const [cityQuery, setCityQuery] = useState(formData.birthCity || "");
   const [suggestions, setSuggestions] = useState([]);
@@ -38,14 +38,12 @@ export default function BirthDataFormCard({
   const wrapperRef = useRef(null);
   const skipAutocompleteRef = useRef(false);
 
-  // Sync cityQuery if formData.birthCity changes externally (e.g. test fill)
   useEffect(() => {
     if (formData.birthCity && formData.birthCity !== cityQuery) {
       setCityQuery(formData.birthCity);
     }
   }, [formData.birthCity]);
 
-  // Close suggestions on outside click
   useEffect(() => {
     const handleClick = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) setShowSuggestions(false);
@@ -54,7 +52,6 @@ export default function BirthDataFormCard({
     return () => document.removeEventListener("pointerdown", handleClick);
   }, []);
 
-  // Fetch autocomplete suggestions
   useEffect(() => {
     if (skipAutocompleteRef.current) { skipAutocompleteRef.current = false; return; }
     if (cityQuery.length < 2) { setSuggestions([]); return; }
@@ -106,7 +103,7 @@ export default function BirthDataFormCard({
       if (birthAmPm === "PM" && hour !== 12) hour += 12;
       if (birthAmPm === "AM" && hour === 12) hour = 0;
     }
-    onSubmit({
+    pendingSubmitRef.current = {
       name: formData.name,
       month: formData.birthMonth,
       day: formData.birthDay,
@@ -117,7 +114,46 @@ export default function BirthDataFormCard({
       nation: formData.birthCountry,
       lat: formData.lat,
       lng: formData.lng,
-    });
+    };
+    setShowPhotoStep(true);
+  };
+
+  // ── Photo handlers ──
+  const handlePhotoSelect = async (file) => {
+    if (!file || !file.type.startsWith('image/')) return;
+    if (file.size > 10 * 1024 * 1024) { setPhotoError('Photo must be under 10MB'); return; }
+    setPhotoFile(file);
+    setPhotoPreview(URL.createObjectURL(file));
+    setPhotoError(null);
+    setPhotoUploading(true);
+    try {
+      const ext = file.name.split('.').pop() || 'jpg';
+      const path = `portraits/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { data, error } = await supabase.storage.from('user-photos').upload(path, file, { contentType: file.type, upsert: false });
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from('user-photos').getPublicUrl(data.path);
+      setUploadedPhotoUrl(urlData.publicUrl);
+    } catch (err) {
+      setPhotoError('Upload failed. You can still generate without a photo.');
+      setUploadedPhotoUrl(null);
+    } finally {
+      setPhotoUploading(false);
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    setPhotoFile(null);
+    setPhotoPreview(null);
+    setUploadedPhotoUrl(null);
+    setPhotoError(null);
+  };
+
+  const handleSubmitWithPhoto = () => {
+    onSubmit({ ...pendingSubmitRef.current, userPhotoUrl: uploadedPhotoUrl });
+  };
+
+  const handleSubmitWithoutPhoto = () => {
+    onSubmit({ ...pendingSubmitRef.current, userPhotoUrl: null });
   };
 
   const dateValue =
@@ -135,8 +171,95 @@ export default function BirthDataFormCard({
     }
   };
 
+  // ═══════════════════════════════════════════
+  // Step 3: Photo upload
+  // ═══════════════════════════════════════════
+  if (showPhotoStep) {
+    return (
+      <div className="flex flex-col" style={{ gap }}>
+        {/* Header */}
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <label className="block text-subtitle tracking-[3px]" style={{ color: '#FFFFFF' }}>ADD YOUR FACE TO THE ARTWORK</label>
+            <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#6A6A6A' }}>optional</span>
+          </div>
+          <p className="text-body" style={{ color: '#B1B1B1' }}>
+            Upload a clear photo and your face will be woven into the cosmic portrait.
+          </p>
+        </div>
+
+        {/* Upload zone or preview */}
+        {!photoFile ? (
+          <div
+            className="flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-white/20 cursor-pointer transition hover:border-white/40 py-12 px-6"
+            style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}
+            onClick={() => fileInputRef.current?.click()}
+            onDragOver={(e) => { e.preventDefault(); }}
+            onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handlePhotoSelect(f); }}
+          >
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#6A6A6A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            <span className="text-body text-foreground">Click to browse or drag & drop</span>
+            <span className="text-body" style={{ color: '#6A6A6A', fontSize: '13px' }}>JPG, PNG, WEBP — max 10MB</span>
+          </div>
+        ) : photoUploading ? (
+          <div className="flex items-center justify-center gap-3 rounded-xl border border-white/20 py-10">
+            <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <span className="text-body text-foreground">Uploading…</span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 border border-white/20">
+              <img src={photoPreview} alt="Your photo" className="w-full h-full object-cover" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-body text-foreground truncate">{photoFile.name}</p>
+              <button type="button" onClick={handleRemovePhoto} className="text-body mt-1" style={{ color: '#B1B1B1', textDecoration: 'underline', fontSize: '13px' }}>
+                Remove
+              </button>
+            </div>
+          </div>
+        )}
+
+        <input ref={fileInputRef} type="file" accept="image/*" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) handlePhotoSelect(f); }} />
+
+        {photoError && <p className="text-body text-red-400">{photoError}</p>}
+
+        {/* CTAs */}
+        <div className="flex flex-col gap-3">
+          <PrimaryButton
+            onClick={handleSubmitWithPhoto}
+            disabled={photoUploading || !uploadedPhotoUrl}
+            className="w-full"
+          >
+            Generate My Artwork
+          </PrimaryButton>
+          <button
+            type="button"
+            onClick={handleSubmitWithoutPhoto}
+            className="w-full h-12 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10"
+          >
+            Skip — generate without photo
+          </button>
+        </div>
+
+        {/* Back */}
+        <div className="flex justify-end">
+          <button type="button" onClick={() => { setShowPhotoStep(false); setShowTimeStep(true); }} className="link-a5 font-body text-foreground py-0" style={{ textDecoration: 'underline' }}>
+            Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════
+  // Step 1b: Birth time
+  // ═══════════════════════════════════════════
   if (showTimeStep) {
-    // Native time value for mobile picker (24h format)
     const nativeHour24 = (() => {
       let h = Number(birthHour) || 12;
       if (birthAmPm === 'PM' && h !== 12) h += 12;
@@ -207,12 +330,7 @@ export default function BirthDataFormCard({
 
     const timeInputMobile = (
       <div className={`transition-opacity ${dontKnowTime ? 'opacity-20 pointer-events-none' : ''}`}>
-        <input
-          type="time"
-          value={nativeTimeValue}
-          onChange={handleNativeTimeChange}
-          className={INPUT_CLASS}
-        />
+        <input type="time" value={nativeTimeValue} onChange={handleNativeTimeChange} className={INPUT_CLASS} />
       </div>
     );
 
@@ -220,18 +338,14 @@ export default function BirthDataFormCard({
       <div className="flex flex-col" style={{ gap }}>
         <div>
           <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH TIME</label>
-
-          {/* Desktop: fields + button inline, checkbox/back below */}
           <div className="hidden md:block">
             <div className="flex items-end gap-4">
               <div className="flex-1 min-w-0">{timeInputsDesktop}</div>
               <PrimaryButton onClick={handleStep1bSubmit} className="flex-shrink-0">
-                Choose style
+                Continue
               </PrimaryButton>
             </div>
           </div>
-
-          {/* Mobile: fields → checkbox → buttons (back + choose style) */}
           <div className="md:hidden flex flex-col gap-6">
             {timeInputMobile}
             {checkboxEl}
@@ -240,13 +354,11 @@ export default function BirthDataFormCard({
                 Back
               </button>
               <PrimaryButton onClick={handleStep1bSubmit} className="flex-1">
-                Choose style
+                Continue
               </PrimaryButton>
             </div>
           </div>
         </div>
-
-        {/* Desktop: checkbox + back row */}
         <div className="hidden md:flex items-start justify-between">
           {checkboxEl}
           <button type="button" onClick={() => setShowTimeStep(false)} className="link-a5 font-body text-foreground py-0 flex-shrink-0" style={{ textDecoration: 'underline' }}>
@@ -257,41 +369,22 @@ export default function BirthDataFormCard({
     );
   }
 
+  // ═══════════════════════════════════════════
+  // Step 1a: Date + Location (inline variant)
+  // ═══════════════════════════════════════════
   if (inline) {
     return (
       <form onSubmit={handleStep1aSubmit} className="flex items-end gap-6">
         <div className="flex-1 min-w-0">
           <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
           <div className="relative">
-            <input
-              type="date"
-              required
-              value={dateValue}
-              onChange={handleDateChange}
-              max={`${new Date().getFullYear()}-12-31`}
-              min="1900-01-01"
-              placeholder="mm/dd/yyyy"
-              data-empty={!dateValue ? "true" : undefined}
-              className={`${INPUT_CLASS} date-no-icon`}
-            />
+            <input type="date" required value={dateValue} onChange={handleDateChange} max={`${new Date().getFullYear()}-12-31`} min="1900-01-01" placeholder="mm/dd/yyyy" data-empty={!dateValue ? "true" : undefined} className={`${INPUT_CLASS} date-no-icon`} />
           </div>
         </div>
         <div ref={wrapperRef} className="relative flex-1 min-w-0">
           <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH LOCATION</label>
           <div className="relative">
-            <input
-              type="text"
-              required
-              value={cityQuery}
-              onChange={(e) => {
-                setCityQuery(e.target.value);
-                setLocationError(false);
-                setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null }));
-              }}
-              placeholder="City"
-              className={`${INPUT_CLASS} ${locationError ? 'border-red-500' : ''}`}
-              autoComplete="off"
-            />
+            <input type="text" required value={cityQuery} onChange={(e) => { setCityQuery(e.target.value); setLocationError(false); setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null })); }} placeholder="City" className={`${INPUT_CLASS} ${locationError ? 'border-red-500' : ''}`} autoComplete="off" />
             {loadingSuggestions && (
               <div className="absolute right-0 top-1/2 -translate-y-1/2">
                 <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -316,41 +409,22 @@ export default function BirthDataFormCard({
     );
   }
 
+  // ═══════════════════════════════════════════
+  // Step 1a: Date + Location (default)
+  // ═══════════════════════════════════════════
   return (
     <form onSubmit={handleStep1aSubmit} className="flex flex-col" style={{ gap }}>
       <div className="grid grid-cols-2 gap-6">
         <div>
           <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
           <div className="relative">
-            <input
-              type="date"
-              required
-              value={dateValue}
-              onChange={handleDateChange}
-              max={`${new Date().getFullYear()}-12-31`}
-              min="1900-01-01"
-              placeholder="MM/DD/YYYY"
-              data-empty={!dateValue ? "true" : undefined}
-              className={`${INPUT_CLASS} date-no-icon`}
-            />
+            <input type="date" required value={dateValue} onChange={handleDateChange} max={`${new Date().getFullYear()}-12-31`} min="1900-01-01" placeholder="MM/DD/YYYY" data-empty={!dateValue ? "true" : undefined} className={`${INPUT_CLASS} date-no-icon`} />
           </div>
         </div>
         <div ref={wrapperRef} className="relative">
           <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH LOCATION</label>
           <div className="relative">
-            <input
-              type="text"
-              required
-              value={cityQuery}
-              onChange={(e) => {
-                setCityQuery(e.target.value);
-                setLocationError(false);
-                setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null }));
-              }}
-              placeholder="City"
-              className={`${INPUT_CLASS} ${locationError ? 'border-red-500' : ''}`}
-              autoComplete="off"
-            />
+            <input type="text" required value={cityQuery} onChange={(e) => { setCityQuery(e.target.value); setLocationError(false); setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null })); }} placeholder="City" className={`${INPUT_CLASS} ${locationError ? 'border-red-500' : ''}`} autoComplete="off" />
             {loadingSuggestions && (
               <div className="absolute right-0 top-1/2 -translate-y-1/2">
                 <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
