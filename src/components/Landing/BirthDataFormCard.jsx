@@ -31,10 +31,45 @@ export default function BirthDataFormCard({
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [photoUploading, setPhotoUploading] = useState(false);
+  const [photoStatus, setPhotoStatus] = useState('');
   const [uploadedPhotoUrl, setUploadedPhotoUrl] = useState(null);
   const [photoError, setPhotoError] = useState(null);
   const fileInputRef = useRef(null);
+  const faceApiLoadedRef = useRef(false);
+  const faceApiLoadingRef = useRef(false);
   const pendingSubmitRef = useRef(null);
+
+  // Lazy-load face-api.js from CDN
+  const loadFaceApi = () => new Promise((resolve, reject) => {
+    if (faceApiLoadedRef.current) return resolve();
+    if (faceApiLoadingRef.current) {
+      const interval = setInterval(() => {
+        if (faceApiLoadedRef.current) { clearInterval(interval); resolve(); }
+      }, 100);
+      return;
+    }
+    faceApiLoadingRef.current = true;
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js';
+    script.onload = async () => {
+      try {
+        await window.faceapi.nets.tinyFaceDetector.loadFromUri(
+          'https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'
+        );
+        faceApiLoadedRef.current = true;
+        resolve();
+      } catch (e) { reject(e); }
+    };
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+
+  // Preload face-api during Step 2 so it's warm by Step 3
+  useEffect(() => {
+    if (showTimeStep) {
+      loadFaceApi().catch(() => {});
+    }
+  }, [showTimeStep]);
 
   // City autocomplete
   const [cityQuery, setCityQuery] = useState(formData.birthCity || "");
@@ -125,24 +160,77 @@ export default function BirthDataFormCard({
     setShowPhotoStep(true);
   };
 
-  // ── Photo handlers ──
+  // ── Photo handlers with face detection ──
   const handlePhotoSelect = async (file) => {
     if (!file || !file.type.startsWith('image/')) return;
     if (file.size > 10 * 1024 * 1024) { setPhotoError('Photo must be under 10MB'); return; }
-    setPhotoFile(file);
-    setPhotoPreview(URL.createObjectURL(file));
+
     setPhotoError(null);
     setPhotoUploading(true);
+    setPhotoFile(file);
+    setPhotoStatus('Detecting face...');
+    const objectUrl = URL.createObjectURL(file);
+    setPhotoPreview(objectUrl);
+
     try {
-      const ext = file.name.split('.').pop() || 'jpg';
-      const path = `portraits/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const { data, error } = await supabase.storage.from('user-photos').upload(path, file, { contentType: file.type, upsert: false });
+      await loadFaceApi();
+
+      const img = await new Promise((res, rej) => {
+        const i = new Image();
+        i.onload = () => res(i);
+        i.onerror = rej;
+        i.src = objectUrl;
+      });
+
+      const detection = await window.faceapi.detectSingleFace(
+        img,
+        new window.faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.4 })
+      );
+
+      if (!detection) {
+        setPhotoError("We couldn't detect a face. Try a clearer, front-facing photo with good lighting.");
+        setPhotoFile(null);
+        setPhotoPreview(null);
+        setPhotoUploading(false);
+        setPhotoStatus('');
+        return;
+      }
+
+      // Crop to face with 40% padding, clamped to image bounds, square crop
+      const { x, y, width, height } = detection.box;
+      const padX = width * 0.4;
+      const padY = height * 0.4;
+      const cropX = Math.max(0, x - padX);
+      const cropY = Math.max(0, y - padY);
+      const cropW = Math.min(img.width - cropX, width + padX * 2);
+      const cropH = Math.min(img.height - cropY, height + padY * 2);
+      const size = Math.min(cropW, cropH);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, cropX, cropY, size, size, 0, 0, 512, 512);
+
+      const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.92);
+      setPhotoPreview(croppedDataUrl);
+
+      setPhotoStatus('Uploading...');
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.92));
+      const path = `portraits/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+      const { data, error } = await supabase.storage
+        .from('user-photos')
+        .upload(path, blob, { contentType: 'image/jpeg', upsert: false });
+
       if (error) throw error;
       const { data: urlData } = supabase.storage.from('user-photos').getPublicUrl(data.path);
       setUploadedPhotoUrl(urlData.publicUrl);
+      setPhotoStatus('');
     } catch (err) {
+      console.error('[BirthDataFormCard] Face crop/upload error:', err);
       setPhotoError('Upload failed. You can still generate without a photo.');
       setUploadedPhotoUrl(null);
+      setPhotoStatus('');
     } finally {
       setPhotoUploading(false);
     }
@@ -153,6 +241,8 @@ export default function BirthDataFormCard({
     setPhotoPreview(null);
     setUploadedPhotoUrl(null);
     setPhotoError(null);
+    setPhotoStatus('');
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleSubmitWithPhoto = () => {
@@ -195,41 +285,45 @@ export default function BirthDataFormCard({
           </p>
         </div>
 
-        {/* Upload zone or preview */}
-        {!photoFile ? (
-          <div
-            className="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-white/20 cursor-pointer transition hover:border-white/40 py-6 px-6"
-            style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}
-            onClick={() => fileInputRef.current?.click()}
-            onDragOver={(e) => { e.preventDefault(); }}
-            onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handlePhotoSelect(f); }}
-          >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6A6A6A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="17 8 12 3 7 8" />
-              <line x1="12" y1="3" x2="12" y2="15" />
-            </svg>
-            <span className="text-body text-foreground">Click to browse or drag & drop</span>
-            <span className="text-body" style={{ color: '#6A6A6A', fontSize: '13px' }}>JPG, PNG, WEBP — max 10MB</span>
-          </div>
-        ) : photoUploading ? (
-          <div className="flex items-center justify-center gap-3 rounded-xl border border-white/20 py-10">
-            <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-            <span className="text-body text-foreground">Uploading…</span>
-          </div>
-        ) : (
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 border border-white/20">
-              <img src={photoPreview} alt="Your photo" className="w-full h-full object-cover" />
+        {/* Upload zone */}
+        <div
+          onClick={() => !photoUploading && fileInputRef.current?.click()}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handlePhotoSelect(f); }}
+          className="flex flex-col items-center justify-center cursor-pointer transition-colors"
+          style={{
+            border: '1px dashed rgba(255,255,255,0.2)',
+            borderRadius: 8,
+            padding: 32,
+            minHeight: 160,
+            backgroundColor: photoPreview ? 'transparent' : 'rgba(255,255,255,0.03)',
+          }}
+        >
+          {photoUploading ? (
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              <p className="text-body text-foreground">{photoStatus}</p>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-body text-foreground truncate">{photoFile.name}</p>
-              <button type="button" onClick={handleRemovePhoto} className="text-body mt-1" style={{ color: '#B1B1B1', textDecoration: 'underline', fontSize: '13px' }}>
+          ) : photoPreview && uploadedPhotoUrl ? (
+            <div className="flex flex-col items-center gap-3">
+              <img src={photoPreview} alt="Your photo" className="w-20 h-20 rounded-full object-cover border border-white/20" />
+              <p className="text-body text-foreground">Face detected ✓</p>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); handleRemovePhoto(); }}
+                className="text-body font-body"
+                style={{ color: '#6A6A6A', textDecoration: 'underline' }}
+              >
                 Remove
               </button>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-body text-foreground">Click to upload or drag & drop</p>
+              <p className="text-body" style={{ color: '#6A6A6A', fontSize: '13px' }}>JPG, PNG or WEBP · Max 10MB</p>
+            </div>
+          )}
+        </div>
 
         <input ref={fileInputRef} type="file" accept="image/*" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) handlePhotoSelect(f); }} />
 
