@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useGenerator } from '@/contexts/GeneratorContext';
 import FAQSection from "@/components/ui/FAQSection";
 import BirthDataFormCard from "./BirthDataFormCard";
 import heroMobile from "@/assets/hero-mobile.webp";
