@@ -33,7 +33,7 @@ export function GeneratorProvider({ children }) {
   const [selectedStyle, setSelectedStyle] = useState(cached.selectedStyle || null);
   const [generatedImage, setGeneratedImage] = useState(cached.generatedImage || null);
   const [error, setError] = useState(null);
-  const [generationComplete, setGenerationComplete] = useState(false);
+  const [generationComplete, setGenerationComplete] = useState(cached.generationComplete || false);
   const [generationProgress, setGenerationProgress] = useState('');
   const [orderDetails, setOrderDetails] = useState(cached.orderDetails || null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -45,8 +45,8 @@ export function GeneratorProvider({ children }) {
 
   // Persist critical state to sessionStorage
   useEffect(() => {
-    saveSession({ chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition });
-  }, [chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition]);
+    saveSession({ chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition, generationComplete });
+  }, [chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition, generationComplete]);
 
   const handleFormSubmit = useCallback(async (data) => {
     try {

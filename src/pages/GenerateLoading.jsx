@@ -9,7 +9,12 @@ export default function GenerateLoading() {
 
   useEffect(() => {
     if (!ctx.chartData) navigate('/');
-  }, [ctx.chartData, navigate]);
+    // If generation already completed (e.g. back-navigation), skip to preview
+    if (ctx.generatedImage && ctx.generationComplete) {
+      ctx.setGenerationComplete(false);
+      navigate('/generate/preview');
+    }
+  }, [ctx.chartData, ctx.generatedImage, ctx.generationComplete, navigate]);
 
   const handleNavigateToPreview = useCallback(() => {
     ctx.setGenerationComplete(false);
