@@ -182,7 +182,7 @@ export default function BirthDataFormCard({
         <div>
           <div className="flex items-center gap-3 mb-2">
             <label className="block text-subtitle tracking-[3px]" style={{ color: '#FFFFFF' }}>ADD YOUR FACE TO THE ARTWORK</label>
-            <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#6A6A6A' }}>optional</span>
+            <PopularTag>optional</PopularTag>
           </div>
           <p className="text-body" style={{ color: '#B1B1B1' }}>
             Upload a clear photo and your face will be woven into the cosmic portrait.
