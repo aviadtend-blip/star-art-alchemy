@@ -94,6 +94,7 @@ const galleryItems = [
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { handleFormSubmit } = useGenerator();
 
   // Shared form state — passed to all BirthDataFormCard instances
   const [formData, setFormData] = useState({
@@ -104,15 +105,7 @@ export default function LandingPage() {
   const [mobileHeroStep, setMobileHeroStep] = useState('date');
 
   const handleFormComplete = (params) => {
-    const searchParams = new URLSearchParams({
-      name: params.name, month: params.month, day: params.day,
-      year: params.year, hour: params.hour, minute: params.minute,
-      city: params.city, nation: params.nation,
-      ...(params.lat != null ? { lat: String(params.lat) } : {}),
-      ...(params.lng != null ? { lng: String(params.lng) } : {}),
-      ...(params.userPhotoUrl ? { userPhotoUrl: params.userPhotoUrl } : {}),
-    });
-    navigate(`/generate/style?${searchParams.toString()}`);
+    handleFormSubmit(params);
   };
 
   const scrollToForm = () => {
