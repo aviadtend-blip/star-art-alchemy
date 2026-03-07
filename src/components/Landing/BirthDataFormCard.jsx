@@ -12,6 +12,7 @@ export default function BirthDataFormCard({
   submitLabel = "Continue",
   gap = 24,
   inline = false,
+  onStepChange,
 }) {
   const [showTimeStep, setShowTimeStep] = useState(false);
   const [birthHour, setBirthHour] = useState("12");
@@ -22,6 +23,11 @@ export default function BirthDataFormCard({
 
   // Photo step state
   const [showPhotoStep, setShowPhotoStep] = useState(false);
+
+  // Notify parent of step changes
+  useEffect(() => {
+    onStepChange?.(showPhotoStep ? 'photo' : showTimeStep ? 'time' : 'date');
+  }, [showPhotoStep, showTimeStep]);
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [photoUploading, setPhotoUploading] = useState(false);

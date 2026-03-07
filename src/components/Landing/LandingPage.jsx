@@ -100,7 +100,7 @@ export default function LandingPage() {
     birthCity: "", birthCountry: "US", lat: null, lng: null,
   });
 
-  const handleFormComplete = (params) => {
+  const [mobileHeroStep, setMobileHeroStep] = useState('date');
     const searchParams = new URLSearchParams({
       name: params.name, month: params.month, day: params.day,
       year: params.year, hour: params.hour, minute: params.minute,
@@ -139,16 +139,18 @@ export default function LandingPage() {
           <img src={heroMobile} alt="" className="w-full h-full object-cover" />
         </div>
         <div className="relative z-10 flex flex-col justify-end min-h-[780px] px-4 py-[15px]">
-          {/* Title + Subtitle */}
-          <div className="flex flex-col gap-3 text-center mb-4">
-            <h1 className="text-a1 text-foreground">
-              Turn Your Birth<br />
-              Into Gallery-Worthy Art
-            </h1>
-            <p className="text-body mx-auto" style={{ color: '#ffffff', maxWidth: '344px' }}>
-              Every element in your artwork corresponds to a specific astrological placement.
-            </p>
-          </div>
+          {/* Title + Subtitle — hidden on photo step */}
+          {mobileHeroStep !== 'photo' && (
+            <div className="flex flex-col gap-3 text-center mb-4">
+              <h1 className="text-a1 text-foreground">
+                Turn Your Birth<br />
+                Into Gallery-Worthy Art
+              </h1>
+              <p className="text-body mx-auto" style={{ color: '#ffffff', maxWidth: '344px' }}>
+                Every element in your artwork corresponds to a specific astrological placement.
+              </p>
+            </div>
+          )}
 
           {/* Glass form card */}
           <div
@@ -160,7 +162,7 @@ export default function LandingPage() {
               padding: '16px',
             }}
           >
-            <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" gap={9} />
+            <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" gap={9} onStepChange={setMobileHeroStep} />
           </div>
         </div>
       </section>
