@@ -84,33 +84,29 @@ serve(async (req) => {
     const captureId = capture?.id;
     console.log(`[capture-email] Upserted capture: ${captureId}`);
 
-    // --- Klaviyo server-side integration (non-blocking) ---
-    const KLAVIYO_PRIVATE_KEY = Deno.env.get("KLAVIYO_PRIVATE_KEY");
+    // --- Klaviyo Client API integration (no private key needed) ---
+    const KLAVIYO_COMPANY_ID = "XEPXRf";
 
-    if (KLAVIYO_PRIVATE_KEY) {
-      try {
-        await syncToKlaviyo({
-          apiKey: KLAVIYO_PRIVATE_KEY,
-          email: email.trim().toLowerCase(),
-          firstName,
-          sunSign,
-          moonSign,
-          risingSign,
-          artworkUrl,
-          emailMockupUrl,
-          artworkId,
-          peakSeason,
-          dominantElement,
-          elementBalance,
-          artworkExpiryDate,
-          cosmic10Expiry,
-          captureTimestamp: now,
-        });
-      } catch (klaviyoErr) {
-        console.warn("[capture-email] Klaviyo sync failed (non-blocking):", klaviyoErr);
-      }
-    } else {
-      console.log("[capture-email] KLAVIYO_PRIVATE_KEY not set, skipping server-side sync");
+    try {
+      await syncToKlaviyoClientAPI({
+        companyId: KLAVIYO_COMPANY_ID,
+        email: email.trim().toLowerCase(),
+        firstName,
+        sunSign,
+        moonSign,
+        risingSign,
+        artworkUrl,
+        emailMockupUrl,
+        artworkId,
+        peakSeason,
+        dominantElement,
+        elementBalance,
+        artworkExpiryDate,
+        cosmic10Expiry,
+        captureTimestamp: now,
+      });
+    } catch (klaviyoErr) {
+      console.warn("[capture-email] Klaviyo Client API sync failed (non-blocking):", klaviyoErr);
     }
 
     return new Response(
@@ -133,11 +129,11 @@ serve(async (req) => {
 });
 
 // ----------------------------------------------------------------
-// Klaviyo server-side helpers
+// Klaviyo Client API helpers (public key only)
 // ----------------------------------------------------------------
 
-interface KlaviyoSyncParams {
-  apiKey: string;
+interface KlaviyoClientSyncParams {
+  companyId: string;
   email: string;
   firstName?: string;
   sunSign?: string;
@@ -154,9 +150,9 @@ interface KlaviyoSyncParams {
   captureTimestamp: Date;
 }
 
-async function syncToKlaviyo(params: KlaviyoSyncParams) {
+async function syncToKlaviyoClientAPI(params: KlaviyoClientSyncParams) {
   const {
-    apiKey,
+    companyId,
     email,
     firstName,
     sunSign,
@@ -174,13 +170,12 @@ async function syncToKlaviyo(params: KlaviyoSyncParams) {
   } = params;
 
   const revision = "2024-10-15";
-  const headers = {
-    Authorization: `Klaviyo-API-Key ${apiKey}`,
+  const clientHeaders = {
     "Content-Type": "application/json",
     revision,
   };
 
-  const customProperties = {
+  const profileProperties = {
     sun_sign: sunSign,
     moon_sign: moonSign,
     rising_sign: risingSign,
@@ -197,125 +192,81 @@ async function syncToKlaviyo(params: KlaviyoSyncParams) {
     capture_timestamp: captureTimestamp.toISOString(),
   };
 
-  // 1. Create or update profile
-  let profileId: string | null = null;
-
-  const profilePayload = {
+  // 1. Identify profile via Client API
+  const identifyPayload = {
     data: {
       type: "profile",
       attributes: {
         email,
         first_name: firstName || undefined,
-        properties: customProperties,
+        properties: profileProperties,
       },
     },
   };
 
-  const createRes = await fetch("https://a.klaviyo.com/api/profiles/", {
-    method: "POST",
-    headers,
-    body: JSON.stringify(profilePayload),
-  });
-
-  if (createRes.status === 201) {
-    const createData = await createRes.json();
-    profileId = createData.data?.id;
-    console.log(`[capture-email] Klaviyo profile created: ${profileId}`);
-  } else if (createRes.status === 409) {
-    // Duplicate — extract existing profile ID and PATCH
-    const conflictData = await createRes.json();
-    const duplicateId =
-      conflictData.errors?.[0]?.meta?.duplicate_profile_id ||
-      conflictData.errors?.[0]?.meta?.original?.id;
-
-    if (duplicateId) {
-      profileId = duplicateId;
-      console.log(`[capture-email] Klaviyo profile exists (${duplicateId}), patching...`);
-
-      const patchRes = await fetch(`https://a.klaviyo.com/api/profiles/${duplicateId}/`, {
-        method: "PATCH",
-        headers,
-        body: JSON.stringify({
-          data: {
-            type: "profile",
-            id: duplicateId,
-            attributes: {
-              first_name: firstName || undefined,
-              properties: customProperties,
-            },
-          },
-        }),
-      });
-
-      const patchBody = await patchRes.text();
-      if (!patchRes.ok) {
-        console.warn(`[capture-email] Klaviyo PATCH failed (${patchRes.status}): ${patchBody}`);
-      }
-    } else {
-      const body = await createRes.text();
-      console.warn(`[capture-email] Klaviyo 409 but no duplicate ID found: ${body}`);
+  const identifyRes = await fetch(
+    `https://a.klaviyo.com/client/profiles/?company_id=${companyId}`,
+    {
+      method: "POST",
+      headers: clientHeaders,
+      body: JSON.stringify(identifyPayload),
     }
+  );
+
+  if (identifyRes.ok || identifyRes.status === 202) {
+    console.log("[capture-email] Klaviyo Client API: profile identified");
   } else {
-    const body = await createRes.text();
-    console.warn(`[capture-email] Klaviyo profile create failed (${createRes.status}): ${body}`);
+    const body = await identifyRes.text();
+    console.warn(`[capture-email] Klaviyo identify failed (${identifyRes.status}): ${body}`);
   }
 
-  // 2. Track "Email Captured" event
+  // 2. Track "Email Captured" event via Client API
   const eventPayload = {
     data: {
       type: "event",
       attributes: {
+        profile: {
+          data: {
+            type: "profile",
+            attributes: {
+              email,
+              first_name: firstName || undefined,
+              properties: profileProperties,
+            },
+          },
+        },
         metric: {
           data: {
             type: "metric",
             attributes: { name: "Email Captured" },
           },
         },
-        profile: {
-          data: {
-            type: "profile",
-            attributes: { email },
-          },
-        },
         properties: {
-          ...customProperties,
+          ...profileProperties,
+          email,
           discount_code: "COSMIC10",
+          discount_amount: 10,
           capture_source: "preview_download",
         },
         time: captureTimestamp.toISOString(),
+        unique_id: `email-capture-${captureTimestamp.getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       },
     },
   };
 
-  const eventRes = await fetch("https://a.klaviyo.com/api/events/", {
-    method: "POST",
-    headers,
-    body: JSON.stringify(eventPayload),
-  });
-
-  const eventBody = await eventRes.text();
-  if (eventRes.ok) {
-    console.log("[capture-email] Klaviyo 'Email Captured' event tracked");
-  } else {
-    console.warn(`[capture-email] Klaviyo event failed (${eventRes.status}): ${eventBody}`);
-  }
-
-  // 3. Add to nurture list if configured
-  const listId = Deno.env.get("KLAVIYO_NURTURE_LIST_ID");
-  if (listId && profileId) {
-    const listRes = await fetch(`https://a.klaviyo.com/api/lists/${listId}/relationships/profiles/`, {
+  const eventRes = await fetch(
+    `https://a.klaviyo.com/client/events/?company_id=${companyId}`,
+    {
       method: "POST",
-      headers,
-      body: JSON.stringify({
-        data: [{ type: "profile", id: profileId }],
-      }),
-    });
-
-    const listBody = await listRes.text();
-    if (listRes.ok || listRes.status === 204) {
-      console.log(`[capture-email] Profile added to Klaviyo list ${listId}`);
-    } else {
-      console.warn(`[capture-email] Klaviyo list add failed (${listRes.status}): ${listBody}`);
+      headers: clientHeaders,
+      body: JSON.stringify(eventPayload),
     }
+  );
+
+  if (eventRes.ok || eventRes.status === 202) {
+    console.log("[capture-email] Klaviyo Client API: 'Email Captured' event tracked");
+  } else {
+    const body = await eventRes.text();
+    console.warn(`[capture-email] Klaviyo event failed (${eventRes.status}): ${body}`);
   }
 }
