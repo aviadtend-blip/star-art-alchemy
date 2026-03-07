@@ -198,13 +198,13 @@ export default function BirthDataFormCard({
         {/* Upload zone or preview */}
         {!photoFile ? (
           <div
-            className="flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-white/20 cursor-pointer transition hover:border-white/40 py-12 px-6"
+            className="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-white/20 cursor-pointer transition hover:border-white/40 py-6 px-6"
             style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}
             onClick={() => fileInputRef.current?.click()}
             onDragOver={(e) => { e.preventDefault(); }}
             onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handlePhotoSelect(f); }}
           >
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#6A6A6A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6A6A6A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
               <polyline points="17 8 12 3 7 8" />
               <line x1="12" y1="3" x2="12" y2="15" />
@@ -244,20 +244,23 @@ export default function BirthDataFormCard({
           >
             Generate My Artwork
           </PrimaryButton>
-          <button
-            type="button"
-            onClick={handleSubmitWithoutPhoto}
-            className="w-full h-12 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10"
-          >
-            Skip — generate without photo
-          </button>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => { setShowPhotoStep(false); setShowTimeStep(true); }}
+              className="flex-1 h-12 rounded-full text-foreground text-a5 font-body transition hover:bg-white/10"
+            >
+              Back
+            </button>
+            <button
+              type="button"
+              onClick={handleSubmitWithoutPhoto}
+              className="flex-1 h-12 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10"
+            >
+              Skip — generate without photo
+            </button>
+          </div>
         </div>
-
-        {/* Back */}
-        <div className="flex justify-end">
-          <button type="button" onClick={() => { setShowPhotoStep(false); setShowTimeStep(true); }} className="link-a5 font-body text-foreground py-0" style={{ textDecoration: 'underline' }}>
-            Back
-          </button>
         </div>
       </div>
     );
