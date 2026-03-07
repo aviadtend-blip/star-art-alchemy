@@ -144,7 +144,7 @@ export default function LandingPage() {
 
           {/* Glass form card — title inside on mobile */}
           <div
-            className="flex flex-col items-stretch max-w-5xl mx-auto w-full"
+            className="flex flex-col items-stretch md:max-w-[500px] mx-auto w-full"
             style={{
               background: 'rgba(17, 17, 17, 0.70)',
               backdropFilter: 'blur(17px)',
