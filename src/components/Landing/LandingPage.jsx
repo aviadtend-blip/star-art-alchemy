@@ -101,6 +101,8 @@ export default function LandingPage() {
   });
 
   const [mobileHeroStep, setMobileHeroStep] = useState('date');
+
+  const handleFormComplete = (params) => {
     const searchParams = new URLSearchParams({
       name: params.name, month: params.month, day: params.day,
       year: params.year, hour: params.hour, minute: params.minute,
