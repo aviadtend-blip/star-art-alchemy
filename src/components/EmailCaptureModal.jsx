@@ -113,7 +113,8 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
           WebkitBackdropFilter: 'blur(17px)',
           padding: '40px 24px 40px',
           borderRadius: '12px',
-          border: '1px solid #666',
+          border: '1px solid transparent',
+          borderImage: 'linear-gradient(180deg, #666666, #151515, #202020, #666666) 1',
         }}
       >
         {/* Close button */}
