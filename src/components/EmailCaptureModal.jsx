@@ -138,12 +138,11 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
           <form onSubmit={handleSubmit} className="flex flex-col" style={{ gap: 24 }}>
             {/* Artwork thumbnail with bottom fade */}
             {artworkUrl && (
-              <div className="relative mx-auto overflow-hidden rounded-lg" style={{ maxHeight: 80, width: '60%', opacity: 0.7 }}>
+              <div className="relative mx-auto overflow-hidden rounded-lg" style={{ height: 120, width: '60%', opacity: 0.7 }}>
                 <img
                   src={artworkUrl}
                   alt="Your artwork"
                   className="w-full h-full object-cover object-top"
-                  style={{ maxHeight: 80 }}
                 />
                 <div
                   className="absolute inset-x-0 bottom-0 pointer-events-none"
