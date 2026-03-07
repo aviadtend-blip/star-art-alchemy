@@ -174,22 +174,24 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
               <p className="text-body-sm text-destructive -mt-3">{errorMsg}</p>
             )}
 
-            <PrimaryButton
-              type="submit"
-              disabled={status === 'submitting'}
-            >
-              {status === 'submitting' ? 'Sending...' : 'Send My Preview ✦'}
-            </PrimaryButton>
+            <div className="flex flex-col" style={{ gap: 16 }}>
+              <PrimaryButton
+                type="submit"
+                disabled={status === 'submitting'}
+              >
+                {status === 'submitting' ? 'Sending...' : 'Send My Preview ✦'}
+              </PrimaryButton>
 
-            <button
-              type="button"
-              onClick={onClose}
-              className="btn-base btn-dark-outline w-full"
-            >
-              Cancel
-            </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="btn-base btn-dark-outline w-full"
+              >
+                Cancel
+              </button>
+            </div>
 
-            <p className="text-center text-white/40" style={{ fontSize: 11, lineHeight: 1.4 }}>
+            <p className="text-body-sm text-center text-white/40">
               We'll email you the download link and a $10 off code. Unsubscribe anytime.
             </p>
           </form>
