@@ -248,7 +248,7 @@ export default function BirthDataFormCard({
             <button
               type="button"
               onClick={() => { setShowPhotoStep(false); setShowTimeStep(true); }}
-              className="flex-1 h-12 rounded-full text-foreground text-a5 font-body transition hover:bg-white/10"
+              className="h-12 px-6 rounded-full text-foreground text-a5 font-body transition hover:bg-white/10"
             >
               Back
             </button>
