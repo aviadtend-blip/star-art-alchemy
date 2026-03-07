@@ -347,7 +347,7 @@ export default function BirthDataFormCard({
       <div className="flex flex-col" style={{ gap }}>
         <div>
           <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH TIME</label>
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <div className="flex items-end gap-4">
               <div className="flex-1 min-w-0">{timeInputsDesktop}</div>
               <PrimaryButton onClick={handleStep1bSubmit} className="flex-shrink-0">
@@ -355,7 +355,7 @@ export default function BirthDataFormCard({
               </PrimaryButton>
             </div>
           </div>
-          <div className="md:hidden flex flex-col gap-6">
+          <div className="lg:hidden flex flex-col gap-6">
             {timeInputMobile}
             {checkboxEl}
             <div className="flex gap-3">
@@ -368,7 +368,7 @@ export default function BirthDataFormCard({
             </div>
           </div>
         </div>
-        <div className="hidden md:flex items-start justify-between">
+        <div className="hidden lg:flex items-start justify-between">
           {checkboxEl}
           <button type="button" onClick={() => setShowTimeStep(false)} className="link-a5 font-body text-foreground py-0 flex-shrink-0" style={{ textDecoration: 'underline' }}>
             Back
