@@ -133,6 +133,7 @@ export function GeneratorProvider({ children }) {
           artworkAnalysis: analysisValue,
           sessionId,
           taskId: apiframeTaskId,
+          isPortraitEdition,
         },
       }).then(({ data: storeData, error: storeError }) => {
         if (storeError) {

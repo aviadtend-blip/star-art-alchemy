@@ -22,7 +22,7 @@ serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    const { cdnUrl, chartData, formData, artStyle, promptUsed, artworkAnalysis, sessionId, taskId } =
+    const { cdnUrl, chartData, formData, artStyle, promptUsed, artworkAnalysis, sessionId, taskId, isPortraitEdition } =
       await req.json();
 
     if (!cdnUrl) {
@@ -101,6 +101,7 @@ serve(async (req) => {
         artwork_analysis: artworkAnalysis || null,
         session_id: sessionId || null,
         apiframe_task_id: taskId || null,
+        is_portrait_edition: isPortraitEdition || false,
         status: "generated",
       })
       .select("id")

@@ -1,0 +1,1 @@
+ALTER TABLE public.artworks ADD COLUMN IF NOT EXISTS is_portrait_edition boolean NOT NULL DEFAULT false;
