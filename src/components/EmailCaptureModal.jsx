@@ -84,16 +84,6 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
       setStatus('success');
 
       setTimeout(() => {
-        if (artworkUrl) {
-          const a = document.createElement('a');
-          a.href = artworkUrl;
-          a.download = 'celestial-artwork-preview.png';
-          a.target = '_blank';
-          a.rel = 'noopener noreferrer';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        }
         onClose();
       }, 2000);
     } catch (err) {
