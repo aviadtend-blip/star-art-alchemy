@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useGenerator } from "@/contexts/GeneratorContext";
 import FAQSection from "@/components/ui/FAQSection";
 import BirthDataFormCard from "./BirthDataFormCard";
 import heroMobile from "@/assets/hero-mobile.webp";
@@ -102,15 +103,10 @@ export default function LandingPage() {
 
   const [mobileHeroStep, setMobileHeroStep] = useState('date');
 
+  const { handleFormSubmit } = useGenerator();
+
   const handleFormComplete = (params) => {
-    const searchParams = new URLSearchParams({
-      name: params.name, month: params.month, day: params.day,
-      year: params.year, hour: params.hour, minute: params.minute,
-      city: params.city, nation: params.nation,
-      ...(params.lat != null ? { lat: String(params.lat) } : {}),
-      ...(params.lng != null ? { lng: String(params.lng) } : {}),
-    });
-    navigate(`/generate/style?${searchParams.toString()}`);
+    handleFormSubmit(params);
   };
 
   const scrollToForm = () => {

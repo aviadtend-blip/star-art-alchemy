@@ -33,6 +33,7 @@ export default function GenerateEntry() {
         city,
         nation: searchParams.get('nation') || 'US',
         ...(lat && lng ? { lat: Number(lat), lng: Number(lng) } : {}),
+        userPhotoUrl: searchParams.get('userPhotoUrl') || null,
       });
     } else {
       navigate('/');
