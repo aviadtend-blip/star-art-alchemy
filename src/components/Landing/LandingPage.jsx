@@ -138,23 +138,11 @@ export default function LandingPage() {
       {/* Mobile hero */}
       <section className="lg:hidden relative overflow-hidden min-h-[780px]">
         <div className="absolute inset-0">
-          <img src={heroMobile} alt="" className="w-full h-full object-cover" style={{ objectPosition: 'center 25%' }} />
+          <img src={heroMobile} alt="" className="w-full h-full object-cover" />
         </div>
         <div className="relative z-10 flex flex-col justify-end min-h-[780px] px-4 py-[15px]">
-          {/* Title + Subtitle — hidden on photo step */}
-          {mobileHeroStep !== 'photo' && (
-            <div className="flex flex-col gap-3 text-center mb-4">
-              <h1 className="text-a1 text-foreground">
-                Turn Your Birth<br />
-                Into Gallery-Worthy Art
-              </h1>
-              <p className="text-body mx-auto" style={{ color: '#ffffff', maxWidth: '344px' }}>
-                Every element in your artwork corresponds to a specific astrological placement.
-              </p>
-            </div>
-          )}
 
-          {/* Glass form card */}
+          {/* Glass form card — title inside on mobile */}
           <div
             className="flex flex-col items-stretch max-w-5xl mx-auto w-full"
             style={{
@@ -164,6 +152,17 @@ export default function LandingPage() {
               padding: '16px',
             }}
           >
+            {mobileHeroStep !== 'photo' && (
+              <div className="flex flex-col gap-3 text-center mb-4">
+                <h1 className="text-a1 text-foreground">
+                  Turn Your Birth<br />
+                  Into Gallery-Worthy Art
+                </h1>
+                <p className="text-body mx-auto" style={{ color: '#ffffff', maxWidth: '344px' }}>
+                  Every element in your artwork corresponds to a specific astrological placement.
+                </p>
+              </div>
+            )}
             <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" gap={9} onStepChange={setMobileHeroStep} />
           </div>
         </div>
