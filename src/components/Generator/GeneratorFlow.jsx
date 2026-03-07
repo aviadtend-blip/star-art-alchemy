@@ -154,6 +154,7 @@ const GeneratorFlowJsx = () => {
         chartData={chartData}
         formData={formData}
         onEditBirthData={handleEditBirthData}
+        isPortraitEdition={!!(formData?.userPhotoUrl)}
       />
     );
   }
