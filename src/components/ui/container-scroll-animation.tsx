@@ -50,8 +50,8 @@ export const ContainerScroll = ({
     if (isMobile) {
       cardOpacity.set(1);
     } else {
-      // Linear fade from 1→0 across full scroll
-      cardOpacity.set(1 - v);
+      // Gentler early fade, stronger near the end
+      cardOpacity.set(1 - Math.pow(v, 2));
     }
   });
 
