@@ -390,15 +390,21 @@ export function ChartExplanation({
     container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
   };
 
-  // On mobile, lock scroll until the ContainerScroll animation settles and fade-in completes
+  // On mobile: lock scrolling once the ContainerScroll animation settles,
+  // then unlock after the fade-in animation completes
   useEffect(() => {
+    if (!mobileRevealed) return;
     const isMobile = window.innerWidth <= 768;
     if (!isMobile) return;
-    // Don't lock if already revealed (e.g. navigating back)
-    if (mobileRevealed) return;
-    document.body.style.overflow = '';
-    // We don't pre-lock — the ContainerScroll needs scrolling to animate.
-    // Instead we rely on the onSettled callback + timeout to keep content hidden until ready.
+    // Lock scroll so user sees the fade-in
+    document.body.style.overflow = 'hidden';
+    const timer = setTimeout(() => {
+      document.body.style.overflow = '';
+    }, 900); // slightly longer than the 700ms fade
+    return () => {
+      clearTimeout(timer);
+      document.body.style.overflow = '';
+    };
   }, [mobileRevealed]);
 
   return (
