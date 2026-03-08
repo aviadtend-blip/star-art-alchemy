@@ -603,13 +603,20 @@ export function ChartExplanation({
 
         {/* ===== MOBILE LAYOUT: dark theme ===== */}
         <div
+          ref={mobileRevealRef}
           className="md:hidden"
           style={{
             background: 'radial-gradient(30% 50% at -8% -5%, rgba(255, 255, 255, 0.12) 0%, rgba(0, 0, 0, 0.00) 100%), radial-gradient(28% 45% at 108% -3%, rgba(255, 255, 255, 0.20) 0%, rgba(0, 0, 0, 0.00) 100%), #191919',
           }}
         >
 
-          <div className="px-5 max-w-md mx-auto flex flex-col items-center">
+          <div
+            className="px-5 max-w-md mx-auto flex flex-col items-center transition-all duration-700 ease-out"
+            style={{
+              opacity: mobileRevealed ? 1 : 0,
+              transform: mobileRevealed ? 'translateY(0)' : 'translateY(24px)',
+            }}
+          >
             {/* Hotspot toggle */}
             <div className="flex items-center justify-center gap-2.5 flex-1" style={{ padding: '10px 21px' }}>
               <M3Switch
@@ -620,54 +627,6 @@ export function ChartExplanation({
               <span className="text-a5 text-white">
                 Hotspot markers
               </span>
-            </div>
-
-            {/* 8px space above artwork */}
-            <div style={{ height: 8 }} />
-
-            {/* Artwork image */}
-            <div className="relative w-full overflow-hidden" style={{ borderRadius: '2px' }}>
-              <img
-                src={selectedImage}
-                alt={`Birth chart artwork for ${chartData?.sun?.sign || ''} Sun`}
-                className="w-full"
-                style={{ WebkitUserSelect: 'none', userSelect: 'none', pointerEvents: 'none' }}
-                draggable={false}
-                onContextMenu={(e) => e.preventDefault()}
-              />
-
-
-              {showHotspots && hotspots.map((h) => {
-                const isActive = activeHotspot === h.id;
-                return (
-                  <button
-                    key={h.id}
-                    onClick={() => {
-                      setActiveHotspot(h.id);
-                      scrollToCard(h.id);
-                    }}
-                    className={`absolute flex items-center justify-center transition-[width,height,background-color] duration-300 cursor-pointer z-10 ${isActive ? 'hotspot-pulse' : ''}`}
-                    style={{
-                      top: h.position.top,
-                      left: h.position.left,
-                      transform: 'translate(-50%, -50%)',
-                      width: isActive ? 34 : 28,
-                      height: isActive ? 34 : 28,
-                      borderRadius: 41,
-                      backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 191, 0, 0.85)',
-                      border: isActive ? '2px solid #b38600' : '2px solid #6e5200',
-                      boxShadow: isActive
-                        ? '0 0 12px 4px rgba(255, 191, 0, 0.5)'
-                        : '0 0 8px 2px rgba(0, 0, 0, 0.4)',
-                    }}
-                    aria-label={`Hotspot ${h.id}: ${h.chartElement}`}
-                  >
-                    <span className="font-body text-center" style={{ fontSize: 12, color: '#000' }}>
-                      {h.id}
-                    </span>
-                  </button>
-                );
-              })}
             </div>
 
             <div style={{ height: 24 }} />
