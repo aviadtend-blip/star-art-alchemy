@@ -259,6 +259,7 @@ export function GeneratorProvider({ children }) {
   const value = {
     chartData, formData, selectedStyle, generatedImage,
     error, generationProgress, orderDetails, isCheckingOut,
+    isCalculatingChart,
     artworkAnalysis, generationComplete, artworkId,
     userPhotoUrl, isPortraitEdition,
     setFormData, setChartData, setError, setGeneratedImage, setArtworkAnalysis,
