@@ -348,15 +348,6 @@ export default function BirthDataFormCard({
 
         {/* CTAs */}
         <div className="flex flex-col gap-3">
-          {uploadedPhotoUrl && (
-            <PrimaryButton
-              onClick={handleSubmitWithPhoto}
-              disabled={photoUploading}
-              className="w-full"
-            >
-              Generate My Artwork
-            </PrimaryButton>
-          )}
           <div className="flex gap-3">
             <button
               type="button"
@@ -365,7 +356,15 @@ export default function BirthDataFormCard({
             >
               Back
             </button>
-            {!uploadedPhotoUrl && (
+            {uploadedPhotoUrl ? (
+              <PrimaryButton
+                onClick={handleSubmitWithPhoto}
+                disabled={photoUploading}
+                className="flex-1 !h-12"
+              >
+                Generate My Artwork
+              </PrimaryButton>
+            ) : (
               <button
                 type="button"
                 onClick={handleSubmitWithoutPhoto}
