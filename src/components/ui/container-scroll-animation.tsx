@@ -46,8 +46,13 @@ export const ContainerScroll = ({
   const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const cardOpacity = useMotionValue(1);
 
-  useMotionValueEvent(scrollYProgress, "change", () => {
-    cardOpacity.set(1);
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    if (isMobile) {
+      cardOpacity.set(1);
+    } else {
+      const fadeProgress = Math.max(0, (v - 0.9) / 0.1);
+      cardOpacity.set(1 - Math.pow(fadeProgress, 3));
+    }
   });
 
   return (
