@@ -20,7 +20,7 @@ const VISIBLE_ITEMS = 5;
 const PERSPECTIVE_ORIGIN = ITEM_HEIGHT * 2;
 
 function getMonthNames(locale?: string): string[] {
-  const formatter = new Intl.DateTimeFormat(locale, { month: "long" });
+  const formatter = new Intl.DateTimeFormat(locale, { month: "short" });
   return Array.from({ length: 12 }, (_, i) =>
     formatter.format(new Date(2000, i, 1))
   );
