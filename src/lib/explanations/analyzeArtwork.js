@@ -1,5 +1,6 @@
-import { supabase } from '@/integrations/supabase/client';
 import { generateChartExplanation } from './generateExplanation';
+
+const WORKING_FUNCTIONS_URL = 'https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1';
 
 /**
  * Analyzes the actual generated artwork image using AI vision,
