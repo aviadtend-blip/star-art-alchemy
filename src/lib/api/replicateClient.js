@@ -56,12 +56,11 @@ export async function generateImage(prompt, sref, personalization, profileCode, 
 
   // Step 1: Always use generate-artwork for Midjourney generation
   const response = await fetchWithRetry(
-    `${SUPABASE_URL}/functions/v1/generate-artwork`,
+    `${WORKING_FUNCTIONS_URL}/generate-artwork`,
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
       },
       body: JSON.stringify({ prompt, sref, personalization, profileCode }),
     }
