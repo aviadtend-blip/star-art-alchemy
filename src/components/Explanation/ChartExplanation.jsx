@@ -10,6 +10,7 @@ import { Switch as M3Switch } from '@/components/ui/material-design-3-switch';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import CTARoomMockup from '@/components/Explanation/CTARoomMockup';
 import ReviewsList, { TESTIMONIALS } from '@/components/ui/ReviewsList';
+import { ContainerScroll } from '@/components/ui/container-scroll-animation';
 
 /**
  * Fallback hotspot positions derived from the prompt positioning data.
@@ -408,16 +409,30 @@ export function ChartExplanation({
           <div style={{ height: '40px', background: 'linear-gradient(to bottom, #191919, transparent)' }} />
         </div>
 
-        {/* ===== DESKTOP: Title + intro above two-column layout ===== */}
-        <div className="hidden md:flex flex-col items-center text-center pb-0 px-8" style={{ maxWidth: 500, margin: '0 auto', paddingTop: 100 }}>
-          <h1 className="text-a1-special text-white">
-            Meet Your Cosmic Masterpiece
-          </h1>
-          <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 32 }} />
-          <p className="text-body-big" style={{ color: '#c7c7c7' }}>
-            {subjectExplanation}
-          </p>
-          <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 60 }} />
+        {/* ===== DESKTOP: Title + scroll-animated artwork intro ===== */}
+        <div className="hidden md:block">
+          <ContainerScroll
+            titleComponent={
+              <div className="flex flex-col items-center text-center">
+                <h1 className="text-a1-special text-white">
+                  Meet Your Cosmic Masterpiece
+                </h1>
+                <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 32 }} />
+                <p className="text-body-big" style={{ color: '#c7c7c7' }}>
+                  {subjectExplanation}
+                </p>
+              </div>
+            }
+          >
+            <img
+              src={selectedImage}
+              alt={`Birth chart artwork for ${chartData?.sun?.sign || ''} Sun`}
+              className="mx-auto rounded-2xl object-cover h-full w-full"
+              style={{ WebkitUserSelect: 'none', userSelect: 'none', pointerEvents: 'none' }}
+              draggable={false}
+              onContextMenu={(e) => e.preventDefault()}
+            />
+          </ContainerScroll>
         </div>
 
         {/* ===== DESKTOP LAYOUT: two-column ===== */}
