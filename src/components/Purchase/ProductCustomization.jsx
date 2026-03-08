@@ -181,7 +181,7 @@ function SizeSelector({ vertical = false, selectedSize, onSizeChange, sizeCarous
         </div>
       )}
       <p className="text-body-sm" style={{ color: '#888888', marginTop: '4px' }}>
-        💡 Not sure? We recommend 16"×24" for most spaces
+        💡 Not sure? We recommend 18"×24" for most spaces
       </p>
     </div>
   );
