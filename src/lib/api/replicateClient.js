@@ -77,38 +77,40 @@ export async function generateImage(prompt, sref, personalization, profileCode, 
 
   let finalImageUrl = data.output;
 
-  // Step 2: If portrait mode, run face swap as a separate call
-  // NO retries here — each retry creates a new Replicate prediction,
-  // wasting the cold-start warm-up from the previous attempt.
-  // The edge function itself polls for up to 180s to handle cold starts.
+  // Step 2: If portrait mode, run face swap — single attempt, no retries
   if (userPhotoUrl) {
-    console.log('Starting face swap step (up to 180s for cold start)...');
-    const swapResponse = await fetch(
-      `${SUPABASE_URL}/functions/v1/face-swap`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        },
-        body: JSON.stringify({
-          target_image_url: data.output,
-          face_image_url: userPhotoUrl,
-        }),
+    console.log('Starting face swap step (single attempt, up to 180s)...');
+    try {
+      const swapResponse = await fetch(
+        `${SUPABASE_URL}/functions/v1/face-swap`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            target_image_url: data.output,
+            face_image_url: userPhotoUrl,
+          }),
+        }
+      );
+
+      if (!swapResponse.ok) {
+        const swapError = await swapResponse.json().catch(() => ({}));
+        throw new Error(swapError.error || `Face swap failed with status ${swapResponse.status}`);
       }
-    );
 
-    if (!swapResponse.ok) {
-      const swapError = await swapResponse.json().catch(() => ({}));
-      throw new Error(swapError.error || `Face swap failed with status ${swapResponse.status}`);
+      const swapData = await swapResponse.json();
+      if (!swapData.output) {
+        throw new Error('No image URL returned from face swap');
+      }
+      finalImageUrl = swapData.output;
+      console.log('Face swap complete:', finalImageUrl);
+    } catch (swapErr) {
+      console.error('Face swap failed (no retry):', swapErr.message);
+      throw new Error(`Face swap failed: ${swapErr.message}. Please try again.`);
     }
-
-    const swapData = await swapResponse.json();
-    if (!swapData.output) {
-      throw new Error('No image URL returned from face swap');
-    }
-    finalImageUrl = swapData.output;
-    console.log('Face swap complete:', finalImageUrl);
   }
 
   // Cache all outputs for reimagine feature
