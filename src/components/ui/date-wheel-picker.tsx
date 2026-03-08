@@ -20,7 +20,7 @@ const VISIBLE_ITEMS = 5;
 const PERSPECTIVE_ORIGIN = ITEM_HEIGHT * 2;
 
 function getMonthNames(locale?: string): string[] {
-  const formatter = new Intl.DateTimeFormat(locale, { month: "long" });
+  const formatter = new Intl.DateTimeFormat(locale, { month: "short" });
   return Array.from({ length: 12 }, (_, i) =>
     formatter.format(new Date(2000, i, 1))
   );
@@ -423,7 +423,7 @@ const DateWheelPicker = React.forwardRef<HTMLDivElement, DateWheelPickerProps>(
           itemHeight={config.itemHeight}
           visibleItems={VISIBLE_ITEMS}
           disabled={disabled}
-          className="w-28 min-w-[7rem]"
+          className="w-16"
           ariaLabel="Select month"
         />
 
@@ -434,7 +434,7 @@ const DateWheelPicker = React.forwardRef<HTMLDivElement, DateWheelPickerProps>(
           itemHeight={config.itemHeight}
           visibleItems={VISIBLE_ITEMS}
           disabled={disabled}
-          className="w-14"
+          className="w-10"
           ariaLabel="Select day"
         />
 
@@ -445,7 +445,7 @@ const DateWheelPicker = React.forwardRef<HTMLDivElement, DateWheelPickerProps>(
           itemHeight={config.itemHeight}
           visibleItems={VISIBLE_ITEMS}
           disabled={disabled}
-          className="w-20"
+          className="w-16"
           ariaLabel="Select year"
         />
       </div>
