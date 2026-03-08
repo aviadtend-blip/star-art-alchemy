@@ -543,8 +543,8 @@ export function ChartExplanation({
                 );
               })}
             </div>
-            {/* Desktop hotspot toggle — 24px below artwork */}
-            <div className="flex items-center gap-2.5 mt-6 self-center">
+            {/* Desktop hotspot toggle — 12px below artwork */}
+            <div className="flex items-center gap-2.5 mt-3 self-center">
               <M3Switch
                 checked={showHotspots}
                 onCheckedChange={(val) => setShowHotspots(val)}
