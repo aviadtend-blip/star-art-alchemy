@@ -103,7 +103,7 @@ function RotatingBanner() {
   }, []);
   return (
     <div className="rounded-sm flex items-center justify-center px-3 py-2" style={{ backgroundColor: '#30434B' }}>
-      <p className="text-body-sm font-body text-white text-center">{messages[index]}</p>
+      <p className="text-body-sm font-body text-white text-center">{ROTATING_MESSAGES[index]}</p>
     </div>
   );
 }
