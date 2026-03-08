@@ -50,8 +50,9 @@ export const ContainerScroll = ({
     if (isMobile) {
       cardOpacity.set(1);
     } else {
-      // Gentler early fade, stronger near the end
-      cardOpacity.set(1 - Math.pow(v, 2));
+      // Stay fully visible until 40% scroll, then fade out
+      const fadeProgress = Math.max(0, (v - 0.4) / 0.6);
+      cardOpacity.set(1 - Math.pow(fadeProgress, 2));
     }
   });
 
