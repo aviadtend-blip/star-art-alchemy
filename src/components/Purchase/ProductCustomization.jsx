@@ -266,7 +266,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   // Background-preload the other two sizes so switching is instant
   const otherMockupSets = useMemo(() => {
-    const allSizes = ['12x18', '16x24', '20x30'];
+    const allSizes = ['12x16', '18x24', '24x32'];
     return allSizes.filter(s => s !== selectedSize).map(getMockupSrcs);
   }, [selectedSize]);
   useBackgroundPreload(otherMockupSets, artworkImage);
