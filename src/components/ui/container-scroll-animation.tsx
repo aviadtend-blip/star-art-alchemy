@@ -50,7 +50,7 @@ export const ContainerScroll = ({
     if (isMobile) {
       cardOpacity.set(1);
     } else {
-      const fadeProgress = Math.max(0, (v - 0.9) / 0.1);
+      const fadeProgress = Math.max(0, (v - 0.95) / 0.05);
       cardOpacity.set(1 - Math.pow(fadeProgress, 3));
     }
   });
