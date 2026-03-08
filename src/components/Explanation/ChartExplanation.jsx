@@ -543,8 +543,8 @@ export function ChartExplanation({
                 );
               })}
             </div>
-            {/* Desktop hotspot toggle — 24px below artwork */}
-            <div className="flex items-center gap-2.5 mt-6 self-center">
+            {/* Desktop hotspot toggle — 12px below artwork */}
+            <div className="flex items-center gap-2.5 mt-3 self-center">
               <M3Switch
                 checked={showHotspots}
                 onCheckedChange={(val) => setShowHotspots(val)}
@@ -663,7 +663,7 @@ export function ChartExplanation({
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, ease: 'easeOut' }}
-                className="px-6 mx-auto flex flex-col items-center pt-6"
+                className="px-6 mx-auto flex flex-col items-center pt-3"
               >
                 {/* Hotspot toggle */}
                 <div className="flex items-center justify-center gap-2.5 flex-1" style={{ padding: '10px 21px' }}>
