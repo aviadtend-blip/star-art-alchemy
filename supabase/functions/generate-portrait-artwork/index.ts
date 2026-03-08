@@ -6,19 +6,8 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const APIFRAME_API_KEY = Deno.env.get("APIFRAME_API_KEY");
 const REPLICATE_API_TOKEN = Deno.env.get("REPLICATE_API_TOKEN");
-const INSTANTID_VERSION = "2e4785a4d80dadf580077b2244c8d7c05d8e3faac04a04c02d8e099dd2876789";
-
-const STYLE_PROMPTS: Record<string, string> = {
-  'prism-storm': 'abstract expressionist cosmic portrait, bold saturated colors, layered nebula textures, electric magenta and violet hues, explosive painterly strokes',
-  'folk-oracle': 'dark folklore portrait, rich earthy tones, candlelit warmth, mystical forest atmosphere, deep amber and burnt sienna, intimate and moody',
-  'cosmic-fable': 'retro cosmic illustration portrait, whimsical storybook style, bold graphic shapes, teal and cyan palette, mid-century modern space art',
-  'paper-carnival': 'folk art portrait, bright naive illustration, joyful paper collage style, warm yellows and oranges, playful patterns and textures',
-  'red-eclipse': 'dramatic woodcut portrait, bold ink lines, crimson and black palette, high contrast, linocut printmaking style, fierce and graphic',
-  'cosmic-collision': 'surrealist mixed-media portrait, ink and watercolor washes, nebula dreamscape background, explosive cosmic energy, indigo and purple tones',
-};
-
-const DEFAULT_STYLE_PROMPT = 'cosmic mystical portrait, rich celestial atmosphere, painterly and ethereal';
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -26,7 +15,7 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, face_image_url, sref, personalization, profileCode, style_id } = await req.json();
+    const { prompt, face_image_url, sref, personalization, profileCode } = await req.json();
 
     if (!prompt || !face_image_url) {
       return new Response(
@@ -35,64 +24,119 @@ serve(async (req) => {
       );
     }
 
-    if (!REPLICATE_API_TOKEN) {
-      throw new Error("REPLICATE_API_TOKEN not configured");
+    if (!APIFRAME_API_KEY || !REPLICATE_API_TOKEN) {
+      throw new Error("Missing required API keys");
     }
 
-    const styleId = style_id as string | undefined;
-    const stylePrompt = (styleId && STYLE_PROMPTS[styleId]) ? STYLE_PROMPTS[styleId] : DEFAULT_STYLE_PROMPT;
-    const styledPrompt = `${stylePrompt}, ${prompt}`;
+    // ── STEP 1: Generate artwork via Apiframe/Midjourney ──────────────────────
+    console.log("Portrait Step 1: Generating birth chart artwork via Midjourney...");
 
-    console.log(`InstantID style: ${styleId || 'default'}, prompt preview: ${styledPrompt.substring(0, 120)}...`);
+    const mjPrompt = personalization
+      ? `${prompt} ${personalization}`
+      : prompt;
 
-    const createResponse = await fetch("https://api.replicate.com/v1/predictions", {
+    const imagineBody: Record<string, unknown> = {
+      prompt: mjPrompt,
+      aspect_ratio: "3:4",
+      process_mode: "fast",
+    };
+    if (sref) imagineBody.sref = sref;
+    if (profileCode) imagineBody.profile = profileCode;
+
+    const imagineResponse = await fetch("https://api.apiframe.pro/imagine", {
+      method: "POST",
+      headers: {
+        Authorization: APIFRAME_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(imagineBody),
+    });
+
+    if (!imagineResponse.ok) {
+      const err = await imagineResponse.text();
+      throw new Error(`Apiframe imagine failed: ${err}`);
+    }
+
+    const imagineData = await imagineResponse.json();
+    const taskId = imagineData.task_id;
+    if (!taskId) throw new Error("No task_id from Apiframe");
+
+    console.log(`Apiframe task submitted: ${taskId}`);
+
+    // Poll Apiframe for Midjourney completion (max 120s)
+    let mjImageUrl: string | null = null;
+    for (let i = 0; i < 60; i++) {
+      await new Promise((r) => setTimeout(r, 2000));
+
+      const fetchResponse = await fetch("https://api.apiframe.pro/fetch", {
+        method: "POST",
+        headers: {
+          Authorization: APIFRAME_API_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ task_id: taskId }),
+      });
+
+      const fetchData = await fetchResponse.json();
+      console.log(`Apiframe poll ${i + 1}: status=${fetchData.status}`);
+
+      if (fetchData.status === "done" && fetchData.task_result) {
+        const images = fetchData.task_result;
+        mjImageUrl = Array.isArray(images) ? images[0] : images;
+        break;
+      }
+
+      if (fetchData.status === "error" || fetchData.status === "failed") {
+        throw new Error(fetchData.error_messages?.[0] || "Midjourney generation failed");
+      }
+    }
+
+    if (!mjImageUrl) throw new Error("Midjourney generation timed out");
+    console.log(`Step 1 complete. Artwork URL: ${mjImageUrl}`);
+
+    // ── STEP 2: Face swap via easel/advanced-face-swap on Replicate ───────────
+    console.log("Portrait Step 2: Blending face into artwork via easel/advanced-face-swap...");
+
+    const swapResponse = await fetch("https://api.replicate.com/v1/models/easel/advanced-face-swap/predictions", {
       method: "POST",
       headers: {
         Authorization: `Token ${REPLICATE_API_TOKEN}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        version: INSTANTID_VERSION,
         input: {
-          image: face_image_url,
-          prompt: styledPrompt,
-          negative_prompt: "blurry, bad anatomy, distorted face, ugly, low quality, cartoon, anime, illustration",
-          ip_adapter_scale: 0.8,
-          controlnet_conditioning_scale: 0.8,
-          num_inference_steps: 30,
-          guidance_scale: 7,
-          width: 768,
-          height: 1024,
+          swap_image: face_image_url,
+          target_image: mjImageUrl,
+          hair_source: "target",
         },
       }),
     });
 
-    const prediction = await createResponse.json();
-    if (prediction.error) {
-      throw new Error(prediction.error);
-    }
+    const swapPrediction = await swapResponse.json();
+    if (swapPrediction.error) throw new Error(`Face swap error: ${swapPrediction.error}`);
 
-    const predictionId = prediction.id;
-    console.log(`InstantID prediction submitted: ${predictionId}`);
+    const swapId = swapPrediction.id;
+    console.log(`Face swap prediction submitted: ${swapId}`);
 
-    const maxAttempts = 60;
-    for (let i = 0; i < maxAttempts; i++) {
+    // Poll for face swap completion (max 60s)
+    for (let i = 0; i < 30; i++) {
       await new Promise((r) => setTimeout(r, 2000));
 
       const pollResponse = await fetch(
-        `https://api.replicate.com/v1/predictions/${predictionId}`,
+        `https://api.replicate.com/v1/predictions/${swapId}`,
         { headers: { Authorization: `Token ${REPLICATE_API_TOKEN}` } }
       );
       const result = await pollResponse.json();
+      console.log(`Face swap poll ${i + 1}: status=${result.status}`);
 
       if (result.status === "succeeded") {
-        const outputUrl = Array.isArray(result.output) ? result.output[0] : result.output;
-        console.log(`InstantID generation complete: ${outputUrl}`);
+        const finalUrl = Array.isArray(result.output) ? result.output[0] : result.output;
+        console.log(`Portrait generation complete: ${finalUrl}`);
         return new Response(
           JSON.stringify({
-            output: outputUrl,
-            all_outputs: [outputUrl],
-            task_id: predictionId,
+            output: finalUrl,
+            all_outputs: [finalUrl],
+            task_id: taskId,
             actions: [],
           }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -100,11 +144,12 @@ serve(async (req) => {
       }
 
       if (result.status === "failed" || result.status === "canceled") {
-        throw new Error(result.error || "InstantID generation failed");
+        throw new Error(result.error || "Face swap failed");
       }
     }
 
-    throw new Error("Portrait generation timed out after 120 seconds");
+    throw new Error("Face swap timed out after 60 seconds");
+
   } catch (error) {
     console.error("generate-portrait-artwork error:", error.message);
     return new Response(
