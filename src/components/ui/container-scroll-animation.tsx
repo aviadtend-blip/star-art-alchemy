@@ -51,7 +51,7 @@ export const ContainerScroll = ({
       ref={containerRef}
     >
       <div
-        className="py-10 md:pt-[960px] md:pb-80 w-full relative"
+        className="py-10 md:py-80 w-full relative"
         style={{
           perspective: "1000px",
         }}
@@ -97,7 +97,7 @@ export const Card = ({
           "0 0 #0000004d, 0 9px 20px #0000004a, 0 37px 37px #00000042, 0 84px 50px #00000026, 0 149px 60px #0000000a, 0 233px 65px #00000003",
         borderRadius: '2px',
       }}
-      className="max-w-5xl -mt-12 mx-auto h-[30rem] md:h-[40rem] md:max-w-sm md:aspect-[3/4] w-full p-0 bg-[#222222] shadow-2xl"
+      className="max-w-5xl -mt-12 md:mt-[80px] mx-auto h-[30rem] md:h-[40rem] md:max-w-sm md:aspect-[3/4] w-full p-0 bg-[#222222] shadow-2xl"
     >
       <div className="h-full w-full overflow-hidden bg-gray-100 dark:bg-zinc-900" style={{ borderRadius: '2px' }}>
         {children}
