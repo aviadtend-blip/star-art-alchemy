@@ -76,7 +76,11 @@ export default function DevNav() {
   };
 
   const handleNav = (page) => {
-    if (page.needsContext) seedContext();
+    if (page.needsContext) {
+      flushSync(() => {
+        seedContext();
+      });
+    }
     navigate(page.path);
     setOpen(false);
   };
