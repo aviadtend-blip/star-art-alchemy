@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { flushSync } from 'react-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import demoImage from '@/assets/gallery/demo-cosmic-collision.webp';
