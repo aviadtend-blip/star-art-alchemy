@@ -173,7 +173,7 @@ function ThreeDPhotoCarousel({ cards: externalCards }: ThreeDPhotoCarouselProps)
   }
 
   return (
-    <motion.div layout className="relative">
+    <div className="relative">
       <AnimatePresence mode="sync">
         {activeImg && (
           <motion.div
@@ -195,8 +195,7 @@ function ThreeDPhotoCarousel({ cards: externalCards }: ThreeDPhotoCarouselProps)
       </AnimatePresence>
 
       <motion.div
-        layout
-        className="h-[450px] sm:h-[550px] w-full"
+        className="h-[400px] sm:h-[500px] w-full"
         initial={{ WebkitMaskImage: hiddenMask, maskImage: hiddenMask } as any}
         animate={{ WebkitMaskImage: visibleMask, maskImage: visibleMask } as any}
         transition={{ duration: 1 }}
@@ -208,7 +207,7 @@ function ThreeDPhotoCarousel({ cards: externalCards }: ThreeDPhotoCarouselProps)
           isCarouselActive={isCarouselActive}
         />
       </motion.div>
-    </motion.div>
+    </div>
   )
 }
 
