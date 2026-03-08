@@ -62,7 +62,7 @@ export async function generateImage(prompt, sref, personalization, profileCode, 
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ prompt, sref, personalization, profileCode }),
+      body: JSON.stringify({ prompt, sref, personalization, profileCode, face_image_url: userPhotoUrl }),
     }
   );
 
