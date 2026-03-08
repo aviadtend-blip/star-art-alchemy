@@ -37,11 +37,13 @@ export function GeneratorProvider({ children }) {
   const [generationProgress, setGenerationProgress] = useState('');
   const [orderDetails, setOrderDetails] = useState(cached.orderDetails || null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [isCalculatingChart, setIsCalculatingChart] = useState(false);
   const [artworkAnalysis, setArtworkAnalysis] = useState(cached.artworkAnalysis || null);
   const [artworkId, setArtworkId] = useState(cached.artworkId || null);
   const [userPhotoUrl, setUserPhotoUrl] = useState(cached.userPhotoUrl || null);
   const [isPortraitEdition, setIsPortraitEdition] = useState(cached.isPortraitEdition || false);
   const isGeneratingRef = useRef(false);
+  const isCalculatingChartRef = useRef(false);
 
   // Persist critical state to sessionStorage
   useEffect(() => {
