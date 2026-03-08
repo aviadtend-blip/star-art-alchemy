@@ -758,7 +758,7 @@ export function ChartExplanation({
                   onClick={onGetFramed}
                   className="btn-base btn-primary w-full"
                 >
-                  See Available Sizes ($79 - $179)
+                  Choose Your Size ($79 - $199)
                 </button>
                 <button
                   onClick={() => setShowEmailModal(true)}
