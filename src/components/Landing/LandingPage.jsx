@@ -1,6 +1,4 @@
 import { useState } from "react";
-
-import { useNavigate } from "react-router-dom";
 import { useGenerator } from '@/contexts/GeneratorContext';
 import FAQSection from "@/components/ui/FAQSection";
 import BirthDataFormCard from "./BirthDataFormCard";
@@ -95,8 +93,7 @@ const galleryItems = [
 /* ─── Component ─── */
 
 export default function LandingPage() {
-  const navigate = useNavigate();
-  const { handleFormSubmit } = useGenerator();
+  const { handleFormSubmit, isCalculatingChart, error } = useGenerator();
 
   // Shared form state — passed to all BirthDataFormCard instances
   const [formData, setFormData] = useState({
@@ -169,7 +166,7 @@ export default function LandingPage() {
                   </p>
                 </div>
               )}
-              <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" gap={9} onStepChange={setMobileHeroStep} />
+              <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" gap={9} onStepChange={setMobileHeroStep} isSubmitting={isCalculatingChart} submitError={error} />
             </div>
           </ShineBorder>
         </div>
@@ -207,7 +204,7 @@ export default function LandingPage() {
                 padding: '28px 32px',
               }}
             >
-              <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" inline />
+              <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" inline isSubmitting={isCalculatingChart} submitError={error} />
             </div>
           </div>
         </div>

@@ -53,7 +53,18 @@ export async function calculateNatalChart(birthData) {
 
     if (error) {
       console.error("[chartCalculator] Edge function error:", error);
-      throw new Error(error.message || "Failed to calculate natal chart. Please try again.");
+
+      let edgeMessage = error.message || "Failed to calculate natal chart. Please try again.";
+      try {
+        if (typeof error.context?.json === "function") {
+          const body = await error.context.json();
+          if (body?.error) edgeMessage = body.error;
+        }
+      } catch {
+        // ignore parse failures
+      }
+
+      throw new Error(edgeMessage);
     }
 
     if (data?.error) {

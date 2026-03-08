@@ -37,11 +37,13 @@ export function GeneratorProvider({ children }) {
   const [generationProgress, setGenerationProgress] = useState('');
   const [orderDetails, setOrderDetails] = useState(cached.orderDetails || null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [isCalculatingChart, setIsCalculatingChart] = useState(false);
   const [artworkAnalysis, setArtworkAnalysis] = useState(cached.artworkAnalysis || null);
   const [artworkId, setArtworkId] = useState(cached.artworkId || null);
   const [userPhotoUrl, setUserPhotoUrl] = useState(cached.userPhotoUrl || null);
   const [isPortraitEdition, setIsPortraitEdition] = useState(cached.isPortraitEdition || false);
   const isGeneratingRef = useRef(false);
+  const isCalculatingChartRef = useRef(false);
 
   // Persist critical state to sessionStorage
   useEffect(() => {
@@ -49,9 +51,14 @@ export function GeneratorProvider({ children }) {
   }, [chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition, generationComplete]);
 
   const handleFormSubmit = useCallback(async (data) => {
+    if (isCalculatingChartRef.current) return;
+
     try {
+      isCalculatingChartRef.current = true;
+      setIsCalculatingChart(true);
       setError(null);
       setFormData(data);
+
       if (data.userPhotoUrl) {
         setUserPhotoUrl(data.userPhotoUrl);
         setIsPortraitEdition(true);
@@ -59,16 +66,29 @@ export function GeneratorProvider({ children }) {
         setUserPhotoUrl(null);
         setIsPortraitEdition(false);
       }
+
       setGenerationProgress('Calculating your birth chart...');
       const chart = await calculateNatalChart(data);
       setChartData(chart);
+
       // Only navigate if we're not already on the style page
       if (window.location.pathname !== '/generate/style') {
         navigate('/generate/style');
       }
     } catch (err) {
       console.error('❌ Chart calculation error:', err);
-      setError(err.message);
+
+      const msg = String(err?.message || 'Failed to calculate natal chart. Please try again.');
+      if (msg.includes('rate limit') || msg.includes('[429]')) {
+        setError('Too many chart requests at once. Please wait about a minute and try again.');
+      } else if (msg.includes('sufficient credit balance') || msg.includes('[403]')) {
+        setError('Chart service is temporarily unavailable right now. Please try again shortly.');
+      } else {
+        setError(msg);
+      }
+    } finally {
+      isCalculatingChartRef.current = false;
+      setIsCalculatingChart(false);
     }
   }, [navigate]);
 
@@ -239,6 +259,7 @@ export function GeneratorProvider({ children }) {
   const value = {
     chartData, formData, selectedStyle, generatedImage,
     error, generationProgress, orderDetails, isCheckingOut,
+    isCalculatingChart,
     artworkAnalysis, generationComplete, artworkId,
     userPhotoUrl, isPortraitEdition,
     setFormData, setChartData, setError, setGeneratedImage, setArtworkAnalysis,
