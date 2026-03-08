@@ -534,18 +534,14 @@ export default function BirthDataFormCard({
   // ═══════════════════════════════════════════
   return (
     <form onSubmit={handleStep1aSubmit} className="flex flex-col" style={{ gap }}>
-      <div className="flex flex-row gap-6 items-start">
-        <div className="flex-shrink-0">
+      <div className="flex flex-row gap-6 items-end">
+        <div className="flex-1 min-w-0">
           <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
-          <DateWheelPicker
-            value={wheelDate}
-            onChange={handleWheelDateChange}
-            minYear={1920}
-            maxYear={new Date().getFullYear()}
-            size="md"
-          />
+          <div className="relative">
+            <input type="date" required value={dateValue} onChange={handleDateChange} max={`${new Date().getFullYear()}-12-31`} min="1900-01-01" placeholder="mm/dd/yyyy" data-empty={!dateValue ? "true" : undefined} className={`${INPUT_CLASS} date-no-icon`} />
+          </div>
         </div>
-        <div ref={wrapperRef} className="relative flex-1 w-full self-end">
+        <div ref={wrapperRef} className="relative flex-1 min-w-0">
           <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH LOCATION</label>
           <div className="relative">
             <input type="text" required value={cityQuery} onChange={(e) => { setCityQuery(e.target.value); setLocationError(false); setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null })); }} placeholder="City" className={`${INPUT_CLASS} ${locationError ? 'border-red-500' : ''}`} autoComplete="off" />
