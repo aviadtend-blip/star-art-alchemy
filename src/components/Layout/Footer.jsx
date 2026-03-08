@@ -13,8 +13,8 @@ const Footer = forwardRef(function Footer({ onScrollToForm }, ref) {
     <footer ref={ref} className="relative bg-black overflow-hidden">
       {/* Background image */}
       <div className="absolute inset-0 pointer-events-none">
-        <img src={footerMobileBg} alt="" className="md:hidden w-full h-full object-cover" />
-        <img src={footerBg} alt="" className="hidden md:block w-full h-full object-cover" />
+        <img src={footerMobileBg} alt="" className="md:hidden w-full h-full object-cover" loading="lazy" />
+        <img src={footerBg} alt="" className="hidden md:block w-full h-full object-cover" loading="lazy" />
       </div>
 
       <div className="relative z-10">
