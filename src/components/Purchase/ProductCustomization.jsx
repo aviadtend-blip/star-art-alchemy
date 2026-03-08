@@ -94,15 +94,13 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   // When switching sizes, try to keep the same mockup number; fall back to index 0
   const handleSizeChange = useCallback((sizeId) => {
-    // Save current scroll position of size carousel before state change
     const savedScroll = sizeCarouselRef.current?.scrollLeft;
     const currentNum = getMockupNums(selectedSize)[activeThumb];
     const newNums = getMockupNums(sizeId);
     const matchIndex = newNums.indexOf(currentNum);
     setSelectedSize(sizeId);
-    setActiveThumb(matchIndex >= 0 ? matchIndex : 0);
-    setDragOffset(0);
-    setIsTransitioning(false);
+    const newIndex = matchIndex >= 0 ? matchIndex : 0;
+    setActiveThumb(newIndex);
     // Restore scroll position after React re-renders
     if (savedScroll != null) {
       requestAnimationFrame(() => {
