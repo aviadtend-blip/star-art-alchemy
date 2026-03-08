@@ -534,7 +534,7 @@ export default function BirthDataFormCard({
   // ═══════════════════════════════════════════
   return (
     <form onSubmit={handleStep1aSubmit} className="flex flex-col" style={{ gap }}>
-      <div className="flex flex-row gap-6 items-end">
+      <div className="flex flex-row gap-6 items-start">
         <div className="flex-1 min-w-0">
           <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
           <div className="relative">
