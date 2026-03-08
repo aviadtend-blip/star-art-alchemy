@@ -1,21 +1,24 @@
 "use client";
-import React, { useRef } from "react";
-import { useScroll, useTransform, motion, MotionValue } from "framer-motion";
+import React, { useRef, useEffect } from "react";
+import { useScroll, useTransform, useMotionValueEvent, motion, MotionValue } from "framer-motion";
 
 export const ContainerScroll = ({
   titleComponent,
   children,
+  onSettled,
 }: {
   titleComponent: string | React.ReactNode;
   children: React.ReactNode;
+  onSettled?: () => void;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
   });
   const [isMobile, setIsMobile] = React.useState(false);
+  const settledFired = useRef(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -25,6 +28,14 @@ export const ContainerScroll = ({
       window.removeEventListener("resize", checkMobile);
     };
   }, []);
+
+  // Fire onSettled once scrollYProgress crosses 0.85
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    if (!settledFired.current && v >= 0.85 && onSettled) {
+      settledFired.current = true;
+      onSettled();
+    }
+  });
 
   const scaleDimensions = () => {
     return isMobile ? [0.7, 0.9] : [1.05, 1];
