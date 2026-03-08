@@ -410,8 +410,8 @@ export function ChartExplanation({
           <div style={{ height: '40px', background: 'linear-gradient(to bottom, #191919, transparent)' }} />
         </div>
 
-        {/* ===== DESKTOP: Title + scroll-animated artwork intro ===== */}
-        <div className="hidden md:block">
+        {/* ===== Title + scroll-animated artwork intro (all viewports) ===== */}
+        <div>
           <ContainerScroll
             titleComponent={
               <div className="flex flex-col items-center text-center">
@@ -419,7 +419,7 @@ export function ChartExplanation({
                   Meet Your Cosmic Masterpiece
                 </h1>
                 <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 32 }} />
-                <p className="text-body-big" style={{ color: '#c7c7c7' }}>
+                <p className="text-body-big max-w-[264px] md:max-w-none" style={{ color: '#c7c7c7' }}>
                   {subjectExplanation}
                 </p>
               </div>
@@ -597,19 +597,6 @@ export function ChartExplanation({
             background: 'radial-gradient(30% 50% at -8% -5%, rgba(255, 255, 255, 0.12) 0%, rgba(0, 0, 0, 0.00) 100%), radial-gradient(28% 45% at 108% -3%, rgba(255, 255, 255, 0.20) 0%, rgba(0, 0, 0, 0.00) 100%), #191919',
           }}
         >
-          {/* Hero heading */}
-          <div className="text-center px-6 pt-12 pb-8 flex flex-col items-center">
-            <h1 className="text-a1-special text-white" style={{ maxWidth: 264 }}>
-              Meet Your Cosmic{'\n'}Masterpiece
-            </h1>
-            {/* Vertical separator line */}
-            <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 32 }} />
-            <p className="text-body-big max-w-[264px]" style={{ color: '#c7c7c7' }}>
-              {subjectExplanation}
-            </p>
-            {/* Vertical separator line */}
-            <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 32 }} />
-          </div>
 
           <div className="px-5 max-w-md mx-auto flex flex-col items-center">
             {/* Hotspot toggle */}
