@@ -44,9 +44,8 @@ export const ContainerScroll = ({
   const rotate = useTransform(scrollYProgress, [0, 1], [20, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], scaleDimensions());
   const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const cardOpacity = useMotionValue(1);
-
-  // No fade-out — keep artwork fully visible throughout scroll
+  // Subtle fade: fully visible until 97% scroll, then gently fade to 0.3
+  const cardOpacity = useTransform(scrollYProgress, [0, 0.97, 1], [1, 1, 0.3]);
 
   return (
     <div
