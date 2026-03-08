@@ -134,7 +134,7 @@ const Carousel = memo(
               <img
                 src={imgUrl}
                 alt="carousel image"
-                className="pointer-events-none h-full w-full rounded-xl object-cover"
+                className="pointer-events-none h-full w-full rounded-xl object-contain"
               />
             </div>
           ))}
@@ -196,7 +196,7 @@ function ThreeDPhotoCarousel({ cards: externalCards }: ThreeDPhotoCarouselProps)
 
       <motion.div
         layout
-        className="h-[500px] w-full"
+        className="h-[350px] sm:h-[400px] w-full"
         initial={{ WebkitMaskImage: hiddenMask, maskImage: hiddenMask } as any}
         animate={{ WebkitMaskImage: visibleMask, maskImage: visibleMask } as any}
         transition={{ duration: 1 }}
