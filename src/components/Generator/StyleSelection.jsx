@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { VerticalImageStack } from '@/components/ui/vertical-image-stack';
