@@ -207,7 +207,7 @@ function ThreeDPhotoCarousel({ cards: externalCards }: ThreeDPhotoCarouselProps)
           isCarouselActive={isCarouselActive}
         />
       </motion.div>
-    </motion.div>
+    </div>
   )
 }
 
