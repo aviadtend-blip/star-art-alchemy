@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import PopularTag from "@/components/ui/PopularTag";
 import PrimaryButton from "@/components/ui/PrimaryButton";
