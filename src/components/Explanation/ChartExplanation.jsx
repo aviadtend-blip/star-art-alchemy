@@ -426,6 +426,15 @@ export function ChartExplanation({
                 </p>
               </div>
             }
+            onSettled={() => {
+              setMobileRevealed(true);
+              // Unlock scroll after fade-in duration
+              if (mobileRevealRef.current) {
+                setTimeout(() => {
+                  document.body.style.overflow = '';
+                }, 800);
+              }
+            }}
           >
             <img
               src={selectedImage}
