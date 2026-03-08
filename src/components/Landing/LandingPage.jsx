@@ -383,7 +383,9 @@ export default function LandingPage() {
 
           {/* Museum-Quality Materials */}
           <div>
-            <LazyImage src={canvasDetail} alt="Close-up of museum-quality canvas print detail" ratio={40/29} inView className="md:h-[406px]" AspectRatioClassName="rounded-[2px]" />
+            <div className="overflow-hidden rounded-[2px]" style={{ aspectRatio: '40/29' }}>
+              <img src={canvasDetail} alt="Close-up of museum-quality canvas print detail" className="w-full h-full object-cover md:h-[406px]" loading="lazy" />
+            </div>
             <div className="mt-4">
               <p className="text-subtitle text-surface-muted tracking-widest mb-2">MUSEUM-QUALITY MATERIALS</p>
               <h3 className="text-a2 text-surface-foreground mb-4">Materials So Good, Museums Use Them</h3>
