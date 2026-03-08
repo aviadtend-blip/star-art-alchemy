@@ -410,16 +410,28 @@ export function ChartExplanation({
         </div>
 
         {/* ===== DESKTOP: Title + intro above two-column layout ===== */}
-        <div className="hidden md:flex flex-col items-center text-center pb-0 px-8" style={{ maxWidth: 500, margin: '0 auto', paddingTop: 100 }}>
-          <h1 className="text-a1-special text-white">
-            Meet Your Cosmic Masterpiece
-          </h1>
-          <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 32 }} />
-          <p className="text-body-big" style={{ color: '#c7c7c7' }}>
-            {subjectExplanation}
-          </p>
-          <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 60 }} />
-        </div>
+        <ContainerScroll
+          titleComponent={
+            <div className="flex flex-col items-center text-center">
+              <h1 className="text-a1-special text-white">
+                Meet Your Cosmic Masterpiece
+              </h1>
+              <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 32 }} />
+              <p className="text-body-big" style={{ color: '#c7c7c7' }}>
+                {subjectExplanation}
+              </p>
+            </div>
+          }
+        >
+          <img
+            src={selectedImage}
+            alt={`Birth chart artwork for ${chartData?.sun?.sign || ''} Sun`}
+            className="mx-auto rounded-2xl object-cover h-full w-full"
+            style={{ WebkitUserSelect: 'none', userSelect: 'none', pointerEvents: 'none' }}
+            draggable={false}
+            onContextMenu={(e) => e.preventDefault()}
+          />
+        </ContainerScroll>
 
         {/* ===== DESKTOP LAYOUT: two-column ===== */}
         <div className="hidden md:flex mx-auto px-8 gap-12 items-start w-full" style={{ maxWidth: 1060 }}>
