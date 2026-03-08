@@ -129,7 +129,7 @@ const Carousel = memo(
                 width: `${faceWidth}px`,
                 transform: `rotateY(${i * (360 / faceCount)}deg) translateZ(${radius}px)`,
               }}
-              onClick={() => handleClick(imgUrl, i)}
+              
             >
               <img
                 src={imgUrl}
