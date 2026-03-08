@@ -67,8 +67,187 @@ const MOCKUPS_BY_NUMBER = {
 
 // Helper: get flat src array for a size
 const getMockupSrcs = (sizeId) => (MOCKUPS_BY_NUMBER[sizeId] || []).map(m => m.src);
-// Helper: get mockup numbers for a size
 const getMockupNums = (sizeId) => (MOCKUPS_BY_NUMBER[sizeId] || []).map(m => m.num);
+
+/* ── Extracted sub-components (stable references, no re-creation per render) ── */
+
+function ArtworkPanel({ className = '', compositingLoading, displayImages, activeThumb, setEmblaApi, handleThumbSelect }) {
+  return (
+    <div className={className}>
+      {compositingLoading ? (
+        <div className="w-full flex items-center justify-center" style={{ aspectRatio: '4/5', backgroundColor: '#F5F5F5' }}>
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#E0E0E0', borderTopColor: 'transparent' }} />
+            <span className="text-body-sm" style={{ color: '#999' }}>Preparing your mockups…</span>
+          </div>
+        </div>
+      ) : (
+        <div className="relative" style={{ backgroundColor: '#F5F5F5' }}>
+          <Carousel
+            opts={{ align: 'start', loop: false, startIndex: activeThumb }}
+            setApi={setEmblaApi}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-0">
+              {displayImages.map((src, i) => (
+                <CarouselItem key={i} className="pl-0 basis-full">
+                  <img
+                    src={src}
+                    alt={`Canvas mockup ${i + 1}`}
+                    className="w-full object-contain select-none pointer-events-none"
+                    style={{ userSelect: 'none', WebkitUserDrag: 'none' }}
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+          <div className="absolute bottom-3 left-0 right-0 flex justify-center px-4">
+            <ThumbnailStrip
+              images={displayImages}
+              activeIndex={activeThumb}
+              onSelect={handleThumbSelect}
+              size={30}
+            />
+          </div>
+        </div>
+      )}
+      <div className="hidden md:flex items-center justify-center gap-1.5 mt-4">
+        <div className="flex">
+          {[1,2,3,4,5].map(s => (
+            <span key={s} style={{ color: '#FFBF00', fontSize: '16px' }}>★</span>
+          ))}
+        </div>
+        <span className="text-body-sm" style={{ color: '#333333' }}>4.9/5</span>
+        <span className="text-body-sm" style={{ color: '#888888' }}>287 reviews</span>
+      </div>
+    </div>
+  );
+}
+
+function SizeCard({ size, selectedSize, onSelect, vertical = false }) {
+  return (
+    <button
+      data-size-card={size.id}
+      onClick={() => onSelect(size.id)}
+      className="relative flex-shrink-0 transition-all"
+      style={{
+        display: 'flex',
+        width: vertical ? '100%' : '180px',
+        minWidth: vertical ? '100%' : '180px',
+        height: '74px',
+        padding: '12px',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderRadius: '4px',
+        border: selectedSize === size.id ? '2px solid #333333' : '1px solid #E0E0E0',
+        backgroundColor: '#FFFFFF',
+      }}
+    >
+      {size.popular && (
+        <div className="absolute z-10" style={{ top: '-12px', right: '-4px' }}>
+          <PopularTag>Most popular</PopularTag>
+        </div>
+      )}
+      <div className="text-left min-w-0 flex-1 pr-2">
+        <p className="text-a4" style={{ color: '#333333' }}>{size.label}</p>
+        <p className="text-body-sm" style={{ color: '#888888', marginTop: '2px' }}>{size.description}</p>
+      </div>
+      <p className="text-a4 font-bold flex-shrink-0 whitespace-nowrap" style={{ color: '#333333', marginLeft: '8px' }}>${size.price}</p>
+    </button>
+  );
+}
+
+function SizeSelector({ vertical = false, selectedSize, onSizeChange, sizeCarouselRef }) {
+  return (
+    <div>
+      <h2 className="text-a2" style={{ color: '#333333', marginBottom: vertical ? '16px' : 0 }}>
+        Choose Your Size
+      </h2>
+      {vertical ? (
+        <div className="flex flex-col" style={{ gap: 10 }}>
+          {SIZE_OPTIONS.map((size) => (
+            <SizeCard key={size.id} size={size} selectedSize={selectedSize} onSelect={onSizeChange} vertical />
+          ))}
+        </div>
+      ) : (
+        <div className="-mx-4" style={{ overflow: 'clip visible' }}>
+          <div ref={sizeCarouselRef} className="overflow-x-auto scrollbar-hide" style={{ overflowY: 'visible', overflow: 'auto visible' }}>
+            <div className="flex w-max pb-2 pt-4 pl-4 pr-4" style={{ gap: 8 }}>
+              {SIZE_OPTIONS.map((size) => (
+                <SizeCard key={size.id} size={size} selectedSize={selectedSize} onSelect={onSizeChange} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+      <p className="text-body-sm" style={{ color: '#888888', marginTop: '4px' }}>
+        💡 Not sure? We recommend 16"×24" for most spaces
+      </p>
+    </div>
+  );
+}
+
+function OrderSummary({ sunSign, sizeLabel, total, onCheckout }) {
+  return (
+    <div
+      className="relative overflow-hidden"
+      style={{ borderRadius: '2px', padding: '20px 20px 32px 20px' }}
+    >
+      <img src={galaxyBg} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
+      <div className="absolute inset-0 bg-black/40" />
+      <div className="relative z-10 space-y-4">
+        <h3 className="text-a2" style={{ color: '#FFFFFF' }}>Your Order</h3>
+        <div className="space-y-4 text-body-sm">
+          <div className="flex justify-between" style={{ color: '#CCCCCC' }}>
+            <span>Birth Chart Artwork — {sunSign} Sun</span>
+            <span>Included</span>
+          </div>
+          <div className="flex justify-between" style={{ color: '#CCCCCC' }}>
+            <span>{sizeLabel} Canvas</span>
+            <span>${total}</span>
+          </div>
+        </div>
+        <div className="pt-4 space-y-4" style={{ borderTop: '1px solid rgba(255,255,255,0.25)' }}>
+          <div className="flex justify-between text-body-sm" style={{ color: '#CCCCCC' }}>
+            <span>Subtotal</span>
+            <span>${total}</span>
+          </div>
+          <div className="flex justify-between text-body-sm" style={{ color: '#CCCCCC' }}>
+            <span>Shipping</span>
+            <span>Free shipping unlocked</span>
+          </div>
+          <div className="flex justify-between items-center pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.25)' }}>
+            <span className="text-a4" style={{ color: '#FFFFFF' }}>TOTAL</span>
+            <span className="font-body" style={{ color: '#FFFFFF', fontSize: '26px', fontWeight: 500 }}>${total}</span>
+          </div>
+        </div>
+        <button
+          onClick={onCheckout}
+          className="btn-base btn-primary w-full justify-center"
+          style={{ borderRadius: '40px', height: '52px', fontSize: '14px' }}
+        >
+          Continue to Secure Checkout — ${total}
+        </button>
+        <div className="space-y-4 pt-2">
+          <div className="flex items-start gap-3">
+            <span style={{ fontSize: '18px' }}>🔄</span>
+            <div>
+              <p className="text-a5" style={{ color: '#FFFFFF' }}>30-day quality guarantee.</p>
+              <p className="text-body-sm" style={{ color: '#999999', marginTop: '2px' }}>Damaged or defective? We'll reprint or refund.</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <span style={{ fontSize: '18px' }}>📦</span>
+            <div>
+              <p className="text-a5" style={{ color: '#FFFFFF' }}>Ships in 2-3 business days</p>
+              <p className="text-body-sm" style={{ color: '#999999', marginTop: '2px' }}>Order by 5pm EST for same-day processing.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function ProductCustomization({ chartData, artworkImage, onCheckout, onBack, formData, onEditBirthData }) {
   const [selectedSize, setSelectedSize] = useState('12x18');
@@ -170,180 +349,6 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
     });
   };
 
-  /* Shared sub-components */
-  const ArtworkPanel = ({ className = '' }) => {
-    return (
-      <div className={className}>
-        {compositingLoading ? (
-          <div className="w-full flex items-center justify-center" style={{ aspectRatio: '4/5', backgroundColor: '#F5F5F5' }}>
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#E0E0E0', borderTopColor: 'transparent' }} />
-              <span className="text-body-sm" style={{ color: '#999' }}>Preparing your mockups…</span>
-            </div>
-          </div>
-        ) : (
-          <div className="relative" style={{ backgroundColor: '#F5F5F5' }}>
-            <Carousel
-              opts={{ align: 'start', loop: false, startIndex: activeThumb }}
-              setApi={setEmblaApi}
-              className="w-full"
-            >
-              <CarouselContent className="-ml-0">
-                {displayImages.map((src, i) => (
-                  <CarouselItem key={i} className="pl-0 basis-full">
-                    <img
-                      src={src}
-                      alt={`Canvas mockup ${i + 1}`}
-                      className="w-full object-contain select-none pointer-events-none"
-                      style={{ userSelect: 'none', WebkitUserDrag: 'none' }}
-                    />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-            <div className="absolute bottom-3 left-0 right-0 flex justify-center px-4">
-              <ThumbnailStrip
-                images={displayImages}
-                activeIndex={activeThumb}
-                onSelect={handleThumbSelect}
-                size={30}
-              />
-            </div>
-          </div>
-        )}
-        {/* Reviews — desktop only */}
-        <div className="hidden md:flex items-center justify-center gap-1.5 mt-4">
-          <div className="flex">
-            {[1,2,3,4,5].map(s => (
-              <span key={s} style={{ color: '#FFBF00', fontSize: '16px' }}>★</span>
-            ))}
-          </div>
-          <span className="text-body-sm" style={{ color: '#333333' }}>4.9/5</span>
-          <span className="text-body-sm" style={{ color: '#888888' }}>287 reviews</span>
-        </div>
-      </div>
-    );
-  };
-
-  const SizeSelector = ({ vertical = false }) => (
-    <div>
-      <h2 className="text-a2" style={{ color: '#333333', marginBottom: vertical ? '16px' : 0 }}>
-        Choose Your Size
-      </h2>
-      {vertical ? (
-        <div className="flex flex-col" style={{ gap: 10 }}>
-          {SIZE_OPTIONS.map((size) => (
-            <SizeCard key={size.id} size={size} vertical />
-          ))}
-        </div>
-      ) : (
-        <div className="-mx-4" style={{ overflow: 'clip visible' }}>
-          <div ref={sizeCarouselRef} className="overflow-x-auto scrollbar-hide" style={{ overflowY: 'visible', overflow: 'auto visible' }}>
-            <div className="flex w-max pb-2 pt-4 pl-4 pr-4" style={{ gap: 8 }}>
-              {SIZE_OPTIONS.map((size) => (
-                <SizeCard key={size.id} size={size} />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-      <p className="text-body-sm" style={{ color: '#888888', marginTop: '4px' }}>
-        💡 Not sure? We recommend 16"×24" for most spaces
-      </p>
-    </div>
-  );
-
-  const SizeCard = ({ size, vertical = false }) => (
-    <button
-      data-size-card={size.id}
-      onClick={() => handleSizeChange(size.id)}
-      className="relative flex-shrink-0 transition-all"
-      style={{
-        display: 'flex',
-        width: vertical ? '100%' : '180px',
-        minWidth: vertical ? '100%' : '180px',
-        height: '74px',
-        padding: '12px',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        borderRadius: '4px',
-        border: selectedSize === size.id ? '2px solid #333333' : '1px solid #E0E0E0',
-        backgroundColor: '#FFFFFF',
-      }}
-    >
-      {size.popular && (
-        <div className="absolute z-10" style={{ top: '-12px', right: '-4px' }}>
-          <PopularTag>Most popular</PopularTag>
-        </div>
-      )}
-      <div className="text-left min-w-0 flex-1 pr-2">
-        <p className="text-a4" style={{ color: '#333333' }}>{size.label}</p>
-        <p className="text-body-sm" style={{ color: '#888888', marginTop: '2px' }}>{size.description}</p>
-      </div>
-      <p className="text-a4 font-bold flex-shrink-0 whitespace-nowrap" style={{ color: '#333333', marginLeft: '8px' }}>${size.price}</p>
-    </button>
-  );
-
-  const OrderSummary = () => (
-    <div
-      className="relative overflow-hidden"
-      style={{ borderRadius: '2px', padding: '20px 20px 32px 20px' }}
-    >
-      <img src={galaxyBg} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
-      <div className="absolute inset-0 bg-black/40" />
-      <div className="relative z-10 space-y-4">
-        <h3 className="text-a2" style={{ color: '#FFFFFF' }}>Your Order</h3>
-        <div className="space-y-4 text-body-sm">
-          <div className="flex justify-between" style={{ color: '#CCCCCC' }}>
-            <span>Birth Chart Artwork — {chartData?.sun?.sign || 'Gemini'} Sun</span>
-            <span>Included</span>
-          </div>
-          <div className="flex justify-between" style={{ color: '#CCCCCC' }}>
-            <span>{sizeData?.label} Canvas</span>
-            <span>${total}</span>
-          </div>
-        </div>
-        <div className="pt-4 space-y-4" style={{ borderTop: '1px solid rgba(255,255,255,0.25)' }}>
-          <div className="flex justify-between text-body-sm" style={{ color: '#CCCCCC' }}>
-            <span>Subtotal</span>
-            <span>${total}</span>
-          </div>
-          <div className="flex justify-between text-body-sm" style={{ color: '#CCCCCC' }}>
-            <span>Shipping</span>
-            <span>Free shipping unlocked</span>
-          </div>
-          <div className="flex justify-between items-center pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.25)' }}>
-            <span className="text-a4" style={{ color: '#FFFFFF' }}>TOTAL</span>
-            <span className="font-body" style={{ color: '#FFFFFF', fontSize: '26px', fontWeight: 500 }}>${total}</span>
-          </div>
-        </div>
-        <button
-          onClick={handleCheckout}
-          className="btn-base btn-primary w-full justify-center"
-          style={{ borderRadius: '40px', height: '52px', fontSize: '14px' }}
-        >
-          Continue to Secure Checkout — ${total}
-        </button>
-        <div className="space-y-4 pt-2">
-          <div className="flex items-start gap-3">
-            <span style={{ fontSize: '18px' }}>🔄</span>
-            <div>
-              <p className="text-a5" style={{ color: '#FFFFFF' }}>30-day quality guarantee.</p>
-              <p className="text-body-sm" style={{ color: '#999999', marginTop: '2px' }}>Damaged or defective? We'll reprint or refund.</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <span style={{ fontSize: '18px' }}>📦</span>
-            <div>
-              <p className="text-a5" style={{ color: '#FFFFFF' }}>Ships in 2-3 business days</p>
-              <p className="text-body-sm" style={{ color: '#999999', marginTop: '2px' }}>Order by 5pm EST for same-day processing.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div className="min-h-screen relative" style={{ backgroundColor: '#FFFFFF' }}>
       <div>
@@ -354,14 +359,14 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
       {/* Mobile layout */}
       <div className="md:hidden">
-        <ArtworkPanel />
+        <ArtworkPanel compositingLoading={compositingLoading} displayImages={displayImages} activeThumb={activeThumb} setEmblaApi={setEmblaApi} handleThumbSelect={handleThumbSelect} />
 
         <div className="pt-6 pb-4 px-4">
-          <SizeSelector />
+          <SizeSelector selectedSize={selectedSize} onSizeChange={handleSizeChange} sizeCarouselRef={sizeCarouselRef} />
         </div>
 
         <div id="order-summary-mobile" className="px-4" style={{ paddingBottom: '32px', marginTop: '23px' }}>
-          <OrderSummary />
+          <OrderSummary sunSign={chartData?.sun?.sign || 'Gemini'} sizeLabel={sizeData?.label} total={total} onCheckout={handleCheckout} />
         </div>
         {/* Mobile — Materials + Gift */}
         <div className="px-4 pb-16 flex flex-col gap-16" style={{ paddingTop: '60px' }}>
@@ -402,13 +407,15 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           <div className="flex gap-12 items-start">
             {/* Left — artwork (sticky) */}
             <div className="w-1/2 flex-shrink-0 sticky top-8">
-              <ArtworkPanel />
+              <ArtworkPanel compositingLoading={compositingLoading} displayImages={displayImages} activeThumb={activeThumb} setEmblaApi={setEmblaApi} handleThumbSelect={handleThumbSelect} />
             </div>
 
             {/* Right — scrollable content */}
             <div className="flex-1" style={{ display: 'flex', flexDirection: 'column', gap: '60px' }}>
-              <SizeSelector vertical />
-              <div id="order-summary-desktop"><OrderSummary /></div>
+              <SizeSelector vertical selectedSize={selectedSize} onSizeChange={handleSizeChange} sizeCarouselRef={sizeCarouselRef} />
+              <div id="order-summary-desktop">
+                <OrderSummary sunSign={chartData?.sun?.sign || 'Gemini'} sizeLabel={sizeData?.label} total={total} onCheckout={handleCheckout} />
+              </div>
 
               {/* Museum-Quality Materials */}
               <div>
