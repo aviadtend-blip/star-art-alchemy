@@ -17,7 +17,7 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
 
   try {
-    const { chartData } = await req.json();
+    const { chartData, isPortraitEdition } = await req.json();
     if (!chartData?.interpretation) {
       return new Response(
         JSON.stringify({ error: "Missing interpretation data" }),
@@ -45,7 +45,7 @@ serve(async (req) => {
     const prompt = `You are a mythic scene painter. Given a birth chart, write ONE paragraph of 60-80 words describing a scene for artwork generation.
 
 The scene MUST be built from the chart's Big Three:
-- The SUBJECT (central figure/creature/form) must directly embody the Sun sign: ${sanitizeForPrompt(chartData.sun?.sign)}
+- The SUBJECT must directly embody the Sun sign: ${sanitizeForPrompt(chartData.sun?.sign)}${isPortraitEdition ? ' — the subject MUST be a human figure (person, woman, man) whose features, posture, clothing or adornments channel the sign. No creatures, no abstract forms, no animals as the main subject.' : ' — can be a figure, creature, or mythic form that embodies the sign.'}
 - The ENVIRONMENT/LANDSCAPE must reflect the Moon sign: ${sanitizeForPrompt(chartData.moon?.sign)}
 - The MOOD and SURFACE TEXTURE must channel the Rising sign: ${sanitizeForPrompt(chartData.rising)}
 

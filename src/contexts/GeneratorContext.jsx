@@ -85,7 +85,7 @@ export function GeneratorProvider({ children }) {
 
     try {
       setGenerationProgress('Building your personalized artwork prompt...');
-      const prompt = await buildConcretePrompt(chartData, style);
+      const prompt = await buildConcretePrompt(chartData, style, isPortraitEdition);
 
       setGenerationProgress(`Creating your ${style.name} artwork...`);
       const result = await generateImage(prompt, style.sref, style.personalization, style.profileCode, userPhotoUrl, style.id);
