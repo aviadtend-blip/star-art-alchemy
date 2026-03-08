@@ -14,6 +14,8 @@ export default function BirthDataFormCard({
   gap = 24,
   inline = false,
   onStepChange,
+  isSubmitting = false,
+  submitError = null,
 }) {
   const [showTimeStep, setShowTimeStep] = useState(false);
   const [birthHour, setBirthHour] = useState("12");
