@@ -75,7 +75,7 @@ const Carousel = memo(
     isCarouselActive: boolean
   }) => {
     const isScreenSizeSm = useMediaQuery("(max-width: 640px)")
-    const cylinderWidth = isScreenSizeSm ? 1100 : 1800
+    const cylinderWidth = isScreenSizeSm ? 1400 : 2200
     const faceCount = cards.length
     const faceWidth = cylinderWidth / faceCount
     const radius = cylinderWidth / (2 * Math.PI)
@@ -196,7 +196,7 @@ function ThreeDPhotoCarousel({ cards: externalCards }: ThreeDPhotoCarouselProps)
 
       <motion.div
         layout
-        className="h-[350px] sm:h-[400px] w-full"
+        className="h-[450px] sm:h-[550px] w-full"
         initial={{ WebkitMaskImage: hiddenMask, maskImage: hiddenMask } as any}
         animate={{ WebkitMaskImage: visibleMask, maskImage: visibleMask } as any}
         transition={{ duration: 1 }}
