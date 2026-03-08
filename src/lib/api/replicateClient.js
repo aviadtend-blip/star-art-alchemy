@@ -78,9 +78,12 @@ export async function generateImage(prompt, sref, personalization, profileCode, 
   let finalImageUrl = data.output;
 
   // Step 2: If portrait mode, run face swap as a separate call
+  // NO retries here — each retry creates a new Replicate prediction,
+  // wasting the cold-start warm-up from the previous attempt.
+  // The edge function itself polls for up to 180s to handle cold starts.
   if (userPhotoUrl) {
-    console.log('Starting face swap step...');
-    const swapResponse = await fetchWithRetry(
+    console.log('Starting face swap step (up to 180s for cold start)...');
+    const swapResponse = await fetch(
       `${SUPABASE_URL}/functions/v1/face-swap`,
       {
         method: 'POST',
@@ -92,8 +95,7 @@ export async function generateImage(prompt, sref, personalization, profileCode, 
           target_image_url: data.output,
           face_image_url: userPhotoUrl,
         }),
-      },
-      2 // allow 2 retries for face swap (cold starts)
+      }
     );
 
     if (!swapResponse.ok) {
