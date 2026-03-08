@@ -74,17 +74,12 @@ function StarRating({ count }: { count: number }) {
 
 // --- Dot Indicators ---
 
-function DotIndicators({
-  total,
-  active,
-  onDotClick,
-}: {
-  total: number;
-  active: number;
-  onDotClick: (index: number) => void;
-}) {
+const DotIndicators = React.forwardRef<
+  HTMLDivElement,
+  { total: number; active: number; onDotClick: (index: number) => void }
+>(({ total, active, onDotClick }, ref) => {
   return (
-    <div className="flex gap-2 items-center">
+    <div ref={ref} className="flex gap-2 items-center">
       {Array.from({ length: total }).map((_, i) => (
         <button
           key={i}
@@ -97,7 +92,8 @@ function DotIndicators({
       ))}
     </div>
   );
-}
+});
+DotIndicators.displayName = "DotIndicators";
 
 // --- Main Component ---
 
