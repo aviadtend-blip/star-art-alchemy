@@ -407,7 +407,7 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ CUSTOMER GALLERY ═══════════════════ */}
-      <section className="bg-white text-surface-foreground overflow-hidden" style={{ paddingTop: 64, paddingBottom: 64 }}>
+      <section className="bg-white text-surface-foreground overflow-hidden py-10 md:py-16">
         <div className="max-w-7xl mx-auto px-4 md:px-4">
           <p className="text-subtitle text-surface-muted text-center mb-2 tracking-widest">
             REAL HOMES. REAL CUSTOMERS. REAL REACTIONS.
