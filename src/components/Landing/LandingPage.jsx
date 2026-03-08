@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LazyImage } from "@/components/ui/lazy-image";
+
 import { useNavigate } from "react-router-dom";
 import { useGenerator } from '@/contexts/GeneratorContext';
 import FAQSection from "@/components/ui/FAQSection";
