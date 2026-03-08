@@ -361,21 +361,23 @@ export default function BirthDataFormCard({
             {uploadedPhotoUrl ? (
               <PrimaryButton
                 onClick={handleSubmitWithPhoto}
-                disabled={photoUploading}
+                disabled={photoUploading || isSubmitting}
                 className="flex-1 !h-12"
               >
-                Generate My Artwork
+                {isSubmitting ? 'Generating…' : 'Generate My Artwork'}
               </PrimaryButton>
             ) : (
               <button
                 type="button"
                 onClick={handleSubmitWithoutPhoto}
-                className="flex-1 h-12 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10"
+                disabled={isSubmitting}
+                className="flex-1 h-12 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Skip — generate without photo
+                {isSubmitting ? 'Generating…' : 'Skip — generate without photo'}
               </button>
             )}
           </div>
+          {submitError && <p className="text-body text-red-400">{submitError}</p>}
         </div>
       </div>
     );
