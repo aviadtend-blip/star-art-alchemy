@@ -473,7 +473,7 @@ export default function BirthDataFormCard({
             {timeInputMobile}
             {checkboxEl}
             <div className="flex gap-3">
-              <button type="button" onClick={() => setShowTimeStep(false)} className="flex-1 h-12 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10">
+              <button type="button" onClick={() => setShowTimeStep(false)} className="h-12 px-6 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10">
                 Back
               </button>
               <PrimaryButton onClick={handleStep1bSubmit} className="flex-1">
