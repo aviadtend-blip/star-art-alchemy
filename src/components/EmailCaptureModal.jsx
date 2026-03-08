@@ -51,15 +51,26 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
     const peakSeason = detectPeakSeason();
     const captureTimestamp = new Date().toISOString();
 
+    // Use permanent Supabase Storage URL if available; fall back to current artworkUrl
+    const storedState = (() => {
+      try {
+        const raw = sessionStorage.getItem('celestial_generator_state');
+        return raw ? JSON.parse(raw) : {};
+      } catch { return {}; }
+    })();
+    const permanentUrl = storedState.generatedImage || artworkUrl;
+    // Prefer the permanent (Supabase Storage) URL for emails — CDN URLs expire
+    const emailArtworkUrl = permanentUrl.includes('supabase.co') ? permanentUrl : artworkUrl;
+
     const profileData = {
       email: email.trim(),
       firstName: firstName.trim(),
       sunSign,
       moonSign,
       risingSign,
-      artworkUrl,
-      emailMockupUrl: artworkUrl,
-      artworkId,
+      artworkUrl: emailArtworkUrl,
+      emailMockupUrl: emailArtworkUrl,
+      artworkId: artworkId || storedState.artworkId || null,
       captureTimestamp,
       peakSeason,
       dominantElement,

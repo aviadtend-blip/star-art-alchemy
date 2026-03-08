@@ -164,6 +164,10 @@ export function GeneratorProvider({ children }) {
           console.log('✅ Artwork stored permanently:', storeData.permanentUrl);
           setGeneratedImage(storeData.permanentUrl);
           setArtworkId(storeData.artworkId);
+          // Persist artworkId to sessionStorage so EmailCaptureModal can read it
+          try {
+            sessionStorage.setItem('celestial_artwork_id', storeData.artworkId);
+          } catch { /* quota exceeded — ignore */ }
         }
       }).catch(err => console.warn('⚠️ Artwork storage failed (non-blocking):', err));
     } catch (err) {

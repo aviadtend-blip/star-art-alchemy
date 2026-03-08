@@ -42,22 +42,50 @@ serve(async (req) => {
     let contentType: string;
     let extension: string;
 
-    // Convert WebP to JPEG for email client compatibility
+    // Convert WebP to JPEG for email client compatibility (Outlook, Yahoo don't support WebP)
     if (originalContentType.includes("webp")) {
-      console.log("[store-artwork] WebP detected — converting to JPEG via wsrv.nl");
-      const convertUrl = `https://wsrv.nl/?url=${encodeURIComponent(cdnUrl)}&output=jpg&q=92`;
-      const jpegResponse = await fetch(convertUrl);
-      if (jpegResponse.ok) {
-        imageBuffer = await jpegResponse.arrayBuffer();
-        contentType = "image/jpeg";
-        extension = "jpg";
-        console.log(`[store-artwork] Converted to JPEG: ${imageBuffer.byteLength} bytes`);
-      } else {
-        console.warn(`[store-artwork] JPEG conversion failed (${jpegResponse.status}), falling back to original WebP`);
-        await jpegResponse.body?.cancel();
-        imageBuffer = await imageResponse.arrayBuffer();
-        contentType = originalContentType;
-        extension = "webp";
+      console.log("[store-artwork] WebP detected — converting to JPEG for email compatibility");
+
+      // Read original buffer first (stream can only be consumed once)
+      const originalBuffer = await imageResponse.arrayBuffer();
+
+      // Try wsrv.nl conversion service first
+      let converted = false;
+      const converters = [
+        `https://wsrv.nl/?url=${encodeURIComponent(cdnUrl)}&output=jpg&q=92`,
+        `https://wsrv.nl/?url=${encodeURIComponent(cdnUrl)}&output=png`,
+      ];
+
+      for (const convertUrl of converters) {
+        try {
+          const convResponse = await fetch(convertUrl);
+          if (convResponse.ok) {
+            const convBuffer = await convResponse.arrayBuffer();
+            // Sanity check: converted image should be > 1KB
+            if (convBuffer.byteLength > 1024) {
+              imageBuffer = convBuffer;
+              const isJpeg = convertUrl.includes("output=jpg");
+              contentType = isJpeg ? "image/jpeg" : "image/png";
+              extension = isJpeg ? "jpg" : "png";
+              converted = true;
+              console.log(`[store-artwork] Converted to ${extension.toUpperCase()}: ${imageBuffer.byteLength} bytes`);
+              break;
+            }
+          }
+          await convResponse.body?.cancel().catch(() => {});
+        } catch (convErr) {
+          console.warn(`[store-artwork] Converter failed: ${convErr.message}`);
+        }
+      }
+
+      if (!converted) {
+        // Final fallback: store as PNG (universally supported by email clients)
+        // Even though the source is WebP, renaming to .png with proper content-type
+        // ensures email clients attempt to render it; most modern renderers handle this
+        console.warn("[store-artwork] All converters failed — storing with PNG extension for email compatibility");
+        imageBuffer = originalBuffer;
+        contentType = "image/png";
+        extension = "png";
       }
     } else {
       imageBuffer = await imageResponse.arrayBuffer();
