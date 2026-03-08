@@ -20,13 +20,13 @@ const PAGES = [
 const MOCK_CHART_DATA = {
   sun: { sign: 'Pisces', house: 10, degree: 12 },
   moon: { sign: 'Scorpio', house: 5, degree: 8 },
-  rising: { sign: 'Leo', degree: 22 },
+  rising: 'Leo',
   mercury: { sign: 'Aquarius', house: 9, degree: 15 },
   venus: { sign: 'Aries', house: 11, degree: 3 },
   mars: { sign: 'Capricorn', house: 6, degree: 27 },
   jupiter: { sign: 'Gemini', house: 11, degree: 19 },
   saturn: { sign: 'Pisces', house: 8, degree: 5 },
-  elements: { Fire: 3, Water: 4, Earth: 2, Air: 3 },
+  element_balance: { Fire: 3, Water: 4, Earth: 2, Air: 3 },
   modalities: { Cardinal: 3, Fixed: 4, Mutable: 5 },
   dominantElement: 'Water',
   aspects: [
@@ -63,7 +63,7 @@ export default function DevNav() {
   const { pathname } = useLocation();
   const {
     setFormData, setChartData, setGeneratedImage,
-    setArtworkAnalysis, setGenerationComplete, setArtworkId, setSelectedStyle,
+    setArtworkAnalysis, setGenerationComplete, setArtworkId,
   } = useGenerator();
 
   const seedContext = () => {
@@ -84,7 +84,6 @@ export default function DevNav() {
 
     setFormData(MOCK_FORM_DATA);
     setChartData(MOCK_CHART_DATA);
-    setSelectedStyle({ id: 'cosmic-collision', name: 'Cosmic Collage' });
     setGeneratedImage(demoImage);
     setArtworkAnalysis(MOCK_ANALYSIS);
     setGenerationComplete(true);
