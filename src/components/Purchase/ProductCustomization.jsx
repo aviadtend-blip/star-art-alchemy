@@ -6,6 +6,7 @@ import Header from '@/components/Layout/Header';
 import PopularTag from '@/components/ui/PopularTag';
 import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
 import useCompositedMockups, { useBackgroundPreload } from '@/hooks/useCompositedMockups';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import canvasDetail from '@/assets/gallery/canvas-detail.jpg';
 import womanHolding from '@/assets/gallery/woman-holding.webp';
@@ -93,15 +94,13 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   // When switching sizes, try to keep the same mockup number; fall back to index 0
   const handleSizeChange = useCallback((sizeId) => {
-    // Save current scroll position of size carousel before state change
     const savedScroll = sizeCarouselRef.current?.scrollLeft;
     const currentNum = getMockupNums(selectedSize)[activeThumb];
     const newNums = getMockupNums(sizeId);
     const matchIndex = newNums.indexOf(currentNum);
     setSelectedSize(sizeId);
-    setActiveThumb(matchIndex >= 0 ? matchIndex : 0);
-    setDragOffset(0);
-    setIsTransitioning(false);
+    const newIndex = matchIndex >= 0 ? matchIndex : 0;
+    setActiveThumb(newIndex);
     // Restore scroll position after React re-renders
     if (savedScroll != null) {
       requestAnimationFrame(() => {
@@ -112,110 +111,28 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
     }
   }, [selectedSize, activeThumb]);
 
-  // --- Drag carousel state ---
-  const carouselRef = useRef(null);
-  const dragState = useRef({ startX: 0, isDragging: false, offsetX: 0, startTime: 0, locked: null });
-  const [dragOffset, setDragOffset] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  // --- Embla carousel state ---
+  const [emblaApi, setEmblaApi] = useState(null);
 
-  const containerWidth = useRef(0);
+  // Sync activeThumb when Embla settles on a new slide
   useEffect(() => {
-    const measure = () => {
-      const el = carouselRef.current;
-      if (el) containerWidth.current = el.offsetWidth;
-    };
-    measure();
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
-  }, []);
+    if (!emblaApi) return;
+    const onSelect = () => setActiveThumb(emblaApi.selectedScrollSnap());
+    emblaApi.on('select', onSelect);
+    return () => emblaApi.off('select', onSelect);
+  }, [emblaApi]);
 
-  const goTo = useCallback((index) => {
-    const len = mockups.length;
-    const clamped = Math.max(0, Math.min(len - 1, index));
-    setDragOffset(0);
-    setIsTransitioning(true);
-    setActiveThumb(clamped);
-    const tid = setTimeout(() => setIsTransitioning(false), 320);
-    return () => clearTimeout(tid);
-  }, [selectedSize, mockups.length]);
-
-  const handlePointerDown = useCallback((e) => {
-    if (isTransitioning) return;
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    dragState.current = { startX: clientX, startY: clientY, isDragging: true, offsetX: 0, startTime: Date.now(), locked: null };
-  }, [isTransitioning]);
-
-  const handlePointerMove = useCallback((e) => {
-    const ds = dragState.current;
-    if (!ds.isDragging) return;
-
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    const dx = clientX - ds.startX;
-    const dy = clientY - ds.startY;
-
-    // Lock direction on first significant move
-    if (ds.locked === null && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
-      ds.locked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
-    }
-    if (ds.locked === 'y') return; // let browser handle vertical scroll
-    if (ds.locked === 'x' && e.cancelable) e.preventDefault();
-
-    // Rubberband at edges
-    const atStart = activeThumb === 0 && dx > 0;
-    const atEnd = activeThumb === displayImages.length - 1 && dx < 0;
-    const finalDx = (atStart || atEnd) ? dx * 0.3 : dx;
-
-    ds.offsetX = finalDx;
-    setDragOffset(finalDx);
-  }, [activeThumb, displayImages.length]);
-
-  const handlePointerUp = useCallback(() => {
-    const ds = dragState.current;
-    if (!ds.isDragging) return;
-    ds.isDragging = false;
-
-    if (ds.locked !== 'x') {
-      setDragOffset(0);
-      return;
-    }
-
-    const dx = ds.offsetX;
-    const dt = Date.now() - ds.startTime;
-    const velocity = Math.abs(dx) / Math.max(dt, 1);
-    const w = containerWidth.current || 300;
-
-    if (Math.abs(dx) > w * 0.15 || velocity > 0.4) {
-      goTo(activeThumb + (dx < 0 ? 1 : -1));
-    } else {
-      setIsTransitioning(true);
-      setDragOffset(0);
-      setTimeout(() => setIsTransitioning(false), 320);
-    }
-  }, [activeThumb, goTo]);
-
-  // Attach touch listeners with { passive: false } so preventDefault works
+  // When activeThumb changes externally (e.g. size switch), scroll Embla to match
   useEffect(() => {
-    const el = carouselRef.current;
-    if (!el) return;
-    const onTouchStart = (e) => handlePointerDown(e);
-    const onTouchMove = (e) => handlePointerMove(e);
-    const onTouchEnd = (e) => handlePointerUp(e);
-    el.addEventListener('touchstart', onTouchStart, { passive: true });
-    el.addEventListener('touchmove', onTouchMove, { passive: false });
-    el.addEventListener('touchend', onTouchEnd, { passive: true });
-    return () => {
-      el.removeEventListener('touchstart', onTouchStart);
-      el.removeEventListener('touchmove', onTouchMove);
-      el.removeEventListener('touchend', onTouchEnd);
-    };
-  }, [handlePointerDown, handlePointerMove, handlePointerUp]);
+    if (emblaApi && emblaApi.selectedScrollSnap() !== activeThumb) {
+      emblaApi.scrollTo(activeThumb, true); // instant jump
+    }
+  }, [emblaApi, activeThumb]);
 
   const handleThumbSelect = useCallback((index) => {
-    if (index === activeThumb) return;
-    goTo(index);
-  }, [activeThumb, goTo]);
+    if (!emblaApi) return;
+    emblaApi.scrollTo(index);
+  }, [emblaApi]);
 
   // On first mount only, scroll to the selected card on mobile
   useEffect(() => {
@@ -255,50 +172,35 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   /* Shared sub-components */
   const ArtworkPanel = ({ className = '' }) => {
-    // Build the transform: base position + drag offset
-    const baseX = -activeThumb * 100;
-    const dragPx = dragOffset;
-
     return (
       <div className={className}>
-        <div
-          ref={carouselRef}
-          className="relative overflow-hidden"
-          style={{ backgroundColor: '#F5F5F5', touchAction: 'pan-y pinch-zoom' }}
-          onMouseDown={handlePointerDown}
-          onMouseMove={handlePointerMove}
-          onMouseUp={handlePointerUp}
-          onMouseLeave={() => { if (dragState.current.isDragging) handlePointerUp(); }}
-        >
-          {compositingLoading ? (
-            <div className="w-full flex items-center justify-center" style={{ aspectRatio: '4/5', backgroundColor: '#F5F5F5' }}>
-              <div className="flex flex-col items-center gap-3">
-                <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#E0E0E0', borderTopColor: 'transparent' }} />
-                <span className="text-body-sm" style={{ color: '#999' }}>Preparing your mockups…</span>
-              </div>
+        {compositingLoading ? (
+          <div className="w-full flex items-center justify-center" style={{ aspectRatio: '4/5', backgroundColor: '#F5F5F5' }}>
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#E0E0E0', borderTopColor: 'transparent' }} />
+              <span className="text-body-sm" style={{ color: '#999' }}>Preparing your mockups…</span>
             </div>
-          ) : (
-            <div
-              className="flex"
-              style={{
-                transform: `translateX(calc(${baseX}% + ${dragPx}px))`,
-                transition: isTransitioning ? 'transform 0.3s ease-out' : 'none',
-                willChange: 'transform',
-              }}
+          </div>
+        ) : (
+          <div className="relative" style={{ backgroundColor: '#F5F5F5' }}>
+            <Carousel
+              opts={{ align: 'start', loop: false, startIndex: activeThumb }}
+              setApi={setEmblaApi}
+              className="w-full"
             >
-              {displayImages.map((src, i) => (
-                <div key={i} className="w-full flex-shrink-0">
-                  <img
-                    src={src}
-                    alt={`Canvas mockup ${i + 1}`}
-                    className="w-full object-contain select-none pointer-events-none"
-                    style={{ userSelect: 'none', WebkitUserDrag: 'none' }}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-          {!compositingLoading && (
+              <CarouselContent className="-ml-0">
+                {displayImages.map((src, i) => (
+                  <CarouselItem key={i} className="pl-0 basis-full">
+                    <img
+                      src={src}
+                      alt={`Canvas mockup ${i + 1}`}
+                      className="w-full object-contain select-none pointer-events-none"
+                      style={{ userSelect: 'none', WebkitUserDrag: 'none' }}
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
             <div className="absolute bottom-3 left-0 right-0 flex justify-center px-4">
               <ThumbnailStrip
                 images={displayImages}
@@ -307,8 +209,8 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
                 size={30}
               />
             </div>
-          )}
-        </div>
+          </div>
+        )}
         {/* Reviews — desktop only */}
         <div className="hidden md:flex items-center justify-center gap-1.5 mt-4">
           <div className="flex">
