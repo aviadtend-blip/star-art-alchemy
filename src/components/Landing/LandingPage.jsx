@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useGenerator } from '@/contexts/GeneratorContext';
 import FAQSection from "@/components/ui/FAQSection";
 import BirthDataFormCard from "./BirthDataFormCard";
+import { ShineBorder } from "@/components/ui/shine-border";
 import heroMobile from "@/assets/hero-mobile.webp";
 
 import heroDesktop from "@/assets/hero-desktop.webp";
@@ -138,29 +139,36 @@ export default function LandingPage() {
         </div>
         <div className="relative z-10 flex flex-col justify-end min-h-[780px] px-4 py-[15px]">
 
-          {/* Glass form card — title inside on mobile */}
-          <div
-            className="flex flex-col items-stretch md:max-w-[500px] mx-auto w-full"
-            style={{
-              background: 'rgba(17, 17, 17, 0.70)',
-              backdropFilter: 'blur(17px)',
-              WebkitBackdropFilter: 'blur(17px)',
-              padding: '16px',
-            }}
+          <ShineBorder
+            className="w-full md:max-w-[500px] mx-auto min-w-0"
+            borderRadius={2}
+            borderWidth={1}
+            duration={14}
+            color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
           >
-            {mobileHeroStep !== 'photo' && (
-              <div className="flex flex-col gap-3 text-center mb-6">
-                <h1 className="text-a1 text-foreground">
-                  Turn Your Birth<br />
-                  Into Gallery-Worthy Art
-                </h1>
-                <p className="text-body mx-auto" style={{ color: '#ffffff', maxWidth: '344px' }}>
-                  Every element in your artwork corresponds to a specific astrological placement.
-                </p>
-              </div>
-            )}
-            <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" gap={9} onStepChange={setMobileHeroStep} />
-          </div>
+            <div
+              className="flex flex-col items-stretch w-full"
+              style={{
+                background: 'rgba(17, 17, 17, 0.70)',
+                backdropFilter: 'blur(17px)',
+                WebkitBackdropFilter: 'blur(17px)',
+                padding: '32px 16px 16px 16px',
+              }}
+            >
+              {mobileHeroStep !== 'photo' && (
+                <div className="flex flex-col gap-3 text-center mb-6">
+                  <h1 className="text-a1 text-foreground">
+                    Turn Your Birth<br />
+                    Into Gallery-Worthy Art
+                  </h1>
+                  <p className="text-body mx-auto" style={{ color: '#ffffff', maxWidth: '344px' }}>
+                    Every element in your artwork corresponds to a specific astrological placement.
+                  </p>
+                </div>
+              )}
+              <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" gap={9} onStepChange={setMobileHeroStep} />
+            </div>
+          </ShineBorder>
         </div>
       </section>
 
@@ -443,19 +451,26 @@ export default function LandingPage() {
             </h2>
           </div>
 
-          {/* Glass card */}
-          <div
-            className="flex flex-col items-stretch rounded-[2px]"
-            style={{
-              background: 'rgba(17, 17, 17, 0.70)',
-              backdropFilter: 'blur(17px)',
-              WebkitBackdropFilter: 'blur(17px)',
-              padding: 48,
-              minWidth: 320,
-            }}
+          <ShineBorder
+            className="min-w-0"
+            borderRadius={2}
+            borderWidth={1}
+            duration={14}
+            color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
           >
-            <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} gap={30} />
-          </div>
+            <div
+              className="flex flex-col items-stretch rounded-[2px]"
+              style={{
+                background: 'rgba(17, 17, 17, 0.70)',
+                backdropFilter: 'blur(17px)',
+                WebkitBackdropFilter: 'blur(17px)',
+                padding: 48,
+                minWidth: 320,
+              }}
+            >
+              <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} gap={30} />
+            </div>
+          </ShineBorder>
         </div>
 
         {/* Testimonials — same section, shares galaxy background */}
