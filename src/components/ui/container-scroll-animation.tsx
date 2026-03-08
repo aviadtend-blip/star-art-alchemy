@@ -46,7 +46,7 @@ export const ContainerScroll = ({
   const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const cardOpacity = useTransform(
     scrollYProgress,
-    isMobile ? [0, 1] : [0, 0.5, 1],
+    isMobile ? [0, 1] : [0, 0.3, 1],
     isMobile ? [1, 1] : [1, 1, 0]
   );
 
