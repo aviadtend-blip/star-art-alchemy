@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useEffect } from "react";
-import { useScroll, useTransform, useMotionValueEvent, motion, MotionValue } from "framer-motion";
+import { useScroll, useTransform, useMotionValueEvent, motion, useMotionValue, MotionValue } from "framer-motion";
 
 export const ContainerScroll = ({
   titleComponent,
@@ -44,11 +44,16 @@ export const ContainerScroll = ({
   const rotate = useTransform(scrollYProgress, [0, 1], [20, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], scaleDimensions());
   const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const cardOpacity = useTransform(
-    scrollYProgress,
-    isMobile ? [0, 1] : [0, 1],
-    isMobile ? [1, 1] : [1, 0]
-  );
+  const cardOpacity = useMotionValue(1);
+
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    if (isMobile) {
+      cardOpacity.set(1);
+    } else {
+      // Linear fade from 1→0 across full scroll
+      cardOpacity.set(1 - v);
+    }
+  });
 
   return (
     <div
