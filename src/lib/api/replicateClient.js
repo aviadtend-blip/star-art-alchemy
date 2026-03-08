@@ -62,7 +62,7 @@ export async function generateImage(prompt, sref, personalization, profileCode, 
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ prompt, sref, personalization, profileCode }),
+      body: JSON.stringify({ prompt, sref, personalization, profileCode, face_image_url: userPhotoUrl }),
     }
   );
 
@@ -79,40 +79,6 @@ export async function generateImage(prompt, sref, personalization, profileCode, 
 
   let finalImageUrl = data.output;
 
-  // Step 2: If portrait mode, run face swap — single attempt, no retries
-  if (userPhotoUrl) {
-    console.log('Starting face swap step (single attempt, up to 180s)...');
-    try {
-      const swapResponse = await fetch(
-        `${WORKING_FUNCTIONS_URL}/face-swap`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            target_image_url: data.output,
-            face_image_url: userPhotoUrl,
-          }),
-        }
-      );
-
-      if (!swapResponse.ok) {
-        const swapError = await swapResponse.json().catch(() => ({}));
-        throw new Error(swapError.error || `Face swap failed with status ${swapResponse.status}`);
-      }
-
-      const swapData = await swapResponse.json();
-      if (!swapData.output) {
-        throw new Error('No image URL returned from face swap');
-      }
-      finalImageUrl = swapData.output;
-      console.log('Face swap complete:', finalImageUrl);
-    } catch (swapErr) {
-      console.error('Face swap failed (no retry):', swapErr.message);
-      throw new Error(`Face swap failed: ${swapErr.message}. Please try again.`);
-    }
-  }
 
   // Cache all outputs for reimagine feature
   // For portrait mode, only the swapped image is usable (no grid variations)
