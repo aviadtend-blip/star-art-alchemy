@@ -2,11 +2,11 @@ import buildInterpretationLayer from './buildInterpretationLayer.js';
 import getAIInterpretation from './getAIInterpretation.js';
 
 
-export async function buildConcretePrompt(chartData, style) {
+export async function buildConcretePrompt(chartData, style, isPortraitEdition = false) {
   chartData = buildInterpretationLayer(chartData);
 
   // Get the AI scene narrative
-  const aiNarrative = await getAIInterpretation(chartData);
+  const aiNarrative = await getAIInterpretation(chartData, isPortraitEdition);
 
   // AI narrative already encodes all zodiac symbolism — no prefix needed
   const contentPrompt = aiNarrative;

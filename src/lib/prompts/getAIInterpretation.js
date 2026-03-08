@@ -31,7 +31,7 @@ export default async function getAIInterpretation(chartData, isPortraitEdition =
 
   try {
     const { data, error } = await supabase.functions.invoke('ai-interpret', {
-      body: { chartData },
+      body: { chartData, isPortraitEdition },
     });
 
     if (error) throw error;
