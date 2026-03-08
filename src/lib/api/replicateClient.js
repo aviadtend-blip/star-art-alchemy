@@ -84,12 +84,11 @@ export async function generateImage(prompt, sref, personalization, profileCode, 
     console.log('Starting face swap step (single attempt, up to 180s)...');
     try {
       const swapResponse = await fetch(
-        `${SUPABASE_URL}/functions/v1/face-swap`,
+        `${WORKING_FUNCTIONS_URL}/face-swap`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           },
           body: JSON.stringify({
             target_image_url: data.output,
