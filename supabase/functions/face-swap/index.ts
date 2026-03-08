@@ -73,8 +73,9 @@ serve(async (req) => {
     const swapId = swapPrediction.id;
     console.log(`Face swap prediction submitted: ${swapId}`);
 
-    // Poll for completion (max ~120s at 2s intervals = 60 polls)
-    for (let i = 0; i < 60; i++) {
+    // Poll for completion (max ~180s at 2s intervals = 90 polls)
+    // Extended to handle Replicate cold starts which can take 60-90s
+    for (let i = 0; i < 90; i++) {
       await new Promise((r) => setTimeout(r, 2000));
 
       const pollResponse = await fetch(
