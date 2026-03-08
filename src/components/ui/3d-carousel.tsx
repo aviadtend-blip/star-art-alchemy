@@ -134,7 +134,7 @@ const Carousel = memo(
               <img
                 src={imgUrl}
                 alt="carousel image"
-                className="pointer-events-none h-full w-full rounded-xl object-cover"
+                className="pointer-events-none h-full w-full rounded-xl object-contain"
               />
             </div>
           ))}
