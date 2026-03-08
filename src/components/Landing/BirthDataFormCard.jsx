@@ -255,6 +255,22 @@ export default function BirthDataFormCard({
     onSubmit({ ...pendingSubmitRef.current, userPhotoUrl: null });
   };
 
+  const wheelDate = React.useMemo(() => {
+    if (formData.birthYear && formData.birthMonth && formData.birthDay) {
+      return new Date(Number(formData.birthYear), Number(formData.birthMonth) - 1, Number(formData.birthDay));
+    }
+    return new Date(1995, 5, 15); // sensible default
+  }, [formData.birthYear, formData.birthMonth, formData.birthDay]);
+
+  const handleWheelDateChange = useCallback((date) => {
+    setFormData((prev) => ({
+      ...prev,
+      birthYear: String(date.getFullYear()),
+      birthMonth: String(date.getMonth() + 1),
+      birthDay: String(date.getDate()),
+    }));
+  }, [setFormData]);
+
   const dateValue =
     formData.birthYear && formData.birthMonth && formData.birthDay
       ? `${String(formData.birthYear).padStart(4, '0')}-${String(formData.birthMonth).padStart(2, '0')}-${String(formData.birthDay).padStart(2, '0')}`
