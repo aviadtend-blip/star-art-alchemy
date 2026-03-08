@@ -373,7 +373,7 @@ export default function LandingPage() {
 
           {/* Museum-Quality Materials */}
           <div>
-            <img src={canvasDetail} alt="Close-up of museum-quality canvas print detail" className="w-full object-cover self-stretch md:h-[406px]" style={{ borderRadius: 2, aspectRatio: '40/29', height: 'auto' }} />
+            <LazyImage src={canvasDetail} alt="Close-up of museum-quality canvas print detail" ratio={40/29} inView className="md:h-[406px]" AspectRatioClassName="rounded-[2px]" />
             <div className="mt-4">
               <p className="text-subtitle text-surface-muted tracking-widest mb-2">MUSEUM-QUALITY MATERIALS</p>
               <h3 className="text-a2 text-surface-foreground mb-4">Materials So Good, Museums Use Them</h3>
