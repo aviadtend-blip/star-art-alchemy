@@ -628,26 +628,25 @@ export function ChartExplanation({
           }}
         >
 
-          <div
-            className="px-5 max-w-md mx-auto flex flex-col items-center transition-all duration-700 ease-out"
-            style={{
-              opacity: mobileRevealed ? 1 : 0,
-              transform: mobileRevealed ? 'translateY(0)' : 'translateY(24px)',
-            }}
-          >
-            {/* Hotspot toggle */}
-            <div className="flex items-center justify-center gap-2.5 flex-1" style={{ padding: '10px 21px' }}>
-              <M3Switch
-                checked={showHotspots}
-                onCheckedChange={(val) => setShowHotspots(val)}
-                showIcons
-              />
-              <span className="text-a5 text-white">
-                Hotspot markers
-              </span>
-            </div>
-
-            <div style={{ height: 24 }} />
+          <AnimatePresence>
+            {mobileRevealed && (
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, ease: 'easeOut' }}
+                className="px-5 max-w-md mx-auto flex flex-col items-center"
+              >
+                {/* Hotspot toggle */}
+                <div className="flex items-center justify-center gap-2.5 flex-1" style={{ padding: '10px 21px' }}>
+                  <M3Switch
+                    checked={showHotspots}
+                    onCheckedChange={(val) => setShowHotspots(val)}
+                    showIcons
+                  />
+                  <span className="text-a5 text-white">
+                    Hotspot markers
+                  </span>
+                </div>
 
             {/* Horizontal scroll explanation cards — dark */}
             <div
