@@ -534,7 +534,7 @@ export default function BirthDataFormCard({
   // ═══════════════════════════════════════════
   return (
     <form onSubmit={handleStep1aSubmit} className="flex flex-col" style={{ gap }}>
-      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+      <div className="flex flex-row gap-6 items-start">
         <div className="flex-shrink-0">
           <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
           <DateWheelPicker
