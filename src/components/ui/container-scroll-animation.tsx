@@ -44,6 +44,11 @@ export const ContainerScroll = ({
   const rotate = useTransform(scrollYProgress, [0, 1], [20, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], scaleDimensions());
   const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const cardOpacity = useTransform(
+    scrollYProgress,
+    isMobile ? [0, 1] : [0, 0.85, 1],
+    isMobile ? [1, 1] : [1, 1, 0]
+  );
 
   return (
     <div
@@ -57,7 +62,7 @@ export const ContainerScroll = ({
         }}
       >
         <Header translate={translate} titleComponent={titleComponent} />
-        <Card rotate={rotate} translate={translate} scale={scale}>
+        <Card rotate={rotate} translate={translate} scale={scale} opacity={cardOpacity}>
           {children}
         </Card>
       </div>
