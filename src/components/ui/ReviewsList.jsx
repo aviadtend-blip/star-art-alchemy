@@ -1,4 +1,4 @@
-import { LazyImage } from '@/components/ui/lazy-image';
+
 import review1 from '@/assets/gallery/reviews/review-1.webp';
 import review2 from '@/assets/gallery/reviews/review-2.webp';
 import review3 from '@/assets/gallery/reviews/review-3.webp';
@@ -51,13 +51,12 @@ export default function ReviewsList({ theme = 'dark', gap = 6, py = 6, className
             className={`flex gap-${gap} items-start py-${py}`}
             style={{ borderBottom: i < TESTIMONIALS.length - 1 ? `1px solid ${borderColor}` : 'none' }}
           >
-            <div className="w-20 flex-shrink-0">
-              <LazyImage
+            <div className="w-20 flex-shrink-0 overflow-hidden rounded-[2px]" style={{ aspectRatio: '3/4' }}>
+              <img
                 src={t.img}
                 alt={t.name}
-                ratio={3/4}
-                inView
-                AspectRatioClassName="rounded-[2px]"
+                className="w-full h-full object-cover"
+                loading="lazy"
               />
             </div>
             <div className="flex-1 min-w-0 flex flex-col gap-2">
