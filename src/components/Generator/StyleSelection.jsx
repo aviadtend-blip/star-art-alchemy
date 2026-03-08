@@ -282,7 +282,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
       {/* Footer */}
       <Footer />
 
-      {/* Lightbox Modal */}
+      {/* Lightbox Modal — Vertical Image Stack */}
       {lightbox && (
         <div
           className="fixed inset-0 z-50 flex flex-col items-center justify-center transition-all duration-250"
@@ -291,25 +291,6 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
             opacity: lightboxVisible ? 1 : 0,
           }}
           onClick={closeLightbox}
-          onTouchStart={(e) => {
-            const t = e.touches[0];
-            touchStartRef.current = { x: t.clientX, y: t.clientY };
-            swipeHandledRef.current = false;
-          }}
-          onTouchMove={(e) => {
-            if (swipeHandledRef.current) return;
-            const t = e.touches[0];
-            const dx = t.clientX - touchStartRef.current.x;
-            const dy = t.clientY - touchStartRef.current.y;
-            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-              swipeHandledRef.current = true;
-              navigateLightbox(dx < 0 ? 1 : -1);
-            }
-            if (dy > 80 && Math.abs(dy) > Math.abs(dx) * 1.5) {
-              swipeHandledRef.current = true;
-              closeLightbox();
-            }
-          }}
         >
           <button
             onClick={closeLightbox}
@@ -318,46 +299,21 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
             <X className="w-5 h-5 text-white" />
           </button>
 
-          <div className="absolute top-6 left-6 text-white/80">
+          <div className="absolute top-6 left-6 text-white/80 z-10">
             <p className="text-a4 font-display">{STYLE_LABELS[lightbox.styleId]?.title}</p>
             <p className="text-body text-white/50">{STYLE_LABELS[lightbox.styleId]?.sub}</p>
           </div>
 
           <div
-            className="flex-1 flex items-center justify-center w-full px-0 md:px-16 py-10 md:py-20 transition-transform duration-200"
+            className="flex-1 flex items-center justify-center w-full py-16"
             onClick={(e) => e.stopPropagation()}
           >
-            <img
-              src={lightboxImages[lightbox.index]}
-              alt={`Gallery ${lightbox.index + 1}`}
-              className="max-h-[80vh] w-full md:w-auto md:max-w-full object-contain"
-              style={{ borderRadius: '2px' }}
-            />
-          </div>
-
-          {lightboxImages.length > 1 && (
-            <>
-              <button
-                onClick={(e) => { e.stopPropagation(); navigateLightbox(-1); }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors hidden md:flex"
-              >
-                <ChevronLeft className="w-5 h-5 text-white" />
-              </button>
-              <button
-                onClick={(e) => { e.stopPropagation(); navigateLightbox(1); }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors hidden md:flex"
-              >
-                <ChevronRight className="w-5 h-5 text-white" />
-              </button>
-            </>
-          )}
-
-          <div className="pb-6" onClick={(e) => e.stopPropagation()}>
-            <ThumbnailStrip
-              images={lightboxImages}
-              activeIndex={lightbox.index}
-              onSelect={(i) => setLightbox((prev) => ({ ...prev, index: i }))}
-              size={56}
+            <VerticalImageStack
+              images={lightboxImages.map((src, i) => ({
+                id: `${lightbox.styleId}-${i}`,
+                src,
+                alt: `${STYLE_LABELS[lightbox.styleId]?.title || 'Style'} example ${i + 1}`,
+              }))}
             />
           </div>
         </div>
