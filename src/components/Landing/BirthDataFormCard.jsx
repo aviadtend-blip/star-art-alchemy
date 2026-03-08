@@ -1,6 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import PopularTag from "@/components/ui/PopularTag";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import { DateWheelPicker } from "@/components/ui/date-wheel-picker";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 
 const INPUT_CLASS = "w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-left text-foreground placeholder:text-[#B1B1B1] focus:border-primary focus:ring-0 transition outline-none";
@@ -252,6 +254,22 @@ export default function BirthDataFormCard({
   const handleSubmitWithoutPhoto = () => {
     onSubmit({ ...pendingSubmitRef.current, userPhotoUrl: null });
   };
+
+  const wheelDate = React.useMemo(() => {
+    if (formData.birthYear && formData.birthMonth && formData.birthDay) {
+      return new Date(Number(formData.birthYear), Number(formData.birthMonth) - 1, Number(formData.birthDay));
+    }
+    return new Date(1995, 5, 15); // sensible default
+  }, [formData.birthYear, formData.birthMonth, formData.birthDay]);
+
+  const handleWheelDateChange = useCallback((date) => {
+    setFormData((prev) => ({
+      ...prev,
+      birthYear: String(date.getFullYear()),
+      birthMonth: String(date.getMonth() + 1),
+      birthDay: String(date.getDate()),
+    }));
+  }, [setFormData]);
 
   const dateValue =
     formData.birthYear && formData.birthMonth && formData.birthDay
@@ -517,35 +535,37 @@ export default function BirthDataFormCard({
   // ═══════════════════════════════════════════
   return (
     <form onSubmit={handleStep1aSubmit} className="flex flex-col" style={{ gap }}>
-      <div className="grid grid-cols-2 gap-6">
-        <div>
-          <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
-          <div className="relative">
-            <input type="date" required value={dateValue} onChange={handleDateChange} max={`${new Date().getFullYear()}-12-31`} min="1900-01-01" placeholder="MM/DD/YYYY" data-empty={!dateValue ? "true" : undefined} className={`${INPUT_CLASS} date-no-icon`} />
-          </div>
-        </div>
-        <div ref={wrapperRef} className="relative">
-          <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH LOCATION</label>
-          <div className="relative">
-            <input type="text" required value={cityQuery} onChange={(e) => { setCityQuery(e.target.value); setLocationError(false); setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null })); }} placeholder="City" className={`${INPUT_CLASS} ${locationError ? 'border-red-500' : ''}`} autoComplete="off" />
-            {loadingSuggestions && (
-              <div className="absolute right-0 top-1/2 -translate-y-1/2">
-                <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              </div>
-            )}
-          </div>
-          {showSuggestions && suggestions.length > 0 && (
-            <ul className="absolute z-50 w-full mt-1 bg-card border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
-              {suggestions.map((s) => (
-                <li key={s.place_id} onPointerDown={(e) => { e.preventDefault(); handleSelectCity(s); }} className="px-4 py-3 text-body text-foreground hover:bg-primary/10 cursor-pointer transition-colors">
-                  {s.description}
-                </li>
-              ))}
-            </ul>
+      <div>
+        <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
+        <DateWheelPicker
+          value={wheelDate}
+          onChange={handleWheelDateChange}
+          minYear={1920}
+          maxYear={new Date().getFullYear()}
+          size="md"
+        />
+      </div>
+      <div ref={wrapperRef} className="relative">
+        <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH LOCATION</label>
+        <div className="relative">
+          <input type="text" required value={cityQuery} onChange={(e) => { setCityQuery(e.target.value); setLocationError(false); setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null })); }} placeholder="City" className={`${INPUT_CLASS} ${locationError ? 'border-red-500' : ''}`} autoComplete="off" />
+          {loadingSuggestions && (
+            <div className="absolute right-0 top-1/2 -translate-y-1/2">
+              <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            </div>
           )}
-          {locationError && !formData.lat && <p className="text-body text-red-400 mt-2">Please select a city from the dropdown</p>}
-          {formData.lat && <p className="text-body text-muted-foreground mt-2">📍 {formData.birthCity}, {formData.birthCountry}</p>}
         </div>
+        {showSuggestions && suggestions.length > 0 && (
+          <ul className="absolute z-50 w-full mt-1 bg-card border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
+            {suggestions.map((s) => (
+              <li key={s.place_id} onPointerDown={(e) => { e.preventDefault(); handleSelectCity(s); }} className="px-4 py-3 text-body text-foreground hover:bg-primary/10 cursor-pointer transition-colors">
+                {s.description}
+              </li>
+            ))}
+          </ul>
+        )}
+        {locationError && !formData.lat && <p className="text-body text-red-400 mt-2">Please select a city from the dropdown</p>}
+        {formData.lat && <p className="text-body text-muted-foreground mt-2">📍 {formData.birthCity}, {formData.birthCountry}</p>}
       </div>
       <PrimaryButton type="submit" className="w-full mt-2">
         {submitLabel}
