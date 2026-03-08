@@ -1,3 +1,4 @@
+import { LazyImage } from '@/components/ui/lazy-image';
 import review1 from '@/assets/gallery/reviews/review-1.webp';
 import review2 from '@/assets/gallery/reviews/review-2.webp';
 import review3 from '@/assets/gallery/reviews/review-3.webp';
