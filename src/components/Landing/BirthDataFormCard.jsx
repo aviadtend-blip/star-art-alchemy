@@ -534,37 +534,39 @@ export default function BirthDataFormCard({
   // ═══════════════════════════════════════════
   return (
     <form onSubmit={handleStep1aSubmit} className="flex flex-col" style={{ gap }}>
-      <div>
-        <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
-        <DateWheelPicker
-          value={wheelDate}
-          onChange={handleWheelDateChange}
-          minYear={1920}
-          maxYear={new Date().getFullYear()}
-          size="md"
-        />
-      </div>
-      <div ref={wrapperRef} className="relative">
-        <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH LOCATION</label>
-        <div className="relative">
-          <input type="text" required value={cityQuery} onChange={(e) => { setCityQuery(e.target.value); setLocationError(false); setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null })); }} placeholder="City" className={`${INPUT_CLASS} ${locationError ? 'border-red-500' : ''}`} autoComplete="off" />
-          {loadingSuggestions && (
-            <div className="absolute right-0 top-1/2 -translate-y-1/2">
-              <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-            </div>
-          )}
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+        <div className="flex-shrink-0">
+          <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH DATE</label>
+          <DateWheelPicker
+            value={wheelDate}
+            onChange={handleWheelDateChange}
+            minYear={1920}
+            maxYear={new Date().getFullYear()}
+            size="md"
+          />
         </div>
-        {showSuggestions && suggestions.length > 0 && (
-          <ul className="absolute z-50 w-full mt-1 bg-card border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
-            {suggestions.map((s) => (
-              <li key={s.place_id} onPointerDown={(e) => { e.preventDefault(); handleSelectCity(s); }} className="px-4 py-3 text-body text-foreground hover:bg-primary/10 cursor-pointer transition-colors">
-                {s.description}
-              </li>
-            ))}
-          </ul>
-        )}
-        {locationError && !formData.lat && <p className="text-body text-red-400 mt-2">Please select a city from the dropdown</p>}
-        {formData.lat && <p className="text-body text-muted-foreground mt-2">📍 {formData.birthCity}, {formData.birthCountry}</p>}
+        <div ref={wrapperRef} className="relative flex-1 w-full self-end">
+          <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>BIRTH LOCATION</label>
+          <div className="relative">
+            <input type="text" required value={cityQuery} onChange={(e) => { setCityQuery(e.target.value); setLocationError(false); setFormData((prev) => ({ ...prev, birthCity: "", lat: null, lng: null })); }} placeholder="City" className={`${INPUT_CLASS} ${locationError ? 'border-red-500' : ''}`} autoComplete="off" />
+            {loadingSuggestions && (
+              <div className="absolute right-0 top-1/2 -translate-y-1/2">
+                <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              </div>
+            )}
+          </div>
+          {showSuggestions && suggestions.length > 0 && (
+            <ul className="absolute z-50 w-full mt-1 bg-card border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
+              {suggestions.map((s) => (
+                <li key={s.place_id} onPointerDown={(e) => { e.preventDefault(); handleSelectCity(s); }} className="px-4 py-3 text-body text-foreground hover:bg-primary/10 cursor-pointer transition-colors">
+                  {s.description}
+                </li>
+              ))}
+            </ul>
+          )}
+          {locationError && !formData.lat && <p className="text-body text-red-400 mt-2">Please select a city from the dropdown</p>}
+          {formData.lat && <p className="text-body text-muted-foreground mt-2">📍 {formData.birthCity}, {formData.birthCountry}</p>}
+        </div>
       </div>
       <PrimaryButton type="submit" className="w-full mt-2">
         {submitLabel}
