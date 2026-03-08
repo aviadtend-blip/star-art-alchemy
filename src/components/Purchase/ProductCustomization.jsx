@@ -6,6 +6,7 @@ import Header from '@/components/Layout/Header';
 import PopularTag from '@/components/ui/PopularTag';
 import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
 import useCompositedMockups, { useBackgroundPreload } from '@/hooks/useCompositedMockups';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import canvasDetail from '@/assets/gallery/canvas-detail.jpg';
 import womanHolding from '@/assets/gallery/woman-holding.webp';
