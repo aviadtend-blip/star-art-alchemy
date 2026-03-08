@@ -1,11 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { ArrowLeft, ArrowRight, Star } from "lucide-react";
-import {
-  Carousel,
-  CarouselApi,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
 
 interface Testimonial {
   quote: string;
@@ -82,30 +76,15 @@ function ArrowButton({ direction, onClick }: { direction: "left" | "right"; onCl
 export default function CustomerReactionsCarousel({
   testimonials = defaultTestimonials,
 }: CustomerReactionsCarouselProps) {
-  const [api, setApi] = useState<CarouselApi>();
   const [activeIndex, setActiveIndex] = useState(0);
-  const [fadeKey, setFadeKey] = useState(0);
 
-  useEffect(() => {
-    if (!api) return;
+  const goLeft = useCallback(() => {
+    setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+  }, [testimonials.length]);
 
-    const updateActive = () => {
-      setActiveIndex(api.selectedScrollSnap());
-      setFadeKey((k) => k + 1);
-    };
-    updateActive();
-
-    api.on("select", updateActive);
-    api.on("reInit", updateActive);
-
-    return () => {
-      api.off("select", updateActive);
-      api.off("reInit", updateActive);
-    };
-  }, [api]);
-
-  const goLeft = useCallback(() => api?.scrollPrev(), [api]);
-  const goRight = useCallback(() => api?.scrollNext(), [api]);
+  const goRight = useCallback(() => {
+    setActiveIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
+  }, [testimonials.length]);
 
   return (
     <div className="pb-[61px] px-4 w-full">
@@ -113,34 +92,33 @@ export default function CustomerReactionsCarousel({
         <div className="flex gap-8 items-center justify-center w-full">
           <ArrowButton direction="left" onClick={goLeft} />
 
-          <Carousel setApi={setApi} opts={{ align: "center", loop: true }} className="flex-1 min-w-0">
-            <CarouselContent>
-              {testimonials.map((testimonial, index) => (
-                <CarouselItem key={index} className="basis-full">
-                  <div
-                    key={`fade-${fadeKey}-${index}`}
-                    className={`flex flex-col gap-5 items-center transition-opacity duration-500 ${
-                      activeIndex === index ? "opacity-100" : "opacity-0"
-                    }`}
-                  >
-                    <StarRating count={testimonial.rating} />
-                    <p
-                      className="text-[24px] font-medium text-foreground text-center leading-[1.2] tracking-[-0.48px]"
-                      style={{ fontFamily: "'TASA Explorer', sans-serif" }}
-                    >
-                      "{testimonial.quote}"
-                    </p>
-                    <p
-                      className="text-[12px] font-bold uppercase text-foreground/50 tracking-normal leading-[1.13]"
-                      style={{ fontFamily: "'TASA Explorer', sans-serif" }}
-                    >
-                      — {testimonial.author}
-                    </p>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
+          {/* Stacked fade slides */}
+          <div className="flex-1 min-w-0 relative" style={{ minHeight: 220 }}>
+            {testimonials.map((testimonial, index) => (
+              <div
+                key={index}
+                className="absolute inset-0 flex flex-col gap-5 items-center justify-center transition-opacity duration-500 ease-in-out"
+                style={{
+                  opacity: activeIndex === index ? 1 : 0,
+                  pointerEvents: activeIndex === index ? "auto" : "none",
+                }}
+              >
+                <StarRating count={testimonial.rating} />
+                <p
+                  className="text-[24px] font-medium text-foreground text-center leading-[1.2] tracking-[-0.48px]"
+                  style={{ fontFamily: "'TASA Explorer', sans-serif" }}
+                >
+                  "{testimonial.quote}"
+                </p>
+                <p
+                  className="text-[12px] font-bold uppercase text-foreground/50 tracking-normal leading-[1.13]"
+                  style={{ fontFamily: "'TASA Explorer', sans-serif" }}
+                >
+                  — {testimonial.author}
+                </p>
+              </div>
+            ))}
+          </div>
 
           <ArrowButton direction="right" onClick={goRight} />
         </div>
@@ -149,7 +127,7 @@ export default function CustomerReactionsCarousel({
           {testimonials.map((_, index) => (
             <button
               key={index}
-              onClick={() => api?.scrollTo(index)}
+              onClick={() => setActiveIndex(index)}
               aria-label={`Go to testimonial ${index + 1}`}
               className={`h-2 rounded-full transition-all duration-300 ${
                 activeIndex === index ? "w-6 bg-primary" : "w-2 bg-foreground/30"
