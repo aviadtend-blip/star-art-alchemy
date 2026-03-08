@@ -155,7 +155,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
       </div>
 
       {/* Main content */}
-      <div className="flex-1 w-full py-10 md:py-14">
+      <div className="flex-1 w-full py-10 md:py-14 px-5 md:px-0">
         <div className="text-center max-w-[600px] mx-auto" style={{ paddingTop: 32, paddingBottom: 32 }}>
           <h2 className="font-display text-a2 md:text-[40px] text-surface-foreground tracking-tight" style={{ fontWeight: 400 }}>
             {isPortraitEdition ? 'Choose your portrait style' : 'Choose your artistic expression'}
