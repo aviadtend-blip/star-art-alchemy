@@ -260,6 +260,8 @@ export function ChartExplanation({
   const [activeHotspot, setActiveHotspot] = useState(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showHotspots, setShowHotspots] = useState(true);
+  const [mobileRevealed, setMobileRevealed] = useState(false);
+  const mobileRevealRef = useRef(null);
   const artworkRef = useRef(null);
   const rightContentRef = useRef(null);
   const rightInnerRef = useRef(null);
