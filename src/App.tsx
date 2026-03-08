@@ -6,10 +6,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Outlet, useLocation } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import ShippingPolicy from "./pages/ShippingPolicy";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsConditions from "./pages/TermsConditions";
-import ReturnsPolicy from "./pages/ReturnsPolicy";
+
+// Policy pages — rarely visited, lazy-load to reduce initial bundle
+const ShippingPolicy = lazyWithRetry(() => import("./pages/ShippingPolicy"));
+const PrivacyPolicy = lazyWithRetry(() => import("./pages/PrivacyPolicy"));
+const TermsConditions = lazyWithRetry(() => import("./pages/TermsConditions"));
+const ReturnsPolicy = lazyWithRetry(() => import("./pages/ReturnsPolicy"));
 import { GeneratorProvider } from "./contexts/GeneratorContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 
