@@ -96,7 +96,7 @@ const galleryItems = [
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { handleFormSubmit } = useGenerator();
+  const { handleFormSubmit, isCalculatingChart, error } = useGenerator();
 
   // Shared form state — passed to all BirthDataFormCard instances
   const [formData, setFormData] = useState({
