@@ -63,12 +63,28 @@ export default function DevNav() {
   const { pathname } = useLocation();
   const {
     setFormData, setChartData, setGeneratedImage,
-    setArtworkAnalysis, setGenerationComplete, setArtworkId,
+    setArtworkAnalysis, setGenerationComplete, setArtworkId, setSelectedStyle,
   } = useGenerator();
 
   const seedContext = () => {
+    const seededState = {
+      chartData: MOCK_CHART_DATA,
+      formData: MOCK_FORM_DATA,
+      selectedStyle: { id: 'cosmic-collision', name: 'Cosmic Collage' },
+      generatedImage: demoImage,
+      orderDetails: null,
+      artworkAnalysis: MOCK_ANALYSIS,
+      artworkId: 'test-artwork-id',
+      userPhotoUrl: null,
+      isPortraitEdition: false,
+      generationComplete: true,
+    };
+
+    sessionStorage.setItem('celestial_generator_state', JSON.stringify(seededState));
+
     setFormData(MOCK_FORM_DATA);
     setChartData(MOCK_CHART_DATA);
+    setSelectedStyle({ id: 'cosmic-collision', name: 'Cosmic Collage' });
     setGeneratedImage(demoImage);
     setArtworkAnalysis(MOCK_ANALYSIS);
     setGenerationComplete(true);
@@ -81,7 +97,15 @@ export default function DevNav() {
         seedContext();
       });
     }
+
     navigate(page.path);
+
+    requestAnimationFrame(() => {
+      if (window.location.pathname !== page.path) {
+        window.location.assign(page.path);
+      }
+    });
+
     setOpen(false);
   };
 
