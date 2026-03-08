@@ -149,7 +149,7 @@ serve(async (req) => {
       }
     }
 
-    throw new Error("Face swap timed out after 60 seconds");
+    throw new Error("Face swap timed out after 180 seconds");
 
   } catch (error) {
     console.error("generate-portrait-artwork error:", error.message);
