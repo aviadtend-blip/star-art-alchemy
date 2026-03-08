@@ -417,12 +417,12 @@ export default function LandingPage() {
             <div className="grid grid-rows-2 grid-flow-col gap-[10px] w-max px-4">
               {galleryItems.map((item, i) => (
                 <div key={i} className="overflow-hidden rounded-[2px] w-[160px] snap-center">
-                  <img
+                  <LazyImage
                     src={item.img}
                     alt={item.label || `Gallery image ${i + 1}`}
-                     className="w-full object-cover"
-                     style={{ aspectRatio: "169 / 200" }}
-                   />
+                    ratio={169/200}
+                    inView
+                  />
                 </div>
               ))}
             </div>
