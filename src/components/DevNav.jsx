@@ -63,7 +63,7 @@ export default function DevNav() {
   const { pathname } = useLocation();
   const {
     setFormData, setChartData, setGeneratedImage,
-    setArtworkAnalysis, setGenerationComplete, setArtworkId, setSelectedStyle,
+    setArtworkAnalysis, setGenerationComplete, setArtworkId,
   } = useGenerator();
 
   const seedContext = () => {
