@@ -173,6 +173,7 @@ export function GeneratorProvider({ children }) {
 
   const handleBackToStyle = useCallback(() => {
     setError(null);
+    isGeneratingRef.current = false;
     navigate('/generate/style');
   }, [navigate]);
 
