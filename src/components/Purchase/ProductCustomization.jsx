@@ -359,14 +359,14 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
       {/* Mobile layout */}
       <div className="md:hidden">
-        <ArtworkPanel />
+        <ArtworkPanel compositingLoading={compositingLoading} displayImages={displayImages} activeThumb={activeThumb} setEmblaApi={setEmblaApi} handleThumbSelect={handleThumbSelect} />
 
         <div className="pt-6 pb-4 px-4">
-          <SizeSelector />
+          <SizeSelector selectedSize={selectedSize} onSizeChange={handleSizeChange} sizeCarouselRef={sizeCarouselRef} />
         </div>
 
         <div id="order-summary-mobile" className="px-4" style={{ paddingBottom: '32px', marginTop: '23px' }}>
-          <OrderSummary />
+          <OrderSummary sunSign={chartData?.sun?.sign || 'Gemini'} sizeLabel={sizeData?.label} total={total} onCheckout={handleCheckout} />
         </div>
         {/* Mobile — Materials + Gift */}
         <div className="px-4 pb-16 flex flex-col gap-16" style={{ paddingTop: '60px' }}>
@@ -407,13 +407,15 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
           <div className="flex gap-12 items-start">
             {/* Left — artwork (sticky) */}
             <div className="w-1/2 flex-shrink-0 sticky top-8">
-              <ArtworkPanel />
+              <ArtworkPanel compositingLoading={compositingLoading} displayImages={displayImages} activeThumb={activeThumb} setEmblaApi={setEmblaApi} handleThumbSelect={handleThumbSelect} />
             </div>
 
             {/* Right — scrollable content */}
             <div className="flex-1" style={{ display: 'flex', flexDirection: 'column', gap: '60px' }}>
-              <SizeSelector vertical />
-              <div id="order-summary-desktop"><OrderSummary /></div>
+              <SizeSelector vertical selectedSize={selectedSize} onSizeChange={handleSizeChange} sizeCarouselRef={sizeCarouselRef} />
+              <div id="order-summary-desktop">
+                <OrderSummary sunSign={chartData?.sun?.sign || 'Gemini'} sizeLabel={sizeData?.label} total={total} onCheckout={handleCheckout} />
+              </div>
 
               {/* Museum-Quality Materials */}
               <div>
