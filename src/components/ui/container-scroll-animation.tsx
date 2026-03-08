@@ -44,6 +44,11 @@ export const ContainerScroll = ({
   const rotate = useTransform(scrollYProgress, [0, 1], [20, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], scaleDimensions());
   const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const cardOpacity = useTransform(
+    scrollYProgress,
+    isMobile ? [0, 1] : [0, 0.85, 1],
+    isMobile ? [1, 1] : [1, 1, 0]
+  );
 
   return (
     <div
@@ -57,7 +62,7 @@ export const ContainerScroll = ({
         }}
       >
         <Header translate={translate} titleComponent={titleComponent} />
-        <Card rotate={rotate} translate={translate} scale={scale}>
+        <Card rotate={rotate} translate={translate} scale={scale} opacity={cardOpacity}>
           {children}
         </Card>
       </div>
@@ -81,11 +86,13 @@ export const Header = ({ translate, titleComponent }: any) => {
 export const Card = ({
   rotate,
   scale,
+  opacity,
   children,
 }: {
   rotate: MotionValue<number>;
   scale: MotionValue<number>;
   translate: MotionValue<number>;
+  opacity: MotionValue<number>;
   children: React.ReactNode;
 }) => {
   return (
@@ -93,6 +100,7 @@ export const Card = ({
       style={{
         rotateX: rotate,
         scale,
+        opacity,
         boxShadow:
           "0 0 #0000004d, 0 9px 20px #0000004a, 0 37px 37px #00000042, 0 84px 50px #00000026, 0 149px 60px #0000000a, 0 233px 65px #00000003",
         borderRadius: '2px',
