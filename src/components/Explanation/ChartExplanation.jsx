@@ -682,7 +682,9 @@ export function ChartExplanation({
                 </div>
               ))}
             </div>
-          </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Action buttons — side by side */}
           <div className="flex gap-3 px-5 pt-7 pb-10">
