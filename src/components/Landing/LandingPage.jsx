@@ -436,7 +436,7 @@ export default function LandingPage() {
           </div>
 
           <ShineBorder
-            className="min-w-0"
+            className="min-w-0 mx-auto w-full max-w-[500px]"
             borderRadius={2}
             borderWidth={1}
             duration={14}
