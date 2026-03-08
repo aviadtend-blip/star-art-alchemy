@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LazyImage } from "@/components/ui/lazy-image";
+
 import { useNavigate } from "react-router-dom";
 import { useGenerator } from '@/contexts/GeneratorContext';
 import FAQSection from "@/components/ui/FAQSection";
@@ -366,7 +366,9 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* The Perfect Gift */}
           <div>
-            <LazyImage src={womanHolding} alt="Happy customer holding her birth chart canvas artwork" ratio={40/29} inView className="md:h-[406px]" AspectRatioClassName="rounded-[2px]" />
+            <div className="overflow-hidden rounded-[2px]" style={{ aspectRatio: '40/29' }}>
+              <img src={womanHolding} alt="Happy customer holding her birth chart canvas artwork" className="w-full h-full object-cover md:h-[406px]" loading="lazy" />
+            </div>
             <div className="mt-4">
               <p className="text-subtitle text-surface-muted tracking-widest mb-2">THE PERFECT GIFT</p>
               <h3 className="text-a2 text-surface-foreground mb-4">Impossible to Duplicate. Impossible to Forget.</h3>
@@ -381,7 +383,9 @@ export default function LandingPage() {
 
           {/* Museum-Quality Materials */}
           <div>
-            <LazyImage src={canvasDetail} alt="Close-up of museum-quality canvas print detail" ratio={40/29} inView className="md:h-[406px]" AspectRatioClassName="rounded-[2px]" />
+            <div className="overflow-hidden rounded-[2px]" style={{ aspectRatio: '40/29' }}>
+              <img src={canvasDetail} alt="Close-up of museum-quality canvas print detail" className="w-full h-full object-cover md:h-[406px]" loading="lazy" />
+            </div>
             <div className="mt-4">
               <p className="text-subtitle text-surface-muted tracking-widest mb-2">MUSEUM-QUALITY MATERIALS</p>
               <h3 className="text-a2 text-surface-foreground mb-4">Materials So Good, Museums Use Them</h3>
@@ -409,13 +413,8 @@ export default function LandingPage() {
           {/* Desktop: 4-col 2-row grid. Mobile: 2-row horizontal scroll */}
           <div className="hidden md:grid md:grid-cols-5 gap-[15px] max-w-[1140px] mx-auto">
             {galleryItems.map((item, i) => (
-              <div key={i} className="overflow-hidden rounded-[2px]">
-                <LazyImage
-                  src={item.img}
-                  alt={item.label || `Gallery image ${i + 1}`}
-                  ratio={169/200}
-                  inView
-                />
+              <div key={i} className="overflow-hidden rounded-[2px]" style={{ aspectRatio: '169/200' }}>
+                <img src={item.img} alt={item.label || `Gallery image ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
               </div>
             ))}
           </div>
@@ -424,13 +423,8 @@ export default function LandingPage() {
           <div className="md:hidden -mx-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="grid grid-rows-2 grid-flow-col gap-[10px] w-max px-4">
               {galleryItems.map((item, i) => (
-                <div key={i} className="overflow-hidden rounded-[2px] w-[160px] snap-center">
-                  <LazyImage
-                    src={item.img}
-                    alt={item.label || `Gallery image ${i + 1}`}
-                    ratio={169/200}
-                    inView
-                  />
+                <div key={i} className="overflow-hidden rounded-[2px] w-[160px] snap-center" style={{ aspectRatio: '169/200' }}>
+                  <img src={item.img} alt={item.label || `Gallery image ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
                 </div>
               ))}
             </div>
