@@ -8,7 +8,6 @@ import review6 from '@/assets/gallery/reviews/review-6.webp';
 import review7 from '@/assets/gallery/reviews/review-7.webp';
 import review8 from '@/assets/gallery/reviews/review-8.webp';
 import review9 from '@/assets/gallery/reviews/review-9.webp';
-import { TestimonialCarousel } from '@/components/ui/testimonial-carousel';
 
 export const TESTIMONIALS = [
   { img: review1, quote: '"got this for my mom\'s birthday and she literally cried when she opened it. best gift ive ever given her"', name: 'JORDAN M, VERIFIED BUYER' },
@@ -23,19 +22,54 @@ export const TESTIMONIALS = [
 ];
 
 /**
- * Reusable reviews carousel with star header and swipeable cards.
+ * Reusable reviews list with star header and vertical review items.
  *
  * @param {{
  *   theme?: 'dark' | 'light',
+ *   gap?: number,
+ *   py?: number,
  *   className?: string,
  * }} props
  */
-export default function ReviewsList({ theme = 'dark', className = '' }) {
+export default function ReviewsList({ theme = 'dark', gap = 6, py = 6, className = '' }) {
+  const isDark = theme === 'dark';
+  const textColor = isDark ? 'text-white' : '';
+  const mutedColor = isDark ? 'text-white/50' : '';
+  const borderColor = isDark ? '#3f3f3f' : '#E0E0E0';
+
   return (
-    <TestimonialCarousel
-      testimonials={TESTIMONIALS}
-      theme={theme}
-      className={className}
-    />
+    <div className={className}>
+      <div className="flex items-end gap-3 mb-2">
+        <span className="text-a2 font-display" style={{ color: '#FFBF00' }}>★★★★★</span>
+        <span className={`text-a2 font-display ${textColor}`} style={isDark ? undefined : { color: '#333333' }}>4.9/5</span>
+        <span className={`text-subtitle font-display ${mutedColor} uppercase`} style={isDark ? undefined : { color: '#888888' }}>from 287 customers</span>
+      </div>
+      <div className="flex flex-col">
+        {TESTIMONIALS.map((t, i) => (
+          <div
+            key={i}
+            className={`flex gap-${gap} items-start py-${py}`}
+            style={{ borderBottom: i < TESTIMONIALS.length - 1 ? `1px solid ${borderColor}` : 'none' }}
+          >
+            <div className="w-20 flex-shrink-0 overflow-hidden rounded-[2px]" style={{ aspectRatio: '3/4' }}>
+              <img
+                src={t.img}
+                alt={t.name}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+            <div className="flex-1 min-w-0 flex flex-col gap-2">
+              <p className={`text-body font-body ${textColor} leading-relaxed`} style={isDark ? undefined : { color: '#333333' }}>
+                {t.quote}
+              </p>
+              <p className={`text-subtitle ${mutedColor} uppercase`} style={{ fontSize: 10, ...(isDark ? {} : { color: '#888888' }) }}>
+                {t.name}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
