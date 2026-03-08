@@ -358,7 +358,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* The Perfect Gift */}
           <div>
-            <img src={womanHolding} alt="Happy customer holding her birth chart canvas artwork" className="w-full object-cover self-stretch md:h-[406px]" style={{ borderRadius: 2, aspectRatio: '40/29', height: 'auto' }} />
+            <LazyImage src={womanHolding} alt="Happy customer holding her birth chart canvas artwork" ratio={40/29} inView className="md:h-[406px]" AspectRatioClassName="rounded-[2px]" />
             <div className="mt-4">
               <p className="text-subtitle text-surface-muted tracking-widest mb-2">THE PERFECT GIFT</p>
               <h3 className="text-a2 text-surface-foreground mb-4">Impossible to Duplicate. Impossible to Forget.</h3>
