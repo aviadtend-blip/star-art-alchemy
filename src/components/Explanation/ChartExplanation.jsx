@@ -6,6 +6,7 @@ import BirthDataBar from '@/components/ui/BirthDataBar';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { ChevronLeft, ChevronRight, ArrowLeftRight, RefreshCw } from 'lucide-react';
+import { Switch as M3Switch } from '@/components/ui/material-design-3-switch';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import CTARoomMockup from '@/components/Explanation/CTARoomMockup';
 import ReviewsList, { TESTIMONIALS } from '@/components/ui/ReviewsList';
