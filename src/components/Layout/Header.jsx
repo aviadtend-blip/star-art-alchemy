@@ -22,6 +22,8 @@ export default function Header({ variant }) {
         <img
           src={logo}
           alt="Celestial Artworks"
+          width={170}
+          height={28}
           className="w-[155px] md:w-[170px] h-auto"
           style={isDark ? { filter: 'brightness(0) invert(1)' } : undefined}
         />
