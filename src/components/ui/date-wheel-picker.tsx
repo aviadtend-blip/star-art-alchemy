@@ -434,7 +434,7 @@ const DateWheelPicker = React.forwardRef<HTMLDivElement, DateWheelPickerProps>(
           itemHeight={config.itemHeight}
           visibleItems={VISIBLE_ITEMS}
           disabled={disabled}
-          className="w-14"
+          className="w-10"
           ariaLabel="Select day"
         />
 
