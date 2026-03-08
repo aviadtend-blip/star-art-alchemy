@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import EmailCaptureModal from '@/components/EmailCaptureModal';
 import { generateChartExplanation } from '@/lib/explanations/generateExplanation';
 import StepProgressBar from '@/components/ui/StepProgressBar';
@@ -389,15 +390,21 @@ export function ChartExplanation({
     container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
   };
 
-  // On mobile, lock scroll until the ContainerScroll animation settles and fade-in completes
+  // On mobile: lock scrolling once the ContainerScroll animation settles,
+  // then unlock after the fade-in animation completes
   useEffect(() => {
+    if (!mobileRevealed) return;
     const isMobile = window.innerWidth <= 768;
     if (!isMobile) return;
-    // Don't lock if already revealed (e.g. navigating back)
-    if (mobileRevealed) return;
-    document.body.style.overflow = '';
-    // We don't pre-lock — the ContainerScroll needs scrolling to animate.
-    // Instead we rely on the onSettled callback + timeout to keep content hidden until ready.
+    // Lock scroll so user sees the fade-in
+    document.body.style.overflow = 'hidden';
+    const timer = setTimeout(() => {
+      document.body.style.overflow = '';
+    }, 900); // slightly longer than the 700ms fade
+    return () => {
+      clearTimeout(timer);
+      document.body.style.overflow = '';
+    };
   }, [mobileRevealed]);
 
   return (
@@ -437,15 +444,7 @@ export function ChartExplanation({
                 </p>
               </div>
             }
-            onSettled={() => {
-              setMobileRevealed(true);
-              // Unlock scroll after fade-in duration
-              if (mobileRevealRef.current) {
-                setTimeout(() => {
-                  document.body.style.overflow = '';
-                }, 800);
-              }
-            }}
+            onSettled={() => setMobileRevealed(true)}
           >
             <img
               src={selectedImage}
@@ -621,26 +620,25 @@ export function ChartExplanation({
           }}
         >
 
-          <div
-            className="px-5 max-w-md mx-auto flex flex-col items-center transition-all duration-700 ease-out"
-            style={{
-              opacity: mobileRevealed ? 1 : 0,
-              transform: mobileRevealed ? 'translateY(0)' : 'translateY(24px)',
-            }}
-          >
-            {/* Hotspot toggle */}
-            <div className="flex items-center justify-center gap-2.5 flex-1" style={{ padding: '10px 21px' }}>
-              <M3Switch
-                checked={showHotspots}
-                onCheckedChange={(val) => setShowHotspots(val)}
-                showIcons
-              />
-              <span className="text-a5 text-white">
-                Hotspot markers
-              </span>
-            </div>
-
-            <div style={{ height: 24 }} />
+          <AnimatePresence>
+            {mobileRevealed && (
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, ease: 'easeOut' }}
+                className="px-5 max-w-md mx-auto flex flex-col items-center"
+              >
+                {/* Hotspot toggle */}
+                <div className="flex items-center justify-center gap-2.5 flex-1" style={{ padding: '10px 21px' }}>
+                  <M3Switch
+                    checked={showHotspots}
+                    onCheckedChange={(val) => setShowHotspots(val)}
+                    showIcons
+                  />
+                  <span className="text-a5 text-white">
+                    Hotspot markers
+                  </span>
+                </div>
 
             {/* Horizontal scroll explanation cards — dark */}
             <div
@@ -676,7 +674,9 @@ export function ChartExplanation({
                 </div>
               ))}
             </div>
-          </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Action buttons — side by side */}
           <div className="flex gap-3 px-5 pt-7 pb-10">
