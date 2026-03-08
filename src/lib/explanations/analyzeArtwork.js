@@ -1,6 +1,5 @@
+import { supabase } from '@/integrations/supabase/client';
 import { generateChartExplanation } from './generateExplanation';
-
-const WORKING_FUNCTIONS_URL = 'https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1';
 
 /**
  * Analyzes the actual generated artwork image using AI vision,
@@ -25,13 +24,11 @@ export async function analyzeArtwork(imageUrl, chartData) {
   }
 
   try {
-    const response = await fetch(`${WORKING_FUNCTIONS_URL}/analyze-artwork`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageUrl, chartData }),
+    const { data, error } = await supabase.functions.invoke('analyze-artwork', {
+      body: { imageUrl, chartData },
     });
-    if (!response.ok) throw new Error(`analyze-artwork returned ${response.status}`);
-    const data = await response.json();
+
+    if (error) throw error;
     if (!data?.analysis) throw new Error('Empty analysis response');
 
     const { analysis } = data;
