@@ -681,8 +681,8 @@ export function ChartExplanation({
             {/* Horizontal scroll explanation cards — dark */}
             <div
               ref={scrollContainerRef}
-              className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 -mx-6 px-6"
-              style={{ gap: '16px', width: 'calc(100% + 48px)' }}
+              className="flex w-full overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2"
+              style={{ gap: '16px' }}
             >
               {hotspots.map((h, i) => (
                 <div
