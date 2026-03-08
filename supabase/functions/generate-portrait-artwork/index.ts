@@ -80,8 +80,8 @@ serve(async (req) => {
       const fetchData = await fetchResponse.json();
       console.log(`Apiframe poll ${i + 1}: status=${fetchData.status}`);
 
-      if (fetchData.status === "done" && fetchData.task_result) {
-        const images = fetchData.task_result;
+      if (fetchData.status === "finished") {
+        const images = fetchData.image_urls || fetchData.task_result;
         mjImageUrl = Array.isArray(images) ? images[0] : images;
         break;
       }
