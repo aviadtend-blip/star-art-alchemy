@@ -402,12 +402,12 @@ export default function LandingPage() {
           <div className="hidden md:grid md:grid-cols-5 gap-[15px] max-w-[1140px] mx-auto">
             {galleryItems.map((item, i) => (
               <div key={i} className="overflow-hidden rounded-[2px]">
-                <img
+                <LazyImage
                   src={item.img}
                   alt={item.label || `Gallery image ${i + 1}`}
-                   className="w-full object-cover"
-                   style={{ aspectRatio: "169 / 200" }}
-                 />
+                  ratio={169/200}
+                  inView
+                />
               </div>
             ))}
           </div>
