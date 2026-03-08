@@ -348,29 +348,30 @@ export default function BirthDataFormCard({
 
         {/* CTAs */}
         <div className="flex flex-col gap-3">
-          <PrimaryButton
-            onClick={handleSubmitWithPhoto}
-            disabled={photoUploading || !uploadedPhotoUrl}
-            className="w-full"
-          >
-            Generate My Artwork
-          </PrimaryButton>
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={() => { setShowPhotoStep(false); setShowTimeStep(true); }}
-              className="h-12 px-6 rounded-full text-foreground text-a5 font-body transition hover:bg-white/10"
+          {uploadedPhotoUrl ? (
+            <PrimaryButton
+              onClick={handleSubmitWithPhoto}
+              disabled={photoUploading}
+              className="w-full"
             >
-              Back
-            </button>
+              Generate My Artwork
+            </PrimaryButton>
+          ) : (
             <button
               type="button"
               onClick={handleSubmitWithoutPhoto}
-              className="flex-1 h-12 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10"
+              className="w-full flex-1 h-12 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10"
             >
               Skip — generate without photo
             </button>
-          </div>
+          )}
+          <button
+            type="button"
+            onClick={() => { setShowPhotoStep(false); setShowTimeStep(true); }}
+            className="h-12 px-6 rounded-full text-foreground text-a5 font-body transition hover:bg-white/10"
+          >
+            Back
+          </button>
         </div>
       </div>
     );
