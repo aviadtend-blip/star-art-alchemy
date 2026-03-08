@@ -64,12 +64,10 @@ const transitionOverlay = { duration: 0.5, ease: [0.32, 0.72, 0, 1] }
 
 const Carousel = memo(
   ({
-    handleClick,
     controls,
     cards,
     isCarouselActive,
   }: {
-    handleClick: (imgUrl: string, index: number) => void
     controls: ReturnType<typeof useAnimation>
     cards: string[]
     isCarouselActive: boolean
@@ -129,7 +127,7 @@ const Carousel = memo(
                 width: `${faceWidth}px`,
                 transform: `rotateY(${i * (360 / faceCount)}deg) translateZ(${radius}px)`,
               }}
-              onClick={() => handleClick(imgUrl, i)}
+              
             >
               <img
                 src={imgUrl}
@@ -152,8 +150,7 @@ interface ThreeDPhotoCarouselProps {
 }
 
 function ThreeDPhotoCarousel({ cards: externalCards }: ThreeDPhotoCarouselProps) {
-  const [activeImg, setActiveImg] = useState<string | null>(null)
-  const [isCarouselActive, setIsCarouselActive] = useState(true)
+  const [isCarouselActive] = useState(true)
   const controls = useAnimation()
 
   const cards = useMemo(
@@ -161,39 +158,8 @@ function ThreeDPhotoCarousel({ cards: externalCards }: ThreeDPhotoCarouselProps)
     [externalCards]
   )
 
-  const handleClick = (imgUrl: string) => {
-    setActiveImg(imgUrl)
-    setIsCarouselActive(false)
-    controls.stop()
-  }
-
-  const handleClose = () => {
-    setActiveImg(null)
-    setIsCarouselActive(true)
-  }
-
   return (
     <div className="relative">
-      <AnimatePresence mode="sync">
-        {activeImg && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
-            layoutId={`card-${activeImg}`}
-            className="absolute inset-0 z-50 flex items-center justify-center"
-            onClick={handleClose}
-            style={{ overflow: "hidden" }}
-          >
-            <img
-              src={activeImg}
-              alt="Selected"
-              className="max-h-[80vh] max-w-[90vw] rounded-xl object-contain"
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <motion.div
         className="h-[260px] sm:h-[340px] w-full"
         initial={{ WebkitMaskImage: hiddenMask, maskImage: hiddenMask } as any}
@@ -201,7 +167,7 @@ function ThreeDPhotoCarousel({ cards: externalCards }: ThreeDPhotoCarouselProps)
         transition={{ duration: 1 }}
       >
         <Carousel
-          handleClick={handleClick}
+          
           controls={controls}
           cards={cards}
           isCarouselActive={isCarouselActive}
