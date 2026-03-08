@@ -177,7 +177,10 @@ export default function LandingPage() {
       {/* Desktop hero — gallery wall */}
       <section className="hidden lg:block relative min-h-[740px] overflow-hidden">
         <div className="absolute inset-0">
-          <img src={heroDesktop} alt="" className="w-full h-full object-cover" fetchpriority="high" />
+          <picture>
+            <source srcSet={heroDesktop} media="(min-width: 1024px)" type="image/webp" />
+            <img src={heroDesktop} alt="" className="w-full h-full object-cover" fetchpriority="high" width={1920} height={1080} />
+          </picture>
         </div>
         <div className="relative z-20 flex flex-col justify-end min-h-[740px] pb-0 px-6">
           {/* Bottom row: text left + form bar right */}

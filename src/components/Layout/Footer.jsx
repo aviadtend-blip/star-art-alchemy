@@ -23,7 +23,7 @@ const Footer = forwardRef(function Footer({ onScrollToForm }, ref) {
           {/* Left — Brand */}
           <div>
             <Link to="/" className="hover:opacity-80 transition">
-              <img src={logo} alt="Celestial Artworks" className="w-[155px] md:w-[170px] h-auto brightness-0 invert" />
+              <img src={logo} alt="Celestial Artworks" width={170} height={28} className="w-[155px] md:w-[170px] h-auto brightness-0 invert" />
             </Link>
           </div>
 
