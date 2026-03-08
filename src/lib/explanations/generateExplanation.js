@@ -1,49 +1,65 @@
 import { CONCRETE_SUN_VISUALS, CONCRETE_MOON_VISUALS, CONCRETE_RISING_VISUALS, CONCRETE_ELEMENT_PALETTES } from '@/data/concreteVisualPrompts';
 
 export function generateChartExplanation(chartData) {
-  const sunVisuals = CONCRETE_SUN_VISUALS[chartData.sun.sign];
-  const moonVisuals = CONCRETE_MOON_VISUALS[chartData.moon.sign];
-  const risingVisuals = CONCRETE_RISING_VISUALS[chartData.rising];
+  const safeChart = chartData || {};
+  const sunSign = safeChart?.sun?.sign || 'Pisces';
+  const moonSign = safeChart?.moon?.sign || 'Scorpio';
+  const risingSign = typeof safeChart?.rising === 'string'
+    ? safeChart.rising
+    : safeChart?.rising?.sign || 'Leo';
 
-  const dominantElement = getDominantElement(chartData.element_balance);
-  const palette = CONCRETE_ELEMENT_PALETTES[dominantElement + '-dominant'];
+  const elementBalance = safeChart?.element_balance || safeChart?.elements || {
+    Fire: 1,
+    Water: 1,
+    Earth: 1,
+    Air: 1,
+  };
+
+  const sunVisuals = CONCRETE_SUN_VISUALS[sunSign];
+  const moonVisuals = CONCRETE_MOON_VISUALS[moonSign];
+  const risingVisuals = CONCRETE_RISING_VISUALS[risingSign];
+
+  const dominantElement = getDominantElement(elementBalance);
+  const palette = CONCRETE_ELEMENT_PALETTES[`${dominantElement}-dominant`] || CONCRETE_ELEMENT_PALETTES['Water-dominant'];
 
   return {
     overview: `Every visual choice in this piece was inspired by your birth chart — from the flowers and colors to the composition and mood.`,
 
     elements: [
       {
-        chartElement: `Sun in ${chartData.sun.sign}, House ${chartData.sun.house}`,
-        artworkElement: getSunArtworkElement(chartData.sun.sign),
+        chartElement: `Sun in ${sunSign}, House ${safeChart?.sun?.house ?? '—'}`,
+        artworkElement: getSunArtworkElement(sunSign),
         icon: "☀️",
-        explanation: getSunArtistNote(chartData.sun.sign, sunVisuals),
+        explanation: getSunArtistNote(sunSign, sunVisuals),
       },
       {
-        chartElement: `Moon in ${chartData.moon.sign}, House ${chartData.moon.house}`,
-        artworkElement: getMoonArtworkElement(chartData.moon.sign),
+        chartElement: `Moon in ${moonSign}, House ${safeChart?.moon?.house ?? '—'}`,
+        artworkElement: getMoonArtworkElement(moonSign),
         icon: "🌙",
-        explanation: getMoonArtistNote(chartData.moon.sign, moonVisuals),
+        explanation: getMoonArtistNote(moonSign, moonVisuals),
       },
       {
-        chartElement: `${chartData.rising} Rising`,
-        artworkElement: getRisingArtworkElement(chartData.rising),
+        chartElement: `${risingSign} Rising`,
+        artworkElement: getRisingArtworkElement(risingSign),
         icon: "⬆️",
-        explanation: getRisingArtistNote(chartData.rising, risingVisuals),
+        explanation: getRisingArtistNote(risingSign, risingVisuals),
       },
       {
         chartElement: `${dominantElement} Dominant`,
         artworkElement: getElementArtworkElement(dominantElement),
         icon: getElementIcon(dominantElement),
-        explanation: getElementArtistNote(dominantElement, chartData.element_balance, palette),
+        explanation: getElementArtistNote(dominantElement, elementBalance, palette),
       }
     ]
   };
 }
 
 function getDominantElement(elementBalance) {
-  return Object.keys(elementBalance).reduce((a, b) =>
-    elementBalance[a] > elementBalance[b] ? a : b
-  );
+  if (!elementBalance || typeof elementBalance !== 'object') return 'Water';
+  const entries = Object.entries(elementBalance).filter(([, value]) => Number.isFinite(value));
+  if (!entries.length) return 'Water';
+
+  return entries.reduce((best, current) => (current[1] > best[1] ? current : best))[0];
 }
 
 function getElementIcon(element) {

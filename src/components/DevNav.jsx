@@ -84,7 +84,6 @@ export default function DevNav() {
 
     setFormData(MOCK_FORM_DATA);
     setChartData(MOCK_CHART_DATA);
-    setSelectedStyle({ id: 'cosmic-collision', name: 'Cosmic Collage' });
     setGeneratedImage(demoImage);
     setArtworkAnalysis(MOCK_ANALYSIS);
     setGenerationComplete(true);
