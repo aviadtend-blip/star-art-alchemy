@@ -119,7 +119,8 @@ serve(async (req) => {
     console.log(`Face swap prediction submitted: ${swapId}`);
 
     // Poll for face swap completion (max 60s)
-    for (let i = 0; i < 30; i++) {
+    // Extended timeout: cold starts on Replicate can take 60-90s before processing begins
+    for (let i = 0; i < 90; i++) {
       await new Promise((r) => setTimeout(r, 2000));
 
       const pollResponse = await fetch(
