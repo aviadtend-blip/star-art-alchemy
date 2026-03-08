@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { LazyImage } from "@/components/ui/lazy-image";
 import { useNavigate } from "react-router-dom";
 import { useGenerator } from '@/contexts/GeneratorContext';
 import FAQSection from "@/components/ui/FAQSection";
@@ -357,7 +358,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* The Perfect Gift */}
           <div>
-            <img src={womanHolding} alt="Happy customer holding her birth chart canvas artwork" className="w-full object-cover self-stretch md:h-[406px]" style={{ borderRadius: 2, aspectRatio: '40/29', height: 'auto' }} />
+            <LazyImage src={womanHolding} alt="Happy customer holding her birth chart canvas artwork" ratio={40/29} inView className="md:h-[406px]" AspectRatioClassName="rounded-[2px]" />
             <div className="mt-4">
               <p className="text-subtitle text-surface-muted tracking-widest mb-2">THE PERFECT GIFT</p>
               <h3 className="text-a2 text-surface-foreground mb-4">Impossible to Duplicate. Impossible to Forget.</h3>
@@ -372,7 +373,7 @@ export default function LandingPage() {
 
           {/* Museum-Quality Materials */}
           <div>
-            <img src={canvasDetail} alt="Close-up of museum-quality canvas print detail" className="w-full object-cover self-stretch md:h-[406px]" style={{ borderRadius: 2, aspectRatio: '40/29', height: 'auto' }} />
+            <LazyImage src={canvasDetail} alt="Close-up of museum-quality canvas print detail" ratio={40/29} inView className="md:h-[406px]" AspectRatioClassName="rounded-[2px]" />
             <div className="mt-4">
               <p className="text-subtitle text-surface-muted tracking-widest mb-2">MUSEUM-QUALITY MATERIALS</p>
               <h3 className="text-a2 text-surface-foreground mb-4">Materials So Good, Museums Use Them</h3>
@@ -401,12 +402,12 @@ export default function LandingPage() {
           <div className="hidden md:grid md:grid-cols-5 gap-[15px] max-w-[1140px] mx-auto">
             {galleryItems.map((item, i) => (
               <div key={i} className="overflow-hidden rounded-[2px]">
-                <img
+                <LazyImage
                   src={item.img}
                   alt={item.label || `Gallery image ${i + 1}`}
-                   className="w-full object-cover"
-                   style={{ aspectRatio: "169 / 200" }}
-                 />
+                  ratio={169/200}
+                  inView
+                />
               </div>
             ))}
           </div>
@@ -416,12 +417,12 @@ export default function LandingPage() {
             <div className="grid grid-rows-2 grid-flow-col gap-[10px] w-max px-4">
               {galleryItems.map((item, i) => (
                 <div key={i} className="overflow-hidden rounded-[2px] w-[160px] snap-center">
-                  <img
+                  <LazyImage
                     src={item.img}
                     alt={item.label || `Gallery image ${i + 1}`}
-                     className="w-full object-cover"
-                     style={{ aspectRatio: "169 / 200" }}
-                   />
+                    ratio={169/200}
+                    inView
+                  />
                 </div>
               ))}
             </div>

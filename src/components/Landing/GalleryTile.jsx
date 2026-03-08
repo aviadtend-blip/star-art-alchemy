@@ -30,6 +30,7 @@ export default function GalleryTile({ image, name, signs, explanations = [] }) {
           src={image}
           alt={`${name} artwork`}
           className="w-full h-full object-cover"
+          loading="lazy"
         />
 
         {/* Hover / tap overlay */}

@@ -132,6 +132,7 @@ export default function StyleCarousel({
                 alt={style.name}
                 className="w-full h-full object-cover"
                 style={{ borderRadius: 2, display: 'block' }}
+                loading="lazy"
               />
 
               {/* Zoom button — active card only */}

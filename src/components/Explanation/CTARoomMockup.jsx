@@ -116,6 +116,7 @@ export default function CTARoomMockup({ artworkSrc, className = '' }) {
         src={composited || ctaRoomMockup}
         alt="Your artwork framed and hung in a gallery setting"
         className="w-full h-full object-cover"
+        loading="lazy"
       />
     </div>
   );
