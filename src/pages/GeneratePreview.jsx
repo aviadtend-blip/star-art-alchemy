@@ -76,7 +76,7 @@ export default function GeneratePreview() {
   const isDemo = !chartData;
   const displayChart = chartData || DEMO_CHART;
   const displayImage = generatedImage || (isDemo ? demoImage : taurusExample);
-  const matchedAnalysis = !isDemo && artworkAnalysis?.analyzedImageUrl === displayImage ? artworkAnalysis : null;
+  const matchedAnalysis = !isDemo ? artworkAnalysis : null;
 
   // Run AI analysis for demo mode
   useEffect(() => {
