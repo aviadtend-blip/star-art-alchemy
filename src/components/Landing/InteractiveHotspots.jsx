@@ -254,6 +254,8 @@ export default function InteractiveHotspots({ onScrollToForm }) {
             src={hotspotExample}
             alt="Example birth chart artwork with interactive hotspot markers"
             className="w-full"
+            width={600}
+            height={800}
             loading="lazy"
           />
           {HOTSPOTS.map((h) => (
