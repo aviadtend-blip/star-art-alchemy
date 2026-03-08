@@ -197,8 +197,8 @@ function ThreeDPhotoCarousel({ cards: externalCards }: ThreeDPhotoCarouselProps)
       <motion.div
         layout
         className="h-[500px] w-full"
-        initial={{ WebkitMaskImage: hiddenMask, maskImage: hiddenMask }}
-        animate={{ WebkitMaskImage: visibleMask, maskImage: visibleMask }}
+        initial={{ WebkitMaskImage: hiddenMask, maskImage: hiddenMask } as any}
+        animate={{ WebkitMaskImage: visibleMask, maskImage: visibleMask } as any}
         transition={{ duration: 1 }}
       >
         <Carousel
