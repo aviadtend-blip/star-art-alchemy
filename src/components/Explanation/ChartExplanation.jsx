@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import EmailCaptureModal from '@/components/EmailCaptureModal';
 import { generateChartExplanation } from '@/lib/explanations/generateExplanation';
 import StepProgressBar from '@/components/ui/StepProgressBar';
