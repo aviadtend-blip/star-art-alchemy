@@ -167,7 +167,7 @@ function ThreeDPhotoCarousel({ cards: externalCards }: ThreeDPhotoCarouselProps)
         transition={{ duration: 1 }}
       >
         <Carousel
-          handleClick={handleClick}
+          
           controls={controls}
           cards={cards}
           isCarouselActive={isCarouselActive}
