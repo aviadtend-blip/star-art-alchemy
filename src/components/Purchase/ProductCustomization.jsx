@@ -49,17 +49,17 @@ const SIZE_OPTIONS = [
 // Each mockup has a numeric ID so we can match across sizes when switching
 // Ordered low→high. When switching sizes, we try to keep the same mockup number.
 const MOCKUPS_BY_NUMBER = {
-  '12x18': [
+  '12x16': [
     { num: 1, src: mockup12x18_1 }, { num: 2, src: mockup12x18_2 }, { num: 3, src: mockup12x18_3 },
     { num: 4, src: mockup12x18_4 }, { num: 5, src: mockup12x18_5 }, { num: 6, src: mockup12x18_6 },
     { num: 7, src: mockup12x18_7 }, { num: 8, src: mockup12x18_8 },
   ],
-  '16x24': [
+  '18x24': [
     { num: 1, src: mockup16x24_1 }, { num: 2, src: mockup16x24_2 }, { num: 3, src: mockup16x24_3 },
     { num: 4, src: mockup16x24_4 }, { num: 5, src: mockup16x24_5 }, { num: 6, src: mockup16x24_6 },
     { num: 7, src: mockup16x24_7 }, { num: 8, src: mockup16x24_8 },
   ],
-  '20x30': [
+  '24x32': [
     { num: 3, src: mockup20x30_3 }, { num: 4, src: mockup20x30_4 }, { num: 5, src: mockup20x30_5 },
     { num: 6, src: mockup20x30_6 }, { num: 7, src: mockup20x30_7 }, { num: 8, src: mockup20x30_8 },
   ],
@@ -266,7 +266,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   // Background-preload the other two sizes so switching is instant
   const otherMockupSets = useMemo(() => {
-    const allSizes = ['12x18', '16x24', '20x30'];
+    const allSizes = ['12x16', '18x24', '24x32'];
     return allSizes.filter(s => s !== selectedSize).map(getMockupSrcs);
   }, [selectedSize]);
   useBackgroundPreload(otherMockupSets, artworkImage);
