@@ -49,24 +49,18 @@ let currentGenerationCache = {
 export async function generateImage(prompt, sref, personalization, profileCode, userPhotoUrl = null, styleId = null) {
   console.log('Prompt preview:', prompt.substring(0, 100) + '...');
   console.log('Style ref:', sref);
+  console.log('Portrait mode:', !!userPhotoUrl);
 
-  const endpoint = userPhotoUrl
-    ? `${SUPABASE_URL}/functions/v1/generate-portrait-artwork`
-    : `${SUPABASE_URL}/functions/v1/generate-artwork`;
-
-  const body = userPhotoUrl
-    ? { prompt, sref, personalization, profileCode, face_image_url: userPhotoUrl, style_id: styleId }
-    : { prompt, sref, personalization, profileCode };
-
+  // Step 1: Always use generate-artwork for Midjourney generation
   const response = await fetchWithRetry(
-    endpoint,
+    `${SUPABASE_URL}/functions/v1/generate-artwork`,
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ prompt, sref, personalization, profileCode }),
     }
   );
 
@@ -81,9 +75,44 @@ export async function generateImage(prompt, sref, personalization, profileCode, 
     throw new Error('No image URL returned from generation');
   }
 
+  let finalImageUrl = data.output;
+
+  // Step 2: If portrait mode, run face swap as a separate call
+  if (userPhotoUrl) {
+    console.log('Starting face swap step...');
+    const swapResponse = await fetchWithRetry(
+      `${SUPABASE_URL}/functions/v1/face-swap`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          target_image_url: data.output,
+          face_image_url: userPhotoUrl,
+        }),
+      },
+      2 // allow 2 retries for face swap (cold starts)
+    );
+
+    if (!swapResponse.ok) {
+      const swapError = await swapResponse.json().catch(() => ({}));
+      throw new Error(swapError.error || `Face swap failed with status ${swapResponse.status}`);
+    }
+
+    const swapData = await swapResponse.json();
+    if (!swapData.output) {
+      throw new Error('No image URL returned from face swap');
+    }
+    finalImageUrl = swapData.output;
+    console.log('Face swap complete:', finalImageUrl);
+  }
+
   // Cache all outputs for reimagine feature
+  // For portrait mode, only the swapped image is usable (no grid variations)
   currentGenerationCache = {
-    allOutputs: data.all_outputs || [data.output],
+    allOutputs: userPhotoUrl ? [finalImageUrl] : (data.all_outputs || [data.output]),
     currentIndex: 0,
     taskId: data.task_id || null,
     actions: data.actions || [],
@@ -92,7 +121,7 @@ export async function generateImage(prompt, sref, personalization, profileCode, 
   console.log(`Generation complete: ${currentGenerationCache.allOutputs.length} variations cached`);
 
   return {
-    imageUrl: data.output,
+    imageUrl: finalImageUrl,
     hasMoreVariations: currentGenerationCache.allOutputs.length > 1,
     taskId: data.task_id || null,
   };
