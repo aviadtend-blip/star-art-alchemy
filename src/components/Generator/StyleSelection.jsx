@@ -138,14 +138,6 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
 
   const lightboxImages = lightbox ? STYLE_GALLERY[lightbox.styleId] || [] : [];
 
-  const navigateLightbox = (dir) => {
-    if (!lightbox) return;
-    const len = lightboxImages.length;
-    setLightbox((prev) => ({
-      ...prev,
-      index: (prev.index + dir + len) % len,
-    }));
-  };
 
   const handleShowMore = () => {
     setShowAll(true);
