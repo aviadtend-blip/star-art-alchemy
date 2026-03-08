@@ -7,7 +7,7 @@ import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
-import ThumbnailStrip from '@/components/ui/ThumbnailStrip';
+
 import StyleCarousel from '@/components/Generator/StyleCarousel';
 
 // Prism Storm images
