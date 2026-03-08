@@ -448,7 +448,7 @@ export default function LandingPage() {
                 background: 'rgba(17, 17, 17, 0.70)',
                 backdropFilter: 'blur(17px)',
                 WebkitBackdropFilter: 'blur(17px)',
-                padding: 48,
+                padding: '24px 48px 48px 48px',
                 minWidth: 320,
               }}
             >
