@@ -91,8 +91,6 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
   const [lightbox, setLightbox] = useState(null);
   const [lightboxVisible, setLightboxVisible] = useState(false);
   const [prevLabel, setPrevLabel] = useState(null); // for crossfade
-  const touchStartRef = useRef({ x: 0, y: 0 });
-  const swipeHandledRef = useRef(false);
 
   const carouselStyles = showAll ? allStyles : baseStyles;
   const currentStyle = carouselStyles[activeIndex];
