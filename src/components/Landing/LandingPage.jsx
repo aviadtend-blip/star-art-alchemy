@@ -135,7 +135,7 @@ export default function LandingPage() {
       {/* Mobile hero */}
       <section className="lg:hidden relative overflow-hidden min-h-[780px]">
         <div className="absolute inset-0">
-          <img src={heroMobile} alt="" className="w-full h-full object-cover" />
+          <img src={heroMobile} alt="" className="w-full h-full object-cover" fetchpriority="high" />
         </div>
         <div className="relative z-10 flex flex-col justify-end min-h-[780px] px-4 py-[15px]">
 
@@ -175,7 +175,7 @@ export default function LandingPage() {
       {/* Desktop hero — gallery wall */}
       <section className="hidden lg:block relative min-h-[740px] overflow-hidden">
         <div className="absolute inset-0">
-          <img src={heroDesktop} alt="" className="w-full h-full object-cover" />
+          <img src={heroDesktop} alt="" className="w-full h-full object-cover" fetchpriority="high" />
         </div>
         <div className="relative z-20 flex flex-col justify-end min-h-[740px] pb-0 px-6">
           {/* Bottom row: text left + form bar right */}
@@ -435,7 +435,7 @@ export default function LandingPage() {
       {/* ═══════════════════ BIRTH DATA FORM + TESTIMONIALS ═══════════════════ */}
       <section className="py-24 md:py-32 pb-12 md:pb-16 relative overflow-hidden" id="birth-form">
         {/* Galaxy background image */}
-        <img src={galaxyBg} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
+        <img src={galaxyBg} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" loading="lazy" />
         <div className="absolute inset-0 bg-black/30" />
 
         <div className="relative z-10 max-w-[566px] mx-auto px-4">

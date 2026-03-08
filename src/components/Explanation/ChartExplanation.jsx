@@ -189,7 +189,7 @@ function TestimonialsSection({ showArrows = false, bleed = false, topSpace = 32 
             className="flex-shrink-0 snap-center"
             style={{ width: 280, borderRadius: '2px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}
           >
-            <img src={t.img} alt={t.name} className="w-full object-cover" style={{ aspectRatio: '3/4' }} />
+            <img src={t.img} alt={t.name} className="w-full object-cover" style={{ aspectRatio: '3/4' }} loading="lazy" />
             <div className="p-4">
               <p className="text-body-sm font-body text-white mb-2 line-clamp-3">{t.quote}</p>
               <p className="text-subtitle text-white/50" style={{ fontSize: '10px' }}>{t.name}</p>
