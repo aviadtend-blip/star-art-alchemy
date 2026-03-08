@@ -451,19 +451,26 @@ export default function LandingPage() {
             </h2>
           </div>
 
-          {/* Glass card */}
-          <div
-            className="flex flex-col items-stretch rounded-[2px]"
-            style={{
-              background: 'rgba(17, 17, 17, 0.70)',
-              backdropFilter: 'blur(17px)',
-              WebkitBackdropFilter: 'blur(17px)',
-              padding: 48,
-              minWidth: 320,
-            }}
+          <ShineBorder
+            className="min-w-0"
+            borderRadius={2}
+            borderWidth={1}
+            duration={14}
+            color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
           >
-            <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} gap={30} />
-          </div>
+            <div
+              className="flex flex-col items-stretch rounded-[2px]"
+              style={{
+                background: 'rgba(17, 17, 17, 0.70)',
+                backdropFilter: 'blur(17px)',
+                WebkitBackdropFilter: 'blur(17px)',
+                padding: 48,
+                minWidth: 320,
+              }}
+            >
+              <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} gap={30} />
+            </div>
+          </ShineBorder>
         </div>
 
         {/* Testimonials — same section, shares galaxy background */}
