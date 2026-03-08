@@ -410,8 +410,8 @@ export function ChartExplanation({
           <div style={{ height: '40px', background: 'linear-gradient(to bottom, #191919, transparent)' }} />
         </div>
 
-        {/* ===== DESKTOP: Title + scroll-animated artwork intro ===== */}
-        <div className="hidden md:block">
+        {/* ===== Title + scroll-animated artwork intro (all viewports) ===== */}
+        <div>
           <ContainerScroll
             titleComponent={
               <div className="flex flex-col items-center text-center">
@@ -419,7 +419,7 @@ export function ChartExplanation({
                   Meet Your Cosmic Masterpiece
                 </h1>
                 <div style={{ width: 1, height: 50, backgroundColor: '#666666', marginTop: 32, marginBottom: 32 }} />
-                <p className="text-body-big" style={{ color: '#c7c7c7' }}>
+                <p className="text-body-big max-w-[264px] md:max-w-none" style={{ color: '#c7c7c7' }}>
                   {subjectExplanation}
                 </p>
               </div>
