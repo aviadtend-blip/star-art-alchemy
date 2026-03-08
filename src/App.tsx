@@ -6,12 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Outlet, useLocation } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-
-// Policy pages — rarely visited, lazy-load to reduce initial bundle
-const ShippingPolicy = lazyWithRetry(() => import("./pages/ShippingPolicy"));
-const PrivacyPolicy = lazyWithRetry(() => import("./pages/PrivacyPolicy"));
-const TermsConditions = lazyWithRetry(() => import("./pages/TermsConditions"));
-const ReturnsPolicy = lazyWithRetry(() => import("./pages/ReturnsPolicy"));
 import { GeneratorProvider } from "./contexts/GeneratorContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 
@@ -34,13 +28,19 @@ function lazyWithRetry<T extends ComponentType<any>>(
   );
 }
 
-// Lazy-loaded generator routes (with stale-cache retry)
+// Lazy-loaded generator routes
 const GenerateEntry = lazyWithRetry(() => import("./pages/GenerateEntry"));
 const GenerateStyle = lazyWithRetry(() => import("./pages/GenerateStyle"));
 const GenerateLoading = lazyWithRetry(() => import("./pages/GenerateLoading"));
 const GeneratePreview = lazyWithRetry(() => import("./pages/GeneratePreview"));
 const GenerateSize = lazyWithRetry(() => import("./pages/GenerateSize"));
 const OrderConfirmationPage = lazyWithRetry(() => import("./pages/OrderConfirmation"));
+
+// Policy pages — rarely visited, lazy-load to reduce initial bundle
+const ShippingPolicy = lazyWithRetry(() => import("./pages/ShippingPolicy"));
+const PrivacyPolicy = lazyWithRetry(() => import("./pages/PrivacyPolicy"));
+const TermsConditions = lazyWithRetry(() => import("./pages/TermsConditions"));
+const ReturnsPolicy = lazyWithRetry(() => import("./pages/ReturnsPolicy"));
 
 const queryClient = new QueryClient();
 
@@ -68,7 +68,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
 
-              {/* Generator flow — lazy loaded */}
+              {/* Generator flow + policy pages — all lazy loaded */}
               <Route element={<Suspense fallback={<LazyFallback />}><Outlet /></Suspense>}>
                 <Route path="/generate" element={<GenerateEntry />} />
                 <Route path="/generate/style" element={<GenerateStyle />} />
@@ -76,12 +76,12 @@ const App = () => (
                 <Route path="/generate/preview" element={<GeneratePreview />} />
                 <Route path="/generate/size" element={<GenerateSize />} />
                 <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+                <Route path="/shipping" element={<ShippingPolicy />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsConditions />} />
+                <Route path="/returns" element={<ReturnsPolicy />} />
               </Route>
 
-              <Route path="/shipping" element={<ShippingPolicy />} />
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="/terms" element={<TermsConditions />} />
-              <Route path="/returns" element={<ReturnsPolicy />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
