@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useGenerator } from '@/contexts/GeneratorContext';
 import FAQSection from "@/components/ui/FAQSection";
 import BirthDataFormCard from "./BirthDataFormCard";
+import { ShineBorder } from "@/components/ui/shine-border";
 import heroMobile from "@/assets/hero-mobile.webp";
 
 import heroDesktop from "@/assets/hero-desktop.webp";
