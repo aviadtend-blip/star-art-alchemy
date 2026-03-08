@@ -90,16 +90,17 @@ function getStaticPositions(chartData) {
 
 // TESTIMONIALS imported from ReviewsList
 
+const ROTATING_MESSAGES = [
+  '🚀 Order by 5pm for same-day processing',
+  '✨ 47 artworks generated today',
+];
+
 function RotatingBanner() {
-  const messages = [
-    '🚀 Order by 5pm for same-day processing',
-    '✨ 47 artworks generated today',
-  ];
   const [index, setIndex] = useState(0);
   useEffect(() => {
-    const interval = setInterval(() => setIndex((prev) => (prev + 1) % messages.length), 5000);
+    const interval = setInterval(() => setIndex((prev) => (prev + 1) % ROTATING_MESSAGES.length), 5000);
     return () => clearInterval(interval);
-  }, [messages.length]);
+  }, []);
   return (
     <div className="rounded-sm flex items-center justify-center px-3 py-2" style={{ backgroundColor: '#30434B' }}>
       <p className="text-body-sm font-body text-white text-center">{messages[index]}</p>
