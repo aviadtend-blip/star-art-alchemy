@@ -87,7 +87,7 @@ const Carousel = memo(
 
     return (
       <div
-        className="flex h-full items-center justify-center"
+        className="flex h-full items-start justify-center"
         style={{
           perspective: "1000px",
           transformStyle: "preserve-3d",
@@ -195,7 +195,7 @@ function ThreeDPhotoCarousel({ cards: externalCards }: ThreeDPhotoCarouselProps)
       </AnimatePresence>
 
       <motion.div
-        className="h-[400px] sm:h-[500px] w-full"
+        className="h-[340px] sm:h-[420px] w-full"
         initial={{ WebkitMaskImage: hiddenMask, maskImage: hiddenMask } as any}
         animate={{ WebkitMaskImage: visibleMask, maskImage: visibleMask } as any}
         transition={{ duration: 1 }}
