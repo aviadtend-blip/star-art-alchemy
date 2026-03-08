@@ -389,6 +389,17 @@ export function ChartExplanation({
     container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
   };
 
+  // On mobile, lock scroll until the ContainerScroll animation settles and fade-in completes
+  useEffect(() => {
+    const isMobile = window.innerWidth <= 768;
+    if (!isMobile) return;
+    // Don't lock if already revealed (e.g. navigating back)
+    if (mobileRevealed) return;
+    document.body.style.overflow = '';
+    // We don't pre-lock — the ContainerScroll needs scrolling to animate.
+    // Instead we rely on the onSettled callback + timeout to keep content hidden until ready.
+  }, [mobileRevealed]);
+
   return (
     <div className="min-h-screen flex flex-col" style={{ background: 'radial-gradient(20% 40% at -3% -8%, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0.00) 100%), radial-gradient(18% 35% at 103% -6%, rgba(255, 255, 255, 0.20) 0%, rgba(0, 0, 0, 0.00) 100%), #191919' }}>
       {/* Header + Progress bar — floating on desktop */}
