@@ -423,13 +423,8 @@ export default function LandingPage() {
           <div className="md:hidden -mx-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="grid grid-rows-2 grid-flow-col gap-[10px] w-max px-4">
               {galleryItems.map((item, i) => (
-                <div key={i} className="overflow-hidden rounded-[2px] w-[160px] snap-center">
-                  <LazyImage
-                    src={item.img}
-                    alt={item.label || `Gallery image ${i + 1}`}
-                    ratio={169/200}
-                    inView
-                  />
+                <div key={i} className="overflow-hidden rounded-[2px] w-[160px] snap-center" style={{ aspectRatio: '169/200' }}>
+                  <img src={item.img} alt={item.label || `Gallery image ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
                 </div>
               ))}
             </div>
