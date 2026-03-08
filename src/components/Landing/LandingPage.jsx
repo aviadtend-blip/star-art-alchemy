@@ -169,7 +169,7 @@ export default function LandingPage() {
                   </p>
                 </div>
               )}
-              <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" gap={9} onStepChange={setMobileHeroStep} />
+              <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" gap={9} onStepChange={setMobileHeroStep} isSubmitting={isCalculatingChart} submitError={error} />
             </div>
           </ShineBorder>
         </div>
