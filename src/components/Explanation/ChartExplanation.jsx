@@ -446,14 +446,50 @@ export function ChartExplanation({
             }
             onSettled={() => setMobileRevealed(true)}
           >
-            <img
-              src={selectedImage}
-              alt={`Birth chart artwork for ${chartData?.sun?.sign || ''} Sun`}
-              className="mx-auto rounded-2xl object-cover h-full w-full"
-              style={{ WebkitUserSelect: 'none', userSelect: 'none', pointerEvents: 'none' }}
-              draggable={false}
-              onContextMenu={(e) => e.preventDefault()}
-            />
+            <div className="relative h-full w-full">
+              <img
+                src={selectedImage}
+                alt={`Birth chart artwork for ${chartData?.sun?.sign || ''} Sun`}
+                className="mx-auto rounded-2xl object-cover h-full w-full"
+                style={{ WebkitUserSelect: 'none', userSelect: 'none', pointerEvents: 'none' }}
+                draggable={false}
+                onContextMenu={(e) => e.preventDefault()}
+              />
+              {/* Mobile-only hotspot markers — fade in with mobileRevealed */}
+              <div
+                className="md:hidden absolute inset-0 transition-opacity duration-700 ease-out"
+                style={{ opacity: mobileRevealed && showHotspots ? 1 : 0, pointerEvents: mobileRevealed && showHotspots ? 'auto' : 'none' }}
+              >
+                {hotspots.map((h) => {
+                  const isActive = activeHotspot === h.id;
+                  return (
+                    <button
+                      key={h.id}
+                      onClick={() => {
+                        setActiveHotspot(h.id);
+                        scrollToCard(h.id);
+                      }}
+                      className={`absolute flex items-center justify-center transition-[width,height,background-color] duration-300 cursor-pointer z-10 ${isActive ? 'hotspot-pulse' : ''}`}
+                      style={{
+                        top: h.position.top,
+                        left: h.position.left,
+                        transform: 'translate(-50%, -50%)',
+                        width: isActive ? 34 : 28,
+                        height: isActive ? 34 : 28,
+                        borderRadius: 41,
+                        backgroundColor: isActive ? '#FFBF00' : 'rgba(255, 191, 0, 0.85)',
+                        border: isActive ? '2px solid #b38600' : '2px solid #6e5200',
+                      }}
+                      aria-label={`Hotspot ${h.id}: ${h.chartElement}`}
+                    >
+                      <span className="font-body text-center" style={{ fontSize: 12, color: '#000' }}>
+                        {h.id}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </ContainerScroll>
         </div>
 
