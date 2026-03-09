@@ -493,7 +493,7 @@ serve(async (req) => {
     for (const name of planetNames) {
       const p = findPlanet(name);
       if (p) {
-        planetLongitudes.push({ name, longitude: (p.longitude || 0) + ayanamsha });
+        planetLongitudes.push({ name, longitude: toTropicalLongitude(p.longitude || 0) });
       }
     }
     const aspects = calculateAspects(planetLongitudes);
