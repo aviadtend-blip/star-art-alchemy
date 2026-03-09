@@ -68,6 +68,18 @@ function getDignity(planetName: string, sign: string): string | null {
   return null;
 }
 
+class UpstreamApiError extends Error {
+  status: number;
+  provider: string;
+
+  constructor(provider: string, status: number, message: string) {
+    super(message);
+    this.name = "UpstreamApiError";
+    this.provider = provider;
+    this.status = status;
+  }
+}
+
 async function getAccessToken(clientId: string, clientSecret: string): Promise<string> {
   const res = await fetch(PROKERALA_TOKEN_URL, {
     method: "POST",
@@ -78,12 +90,172 @@ async function getAccessToken(clientId: string, clientSecret: string): Promise<s
       client_secret: clientSecret,
     }),
   });
+
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`Prokerala OAuth failed [${res.status}]: ${text}`);
+    throw new UpstreamApiError("prokerala", res.status, `Prokerala OAuth failed [${res.status}]: ${text}`);
   }
+
   const data = await res.json();
   return data.access_token;
+}
+
+function normalizeSign(signRaw: string | undefined | null): string | null {
+  if (!signRaw) return null;
+  const normalized = String(signRaw).trim().toLowerCase();
+  const found = ZODIAC_SIGNS.find((s) => s.toLowerCase() === normalized);
+  return found ?? null;
+}
+
+function coerceNumber(...values: unknown[]): number | null {
+  for (const value of values) {
+    const num = Number(value);
+    if (Number.isFinite(num)) return num;
+  }
+  return null;
+}
+
+function normalizeFreeAstrologyPositions(payload: any): any[] {
+  const candidates = [
+    payload?.output,
+    payload?.data,
+    payload?.planets,
+    payload?.output?.planets,
+    payload?.data?.planets,
+  ];
+
+  let list: any[] = [];
+  for (const candidate of candidates) {
+    if (Array.isArray(candidate)) {
+      list = candidate;
+      break;
+    }
+  }
+
+  const mapped = list
+    .map((item: any) => {
+      const name = item?.name ?? item?.planet ?? item?.planet_name ?? item?.object;
+      const sign = normalizeSign(item?.sign ?? item?.zodiac_sign ?? item?.current_sign);
+      const degreeInSign = coerceNumber(item?.degree_in_sign, item?.degree, item?.norm_degree, item?.normDegree);
+      let longitude = coerceNumber(item?.longitude, item?.full_degree, item?.fullDegree, item?.sidereal_longitude, item?.tropical_longitude);
+
+      if (longitude == null && sign && degreeInSign != null) {
+        longitude = ZODIAC_SIGNS.indexOf(sign) * 30 + degreeInSign;
+      }
+
+      if (!name || longitude == null) return null;
+
+      return {
+        name: String(name),
+        longitude,
+        sign,
+        position: coerceNumber(item?.house, item?.current_house, item?.house_number, item?.position) ?? 1,
+        is_retrograde: Boolean(item?.is_retrograde ?? item?.retrograde ?? false),
+      };
+    })
+    .filter(Boolean);
+
+  const ascCandidate = payload?.output?.ascendant ?? payload?.data?.ascendant ?? payload?.ascendant;
+  if (ascCandidate) {
+    const ascSign = normalizeSign(ascCandidate?.sign ?? ascCandidate?.zodiac_sign ?? ascCandidate?.current_sign);
+    const ascDegree = coerceNumber(ascCandidate?.degree_in_sign, ascCandidate?.degree, ascCandidate?.norm_degree);
+    const ascLongitude = coerceNumber(ascCandidate?.longitude, ascCandidate?.full_degree) ??
+      (ascSign && ascDegree != null ? ZODIAC_SIGNS.indexOf(ascSign) * 30 + ascDegree : null);
+
+    if (ascLongitude != null) {
+      mapped.push({
+        name: "Ascendant",
+        longitude: ascLongitude,
+        sign: ascSign,
+        position: coerceNumber(ascCandidate?.house, ascCandidate?.current_house, ascCandidate?.house_number) ?? 1,
+        is_retrograde: false,
+      });
+    }
+  }
+
+  return mapped;
+}
+
+async function fetchPlanetPositions(
+  clientId: string | null,
+  clientSecret: string | null,
+  freeAstrologyApiKey: string | null,
+  params: URLSearchParams,
+): Promise<{ positions: any[]; source: string; longitudeMode: "sidereal" | "tropical" }> {
+  let prokeralaError: unknown = null;
+
+  if (clientId && clientSecret) {
+    try {
+      const accessToken = await getAccessToken(clientId, clientSecret);
+      const planetRes = await fetch(`${PROKERALA_API_URL}/planet-position?${params}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (!planetRes.ok) {
+        const errText = await planetRes.text();
+        throw new UpstreamApiError("prokerala", planetRes.status, `Prokerala API error [${planetRes.status}]: ${errText}`);
+      }
+
+      const planetData = await planetRes.json();
+      const positions = planetData.data?.planet_position || [];
+      if (!Array.isArray(positions) || positions.length === 0) {
+        throw new Error("Prokerala returned empty planet positions");
+      }
+
+      return { positions, source: "prokerala.com", longitudeMode: "sidereal" };
+    } catch (error) {
+      prokeralaError = error;
+      const status = error instanceof UpstreamApiError ? error.status : 0;
+      const shouldFallback = status === 403 || status === 429;
+      if (!shouldFallback) throw error;
+      console.warn("[calculate-natal-chart] Prokerala unavailable, trying Free Astrology API fallback", error);
+    }
+  }
+
+  if (!freeAstrologyApiKey) {
+    if (prokeralaError) throw prokeralaError;
+    throw new Error("No natal chart provider credentials are configured");
+  }
+
+  const body = {
+    year: Number(params.get("datetime")?.slice(0, 4)),
+    month: Number(params.get("datetime")?.slice(5, 7)),
+    date: Number(params.get("datetime")?.slice(8, 10)),
+    hours: Number(params.get("datetime")?.slice(11, 13)),
+    minutes: Number(params.get("datetime")?.slice(14, 16)),
+    seconds: 0,
+    latitude: Number(params.get("coordinates")?.split(",")[0]),
+    longitude: Number(params.get("coordinates")?.split(",")[1]),
+    observation_point: "topocentric",
+    ayanamsha: "tropical",
+    language: "en",
+  };
+
+  const freeRes = await fetch(FREE_ASTROLOGY_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": freeAstrologyApiKey,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!freeRes.ok) {
+    const errText = await freeRes.text();
+    throw new UpstreamApiError("freeastrology", freeRes.status, `Free Astrology API error [${freeRes.status}]: ${errText}`);
+  }
+
+  const freeData = await freeRes.json();
+  const positions = normalizeFreeAstrologyPositions(freeData);
+
+  if (positions.length === 0) {
+    throw new Error("Free Astrology API returned no readable planet positions");
+  }
+
+  return { positions, source: "freeastrologyapi.com", longitudeMode: "tropical" };
 }
 
 async function geocode(city: string, nation: string): Promise<{ lat: number; lng: number }> {
