@@ -388,9 +388,12 @@ serve(async (req) => {
 
   try {
     const CLIENT_ID = Deno.env.get('PROKERALA_CLIENT_ID');
-    if (!CLIENT_ID) throw new Error('PROKERALA_CLIENT_ID is not configured');
     const CLIENT_SECRET = Deno.env.get('PROKERALA_CLIENT_SECRET');
-    if (!CLIENT_SECRET) throw new Error('PROKERALA_CLIENT_SECRET is not configured');
+    const FREE_ASTROLOGY_API_KEY = Deno.env.get('FREE_ASTROLOGY_API_KEY');
+
+    if ((!CLIENT_ID || !CLIENT_SECRET) && !FREE_ASTROLOGY_API_KEY) {
+      throw new Error('No natal chart provider credentials are configured');
+    }
 
     const { year, month, day, hour, minute, city, nation, lat: preLat, lng: preLng } = await req.json();
     if (!year || !month || !day || !city || !nation) {
@@ -405,12 +408,11 @@ serve(async (req) => {
     const { lat, lng } = (preLat != null && preLng != null)
       ? { lat: preLat, lng: preLng }
       : await geocode(city, nation);
+
     const h = Number(hour ?? 12);
     const m = Number(minute ?? 0);
     const tzOffset = await getTimezoneOffset(lat, lng, Number(year), Number(month), Number(day), h, m);
     console.log(`[calculate-natal-chart] coords=${lat},${lng} tz=${tzOffset}`);
-
-    const accessToken = await getAccessToken(CLIENT_ID, CLIENT_SECRET);
 
     const datetime = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00${formatTzOffset(tzOffset)}`;
     const coordinates = `${lat},${lng}`;
@@ -421,21 +423,13 @@ serve(async (req) => {
       datetime,
     });
 
-    const planetRes = await fetch(`${PROKERALA_API_URL}/planet-position?${params}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Accept: "application/json",
-      },
-    });
+    const { positions, source, longitudeMode } = await fetchPlanetPositions(
+      CLIENT_ID,
+      CLIENT_SECRET,
+      FREE_ASTROLOGY_API_KEY,
+      params,
+    );
 
-    if (!planetRes.ok) {
-      const errText = await planetRes.text();
-      throw new Error(`Prokerala API error [${planetRes.status}]: ${errText}`);
-    }
-
-    const planetData = await planetRes.json();
-    const positions = planetData.data?.planet_position || [];
-    
     const ayanamsha = getAyanamsha(Number(year));
     console.log(`[calculate-natal-chart] Ayanamsha for ${year}: ${ayanamsha.toFixed(2)}°`);
 
