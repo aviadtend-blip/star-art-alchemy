@@ -462,10 +462,10 @@ serve(async (req) => {
 
     // Ascendant
     let rising = "Aries";
-    const ascData = findPlanet("Ascendant");
+    const ascData = findPlanet("Ascendant") || findPlanet("Lagna");
     if (ascData) {
-      const tropical = (ascData.longitude || 0) + ayanamsha;
-      rising = getSignFromTropicalDegree(tropical);
+      const tropical = toTropicalLongitude(ascData.longitude || 0);
+      rising = normalizeSign(ascData.sign) ?? getSignFromTropicalDegree(tropical);
     }
 
     // Element balance
