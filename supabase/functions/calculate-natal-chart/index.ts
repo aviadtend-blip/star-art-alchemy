@@ -7,6 +7,7 @@ const corsHeaders = {
 
 const PROKERALA_TOKEN_URL = "https://api.prokerala.com/token";
 const PROKERALA_API_URL = "https://api.prokerala.com/v2/astrology";
+const FREE_ASTROLOGY_API_URL = "https://json.freeastrologyapi.com/western/planets";
 
 const ZODIAC_SIGNS = [
   "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
