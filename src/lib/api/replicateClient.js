@@ -6,9 +6,7 @@
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-
-// Working edge functions are deployed on a separate project
-const WORKING_FUNCTIONS_URL = 'https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1';
+const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
 
 /**
  * Fetch with retry for 5xx errors (exponential backoff)
