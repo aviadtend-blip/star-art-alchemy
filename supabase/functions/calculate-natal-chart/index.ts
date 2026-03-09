@@ -436,11 +436,13 @@ serve(async (req) => {
     const findPlanet = (name: string) =>
       positions.find((p: any) => p.name?.toLowerCase() === name.toLowerCase());
 
+    const toTropicalLongitude = (longitude: number) =>
+      longitudeMode === "sidereal" ? longitude + ayanamsha : longitude;
+
     const makePlacement = (planet: any, planetName: string) => {
       if (!planet) return null;
-      const sidereal = planet.longitude || 0;
-      const tropical = sidereal + ayanamsha;
-      const sign = getSignFromTropicalDegree(tropical);
+      const tropical = toTropicalLongitude(planet.longitude || 0);
+      const sign = normalizeSign(planet.sign) ?? getSignFromTropicalDegree(tropical);
       return {
         sign,
         house: planet.position || 1,
