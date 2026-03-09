@@ -528,7 +528,7 @@ serve(async (req) => {
       dominant_modality: dominantModality,
       aspects,
       stelliums,
-      _meta: { source: "prokerala.com", coordinates: { lat, lng }, timezone: tzOffset },
+      _meta: { source, coordinates: { lat, lng }, timezone: tzOffset },
     };
 
     console.log("[calculate-natal-chart] Success:", JSON.stringify({ sun: result.sun, moon: result.moon, rising: result.rising }));
