@@ -31,7 +31,7 @@ export const ImageMarquee: React.FC<ImageMarqueeProps> = ({
   const isMobile = useIsMobile() || (typeof window !== "undefined" && window.innerWidth < 768);
   const normalizedImages = React.useMemo(() => images.map(normalizeImage), [images]);
   const duplicatedImages = [...normalizedImages, ...normalizedImages];
-  const mobileDuration = Math.max(duration, 2.5);
+  const mobileDuration = Math.max(duration, 6);
 
   if (isMobile) {
     return <MobileMarquee images={normalizedImages} className={className} duration={mobileDuration} />;
