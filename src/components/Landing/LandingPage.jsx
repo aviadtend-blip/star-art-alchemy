@@ -149,7 +149,7 @@ export default function LandingPage() {
             <ImageMarquee images={heroMarqueeImages} duration={25} />
           </div>
         </div>
-        <div className="relative z-10 flex flex-col justify-end min-h-[700px] px-4 py-[15px]" style={{ marginTop: '-80px' }}>
+        <div className="relative z-10 flex flex-col justify-end min-h-[700px] px-4 py-[15px]" style={{ marginTop: '-40px' }}>
 
           <ShineBorder
             className="w-full md:max-w-[500px] mx-auto min-w-0"
