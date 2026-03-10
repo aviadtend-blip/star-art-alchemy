@@ -1,7 +1,7 @@
 /**
  * Artwork Generation Client
  * Calls the generate-artwork Supabase edge function which uses Apiframe (Midjourney)
- * Supports reimagine feature by cycling through pre-generated variations
+ * Uses submit + poll pattern for real-time progress tracking
  */
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -26,7 +26,7 @@ async function fetchWithRetry(url, options, maxRetries = 1) {
         console.warn(`[replicateClient] Server error ${response.status}, retrying...`);
         continue;
       }
-      return response; // return the error response on final attempt
+      return response;
     } catch (err) {
       lastError = err;
       if (attempt >= maxRetries) throw err;
@@ -44,22 +44,68 @@ let currentGenerationCache = {
 };
 
 /**
- * Generate artwork via the Supabase edge function
- * Returns the primary image URL and caches all 4 variations
+ * Poll the generate-artwork edge function for task status
+ * Calls onProgress with { pollCount, status, percentage } on each poll
  */
-export async function generateImage(prompt, sref, personalization, profileCode, userPhotoUrl = null, styleId = null) {
+async function pollForCompletion(taskId, onProgress, maxPollSeconds = 180) {
+  const pollInterval = 3000; // 3 seconds
+  const maxPolls = Math.floor(maxPollSeconds / (pollInterval / 1000));
+  let pollCount = 0;
+
+  while (pollCount < maxPolls) {
+    await new Promise((r) => setTimeout(r, pollInterval));
+    pollCount++;
+
+    const response = await fetch(`${FUNCTIONS_URL}/generate-artwork`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ task_id: taskId }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Poll failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Report progress to caller
+    onProgress?.({
+      pollCount,
+      status: data.status,
+      percentage: data.percentage,
+    });
+
+    if (data.status === 'finished') {
+      return data;
+    }
+
+    if (data.status === 'failed') {
+      throw new Error(data.error || 'Image generation failed');
+    }
+  }
+
+  throw new Error('Image generation timed out');
+}
+
+/**
+ * Generate artwork via the Supabase edge function
+ * Uses submit + poll for real-time progress tracking
+ * onProgress callback receives { stage, pollCount, status, percentage }
+ */
+export async function generateImage(prompt, sref, personalization, profileCode, userPhotoUrl = null, styleId = null, onProgress = null) {
   console.log('Prompt preview:', prompt.substring(0, 100) + '...');
   console.log('Style ref:', sref);
   console.log('Portrait mode:', !!userPhotoUrl);
 
-  // Step 1: Always use generate-artwork for Midjourney generation
+  // Step 1: Submit the generation task
+  onProgress?.({ stage: 'submitting' });
+
   const response = await fetchWithRetry(
     `${FUNCTIONS_URL}/generate-artwork`,
     {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt, sref, personalization, profileCode, face_image_url: userPhotoUrl }),
     }
   );
@@ -69,22 +115,32 @@ export async function generateImage(prompt, sref, personalization, profileCode, 
     throw new Error(errorData.error || `Generation failed with status ${response.status}`);
   }
 
-  const data = await response.json();
+  const submitData = await response.json();
 
-  if (!data.output) {
+  if (!submitData.task_id) {
+    throw new Error('No task_id returned from generation');
+  }
+
+  console.log(`Task submitted: ${submitData.task_id}`);
+  onProgress?.({ stage: 'generating', pollCount: 0 });
+
+  // Step 2: Poll for completion with progress callbacks
+  const result = await pollForCompletion(submitData.task_id, (progressData) => {
+    onProgress?.({ stage: 'generating', ...progressData });
+  });
+
+  if (!result.output) {
     throw new Error('No image URL returned from generation');
   }
 
-  let finalImageUrl = data.output;
-
+  let finalImageUrl = result.output;
 
   // Cache all outputs for reimagine feature
-  // For portrait mode, only the swapped image is usable (no grid variations)
   currentGenerationCache = {
-    allOutputs: userPhotoUrl ? [finalImageUrl] : (data.all_outputs || [data.output]),
+    allOutputs: userPhotoUrl ? [finalImageUrl] : (result.all_outputs || [result.output]),
     currentIndex: 0,
-    taskId: data.task_id || null,
-    actions: data.actions || [],
+    taskId: result.task_id || submitData.task_id,
+    actions: result.actions || [],
   };
 
   console.log(`Generation complete: ${currentGenerationCache.allOutputs.length} variations cached`);
@@ -92,23 +148,18 @@ export async function generateImage(prompt, sref, personalization, profileCode, 
   return {
     imageUrl: finalImageUrl,
     hasMoreVariations: currentGenerationCache.allOutputs.length > 1,
-    taskId: data.task_id || null,
+    taskId: result.task_id || submitData.task_id,
   };
 }
 
 /**
  * Get next variation for reimagine feature
- * Cycles through the 4 pre-generated images before needing a new API call
- * Returns null if all variations exhausted (caller should trigger new generation)
  */
 export function getNextVariation() {
   const { allOutputs, currentIndex } = currentGenerationCache;
-
-  // Move to next image
   const nextIndex = currentIndex + 1;
 
   if (nextIndex >= allOutputs.length) {
-    // All 4 variations exhausted
     console.log('All cached variations used, new generation needed');
     return null;
   }
