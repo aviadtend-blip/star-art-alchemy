@@ -104,7 +104,6 @@ const heroMarqueeImages = [
   { src: heroCustomer4, tags: [{ emoji: "☀️", label: "Libra" }, { emoji: "🌙", label: "Taurus" }, { emoji: "⬆️", label: "Pisces" }] },
   { src: heroCustomer5, tags: [{ emoji: "☀️", label: "Aries" }, { emoji: "🌙", label: "Scorpio" }, { emoji: "⬆️", label: "Capricorn" }] },
   { src: heroCustomer6, tags: [{ emoji: "☀️", label: "Scorpio" }, { emoji: "🌙", label: "Leo" }, { emoji: "⬆️", label: "Gemini" }] },
-  { src: heroCustomer1, tags: [{ emoji: "☀️", label: "Capricorn" }, { emoji: "🌙", label: "Aries" }, { emoji: "⬆️", label: "Virgo" }] },
 ];
 
 /* ─── Component ─── */
