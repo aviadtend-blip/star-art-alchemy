@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -30,10 +30,7 @@ export const ImageMarquee: React.FC<ImageMarqueeProps> = ({
 }) => {
   const isMobile = useIsMobile();
   const duplicatedImages = [...images, ...images];
-
-  if (isMobile) {
-    return <MobileMarquee images={images} className={className} />;
-  }
+  const mobileDuration = isMobile ? Math.max(duration * 0.7, 15) : duration;
 
   return (
     <div className={cn("w-full overflow-hidden", className)}>
@@ -45,7 +42,7 @@ export const ImageMarquee: React.FC<ImageMarqueeProps> = ({
           x: {
             repeat: Infinity,
             repeatType: "loop",
-            duration,
+            duration: mobileDuration,
             ease: "linear",
           },
         }}
@@ -57,51 +54,6 @@ export const ImageMarquee: React.FC<ImageMarqueeProps> = ({
     </div>
   );
 };
-
-function MobileMarquee({ images, className }: { images: (string | MarqueeImage)[]; className?: string }) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setIsDragging(true);
-    setStartX(e.touches[0].pageX - (scrollRef.current?.offsetLeft || 0));
-    setScrollLeft(scrollRef.current?.scrollLeft || 0);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging || !scrollRef.current) return;
-    const x = e.touches[0].pageX - (scrollRef.current.offsetLeft || 0);
-    const walk = (x - startX) * 1.5;
-    scrollRef.current.scrollLeft = scrollLeft - walk;
-  };
-
-  const handleTouchEnd = () => setIsDragging(false);
-
-  return (
-    <div
-      ref={scrollRef}
-      className={cn("w-full", className)}
-      style={{
-        overflowX: "scroll",
-        WebkitOverflowScrolling: "touch",
-        scrollbarWidth: "none",
-        msOverflowStyle: "none" as any,
-      }}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
-      <style>{`.mobile-marquee::-webkit-scrollbar { display: none; }`}</style>
-      <div className="mobile-marquee flex items-center px-4" style={{ gap: "16px", width: "max-content" }}>
-        {images.map((img, index) => (
-          <MarqueeCard key={index} image={normalizeImage(img)} index={index} totalImages={images.length} />
-        ))}
-      </div>
-    </div>
-  );
-}
 
 function MarqueeCard({ image, index, totalImages }: { image: MarqueeImage; index: number; totalImages: number }) {
   const angle = ANGLES[index % ANGLES.length];
