@@ -71,15 +71,37 @@ function MobileMarquee({
 }) {
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const pauseUntilRef = React.useRef(0);
-  const isInteractingRef = React.useRef(false);
-  const touchStartXRef = React.useRef(0);
+  const isDraggingRef = React.useRef(false);
+  const activePointerIdRef = React.useRef<number | null>(null);
+  const pointerStartXRef = React.useRef(0);
   const scrollStartLeftRef = React.useRef(0);
   const duplicatedImages = React.useMemo(() => [...images, ...images], [images]);
 
-  React.useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
+  const normalizeScrollPosition = React.useCallback(() => {
+    const container = scrollRef.current;
+    if (!container) return;
 
+    const loopWidth = container.scrollWidth / 2;
+    if (!loopWidth) return;
+
+    if (container.scrollLeft < loopWidth * 0.5) {
+      container.scrollLeft += loopWidth;
+    } else if (container.scrollLeft >= loopWidth * 1.5) {
+      container.scrollLeft -= loopWidth;
+    }
+  }, []);
+
+  React.useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const loopWidth = container.scrollWidth / 2;
+    if (loopWidth) {
+      container.scrollLeft = loopWidth;
+    }
+  }, [duplicatedImages]);
+
+  React.useEffect(() => {
     let frameId = 0;
     let lastTime = performance.now();
 
@@ -93,75 +115,76 @@ function MobileMarquee({
       const loopWidth = container.scrollWidth / 2;
       const pixelsPerSecond = loopWidth / duration;
 
-      if (!isInteractingRef.current && now > pauseUntilRef.current) {
+      if (loopWidth && !isDraggingRef.current && now > pauseUntilRef.current) {
         container.scrollLeft += pixelsPerSecond * deltaSeconds;
-
-        if (container.scrollLeft >= loopWidth) {
-          container.scrollLeft -= loopWidth;
-        }
+        normalizeScrollPosition();
       }
 
       frameId = window.requestAnimationFrame(tick);
     };
 
     frameId = window.requestAnimationFrame(tick);
-
     return () => window.cancelAnimationFrame(frameId);
-  }, [duration, duplicatedImages]);
+  }, [duration, duplicatedImages, normalizeScrollPosition]);
 
   const pauseAutoScroll = () => {
-    pauseUntilRef.current = performance.now() + 1200;
+    pauseUntilRef.current = performance.now() + 900;
   };
 
-  const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     const container = scrollRef.current;
     if (!container) return;
 
-    isInteractingRef.current = true;
-    touchStartXRef.current = event.touches[0].clientX;
+    isDraggingRef.current = true;
+    activePointerIdRef.current = event.pointerId;
+    pointerStartXRef.current = event.clientX;
     scrollStartLeftRef.current = container.scrollLeft;
+    container.setPointerCapture?.(event.pointerId);
     pauseAutoScroll();
   };
 
-  const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     const container = scrollRef.current;
-    if (!container) return;
+    if (!container || !isDraggingRef.current || activePointerIdRef.current !== event.pointerId) return;
 
-    const deltaX = event.touches[0].clientX - touchStartXRef.current;
+    const deltaX = event.clientX - pointerStartXRef.current;
     container.scrollLeft = scrollStartLeftRef.current - deltaX;
+    normalizeScrollPosition();
     pauseAutoScroll();
-    event.preventDefault();
   };
 
-  const handleTouchEnd = () => {
+  const handlePointerEnd = (event: React.PointerEvent<HTMLDivElement>) => {
     const container = scrollRef.current;
-    if (container) {
-      const loopWidth = container.scrollWidth / 2;
-      if (container.scrollLeft >= loopWidth) {
-        container.scrollLeft -= loopWidth;
-      }
-      if (container.scrollLeft <= 0) {
-        container.scrollLeft += loopWidth;
-      }
+    if (container && activePointerIdRef.current === event.pointerId) {
+      container.releasePointerCapture?.(event.pointerId);
     }
 
-    isInteractingRef.current = false;
+    isDraggingRef.current = false;
+    activePointerIdRef.current = null;
+    normalizeScrollPosition();
     pauseAutoScroll();
   };
 
   return (
     <div
       ref={scrollRef}
-      className={cn("w-full overflow-x-scroll overflow-y-visible touch-pan-x select-none", className)}
+      className={cn("w-full overflow-x-auto overflow-y-visible select-none", className)}
       style={{
         WebkitOverflowScrolling: "touch",
         scrollbarWidth: "none",
         msOverflowStyle: "none" as React.CSSProperties["msOverflowStyle"],
+        touchAction: "pan-y",
       }}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onScroll={pauseAutoScroll}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerEnd}
+      onPointerCancel={handlePointerEnd}
+      onScroll={() => {
+        if (!isDraggingRef.current) {
+          normalizeScrollPosition();
+          pauseAutoScroll();
+        }
+      }}
     >
       <style>{`.mobile-marquee::-webkit-scrollbar { display: none; }`}</style>
       <div className="mobile-marquee flex w-max items-center px-4 pb-2 pt-1" style={{ gap: "16px" }}>
