@@ -107,8 +107,20 @@ export function GeneratorProvider({ children }) {
       setGenerationProgress('Building your personalized artwork prompt...');
       const prompt = await buildConcretePrompt(chartData, style, isPortraitEdition);
 
-      setGenerationProgress(`Creating your ${style.name} artwork...`);
-      const result = await generateImage(prompt, style.sref, style.personalization, style.profileCode, userPhotoUrl, style.id);
+      setGenerationProgress('Submitting your artwork...');
+      const result = await generateImage(
+        prompt, style.sref, style.personalization, style.profileCode, userPhotoUrl, style.id,
+        // Real-time progress callback from polling
+        (progressData) => {
+          if (progressData.stage === 'submitting') {
+            setGenerationProgress('Submitting your artwork...');
+          } else if (progressData.stage === 'generating') {
+            const pollCount = progressData.pollCount || 0;
+            // Update progress with poll count so LoadingScreen can map to real %
+            setGenerationProgress(`generating:${pollCount}`);
+          }
+        }
+      );
       const apiframeTaskId = result.taskId;
 
       setGeneratedImage(result.imageUrl);
@@ -164,7 +176,6 @@ export function GeneratorProvider({ children }) {
           console.log('✅ Artwork stored permanently:', storeData.permanentUrl);
           setGeneratedImage(storeData.permanentUrl);
           setArtworkId(storeData.artworkId);
-          // Persist artworkId to sessionStorage so EmailCaptureModal can read it
           try {
             sessionStorage.setItem('celestial_artwork_id', storeData.artworkId);
           } catch { /* quota exceeded — ignore */ }
@@ -176,7 +187,7 @@ export function GeneratorProvider({ children }) {
       isGeneratingRef.current = false;
       navigate('/generate/style');
     }
-  }, [chartData, formData, navigate]);
+  }, [chartData, formData, navigate, isPortraitEdition, userPhotoUrl]);
 
   const handleRetry = useCallback(() => {
     setError(null);

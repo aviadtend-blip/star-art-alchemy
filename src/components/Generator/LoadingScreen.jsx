@@ -183,39 +183,39 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
     return () => timers.forEach(clearTimeout);
   }, []);
 
-  // Stage-aware progress bar: maps generation progress keywords to target percentages
-  // Falls back to time-based crawl when no stage info is available
+  // Real progress bar: maps generationProgress to actual percentages
+  // Format: "generating:N" where N is the poll count (each poll ~3 seconds)
+  // Typical generation: 10-20 polls (30-60 seconds)
   useEffect(() => {
-    const stageTargets = {
-      'Building': 15,
-      'Creating': 35,
-      'Preparing your artwork': 70,
-      'Preparing your artist': 82,
-    };
-
     const interval = setInterval(() => {
       setProgress((prev) => {
-        // Find the highest matching stage target from generationProgress
-        let target = 10;
+        let target = 5; // default minimum
+
         if (generationProgress) {
-          for (const [keyword, pct] of Object.entries(stageTargets)) {
-            if (generationProgress.includes(keyword)) {
-              target = Math.max(target, pct);
-            }
+          if (generationProgress.startsWith('generating:')) {
+            const pollCount = parseInt(generationProgress.split(':')[1], 10) || 0;
+            // Map poll count to progress: each poll ~3s, typical 30-60s total
+            // Use a curve that fills quickly at first then slows down
+            // pollCount 0 = 15%, 5 = 40%, 10 = 60%, 15 = 72%, 20 = 80%
+            target = Math.min(15 + pollCount * 4.5 - (pollCount * pollCount * 0.05), 85);
+            target = Math.max(target, 15);
+          } else if (generationProgress.includes('Building')) {
+            target = 8;
+          } else if (generationProgress.includes('Submitting')) {
+            target = 12;
+          } else if (generationProgress.includes('Preparing your artwork')) {
+            target = 88;
+          } else if (generationProgress.includes('Preparing your artist')) {
+            target = 93;
           }
         }
 
-        // Also blend with time-based minimum so bar never stalls completely
-        const elapsed = (Date.now() - startTime.current) / 1000;
-        const timeBased = Math.min(elapsed / 60 * 50, 50);
-        target = Math.max(target, timeBased);
+        // Cap at 95% until completion
+        target = Math.min(target, 95);
 
-        // Cap at 88% until completion
-        target = Math.min(target, 88);
-
-        // Ease toward target
+        // Ease toward target smoothly
         if (prev >= target) return prev;
-        return prev + (target - prev) * 0.08;
+        return prev + (target - prev) * 0.12;
       });
     }, 200);
     return () => clearInterval(interval);
