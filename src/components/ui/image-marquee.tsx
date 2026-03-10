@@ -128,6 +128,7 @@ function MobileMarquee({
     dragStartOffsetRef.current = offsetRef.current;
     containerRef.current?.setPointerCapture?.(event.pointerId);
     pauseAutoScroll();
+    onInteraction?.();
   };
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
