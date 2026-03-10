@@ -65,7 +65,62 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, sref, personalization, profileCode } = await req.json();
+    const body = await req.json();
+
+    if (!APIFRAME_API_KEY) {
+      throw new Error("APIFRAME_API_KEY not configured");
+    }
+
+    // ──── MODE: POLL ────
+    // If task_id is provided, just check status and return
+    if (body.task_id) {
+      const fetchResponse = await fetch(APIFRAME_FETCH_URL, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${APIFRAME_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ task_id: body.task_id }),
+      });
+
+      const result = await fetchResponse.json();
+
+      if (result.status === "finished") {
+        const imageUrls = result.image_urls || [];
+        return new Response(
+          JSON.stringify({
+            status: "finished",
+            output: imageUrls[0],
+            all_outputs: imageUrls,
+            task_id: body.task_id,
+            actions: result.actions || [],
+          }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      if (result.status === "failed") {
+        return new Response(
+          JSON.stringify({
+            status: "failed",
+            error: result.message || "Image generation failed",
+          }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Still processing
+      return new Response(
+        JSON.stringify({
+          status: result.status || "processing",
+          percentage: result.percentage ?? null,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // ──── MODE: SUBMIT ────
+    const { prompt, sref, personalization, profileCode } = body;
 
     if (!prompt) {
       return new Response(
@@ -74,16 +129,11 @@ serve(async (req) => {
       );
     }
 
-    if (!APIFRAME_API_KEY) {
-      throw new Error("APIFRAME_API_KEY not configured");
-    }
-
     console.log(`Prompt length: ${prompt.length}`);
     console.log(`Prompt preview: ${prompt.substring(0, 100)}...`);
 
     // Build the full Midjourney prompt with style reference and personalization
     const styleRef = sref || DEFAULT_SREF;
-    // Build personalization flags: --profile takes priority over --p
     let personalizationFlag = '';
     if (profileCode) {
       personalizationFlag = `--profile ${profileCode}`;
@@ -94,74 +144,16 @@ serve(async (req) => {
     const fullPrompt = `${prompt} ${MJ_PARAMS} --sref ${styleRef} ${personalizationFlag}`;
     console.log(`Full MJ prompt: ${fullPrompt}`);
 
-    // Step 1: Submit imagine task with retry
-    let taskId = await submitImagineWithRetry(fullPrompt);
+    // Submit imagine task and return task_id immediately
+    const taskId = await submitImagineWithRetry(fullPrompt);
     console.log(`Apiframe task submitted: ${taskId}`);
-
-    // Step 2: Poll for completion (max 120 seconds, check every 2 seconds)
-    // If the task fails, resubmit once
-    const maxAttempts = 60;
-    let attempts = 0;
-    let result = null;
-    let taskRetried = false;
-
-    while (attempts < maxAttempts) {
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2 seconds
-      attempts++;
-
-      const fetchResponse = await fetch(APIFRAME_FETCH_URL, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${APIFRAME_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ task_id: taskId }),
-      });
-
-      result = await fetchResponse.json();
-      console.log(`Poll attempt ${attempts}: status=${result.status}`);
-
-      if (result.status === "finished") {
-        break;
-      }
-
-      if (result.status === "failed") {
-        if (!taskRetried) {
-          console.warn("Apiframe task failed, resubmitting once...");
-          taskRetried = true;
-          taskId = await submitImagineWithRetry(fullPrompt, 0); // single attempt
-          attempts = 0; // reset poll counter
-          continue;
-        }
-        console.error("Apiframe task failed after retry:", result.message);
-        throw new Error(result.message || "Image generation failed");
-      }
-    }
-
-    if (!result || result.status !== "finished") {
-      throw new Error("Image generation timed out after 120 seconds");
-    }
-
-    // Step 3: Return all 4 image URLs
-    // image_urls[0] is the primary display image
-    // image_urls[1-3] are alternatives for "Reimagine" feature
-    const imageUrls = result.image_urls || [];
-    console.log(`Generation complete: ${imageUrls.length} images`);
 
     return new Response(
       JSON.stringify({
-        // Primary image for immediate display
-        output: imageUrls[0],
-        // All 4 variations for reimagine feature
-        all_outputs: imageUrls,
-        // Task ID for potential upscaling later
+        status: "submitted",
         task_id: taskId,
-        // Available actions (upscale1-4, variation1-4, reroll)
-        actions: result.actions || [],
       }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
     console.error("Edge function error:", error.message);
