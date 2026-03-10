@@ -29,8 +29,13 @@ export const ImageMarquee: React.FC<ImageMarqueeProps> = ({
   duration = 30,
 }) => {
   const isMobile = useIsMobile();
-  const duplicatedImages = [...images, ...images];
-  const mobileDuration = isMobile ? Math.max(duration * 0.7, 15) : duration;
+  const normalizedImages = React.useMemo(() => images.map(normalizeImage), [images]);
+  const duplicatedImages = [...normalizedImages, ...normalizedImages];
+  const mobileDuration = Math.max(duration * 0.7, 15);
+
+  if (isMobile) {
+    return <MobileMarquee images={normalizedImages} className={className} duration={mobileDuration} />;
+  }
 
   return (
     <div className={cn("w-full overflow-hidden", className)}>
@@ -42,18 +47,107 @@ export const ImageMarquee: React.FC<ImageMarqueeProps> = ({
           x: {
             repeat: Infinity,
             repeatType: "loop",
-            duration: mobileDuration,
+            duration,
             ease: "linear",
           },
         }}
       >
         {duplicatedImages.map((img, index) => (
-          <MarqueeCard key={index} image={normalizeImage(img)} index={index} totalImages={images.length} />
+          <MarqueeCard key={index} image={img} index={index} totalImages={normalizedImages.length} />
         ))}
       </motion.div>
     </div>
   );
 };
+
+function MobileMarquee({
+  images,
+  className,
+  duration,
+}: {
+  images: MarqueeImage[];
+  className?: string;
+  duration: number;
+}) {
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+  const pauseUntilRef = React.useRef(0);
+  const isInteractingRef = React.useRef(false);
+  const duplicatedImages = React.useMemo(() => [...images, ...images], [images]);
+
+  React.useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    let frameId = 0;
+    let lastTime = performance.now();
+
+    const tick = (now: number) => {
+      const container = scrollRef.current;
+      if (!container) return;
+
+      const deltaSeconds = (now - lastTime) / 1000;
+      lastTime = now;
+
+      const loopWidth = container.scrollWidth / 2;
+      const pixelsPerSecond = loopWidth / duration;
+
+      if (!isInteractingRef.current && now > pauseUntilRef.current) {
+        container.scrollLeft += pixelsPerSecond * deltaSeconds;
+
+        if (container.scrollLeft >= loopWidth) {
+          container.scrollLeft -= loopWidth;
+        }
+      }
+
+      frameId = window.requestAnimationFrame(tick);
+    };
+
+    frameId = window.requestAnimationFrame(tick);
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [duration, duplicatedImages]);
+
+  const pauseAutoScroll = () => {
+    pauseUntilRef.current = performance.now() + 1800;
+  };
+
+  return (
+    <div
+      ref={scrollRef}
+      className={cn("w-full overflow-x-auto overflow-y-visible touch-pan-x", className)}
+      style={{
+        WebkitOverflowScrolling: "touch",
+        scrollbarWidth: "none",
+        msOverflowStyle: "none" as React.CSSProperties["msOverflowStyle"],
+      }}
+      onTouchStart={() => {
+        isInteractingRef.current = true;
+        pauseAutoScroll();
+      }}
+      onTouchEnd={() => {
+        isInteractingRef.current = false;
+        pauseAutoScroll();
+      }}
+      onMouseDown={() => {
+        isInteractingRef.current = true;
+        pauseAutoScroll();
+      }}
+      onMouseUp={() => {
+        isInteractingRef.current = false;
+        pauseAutoScroll();
+      }}
+      onScroll={pauseAutoScroll}
+    >
+      <style>{`.mobile-marquee::-webkit-scrollbar { display: none; }`}</style>
+      <div className="mobile-marquee flex w-max items-center px-4 pb-2 pt-1" style={{ gap: "16px" }}>
+        {duplicatedImages.map((img, index) => (
+          <MarqueeCard key={index} image={img} index={index} totalImages={images.length} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 
 function MarqueeCard({ image, index, totalImages }: { image: MarqueeImage; index: number; totalImages: number }) {
   const angle = ANGLES[index % ANGLES.length];
