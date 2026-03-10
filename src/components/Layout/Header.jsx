@@ -11,7 +11,7 @@ export default function Header({ variant }) {
 
   return (
     <nav
-      className="flex items-center justify-between"
+      className="flex items-center justify-center md:justify-between"
       style={{
         backgroundColor: isDark ? '#121212' : 'transparent',
         padding: isDark ? '26px 30px' : undefined,
@@ -28,14 +28,6 @@ export default function Header({ variant }) {
           style={isDark ? { filter: 'brightness(0) invert(1)' } : undefined}
         />
       </Link>
-      <button className={`${isDark ? 'text-white/70 hover:text-white' : 'text-body-sm text-foreground/70 hover:text-foreground'} transition`}>
-        {isDark ? (
-          <div className="space-y-1.5">
-            <div className="w-6 h-0.5 bg-current" />
-            <div className="w-6 h-0.5 bg-current" />
-          </div>
-        ) : 'Login'}
-      </button>
     </nav>
   );
 }
