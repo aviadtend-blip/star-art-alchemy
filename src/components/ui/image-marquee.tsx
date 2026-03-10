@@ -9,23 +9,23 @@ interface ImageMarqueeProps {
   className?: string;
   /** Duration in seconds for one full cycle. Default: 30 */
   duration?: number;
-  /** Height of images. Default: "h-48" */
-  imageHeight?: string;
 }
+
+// Alternating angles for the tilted card effect
+const ANGLES = [-3, 2, -2, 3, -1, 2.5, -2.5, 1.5];
 
 export const ImageMarquee: React.FC<ImageMarqueeProps> = ({
   images,
   className,
   duration = 30,
-  imageHeight = "h-48",
 }) => {
-  // Duplicate for seamless loop
   const duplicatedImages = [...images, ...images];
 
   return (
     <div className={cn("w-full overflow-hidden", className)}>
       <motion.div
-        className="flex gap-4"
+        className="flex items-center"
+        style={{ gap: "16px" }}
         animate={{ x: ["0%", "-50%"] }}
         transition={{
           x: {
@@ -36,23 +36,28 @@ export const ImageMarquee: React.FC<ImageMarqueeProps> = ({
           },
         }}
       >
-        {duplicatedImages.map((src, index) => (
-          <div
-            key={index}
-            className={cn(
-              "relative flex-shrink-0 overflow-hidden rounded-lg",
-              imageHeight
-            )}
-            style={{ aspectRatio: "3/4" }}
-          >
-            <img
-              src={src}
-              alt={`Gallery image ${(index % images.length) + 1}`}
-              className="h-full w-full object-cover"
-              loading={index < images.length ? "eager" : "lazy"}
-            />
-          </div>
-        ))}
+        {duplicatedImages.map((src, index) => {
+          const angle = ANGLES[index % ANGLES.length];
+          return (
+            <div
+              key={index}
+              className="relative flex-shrink-0 overflow-hidden"
+              style={{
+                width: 200,
+                height: 300,
+                borderRadius: 2,
+                transform: `rotate(${angle}deg)`,
+              }}
+            >
+              <img
+                src={src}
+                alt={`Gallery image ${(index % images.length) + 1}`}
+                className="h-full w-full object-cover"
+                loading={index < images.length ? "eager" : "lazy"}
+              />
+            </div>
+          );
+        })}
       </motion.div>
     </div>
   );
