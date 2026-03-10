@@ -66,10 +66,12 @@ function MobileMarquee({
   images,
   className,
   duration,
+  onInteraction,
 }: {
   images: MarqueeImage[];
   className?: string;
   duration: number;
+  onInteraction?: () => void;
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const innerRef = React.useRef<HTMLDivElement>(null);
