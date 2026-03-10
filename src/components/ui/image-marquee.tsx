@@ -69,125 +69,91 @@ function MobileMarquee({
   className?: string;
   duration: number;
 }) {
-  const scrollRef = React.useRef<HTMLDivElement>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const innerRef = React.useRef<HTMLDivElement>(null);
+  const offsetRef = React.useRef(0);
   const pauseUntilRef = React.useRef(0);
   const isDraggingRef = React.useRef(false);
-  const activePointerIdRef = React.useRef<number | null>(null);
-  const pointerStartXRef = React.useRef(0);
-  const scrollStartLeftRef = React.useRef(0);
+  const dragStartXRef = React.useRef(0);
+  const dragStartOffsetRef = React.useRef(0);
   const duplicatedImages = React.useMemo(() => [...images, ...images], [images]);
 
-  const normalizeScrollPosition = React.useCallback(() => {
-    const container = scrollRef.current;
-    if (!container) return;
-
-    const loopWidth = container.scrollWidth / 2;
-    if (!loopWidth) return;
-
-    if (container.scrollLeft < loopWidth * 0.5) {
-      container.scrollLeft += loopWidth;
-    } else if (container.scrollLeft >= loopWidth * 1.5) {
-      container.scrollLeft -= loopWidth;
-    }
-  }, []);
-
-  React.useEffect(() => {
-    const container = scrollRef.current;
-    if (!container) return;
-
-    const loopWidth = container.scrollWidth / 2;
-    if (loopWidth) {
-      container.scrollLeft = loopWidth;
-    }
-  }, [duplicatedImages]);
-
+  // Smooth auto-scroll via transform
   React.useEffect(() => {
     let frameId = 0;
     let lastTime = performance.now();
 
     const tick = (now: number) => {
-      const container = scrollRef.current;
-      if (!container) return;
+      const inner = innerRef.current;
+      if (!inner) { frameId = requestAnimationFrame(tick); return; }
 
       const deltaSeconds = (now - lastTime) / 1000;
       lastTime = now;
 
-      const loopWidth = container.scrollWidth / 2;
-      const pixelsPerSecond = loopWidth / duration;
+      const halfWidth = inner.scrollWidth / 2;
+      if (!halfWidth) { frameId = requestAnimationFrame(tick); return; }
 
-      if (loopWidth && !isDraggingRef.current && now > pauseUntilRef.current) {
-        container.scrollLeft += pixelsPerSecond * deltaSeconds;
-        normalizeScrollPosition();
+      const pixelsPerSecond = halfWidth / duration;
+
+      if (!isDraggingRef.current && now > pauseUntilRef.current) {
+        offsetRef.current -= pixelsPerSecond * deltaSeconds;
       }
 
-      frameId = window.requestAnimationFrame(tick);
+      // Wrap around seamlessly
+      if (offsetRef.current <= -halfWidth) {
+        offsetRef.current += halfWidth;
+      } else if (offsetRef.current > 0) {
+        offsetRef.current -= halfWidth;
+      }
+
+      inner.style.transform = `translateX(${offsetRef.current}px)`;
+      frameId = requestAnimationFrame(tick);
     };
 
-    frameId = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(frameId);
-  }, [duration, duplicatedImages, normalizeScrollPosition]);
+    frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+  }, [duration, duplicatedImages]);
 
   const pauseAutoScroll = () => {
-    pauseUntilRef.current = performance.now() + 900;
+    pauseUntilRef.current = performance.now() + 1200;
   };
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    const container = scrollRef.current;
-    if (!container) return;
-
     isDraggingRef.current = true;
-    activePointerIdRef.current = event.pointerId;
-    pointerStartXRef.current = event.clientX;
-    scrollStartLeftRef.current = container.scrollLeft;
-    container.setPointerCapture?.(event.pointerId);
+    dragStartXRef.current = event.clientX;
+    dragStartOffsetRef.current = offsetRef.current;
+    containerRef.current?.setPointerCapture?.(event.pointerId);
     pauseAutoScroll();
   };
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    const container = scrollRef.current;
-    if (!container || !isDraggingRef.current || activePointerIdRef.current !== event.pointerId) return;
-
-    const deltaX = event.clientX - pointerStartXRef.current;
-    container.scrollLeft = scrollStartLeftRef.current - deltaX;
-    normalizeScrollPosition();
+    if (!isDraggingRef.current) return;
+    const deltaX = event.clientX - dragStartXRef.current;
+    offsetRef.current = dragStartOffsetRef.current + deltaX;
     pauseAutoScroll();
   };
 
   const handlePointerEnd = (event: React.PointerEvent<HTMLDivElement>) => {
-    const container = scrollRef.current;
-    if (container && activePointerIdRef.current === event.pointerId) {
-      container.releasePointerCapture?.(event.pointerId);
-    }
-
     isDraggingRef.current = false;
-    activePointerIdRef.current = null;
-    normalizeScrollPosition();
+    containerRef.current?.releasePointerCapture?.(event.pointerId);
     pauseAutoScroll();
   };
 
   return (
     <div
-      ref={scrollRef}
-      className={cn("w-full overflow-x-auto overflow-y-visible select-none", className)}
-      style={{
-        WebkitOverflowScrolling: "touch",
-        scrollbarWidth: "none",
-        msOverflowStyle: "none" as React.CSSProperties["msOverflowStyle"],
-        touchAction: "pan-y",
-      }}
+      ref={containerRef}
+      className={cn("w-full overflow-hidden select-none", className)}
+      style={{ touchAction: "pan-y" }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerEnd}
       onPointerCancel={handlePointerEnd}
-      onScroll={() => {
-        if (!isDraggingRef.current) {
-          normalizeScrollPosition();
-          pauseAutoScroll();
-        }
-      }}
     >
-      <style>{`.mobile-marquee::-webkit-scrollbar { display: none; }`}</style>
-      <div className="mobile-marquee flex w-max items-center px-4 pb-2 pt-1" style={{ gap: "16px" }}>
+      <div
+        ref={innerRef}
+        className="flex w-max items-center px-4 pb-2 pt-1 will-change-transform"
+        style={{ gap: "16px" }}
+      >
         {duplicatedImages.map((img, index) => (
           <MarqueeCard key={index} image={img} index={index} totalImages={images.length} />
         ))}
