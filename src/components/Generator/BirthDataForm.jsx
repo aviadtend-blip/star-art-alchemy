@@ -184,7 +184,12 @@ const BirthDataFormJsx = ({ onSubmit }) => {
         setTouched((prev) => ({ ...prev, hour: true, minute: true, city: true }));
         return;
       }
-      setStep(3);
+      if (SHOW_PORTRAIT_STEP) {
+        setStep(3);
+      } else {
+        // Skip portrait step — submit directly without photo
+        doSubmit(false);
+      }
     }
   };
 
