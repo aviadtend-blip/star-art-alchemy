@@ -145,10 +145,10 @@ export default function LandingPage() {
       {/* Mobile hero */}
       <section className="lg:hidden relative overflow-hidden min-h-[780px]">
         <div className="absolute inset-0">
-          <picture>
-            <source srcSet={heroMobile} media="(max-width: 1023px)" type="image/webp" />
-            <img src={heroMobile} alt="" className="w-full h-full object-cover" fetchpriority="high" width={768} height={1024} />
-          </picture>
+          <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background z-[1]" />
+          <div className="flex items-center h-full pt-16">
+            <ImageMarquee images={heroMarqueeImages} duration={25} imageHeight="h-44" />
+          </div>
         </div>
         <div className="relative z-10 flex flex-col justify-end min-h-[780px] px-4 py-[15px]">
 
