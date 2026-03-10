@@ -4,6 +4,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, Upload, X, Loader2 } from "lucide-react";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const SHOW_PORTRAIT_STEP = false; // Feature flag: set to true to re-enable Step 3 (photo upload)
 
 const BirthDataFormJsx = ({ onSubmit }) => {
   const isMobile = useIsMobile();
