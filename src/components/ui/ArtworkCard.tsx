@@ -19,14 +19,10 @@ export default function ArtworkCard({
   className,
 }: ArtworkCardProps) {
   return (
-    <div className={`relative h-[300px] w-[200px] flex-shrink-0 overflow-hidden ${className ?? ""}`}>
-      <img
-        alt={imageAlt}
-        className="absolute inset-0 size-full object-cover pointer-events-none"
-        src={imageSrc}
-      />
+    <div className={`relative flex-shrink-0 ${className ?? ""}`}>
+      {/* Tags row — sits above the image */}
       {tags.length > 0 && (
-        <div className="absolute left-1/2 -translate-x-1/2 -top-[14px] flex items-center gap-px z-10">
+        <div className="flex items-center justify-center gap-px mb-[-8px] relative z-10">
           {tags.map((tag) => (
             <span
               key={tag.label}
@@ -37,6 +33,14 @@ export default function ArtworkCard({
           ))}
         </div>
       )}
+      {/* Image */}
+      <div className="relative h-[300px] w-[200px] overflow-hidden rounded-[2px]">
+        <img
+          alt={imageAlt}
+          className="absolute inset-0 size-full object-cover pointer-events-none"
+          src={imageSrc}
+        />
+      </div>
     </div>
   );
 }
