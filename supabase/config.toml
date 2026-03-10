@@ -35,3 +35,6 @@ verify_jwt = false
 
 [functions.face-swap]
 verify_jwt = false
+
+[functions.save-order-data]
+verify_jwt = false
