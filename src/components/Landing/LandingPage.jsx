@@ -104,7 +104,6 @@ const heroMarqueeImages = [
   { src: heroCustomer4, tags: [{ emoji: "☀️", label: "Libra" }, { emoji: "🌙", label: "Taurus" }, { emoji: "⬆️", label: "Pisces" }] },
   { src: heroCustomer5, tags: [{ emoji: "☀️", label: "Aries" }, { emoji: "🌙", label: "Scorpio" }, { emoji: "⬆️", label: "Capricorn" }] },
   { src: heroCustomer6, tags: [{ emoji: "☀️", label: "Scorpio" }, { emoji: "🌙", label: "Leo" }, { emoji: "⬆️", label: "Gemini" }] },
-  { src: heroCustomer1, tags: [{ emoji: "☀️", label: "Capricorn" }, { emoji: "🌙", label: "Aries" }, { emoji: "⬆️", label: "Virgo" }] },
 ];
 
 /* ─── Component ─── */
@@ -150,7 +149,7 @@ export default function LandingPage() {
       <section className="lg:hidden relative min-h-[700px]" style={{ overflowY: 'clip', overflowX: 'visible' }}>
         <div className="absolute inset-0 pointer-events-auto">
           <div className="flex items-start justify-center h-full pt-[72px]">
-            <ImageMarquee images={heroMarqueeImages} duration={8} />
+            <ImageMarquee images={heroMarqueeImages} duration={14} />
           </div>
         </div>
         <div className="relative z-10 flex flex-col justify-end min-h-[700px] px-4 py-[15px] pointer-events-none" style={{ marginTop: '-40px' }}>
