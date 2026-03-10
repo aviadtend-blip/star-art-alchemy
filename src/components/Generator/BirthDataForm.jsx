@@ -285,10 +285,10 @@ const BirthDataFormJsx = ({ onSubmit }) => {
       errors[field] && touched[field] ? "border-destructive" : "border-border"
     }`;
 
-  // Step indicator
+  const totalSteps = SHOW_PORTRAIT_STEP ? 3 : 2;
   const StepIndicator = () => (
     <div className="flex items-center justify-center gap-2 mb-6">
-      {[1, 2, 3].map((s) => (
+      {Array.from({ length: totalSteps }, (_, i) => i + 1).map((s) => (
         <div
           key={s}
           className="rounded-full transition-all duration-300"
