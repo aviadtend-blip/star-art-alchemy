@@ -93,14 +93,14 @@ const galleryItems = [
 
 // Placeholder images for hero marquee — replace with real images later
 const heroMarqueeImages = [
-  "https://placehold.co/450x600/1a1a2e/ffffff?text=Artwork+1",
-  "https://placehold.co/450x600/16213e/ffffff?text=Artwork+2",
-  "https://placehold.co/450x600/0f3460/ffffff?text=Artwork+3",
-  "https://placehold.co/450x600/533483/ffffff?text=Artwork+4",
-  "https://placehold.co/450x600/2c2c54/ffffff?text=Artwork+5",
-  "https://placehold.co/450x600/1e3799/ffffff?text=Artwork+6",
-  "https://placehold.co/450x600/6a0572/ffffff?text=Artwork+7",
-  "https://placehold.co/450x600/1b1464/ffffff?text=Artwork+8",
+  { src: "https://placehold.co/450x600/1a1a2e/ffffff?text=Artwork+1", tags: [{ emoji: "☀️", label: "Leo" }, { emoji: "🌙", label: "Capricorn" }, { emoji: "⬆️", label: "Scorpio" }] },
+  { src: "https://placehold.co/450x600/16213e/ffffff?text=Artwork+2", tags: [{ emoji: "☀️", label: "Aries" }, { emoji: "🌙", label: "Pisces" }, { emoji: "⬆️", label: "Gemini" }] },
+  { src: "https://placehold.co/450x600/0f3460/ffffff?text=Artwork+3", tags: [{ emoji: "☀️", label: "Virgo" }, { emoji: "🌙", label: "Cancer" }, { emoji: "⬆️", label: "Libra" }] },
+  { src: "https://placehold.co/450x600/533483/ffffff?text=Artwork+4", tags: [{ emoji: "☀️", label: "Taurus" }, { emoji: "🌙", label: "Aquarius" }, { emoji: "⬆️", label: "Sagittarius" }] },
+  { src: "https://placehold.co/450x600/2c2c54/ffffff?text=Artwork+5", tags: [{ emoji: "☀️", label: "Scorpio" }, { emoji: "🌙", label: "Leo" }, { emoji: "⬆️", label: "Virgo" }] },
+  { src: "https://placehold.co/450x600/1e3799/ffffff?text=Artwork+6", tags: [{ emoji: "☀️", label: "Gemini" }, { emoji: "🌙", label: "Sagittarius" }, { emoji: "⬆️", label: "Aries" }] },
+  { src: "https://placehold.co/450x600/6a0572/ffffff?text=Artwork+7", tags: [{ emoji: "☀️", label: "Pisces" }, { emoji: "🌙", label: "Taurus" }, { emoji: "⬆️", label: "Cancer" }] },
+  { src: "https://placehold.co/450x600/1b1464/ffffff?text=Artwork+8", tags: [{ emoji: "☀️", label: "Capricorn" }, { emoji: "🌙", label: "Aries" }, { emoji: "⬆️", label: "Aquarius" }] },
 ];
 
 /* ─── Component ─── */

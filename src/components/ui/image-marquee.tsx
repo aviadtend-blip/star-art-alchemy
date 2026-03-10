@@ -1,18 +1,27 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { motion, useAnimation, PanInfo } from "framer-motion";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import ArtworkCard from "@/components/ui/ArtworkCard";
+
+export interface MarqueeImage {
+  src: string;
+  tags?: { emoji: string; label: string }[];
+}
 
 interface ImageMarqueeProps {
-  images: string[];
+  images: (string | MarqueeImage)[];
   className?: string;
-  /** Duration in seconds for one full cycle (desktop auto-scroll). Default: 30 */
   duration?: number;
 }
 
 const ANGLES = [-3, 2, -2, 3, -1, 2.5, -2.5, 1.5];
+
+function normalizeImage(img: string | MarqueeImage): MarqueeImage {
+  return typeof img === "string" ? { src: img } : img;
+}
 
 export const ImageMarquee: React.FC<ImageMarqueeProps> = ({
   images,
@@ -41,15 +50,15 @@ export const ImageMarquee: React.FC<ImageMarqueeProps> = ({
           },
         }}
       >
-        {duplicatedImages.map((src, index) => (
-          <ImageCard key={index} src={src} index={index} totalImages={images.length} />
+        {duplicatedImages.map((img, index) => (
+          <MarqueeCard key={index} image={normalizeImage(img)} index={index} totalImages={images.length} />
         ))}
       </motion.div>
     </div>
   );
 };
 
-function MobileMarquee({ images, className }: { images: string[]; className?: string }) {
+function MobileMarquee({ images, className }: { images: (string | MarqueeImage)[]; className?: string }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -86,34 +95,28 @@ function MobileMarquee({ images, className }: { images: string[]; className?: st
     >
       <style>{`.mobile-marquee::-webkit-scrollbar { display: none; }`}</style>
       <div className="mobile-marquee flex items-center px-4" style={{ gap: "16px", width: "max-content" }}>
-        {images.map((src, index) => (
-          <ImageCard key={index} src={src} index={index} totalImages={images.length} />
+        {images.map((img, index) => (
+          <MarqueeCard key={index} image={normalizeImage(img)} index={index} totalImages={images.length} />
         ))}
       </div>
     </div>
   );
 }
 
-function ImageCard({ src, index, totalImages }: { src: string; index: number; totalImages: number }) {
+function MarqueeCard({ image, index, totalImages }: { image: MarqueeImage; index: number; totalImages: number }) {
   const angle = ANGLES[index % ANGLES.length];
   return (
     <div
-      className="relative flex-shrink-0 overflow-hidden"
-      style={{
-        width: 200,
-        height: 300,
-        borderRadius: 2,
-        transform: `rotate(${angle}deg)`,
-      }}
+      className="relative flex-shrink-0"
+      style={{ transform: `rotate(${angle}deg)`, paddingTop: 14 }}
     >
-      <img
-        src={src}
-        alt={`Gallery image ${(index % totalImages) + 1}`}
-        className="h-full w-full object-cover"
-        loading={index < totalImages ? "eager" : "lazy"}
+      <ArtworkCard
+        imageSrc={image.src}
+        imageAlt={`Gallery image ${(index % totalImages) + 1}`}
+        tags={image.tags}
       />
       <div
-        className="absolute inset-x-0 bottom-0 h-[40%] pointer-events-none"
+        className="absolute inset-x-0 bottom-0 h-[40%] pointer-events-none rounded-[2px]"
         style={{ background: "linear-gradient(to top, rgba(0,0,0,0.85), transparent)" }}
       />
     </div>
