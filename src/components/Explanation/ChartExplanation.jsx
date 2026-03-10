@@ -639,34 +639,35 @@ export function ChartExplanation({
                       </button>
                     </div>
 
-                    {/* Insert card teaser */}
-                    <div className="flex flex-col items-center gap-1 mt-4">
-                      <p className="text-body-sm font-body text-white text-center">
-                        <span className="font-bold">✦ Included with every order:</span>{' '}
-                        <span className="text-white/60">Your personal Cosmic Blueprint card — printed and tucked inside.</span>
-                      </p>
-                      <div className="relative mt-2">
-                        <img
-                          src={insertCardPreview}
-                          alt="Cosmic Blueprint insert card"
-                          className="w-[280px] shadow-lg"
-                          loading="lazy"
-                        />
-                        <img
-                          src={arrowSvg}
-                          alt=""
-                          className="absolute -right-10 -top-2 w-[54px] h-[58px] pointer-events-none"
-                        />
-                      </div>
-                    </div>
-
                     <p className="text-body-sm font-body text-white/70 text-center">
-                      ✓ Free shipping  📦 30-day quality guarantee  🔒 Secure checkout
+                      ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
                     </p>
                   </div>
 
                   <div className="relative w-full">
                     <RotatingBanner />
+                  </div>
+
+                  {/* Insert card teaser — pops out of container bottom */}
+                  <div className="flex flex-col items-center gap-2 mt-2 pb-0">
+                    <p className="text-body-sm font-body text-white text-center">
+                      <span className="font-bold">✦ Included with every order:</span>{' '}
+                      <span className="text-white/60">Your personal Cosmic Blueprint card — printed and tucked inside.</span>
+                    </p>
+                    <div className="relative mt-1 mb-[-40px]">
+                      <img
+                        src={insertCardPreview}
+                        alt="Cosmic Blueprint insert card"
+                        className="w-[280px] shadow-lg"
+                        loading="lazy"
+                        style={{ transform: 'rotate(2deg)' }}
+                      />
+                      <img
+                        src={arrowSvg}
+                        alt=""
+                        className="absolute -right-8 top-0 w-[54px] h-[58px] pointer-events-none"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -815,33 +816,34 @@ export function ChartExplanation({
                 </button>
               </div>
 
-              {/* Insert card teaser */}
-              <div className="relative flex flex-col items-center gap-1 mt-4">
+              <p className="relative text-body-sm font-body text-white/70 text-center">
+                ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
+              </p>
+
+              <div className="relative w-full">
+                <RotatingBanner />
+              </div>
+
+              {/* Insert card teaser — pops out of container bottom */}
+              <div className="relative flex flex-col items-center gap-2 mt-2 pb-0">
                 <p className="text-body-sm font-body text-white text-center">
                   <span className="font-bold">✦ Included with every order:</span>{' '}
                   <span className="text-white/60">Your personal Cosmic Blueprint card — printed and tucked inside.</span>
                 </p>
-                <div className="relative mt-2">
+                <div className="relative mt-1 mb-[-40px]">
                   <img
                     src={insertCardPreview}
                     alt="Cosmic Blueprint insert card"
                     className="w-[280px] shadow-lg"
                     loading="lazy"
+                    style={{ transform: 'rotate(2deg)' }}
                   />
                   <img
                     src={arrowSvg}
                     alt=""
-                    className="absolute -right-10 -top-2 w-[54px] h-[58px] pointer-events-none"
+                    className="absolute -right-8 top-0 w-[54px] h-[58px] pointer-events-none"
                   />
                 </div>
-              </div>
-
-              <p className="relative text-body-sm font-body text-white/70 text-center">
-                ✓ Free shipping  📦 30-day quality guarantee  🔒 Secure checkout
-              </p>
-
-              <div className="relative w-full">
-                <RotatingBanner />
               </div>
             </div>
           </div>
