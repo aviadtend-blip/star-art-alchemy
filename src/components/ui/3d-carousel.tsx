@@ -133,6 +133,7 @@ const Carousel = memo(
                 src={imgUrl}
                 alt="carousel image"
                 className="pointer-events-none h-full w-full rounded-xl object-contain"
+                loading="lazy"
               />
             </div>
           ))}
