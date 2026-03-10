@@ -709,7 +709,7 @@ export function ChartExplanation({
             <div
               ref={scrollContainerRef}
               className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2"
-              style={{ gap: '16px', marginLeft: -24, marginRight: -24, width: 'calc(100% + 48px)', paddingLeft: 20 }}
+              style={{ gap: '16px', marginRight: -24, width: 'calc(100% + 24px)' }}
             >
               {hotspots.map((h, i) => (
                 <div
