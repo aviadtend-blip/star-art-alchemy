@@ -43,6 +43,7 @@ import GalleryTile from "./GalleryTile";
 import CustomerReactionsCarousel from "./CustomerReactionsCarousel";
 import CustomerReactionsCarouselMobile from "./CustomerReactionsCarouselMobile";
 import { ThreeDPhotoCarousel } from "@/components/ui/3d-carousel";
+import { ImageMarquee } from "@/components/ui/image-marquee";
 
 /* ─── Static data ─── */
 
@@ -90,6 +91,18 @@ const galleryItems = [
   { img: customerDisplay10, label: "Mountain sunset mixed media artwork" },
 ];
 
+// Placeholder images for hero marquee — replace with real images later
+const heroMarqueeImages = [
+  "https://placehold.co/450x600/1a1a2e/ffffff?text=Artwork+1",
+  "https://placehold.co/450x600/16213e/ffffff?text=Artwork+2",
+  "https://placehold.co/450x600/0f3460/ffffff?text=Artwork+3",
+  "https://placehold.co/450x600/533483/ffffff?text=Artwork+4",
+  "https://placehold.co/450x600/2c2c54/ffffff?text=Artwork+5",
+  "https://placehold.co/450x600/1e3799/ffffff?text=Artwork+6",
+  "https://placehold.co/450x600/6a0572/ffffff?text=Artwork+7",
+  "https://placehold.co/450x600/1b1464/ffffff?text=Artwork+8",
+];
+
 /* ─── Component ─── */
 
 export default function LandingPage() {
@@ -132,10 +145,10 @@ export default function LandingPage() {
       {/* Mobile hero */}
       <section className="lg:hidden relative overflow-hidden min-h-[780px]">
         <div className="absolute inset-0">
-          <picture>
-            <source srcSet={heroMobile} media="(max-width: 1023px)" type="image/webp" />
-            <img src={heroMobile} alt="" className="w-full h-full object-cover" fetchpriority="high" width={768} height={1024} />
-          </picture>
+          <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background z-[1]" />
+          <div className="flex items-center h-full pt-16">
+            <ImageMarquee images={heroMarqueeImages} duration={25} imageHeight="h-44" />
+          </div>
         </div>
         <div className="relative z-10 flex flex-col justify-end min-h-[780px] px-4 py-[15px]">
 
@@ -175,10 +188,10 @@ export default function LandingPage() {
       {/* Desktop hero — gallery wall */}
       <section className="hidden lg:block relative min-h-[740px] overflow-hidden">
         <div className="absolute inset-0">
-          <picture>
-            <source srcSet={heroDesktop} media="(min-width: 1024px)" type="image/webp" />
-            <img src={heroDesktop} alt="" className="w-full h-full object-cover" fetchpriority="high" width={1920} height={1080} />
-          </picture>
+          <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background z-[1]" />
+          <div className="flex items-center h-full pt-10">
+            <ImageMarquee images={heroMarqueeImages} duration={35} imageHeight="h-64" />
+          </div>
         </div>
         <div className="relative z-20 flex flex-col justify-end min-h-[740px] pb-0 px-6">
           {/* Bottom row: text left + form bar right */}
