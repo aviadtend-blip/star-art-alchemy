@@ -115,7 +115,7 @@ function MobileMarquee({
   }, [duration, duplicatedImages]);
 
   const pauseAutoScroll = () => {
-    pauseUntilRef.current = performance.now() + 1200;
+    pauseUntilRef.current = 0;
   };
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
