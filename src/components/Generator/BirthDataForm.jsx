@@ -546,8 +546,8 @@ const BirthDataFormJsx = ({ onSubmit }) => {
         </>
       )}
 
-      {/* =================== STEP 3: Photo Upload =================== */}
-      {step === 3 && (
+      {/* =================== STEP 3: Photo Upload (behind feature flag) =================== */}
+      {SHOW_PORTRAIT_STEP && step === 3 && (
         <>
           {/* Upload zone */}
           {!photoFile ? (
