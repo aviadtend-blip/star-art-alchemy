@@ -15,6 +15,7 @@ interface ImageMarqueeProps {
   images: (string | MarqueeImage)[];
   className?: string;
   duration?: number;
+  onInteraction?: () => void;
 }
 
 const ANGLES = [-3, 2, -2, 3, -1, 2.5, -2.5, 1.5];
