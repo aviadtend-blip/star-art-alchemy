@@ -35,7 +35,7 @@ export default function GalleryTile({ image, name, signs, explanations = [], sho
         {/* Tap hint icon — centered, pulsing, disappears on first tap */}
         {showTapHint && !tapped && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-            <img src={tappingIcon} alt="" width="40" height="40" className="animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.7))' }} />
+            <img src={tappingIcon} alt="" width="56" height="56" className="animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.8)) drop-shadow(0 0 20px rgba(0,0,0,0.5))' }} />
           </div>
         )}
 
