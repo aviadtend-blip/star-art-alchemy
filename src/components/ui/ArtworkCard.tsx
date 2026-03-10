@@ -39,6 +39,7 @@ export default function ArtworkCard({
           alt={imageAlt}
           className="absolute inset-0 size-full object-cover pointer-events-none"
           src={imageSrc}
+          loading="lazy"
         />
       </div>
     </div>
