@@ -162,7 +162,7 @@ export default function LandingPage() {
                 background: 'rgba(17, 17, 17, 0.70)',
                 backdropFilter: 'blur(17px)',
                 WebkitBackdropFilter: 'blur(17px)',
-                padding: '32px 16px 16px 16px',
+                padding: '24px 16px 32px 16px',
               }}
             >
               {mobileHeroStep !== 'photo' && (
