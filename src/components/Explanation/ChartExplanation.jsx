@@ -12,6 +12,7 @@ import galaxyBg from '@/assets/galaxy-bg.jpg';
 import CTARoomMockup from '@/components/Explanation/CTARoomMockup';
 import ReviewsList, { TESTIMONIALS } from '@/components/ui/ReviewsList';
 import { ContainerScroll } from '@/components/ui/container-scroll-animation';
+import insertCardPreview from '@/assets/insert-card-preview.jpg';
 
 /**
  * Fallback hotspot positions derived from the prompt positioning data.
@@ -636,6 +637,23 @@ export function ChartExplanation({
                         Download Preview (Free)
                       </button>
                     </div>
+
+                    {/* Insert card teaser */}
+                    <div className="flex flex-col items-center gap-2 mt-2">
+                      <p className="text-xs font-display uppercase tracking-widest text-white/50">
+                        ✦ Included with every order
+                      </p>
+                      <p className="text-sm font-body text-white/80 text-center">
+                        Your personal Cosmic Blueprint card — printed and tucked inside.
+                      </p>
+                      <img
+                        src={insertCardPreview}
+                        alt="Cosmic Blueprint insert card"
+                        className="w-[280px] rounded-lg shadow-lg"
+                        loading="lazy"
+                      />
+                    </div>
+
                     <p className="text-body-sm font-body text-white/70 text-center">
                       ✓ Free shipping  📦 30-day quality guarantee  🔒 Secure checkout
                     </p>
@@ -790,6 +808,23 @@ export function ChartExplanation({
                   Download Preview (Free)
                 </button>
               </div>
+
+              {/* Insert card teaser */}
+              <div className="relative flex flex-col items-center gap-2 mt-2">
+                <p className="text-xs font-display uppercase tracking-widest text-white/50">
+                  ✦ Included with every order
+                </p>
+                <p className="text-sm font-body text-white/80 text-center">
+                  Your personal Cosmic Blueprint card — printed and tucked inside.
+                </p>
+                <img
+                  src={insertCardPreview}
+                  alt="Cosmic Blueprint insert card"
+                  className="w-[280px] rounded-lg shadow-lg"
+                  loading="lazy"
+                />
+              </div>
+
               <p className="relative text-body-sm font-body text-white/70 text-center">
                 ✓ Free shipping  📦 30-day quality guarantee  🔒 Secure checkout
               </p>
