@@ -15,6 +15,7 @@ interface ImageMarqueeProps {
   images: (string | MarqueeImage)[];
   className?: string;
   duration?: number;
+  onInteraction?: () => void;
 }
 
 const ANGLES = [-3, 2, -2, 3, -1, 2.5, -2.5, 1.5];
@@ -27,6 +28,7 @@ export const ImageMarquee: React.FC<ImageMarqueeProps> = ({
   images,
   className,
   duration = 30,
+  onInteraction,
 }) => {
   const isMobile = useIsMobile() || (typeof window !== "undefined" && window.innerWidth < 768);
   const normalizedImages = React.useMemo(() => images.map(normalizeImage), [images]);
@@ -34,7 +36,7 @@ export const ImageMarquee: React.FC<ImageMarqueeProps> = ({
   const mobileDuration = Math.max(duration, 10);
 
   if (isMobile) {
-    return <MobileMarquee images={normalizedImages} className={className} duration={mobileDuration} />;
+    return <MobileMarquee images={normalizedImages} className={className} duration={mobileDuration} onInteraction={onInteraction} />;
   }
 
   return (
@@ -64,10 +66,12 @@ function MobileMarquee({
   images,
   className,
   duration,
+  onInteraction,
 }: {
   images: MarqueeImage[];
   className?: string;
   duration: number;
+  onInteraction?: () => void;
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const innerRef = React.useRef<HTMLDivElement>(null);
@@ -124,6 +128,7 @@ function MobileMarquee({
     dragStartOffsetRef.current = offsetRef.current;
     containerRef.current?.setPointerCapture?.(event.pointerId);
     pauseAutoScroll();
+    onInteraction?.();
   };
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {

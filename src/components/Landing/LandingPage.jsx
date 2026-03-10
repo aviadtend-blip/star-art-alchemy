@@ -119,6 +119,7 @@ export default function LandingPage() {
   });
 
   const [mobileHeroStep, setMobileHeroStep] = useState('date');
+  const [hasScrolledCarousel, setHasScrolledCarousel] = useState(false);
 
   const handleFormComplete = (params) => {
     handleFormSubmit(params);
@@ -148,9 +149,16 @@ export default function LandingPage() {
       {/* ═══════════════════ HERO ═══════════════════ */}
       {/* Mobile hero */}
       <section className="lg:hidden relative min-h-[700px]" style={{ overflowY: 'clip', overflowX: 'visible' }}>
+        {/* Swipe hint icon — centered above carousel, fades on scroll */}
+        <div
+          className="absolute z-20 left-1/2 -translate-x-1/2 pointer-events-none transition-opacity duration-700"
+          style={{ top: '68px', opacity: hasScrolledCarousel ? 0 : 0.6 }}
+        >
+          <img src={swipeIcon} alt="" width="80" height="80" className="animate-[pulse_3s_ease-in-out_infinite]" />
+        </div>
         <div className="absolute inset-0 pointer-events-auto">
           <div className="flex items-start justify-center h-full pt-[72px]">
-            <ImageMarquee images={heroMarqueeImages} duration={20} />
+            <ImageMarquee images={heroMarqueeImages} duration={20} onInteraction={() => setHasScrolledCarousel(true)} />
           </div>
         </div>
         <div className="relative z-10 flex flex-col justify-end min-h-[700px] px-4 py-[15px] pointer-events-none" style={{ marginTop: '-40px' }}>
@@ -167,10 +175,6 @@ export default function LandingPage() {
             >
               {mobileHeroStep !== 'photo' && (
                 <div className="flex flex-col items-center text-center mb-6" style={{ gap: '12px' }}>
-                  {/* Swipe hint icon */}
-                  <div className="lg:hidden animate-[pulse_3s_ease-in-out_infinite]">
-                    <img src={swipeIcon} alt="" width="24" height="24" className="opacity-60" />
-                  </div>
                   <h2 className="text-a2 lg:text-a1 text-foreground">
                     Turn Your Birth<br />
                     Into Gallery-Worthy Art
