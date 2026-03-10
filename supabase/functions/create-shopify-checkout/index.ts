@@ -24,7 +24,7 @@ serve(async (req) => {
       throw new Error("Shopify configuration is missing");
     }
 
-    const { orderDetails, chartData, artworkImageUrl, customerName, artworkId } = await req.json();
+    const { orderDetails, chartData, artworkImageUrl, customerName, artworkId, celestialOrderId } = await req.json();
 
     if (!orderDetails || !orderDetails.total) {
       throw new Error("Missing order details");
@@ -68,9 +68,18 @@ serve(async (req) => {
       }
     `;
 
+    // Build line item custom attributes (underscore prefix hides from customer receipt)
+    const lineAttributes = [
+      { key: "_celestial_order_id", value: celestialOrderId || "" },
+    ];
+
     const variables = {
       input: {
-        lines: [{ merchandiseId, quantity: 1 }],
+        lines: [{
+          merchandiseId,
+          quantity: 1,
+          attributes: lineAttributes,
+        }],
         attributes,
         note,
       },

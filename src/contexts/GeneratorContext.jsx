@@ -221,8 +221,39 @@ export function GeneratorProvider({ children }) {
     setError(null);
 
     try {
+      // Step 1: Save order data to database
+      let celestialOrderId = null;
+      try {
+        const capturedEmail = sessionStorage.getItem('celestial_captured_email') || '';
+        const { data: saveData, error: saveError } = await supabase.functions.invoke('save-order-data', {
+          body: {
+            chartData,
+            artworkAnalysis,
+            generatedImageUrl: generatedImage,
+            subjectExplanation: artworkAnalysis?.subjectExplanation || null,
+            customerEmail: capturedEmail || formData?.name || 'unknown',
+          },
+        });
+        if (saveError) {
+          console.warn('⚠️ Order data save failed (non-blocking):', saveError.message);
+        } else if (saveData?.orderId) {
+          celestialOrderId = saveData.orderId;
+          sessionStorage.setItem('celestial_order_id', celestialOrderId);
+        }
+      } catch (saveErr) {
+        console.warn('⚠️ Order data save failed (non-blocking):', saveErr);
+      }
+
+      // Step 2: Create Shopify checkout
       const { data, error: fnError } = await supabase.functions.invoke('create-shopify-checkout', {
-        body: { orderDetails: enrichedDetails, chartData, artworkImageUrl: generatedImage, customerName: formData?.name, artworkId },
+        body: {
+          orderDetails: enrichedDetails,
+          chartData,
+          artworkImageUrl: generatedImage,
+          customerName: formData?.name,
+          artworkId,
+          celestialOrderId,
+        },
       });
 
       if (fnError) throw new Error(fnError.message);
@@ -246,7 +277,7 @@ export function GeneratorProvider({ children }) {
       setError(err.message);
       setIsCheckingOut(false);
     }
-  }, [chartData, formData, generatedImage]);
+  }, [chartData, formData, generatedImage, artworkAnalysis, artworkId]);
 
   const handleTestCheckout = useCallback((details) => {
     setOrderDetails({

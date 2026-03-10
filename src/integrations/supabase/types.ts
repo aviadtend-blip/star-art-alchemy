@@ -155,6 +155,45 @@ export type Database = {
         }
         Relationships: []
       }
+      orders: {
+        Row: {
+          artwork_analysis: Json | null
+          chart_data: Json
+          created_at: string
+          customer_email: string
+          generated_image_url: string
+          id: string
+          insert_card_url: string | null
+          shopify_order_id: string | null
+          shopify_order_number: string | null
+          subject_explanation: string | null
+        }
+        Insert: {
+          artwork_analysis?: Json | null
+          chart_data?: Json
+          created_at?: string
+          customer_email: string
+          generated_image_url: string
+          id?: string
+          insert_card_url?: string | null
+          shopify_order_id?: string | null
+          shopify_order_number?: string | null
+          subject_explanation?: string | null
+        }
+        Update: {
+          artwork_analysis?: Json | null
+          chart_data?: Json
+          created_at?: string
+          customer_email?: string
+          generated_image_url?: string
+          id?: string
+          insert_card_url?: string | null
+          shopify_order_id?: string | null
+          shopify_order_number?: string | null
+          subject_explanation?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
