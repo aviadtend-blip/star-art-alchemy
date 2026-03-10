@@ -24,7 +24,7 @@ serve(async (req) => {
       throw new Error("Shopify configuration is missing");
     }
 
-    const { orderDetails, chartData, artworkImageUrl, customerName, artworkId } = await req.json();
+    const { orderDetails, chartData, artworkImageUrl, customerName, artworkId, celestialOrderId } = await req.json();
 
     if (!orderDetails || !orderDetails.total) {
       throw new Error("Missing order details");
