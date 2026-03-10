@@ -26,11 +26,11 @@ export default function ArtworkCard({
         src={imageSrc}
       />
       {tags.length > 0 && (
-        <div className="absolute left-[25px] -top-[5px] flex items-center gap-px">
+        <div className="absolute left-1/2 -translate-x-1/2 -top-[14px] flex items-center gap-px z-10">
           {tags.map((tag) => (
             <span
               key={tag.label}
-              className="flex items-center justify-center rounded-[2px] bg-black/70 backdrop-blur-[17px] px-1 py-1 text-[12px] leading-[1.13] tracking-[-0.36px] text-white text-center whitespace-nowrap"
+              className="flex items-center justify-center rounded-[2px] bg-black/70 backdrop-blur-[17px] px-2 py-1.5 text-[12px] leading-[1.13] tracking-[-0.36px] text-white text-center whitespace-nowrap"
             >
               {tag.emoji} {tag.label}
             </span>
