@@ -150,7 +150,7 @@ export default function LandingPage() {
       <section className="lg:hidden relative min-h-[700px]" style={{ overflowY: 'clip', overflowX: 'visible' }}>
         <div className="absolute inset-0 pointer-events-auto">
           <div className="flex items-start justify-center h-full pt-[72px]">
-            <ImageMarquee images={heroMarqueeImages} duration={2.5} />
+            <ImageMarquee images={heroMarqueeImages} duration={8} />
           </div>
         </div>
         <div className="relative z-10 flex flex-col justify-end min-h-[700px] px-4 py-[15px] pointer-events-none" style={{ marginTop: '-40px' }}>
