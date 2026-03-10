@@ -41,9 +41,9 @@ import mockup20x30_7 from '@/assets/mockups/20x30/mockup-7.webp';
 import mockup20x30_8 from '@/assets/mockups/20x30/mockup-8.webp';
 
 const SIZE_OPTIONS = [
-  { id: '12x16', label: '12" × 16"', description: 'Perfect for combinations', price: 79 },
-  { id: '18x24', label: '18" × 24"', description: 'Statement piece (34% choose this)', price: 129, popular: true },
-  { id: '24x32', label: '24" × 32"', description: 'Gallery showpiece', price: 199 },
+  { id: '12x18', label: '12" × 18"', description: 'Perfect for combinations', price: 79 },
+  { id: '16x24', label: '16" × 24"', description: 'Statement piece (34% choose this)', price: 119, popular: true },
+  { id: '20x30', label: '20" × 30"', description: 'Gallery showpiece', price: 179 },
 ];
 
 // Each mockup has a numeric ID so we can match across sizes when switching
@@ -250,7 +250,7 @@ function OrderSummary({ sunSign, sizeLabel, total, onCheckout }) {
 }
 
 export function ProductCustomization({ chartData, artworkImage, onCheckout, onBack, formData, onEditBirthData }) {
-  const [selectedSize, setSelectedSize] = useState('18x24');
+  const [selectedSize, setSelectedSize] = useState('16x24');
   const [activeThumb, setActiveThumb] = useState(0);
   const sizeCarouselRef = useRef(null);
   const isFirstSizeScroll = useRef(true);
