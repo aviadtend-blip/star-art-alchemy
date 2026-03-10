@@ -43,6 +43,7 @@ import GalleryTile from "./GalleryTile";
 import CustomerReactionsCarousel from "./CustomerReactionsCarousel";
 import CustomerReactionsCarouselMobile from "./CustomerReactionsCarouselMobile";
 import { ThreeDPhotoCarousel } from "@/components/ui/3d-carousel";
+import { ImageMarquee } from "@/components/ui/image-marquee";
 
 /* ─── Static data ─── */
 
