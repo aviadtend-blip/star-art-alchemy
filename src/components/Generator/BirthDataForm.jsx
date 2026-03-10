@@ -541,7 +541,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
             onClick={handleNext}
             className="btn-base btn-primary w-full"
           >
-            Next
+            {SHOW_PORTRAIT_STEP ? 'Next' : 'Generate My Artwork'}
           </button>
         </>
       )}
