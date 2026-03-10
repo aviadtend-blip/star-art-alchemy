@@ -272,7 +272,7 @@ export function ChartExplanation({
 
   const staticPositions = getStaticPositions(chartData);
 
-  const hotspots = explanation.elements.map((el, i) => ({
+  const hotspots = (explanation.elements || explanation.hotspots || []).map((el, i) => ({
     ...el,
     id: i + 1,
     // Ensure new fields exist, falling back to legacy field names
