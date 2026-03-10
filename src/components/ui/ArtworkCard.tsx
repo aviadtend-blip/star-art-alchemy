@@ -1,0 +1,49 @@
+import React from "react";
+
+const artworkImage =
+  "https://www.figma.com/api/mcp/asset/bd6d6874-3f79-4d4c-932c-f3a4257ea557";
+
+interface ZodiacTag {
+  emoji: string;
+  label: string;
+}
+
+interface ArtworkCardProps {
+  imageSrc?: string;
+  imageAlt?: string;
+  tags?: ZodiacTag[];
+  className?: string;
+}
+
+const defaultTags: ZodiacTag[] = [
+  { emoji: "☀️", label: "Leo" },
+  { emoji: "🌙", label: "Capricorn" },
+  { emoji: "⬆️", label: "Scorpio" },
+];
+
+export default function ArtworkCard({
+  imageSrc = artworkImage,
+  imageAlt = "Celestial artwork",
+  tags = defaultTags,
+  className,
+}: ArtworkCardProps) {
+  return (
+    <div className={`relative h-[300px] w-[200px] ${className ?? ""}`}>
+      <img
+        alt={imageAlt}
+        className="absolute inset-0 size-full object-cover pointer-events-none"
+        src={imageSrc}
+      />
+      <div className="absolute left-[25px] -top-[5px] flex items-center gap-px">
+        {tags.map((tag) => (
+          <span
+            key={tag.label}
+            className="flex items-center justify-center rounded-[2px] bg-black/70 backdrop-blur-[17px] px-1 py-1 text-[12px] leading-[1.13] tracking-[-0.36px] text-white text-center whitespace-nowrap"
+          >
+            {tag.emoji} {tag.label}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
