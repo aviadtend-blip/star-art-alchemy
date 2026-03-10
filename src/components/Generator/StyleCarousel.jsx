@@ -16,6 +16,7 @@ export default function StyleCarousel({
   onShowMore,    // () => void
   showingAll,    // boolean — hide "Show More" card when true
 }) {
+  const [tapHintVisible, setTapHintVisible] = useState(true);
   const scrollRef = useRef(null);
   const cardRefs = useRef([]);
   const isProgrammaticScroll = useRef(false);
