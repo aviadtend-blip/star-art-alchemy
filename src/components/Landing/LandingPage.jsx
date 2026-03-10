@@ -174,10 +174,6 @@ export default function LandingPage() {
             >
               {mobileHeroStep !== 'photo' && (
                 <div className="flex flex-col items-center text-center mb-6" style={{ gap: '12px' }}>
-                  {/* Swipe hint icon */}
-                  <div className="lg:hidden animate-[pulse_3s_ease-in-out_infinite]">
-                    <img src={swipeIcon} alt="" width="24" height="24" className="opacity-60" />
-                  </div>
                   <h2 className="text-a2 lg:text-a1 text-foreground">
                     Turn Your Birth<br />
                     Into Gallery-Worthy Art
