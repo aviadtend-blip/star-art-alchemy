@@ -250,7 +250,7 @@ function OrderSummary({ sunSign, sizeLabel, total, onCheckout }) {
 }
 
 export function ProductCustomization({ chartData, artworkImage, onCheckout, onBack, formData, onEditBirthData }) {
-  const [selectedSize, setSelectedSize] = useState('18x24');
+  const [selectedSize, setSelectedSize] = useState('16x24');
   const [activeThumb, setActiveThumb] = useState(0);
   const sizeCarouselRef = useRef(null);
   const isFirstSizeScroll = useRef(true);
