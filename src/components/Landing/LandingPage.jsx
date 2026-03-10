@@ -165,7 +165,13 @@ export default function LandingPage() {
               }}
             >
               {mobileHeroStep !== 'photo' && (
-                <div className="flex flex-col gap-3 lg:gap-3 text-center mb-6" style={{ gap: '12px' }}>
+                <div className="flex flex-col items-center text-center mb-6" style={{ gap: '12px' }}>
+                  {/* Swipe hint icon */}
+                  <div className="lg:hidden animate-[pulse_3s_ease-in-out_infinite]">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M5 12H19M5 12L8 9M5 12L8 15M19 12L16 9M19 12L16 15" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.6"/>
+                    </svg>
+                  </div>
                   <h2 className="text-a2 lg:text-a1 text-foreground">
                     Turn Your Birth<br />
                     Into Gallery-Worthy Art
