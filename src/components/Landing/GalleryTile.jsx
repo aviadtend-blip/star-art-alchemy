@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import tappingIcon from "@/assets/tapping-icon.svg";
 
 /**
@@ -14,8 +14,19 @@ import tappingIcon from "@/assets/tapping-icon.svg";
  */
 export default function GalleryTile({ image, name, signs, explanations = [], showTapHint = false }) {
   const [tapped, setTapped] = useState(false);
+  const overlayRef = useRef(null);
 
-  const handleTap = () => setTapped((prev) => !prev);
+  const handleTap = () => {
+    setTapped((prev) => {
+      const next = !prev;
+      if (next) {
+        requestAnimationFrame(() => {
+          if (overlayRef.current) overlayRef.current.scrollTop = 0;
+        });
+      }
+      return next;
+    });
+  };
 
   return (
     <div className="flex flex-col items-center flex-shrink-0 snap-center w-[282px] lg:w-full lg:max-w-[281px]">
@@ -39,8 +50,8 @@ export default function GalleryTile({ image, name, signs, explanations = [], sho
           </div>
         )}
 
-        {/* Hover / tap overlay */}
         <div
+          ref={overlayRef}
           className={`
             absolute inset-0 flex flex-col items-start p-5 gap-4 transition-opacity duration-300 overflow-y-auto
             md:opacity-0 md:group-hover:opacity-100
