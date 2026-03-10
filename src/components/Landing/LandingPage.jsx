@@ -33,6 +33,12 @@ import customerDisplay7 from "@/assets/gallery/customer-display-7.webp";
 import customerDisplay8 from "@/assets/gallery/customer-display-8.webp";
 import customerDisplay9 from "@/assets/gallery/customer-display-9.webp";
 import customerDisplay10 from "@/assets/gallery/customer-display-10.webp";
+import heroCustomer1 from "@/assets/hero/customer-1.webp";
+import heroCustomer2 from "@/assets/hero/customer-2.webp";
+import heroCustomer3 from "@/assets/hero/customer-3.webp";
+import heroCustomer4 from "@/assets/hero/customer-4.webp";
+import heroCustomer5 from "@/assets/hero/customer-5.webp";
+import heroCustomer6 from "@/assets/hero/customer-6.webp";
 
 import ProgressBar from "@/components/ui/ProgressBar";
 import InteractiveHotspots from "./InteractiveHotspots";
