@@ -31,7 +31,7 @@ export const ImageMarquee: React.FC<ImageMarqueeProps> = ({
   const isMobile = useIsMobile();
   const normalizedImages = React.useMemo(() => images.map(normalizeImage), [images]);
   const duplicatedImages = [...normalizedImages, ...normalizedImages];
-  const mobileDuration = Math.max(duration * 0.7, 15);
+  const mobileDuration = Math.max(duration, 6);
 
   if (isMobile) {
     return <MobileMarquee images={normalizedImages} className={className} duration={mobileDuration} />;
@@ -72,6 +72,8 @@ function MobileMarquee({
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const pauseUntilRef = React.useRef(0);
   const isInteractingRef = React.useRef(false);
+  const touchStartXRef = React.useRef(0);
+  const scrollStartLeftRef = React.useRef(0);
   const duplicatedImages = React.useMemo(() => [...images, ...images], [images]);
 
   React.useEffect(() => {
@@ -108,34 +110,55 @@ function MobileMarquee({
   }, [duration, duplicatedImages]);
 
   const pauseAutoScroll = () => {
-    pauseUntilRef.current = performance.now() + 1800;
+    pauseUntilRef.current = performance.now() + 1200;
+  };
+
+  const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    isInteractingRef.current = true;
+    touchStartXRef.current = event.touches[0].clientX;
+    scrollStartLeftRef.current = container.scrollLeft;
+    pauseAutoScroll();
+  };
+
+  const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const deltaX = event.touches[0].clientX - touchStartXRef.current;
+    container.scrollLeft = scrollStartLeftRef.current - deltaX;
+  };
+
+  const handleTouchEnd = () => {
+    const container = scrollRef.current;
+    if (container) {
+      const loopWidth = container.scrollWidth / 2;
+      if (container.scrollLeft >= loopWidth) {
+        container.scrollLeft -= loopWidth;
+      }
+      if (container.scrollLeft <= 0) {
+        container.scrollLeft += loopWidth;
+      }
+    }
+
+    isInteractingRef.current = false;
+    pauseAutoScroll();
   };
 
   return (
     <div
       ref={scrollRef}
-      className={cn("w-full overflow-x-auto overflow-y-visible touch-pan-x", className)}
+      className={cn("w-full overflow-x-scroll overflow-y-visible touch-pan-x", className)}
       style={{
         WebkitOverflowScrolling: "touch",
         scrollbarWidth: "none",
         msOverflowStyle: "none" as React.CSSProperties["msOverflowStyle"],
       }}
-      onTouchStart={() => {
-        isInteractingRef.current = true;
-        pauseAutoScroll();
-      }}
-      onTouchEnd={() => {
-        isInteractingRef.current = false;
-        pauseAutoScroll();
-      }}
-      onMouseDown={() => {
-        isInteractingRef.current = true;
-        pauseAutoScroll();
-      }}
-      onMouseUp={() => {
-        isInteractingRef.current = false;
-        pauseAutoScroll();
-      }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       onScroll={pauseAutoScroll}
     >
       <style>{`.mobile-marquee::-webkit-scrollbar { display: none; }`}</style>
