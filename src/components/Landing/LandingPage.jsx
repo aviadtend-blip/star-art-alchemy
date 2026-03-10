@@ -155,7 +155,7 @@ export default function LandingPage() {
         </div>
         <div className="relative z-10 flex flex-col justify-end min-h-[700px] px-4 py-[15px] pointer-events-none" style={{ marginTop: '-40px' }}>
 
-          <div className="w-full md:max-w-[500px] mx-auto min-w-0">
+          <div className="w-full md:max-w-[500px] mx-auto min-w-0 pointer-events-auto">
             <div
               className="flex flex-col items-stretch w-full rounded-[2px]"
               style={{

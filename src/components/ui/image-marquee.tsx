@@ -152,7 +152,7 @@ function MobileMarquee({
   return (
     <div
       ref={scrollRef}
-      className={cn("w-full overflow-x-scroll overflow-y-visible touch-pan-x", className)}
+      className={cn("w-full overflow-x-scroll overflow-y-visible touch-pan-x select-none", className)}
       style={{
         WebkitOverflowScrolling: "touch",
         scrollbarWidth: "none",
