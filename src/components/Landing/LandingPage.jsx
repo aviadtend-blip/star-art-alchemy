@@ -39,6 +39,7 @@ import heroCustomer3 from "@/assets/hero/customer-3.webp";
 import heroCustomer4 from "@/assets/hero/customer-4.webp";
 import heroCustomer5 from "@/assets/hero/customer-5.webp";
 import heroCustomer6 from "@/assets/hero/customer-6.webp";
+import swipeIcon from "@/assets/swipe-icon.svg";
 
 import ProgressBar from "@/components/ui/ProgressBar";
 import InteractiveHotspots from "./InteractiveHotspots";
@@ -161,16 +162,14 @@ export default function LandingPage() {
                 background: 'rgba(17, 17, 17, 0.70)',
                 backdropFilter: 'blur(17px)',
                 WebkitBackdropFilter: 'blur(17px)',
-                padding: '40px 16px 8px 16px',
+                padding: '4px 16px 8px 16px',
               }}
             >
               {mobileHeroStep !== 'photo' && (
                 <div className="flex flex-col items-center text-center mb-6" style={{ gap: '12px' }}>
                   {/* Swipe hint icon */}
                   <div className="lg:hidden animate-[pulse_3s_ease-in-out_infinite]">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M5 12H19M5 12L8 9M5 12L8 15M19 12L16 9M19 12L16 15" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.6"/>
-                    </svg>
+                    <img src={swipeIcon} alt="" width="24" height="24" className="opacity-60" />
                   </div>
                   <h2 className="text-a2 lg:text-a1 text-foreground">
                     Turn Your Birth<br />
