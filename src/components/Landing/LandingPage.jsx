@@ -157,7 +157,7 @@ export default function LandingPage() {
           <img src={swipeIcon} alt="" width="60" height="60" className="animate-[pulse_3s_ease-in-out_infinite]" />
         </div>
         <div className="absolute inset-0 pointer-events-auto">
-          <div className="flex items-start justify-center h-full pt-0">
+          <div className="flex items-start justify-center h-full pt-[48px]">
             <ImageMarquee images={heroMarqueeImages} duration={28} onInteraction={() => setHasScrolledCarousel(true)} />
           </div>
         </div>
