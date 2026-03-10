@@ -32,6 +32,13 @@ export default function GalleryTile({ image, name, signs, explanations = [], sho
           loading="lazy"
         />
 
+        {/* Tap hint icon — centered, pulsing, disappears on first tap */}
+        {showTapHint && !tapped && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+            <img src={tappingIcon} alt="" width="40" height="40" className="animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite] opacity-70" />
+          </div>
+        )}
+
         {/* Hover / tap overlay */}
         <div
           className={`
