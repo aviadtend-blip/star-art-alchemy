@@ -189,9 +189,10 @@ export default function LandingPage() {
       {/* Desktop hero — gallery wall */}
       <section className="hidden lg:block relative min-h-[740px] overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background z-[1]" />
-          <div className="flex items-center h-full pt-10">
-            <ImageMarquee images={heroMarqueeImages} duration={35} imageHeight="h-64" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background z-[1]" />
+          <div className="absolute bottom-0 left-0 right-0 h-[55%] bg-gradient-to-t from-background via-background/80 to-transparent z-[1]" />
+          <div className="flex items-start justify-center h-full pt-[60px]">
+            <ImageMarquee images={heroMarqueeImages} duration={35} />
           </div>
         </div>
         <div className="relative z-20 flex flex-col justify-end min-h-[740px] pb-0 px-6">
