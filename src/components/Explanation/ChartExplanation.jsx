@@ -691,8 +691,10 @@ export function ChartExplanation({
             <div
               ref={scrollContainerRef}
               className="flex w-full overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 -mx-6"
-              style={{ gap: '16px', width: 'calc(100% + 48px)', paddingLeft: 20 }}
+              style={{ gap: '16px', width: 'calc(100% + 48px)' }}
             >
+              {/* Left spacer for 20px offset */}
+              <div className="flex-shrink-0" style={{ width: 20 }} />
               {hotspots.map((h, i) => (
                 <div
                   key={h.id}
