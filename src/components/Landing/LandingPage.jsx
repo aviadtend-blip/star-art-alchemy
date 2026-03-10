@@ -119,6 +119,7 @@ export default function LandingPage() {
   });
 
   const [mobileHeroStep, setMobileHeroStep] = useState('date');
+  const [hasScrolledCarousel, setHasScrolledCarousel] = useState(false);
 
   const handleFormComplete = (params) => {
     handleFormSubmit(params);
