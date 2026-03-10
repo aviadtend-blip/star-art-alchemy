@@ -55,6 +55,10 @@ export const ImageMarquee: React.FC<ImageMarqueeProps> = ({
                 className="h-full w-full object-cover"
                 loading={index < images.length ? "eager" : "lazy"}
               />
+              <div
+                className="absolute inset-x-0 bottom-0 h-[40%] pointer-events-none"
+                style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85), transparent)' }}
+              />
             </div>
           );
         })}

@@ -143,15 +143,13 @@ export default function LandingPage() {
 
       {/* ═══════════════════ HERO ═══════════════════ */}
       {/* Mobile hero */}
-      <section className="lg:hidden relative overflow-hidden min-h-[780px] -mt-0">
+      <section className="lg:hidden relative overflow-hidden min-h-[700px]">
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background z-[1]" />
-          <div className="absolute bottom-0 left-0 right-0 h-[60%] bg-gradient-to-t from-background via-background/80 to-transparent z-[1]" />
           <div className="flex items-start justify-center h-full pt-[72px]">
             <ImageMarquee images={heroMarqueeImages} duration={25} />
           </div>
         </div>
-        <div className="relative z-10 flex flex-col justify-end min-h-[780px] px-4 py-[15px]">
+        <div className="relative z-10 flex flex-col justify-end min-h-[700px] px-4 py-[15px]" style={{ marginTop: '-80px' }}>
 
           <ShineBorder
             className="w-full md:max-w-[500px] mx-auto min-w-0"
@@ -189,8 +187,6 @@ export default function LandingPage() {
       {/* Desktop hero — gallery wall */}
       <section className="hidden lg:block relative min-h-[740px] overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background z-[1]" />
-          <div className="absolute bottom-0 left-0 right-0 h-[55%] bg-gradient-to-t from-background via-background/80 to-transparent z-[1]" />
           <div className="flex items-start justify-center h-full pt-[60px]">
             <ImageMarquee images={heroMarqueeImages} duration={35} />
           </div>
