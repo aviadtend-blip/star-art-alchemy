@@ -31,7 +31,7 @@ export const ImageMarquee: React.FC<ImageMarqueeProps> = ({
   const isMobile = useIsMobile();
   const normalizedImages = React.useMemo(() => images.map(normalizeImage), [images]);
   const duplicatedImages = [...normalizedImages, ...normalizedImages];
-  const mobileDuration = Math.max(duration, 6);
+  const mobileDuration = Math.max(duration, 2.5);
 
   if (isMobile) {
     return <MobileMarquee images={normalizedImages} className={className} duration={mobileDuration} />;
@@ -129,6 +129,8 @@ function MobileMarquee({
 
     const deltaX = event.touches[0].clientX - touchStartXRef.current;
     container.scrollLeft = scrollStartLeftRef.current - deltaX;
+    pauseAutoScroll();
+    event.preventDefault();
   };
 
   const handleTouchEnd = () => {
@@ -150,7 +152,7 @@ function MobileMarquee({
   return (
     <div
       ref={scrollRef}
-      className={cn("w-full overflow-x-scroll overflow-y-visible touch-pan-x", className)}
+      className={cn("w-full overflow-x-scroll overflow-y-visible touch-pan-x select-none", className)}
       style={{
         WebkitOverflowScrolling: "touch",
         scrollbarWidth: "none",

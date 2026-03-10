@@ -148,14 +148,14 @@ export default function LandingPage() {
       {/* ═══════════════════ HERO ═══════════════════ */}
       {/* Mobile hero */}
       <section className="lg:hidden relative min-h-[700px]" style={{ overflowY: 'clip', overflowX: 'visible' }}>
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 pointer-events-auto">
           <div className="flex items-start justify-center h-full pt-[72px]">
-            <ImageMarquee images={heroMarqueeImages} duration={8} />
+            <ImageMarquee images={heroMarqueeImages} duration={4} />
           </div>
         </div>
-        <div className="relative z-10 flex flex-col justify-end min-h-[700px] px-4 py-[15px]" style={{ marginTop: '-40px' }}>
+        <div className="relative z-10 flex flex-col justify-end min-h-[700px] px-4 py-[15px] pointer-events-none" style={{ marginTop: '-40px' }}>
 
-          <div className="w-full md:max-w-[500px] mx-auto min-w-0">
+          <div className="w-full md:max-w-[500px] mx-auto min-w-0 pointer-events-auto">
             <div
               className="flex flex-col items-stretch w-full rounded-[2px]"
               style={{
