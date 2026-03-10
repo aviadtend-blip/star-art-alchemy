@@ -4,6 +4,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, Upload, X, Loader2 } from "lucide-react";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const SHOW_PORTRAIT_STEP = false; // Feature flag: set to true to re-enable Step 3 (photo upload)
 
 const BirthDataFormJsx = ({ onSubmit }) => {
   const isMobile = useIsMobile();
@@ -183,7 +184,12 @@ const BirthDataFormJsx = ({ onSubmit }) => {
         setTouched((prev) => ({ ...prev, hour: true, minute: true, city: true }));
         return;
       }
-      setStep(3);
+      if (SHOW_PORTRAIT_STEP) {
+        setStep(3);
+      } else {
+        // Skip portrait step — submit directly without photo
+        doSubmit(false);
+      }
     }
   };
 
@@ -279,10 +285,10 @@ const BirthDataFormJsx = ({ onSubmit }) => {
       errors[field] && touched[field] ? "border-destructive" : "border-border"
     }`;
 
-  // Step indicator
+  const totalSteps = SHOW_PORTRAIT_STEP ? 3 : 2;
   const StepIndicator = () => (
     <div className="flex items-center justify-center gap-2 mb-6">
-      {[1, 2, 3].map((s) => (
+      {Array.from({ length: totalSteps }, (_, i) => i + 1).map((s) => (
         <div
           key={s}
           className="rounded-full transition-all duration-300"
@@ -535,13 +541,13 @@ const BirthDataFormJsx = ({ onSubmit }) => {
             onClick={handleNext}
             className="btn-base btn-primary w-full"
           >
-            Next
+            {SHOW_PORTRAIT_STEP ? 'Next' : 'Generate My Artwork'}
           </button>
         </>
       )}
 
-      {/* =================== STEP 3: Photo Upload =================== */}
-      {step === 3 && (
+      {/* =================== STEP 3: Photo Upload (behind feature flag) =================== */}
+      {SHOW_PORTRAIT_STEP && step === 3 && (
         <>
           {/* Upload zone */}
           {!photoFile ? (
