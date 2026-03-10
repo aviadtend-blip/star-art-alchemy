@@ -148,7 +148,7 @@ export default function BirthDataFormCard({
       if (birthAmPm === "PM" && hour !== 12) hour += 12;
       if (birthAmPm === "AM" && hour === 12) hour = 0;
     }
-    pendingSubmitRef.current = {
+    const submitData = {
       name: formData.name,
       month: formData.birthMonth,
       day: formData.birthDay,
@@ -160,7 +160,8 @@ export default function BirthDataFormCard({
       lat: formData.lat,
       lng: formData.lng,
     };
-    setShowPhotoStep(true);
+    // Skip photo step — submit directly
+    onSubmit(submitData);
   };
 
   // ── Photo handlers with face detection ──
