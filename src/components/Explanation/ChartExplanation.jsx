@@ -12,6 +12,7 @@ import galaxyBg from '@/assets/galaxy-bg.jpg';
 import CTARoomMockup from '@/components/Explanation/CTARoomMockup';
 import ReviewsList, { TESTIMONIALS } from '@/components/ui/ReviewsList';
 import { ContainerScroll } from '@/components/ui/container-scroll-animation';
+import insertCardPreview from '@/assets/insert-card-preview.jpg';
 
 /**
  * Fallback hotspot positions derived from the prompt positioning data.
