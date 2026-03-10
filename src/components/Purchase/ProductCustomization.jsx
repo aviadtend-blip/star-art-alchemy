@@ -49,17 +49,17 @@ const SIZE_OPTIONS = [
 // Each mockup has a numeric ID so we can match across sizes when switching
 // Ordered low→high. When switching sizes, we try to keep the same mockup number.
 const MOCKUPS_BY_NUMBER = {
-  '12x16': [
+  '12x18': [
     { num: 1, src: mockup12x18_1 }, { num: 2, src: mockup12x18_2 }, { num: 3, src: mockup12x18_3 },
     { num: 4, src: mockup12x18_4 }, { num: 5, src: mockup12x18_5 }, { num: 6, src: mockup12x18_6 },
     { num: 7, src: mockup12x18_7 }, { num: 8, src: mockup12x18_8 },
   ],
-  '18x24': [
+  '16x24': [
     { num: 1, src: mockup16x24_1 }, { num: 2, src: mockup16x24_2 }, { num: 3, src: mockup16x24_3 },
     { num: 4, src: mockup16x24_4 }, { num: 5, src: mockup16x24_5 }, { num: 6, src: mockup16x24_6 },
     { num: 7, src: mockup16x24_7 }, { num: 8, src: mockup16x24_8 },
   ],
-  '24x32': [
+  '20x30': [
     { num: 3, src: mockup20x30_3 }, { num: 4, src: mockup20x30_4 }, { num: 5, src: mockup20x30_5 },
     { num: 6, src: mockup20x30_6 }, { num: 7, src: mockup20x30_7 }, { num: 8, src: mockup20x30_8 },
   ],
