@@ -129,6 +129,8 @@ function MobileMarquee({
 
     const deltaX = event.touches[0].clientX - touchStartXRef.current;
     container.scrollLeft = scrollStartLeftRef.current - deltaX;
+    pauseAutoScroll();
+    event.preventDefault();
   };
 
   const handleTouchEnd = () => {
