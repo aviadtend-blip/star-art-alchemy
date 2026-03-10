@@ -13,6 +13,7 @@ import CTARoomMockup from '@/components/Explanation/CTARoomMockup';
 import ReviewsList, { TESTIMONIALS } from '@/components/ui/ReviewsList';
 import { ContainerScroll } from '@/components/ui/container-scroll-animation';
 import insertCardPreview from '@/assets/insert-card-preview.jpg';
+import arrowSvg from '@/assets/arrow.svg';
 
 /**
  * Fallback hotspot positions derived from the prompt positioning data.
@@ -639,19 +640,24 @@ export function ChartExplanation({
                     </div>
 
                     {/* Insert card teaser */}
-                    <div className="flex flex-col items-center gap-2 mt-2">
-                      <p className="text-xs font-display uppercase tracking-widest text-white/50">
-                        ✦ Included with every order
+                    <div className="flex flex-col items-center gap-1 mt-4">
+                      <p className="text-body-sm font-body text-white text-center">
+                        <span className="font-bold">✦ Included with every order:</span>{' '}
+                        <span className="text-white/60">Your personal Cosmic Blueprint card — printed and tucked inside.</span>
                       </p>
-                      <p className="text-sm font-body text-white/80 text-center">
-                        Your personal Cosmic Blueprint card — printed and tucked inside.
-                      </p>
-                      <img
-                        src={insertCardPreview}
-                        alt="Cosmic Blueprint insert card"
-                        className="w-[280px] rounded-lg shadow-lg"
-                        loading="lazy"
-                      />
+                      <div className="relative mt-2">
+                        <img
+                          src={insertCardPreview}
+                          alt="Cosmic Blueprint insert card"
+                          className="w-[280px] shadow-lg"
+                          loading="lazy"
+                        />
+                        <img
+                          src={arrowSvg}
+                          alt=""
+                          className="absolute -right-10 -top-2 w-[54px] h-[58px] pointer-events-none"
+                        />
+                      </div>
                     </div>
 
                     <p className="text-body-sm font-body text-white/70 text-center">
@@ -810,19 +816,24 @@ export function ChartExplanation({
               </div>
 
               {/* Insert card teaser */}
-              <div className="relative flex flex-col items-center gap-2 mt-2">
-                <p className="text-xs font-display uppercase tracking-widest text-white/50">
-                  ✦ Included with every order
+              <div className="relative flex flex-col items-center gap-1 mt-4">
+                <p className="text-body-sm font-body text-white text-center">
+                  <span className="font-bold">✦ Included with every order:</span>{' '}
+                  <span className="text-white/60">Your personal Cosmic Blueprint card — printed and tucked inside.</span>
                 </p>
-                <p className="text-sm font-body text-white/80 text-center">
-                  Your personal Cosmic Blueprint card — printed and tucked inside.
-                </p>
-                <img
-                  src={insertCardPreview}
-                  alt="Cosmic Blueprint insert card"
-                  className="w-[280px] rounded-lg shadow-lg"
-                  loading="lazy"
-                />
+                <div className="relative mt-2">
+                  <img
+                    src={insertCardPreview}
+                    alt="Cosmic Blueprint insert card"
+                    className="w-[280px] shadow-lg"
+                    loading="lazy"
+                  />
+                  <img
+                    src={arrowSvg}
+                    alt=""
+                    className="absolute -right-10 -top-2 w-[54px] h-[58px] pointer-events-none"
+                  />
+                </div>
               </div>
 
               <p className="relative text-body-sm font-body text-white/70 text-center">
