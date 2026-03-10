@@ -148,7 +148,7 @@ export default function LandingPage() {
 
       {/* ═══════════════════ HERO ═══════════════════ */}
       {/* Mobile hero */}
-      <section className="lg:hidden relative min-h-[700px]" style={{ overflowY: 'clip', overflowX: 'visible' }}>
+      <section className="lg:hidden relative min-h-[700px] pt-8" style={{ overflowY: 'clip', overflowX: 'visible' }}>
         {/* Swipe hint icon — centered above carousel, fades on scroll */}
         <div
           className="absolute z-20 left-1/2 -translate-x-1/2 pointer-events-none transition-opacity duration-300"
