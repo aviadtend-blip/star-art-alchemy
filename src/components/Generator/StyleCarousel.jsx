@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
-import { Search } from 'lucide-react';
 import PopularTag from '@/components/ui/PopularTag';
+import tappingIcon from '@/assets/tapping-icon.svg';
 import starsBg from '@/assets/stars-bg.jpg';
 
 /**
@@ -16,6 +16,7 @@ export default function StyleCarousel({
   onShowMore,    // () => void
   showingAll,    // boolean — hide "Show More" card when true
 }) {
+  const [tapHintVisible, setTapHintVisible] = useState(true);
   const scrollRef = useRef(null);
   const cardRefs = useRef([]);
   const isProgrammaticScroll = useRef(false);
@@ -120,7 +121,10 @@ export default function StyleCarousel({
                 cursor: 'pointer',
               }}
               onClick={() => {
-                if (!isActive) {
+                if (isActive) {
+                  setTapHintVisible(false);
+                  onZoom?.(style.id);
+                } else {
                   onActiveChange(i);
                   scrollToIndex(i);
                 }
@@ -135,24 +139,18 @@ export default function StyleCarousel({
                 loading="lazy"
               />
 
-              {/* Zoom button — active card only */}
-              {isActive && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onZoom?.(style.id);
-                  }}
-                  className="absolute flex items-center justify-center bg-white/90 backdrop-blur-sm hover:bg-white transition-colors shadow-md"
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: '50%',
-                    bottom: 16,
-                    right: 16,
-                  }}
-                >
-                  <Search className="w-4 h-4" style={{ color: '#191919' }} />
-                </button>
+              {/* Tapping hint icon — all cards, disappears after first tap */}
+              {tapHintVisible && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                  <img
+                    src={tappingIcon}
+                    alt=""
+                    width="48"
+                    height="48"
+                    className="animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]"
+                    style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.8)) drop-shadow(0 0 20px rgba(0,0,0,0.5))' }}
+                  />
+                </div>
               )}
 
               {/* Most popular badge */}
