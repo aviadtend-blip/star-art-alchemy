@@ -91,6 +91,18 @@ const galleryItems = [
   { img: customerDisplay10, label: "Mountain sunset mixed media artwork" },
 ];
 
+// Placeholder images for hero marquee — replace with real images later
+const heroMarqueeImages = [
+  "https://placehold.co/450x600/1a1a2e/ffffff?text=Artwork+1",
+  "https://placehold.co/450x600/16213e/ffffff?text=Artwork+2",
+  "https://placehold.co/450x600/0f3460/ffffff?text=Artwork+3",
+  "https://placehold.co/450x600/533483/ffffff?text=Artwork+4",
+  "https://placehold.co/450x600/2c2c54/ffffff?text=Artwork+5",
+  "https://placehold.co/450x600/1e3799/ffffff?text=Artwork+6",
+  "https://placehold.co/450x600/6a0572/ffffff?text=Artwork+7",
+  "https://placehold.co/450x600/1b1464/ffffff?text=Artwork+8",
+];
+
 /* ─── Component ─── */
 
 export default function LandingPage() {
