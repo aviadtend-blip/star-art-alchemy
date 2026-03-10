@@ -56,7 +56,7 @@ export default function ReviewsList({ theme = 'dark', gap = 6, py = 6, className
                 src={t.img}
                 alt={t.name}
                 className="w-full h-full object-cover"
-                loading="lazy"
+                loading="eager"
               />
             </div>
             <div className="flex-1 min-w-0 flex flex-col gap-2">
