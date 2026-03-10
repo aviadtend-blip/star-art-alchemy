@@ -1,19 +1,18 @@
 import { useState } from 'react';
+import tappingIcon from "@/assets/tapping-icon.svg";
 
 /**
  * Reusable gallery tile for the social proof section.
- *
- * Default state: artwork image with name + signs label below.
- * Hover (desktop) / tap (mobile): blurred overlay with chart explanation.
  *
  * @param {{
  *   image: string,
  *   name: string,
  *   signs: string,
  *   explanations: Array<{ icon: string, title: string, description: string }>,
+ *   showTapHint?: boolean,
  * }} props
  */
-export default function GalleryTile({ image, name, signs, explanations = [] }) {
+export default function GalleryTile({ image, name, signs, explanations = [], showTapHint = false }) {
   const [tapped, setTapped] = useState(false);
 
   const handleTap = () => setTapped((prev) => !prev);
@@ -32,6 +31,13 @@ export default function GalleryTile({ image, name, signs, explanations = [] }) {
           className="w-full h-full object-cover"
           loading="lazy"
         />
+
+        {/* Tap hint icon — centered, pulsing, disappears on first tap */}
+        {showTapHint && !tapped && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+            <img src={tappingIcon} alt="" width="40" height="40" className="animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite] opacity-70" />
+          </div>
+        )}
 
         {/* Hover / tap overlay */}
         <div

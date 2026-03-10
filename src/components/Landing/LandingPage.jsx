@@ -313,13 +313,14 @@ export default function LandingPage() {
                   { icon: "🦌", title: "North Node in Capricorn · Antlers", description: "The antler-like branches extending from the temples echo his North Node in Capricorn—a life path growing toward wisdom, authority, and the kind of ancient strength that only comes from enduring seasons." },
                 ],
               },
-            ].map((item) => (
+            ].map((item, idx) => (
               <GalleryTile
                 key={item.name}
                 image={item.img}
                 name={item.name}
                 signs={item.signs}
                 explanations={item.explanations}
+                showTapHint={idx === 0}
               />
             ))}
             <div aria-hidden="true" className="w-6 min-w-6 flex-shrink-0 lg:hidden" />
