@@ -650,7 +650,7 @@ export function ChartExplanation({
 
                   {/* Insert card teaser — pops out of container bottom */}
                   <div className="flex flex-col items-center gap-2 mt-2 pb-0">
-                    <p className="text-body-sm font-body text-white text-center">
+                    <p className="text-body font-body text-white text-center mb-4">
                       <span className="font-bold">✦ Included with every order:</span>{' '}
                       <span className="text-white/60">Your personal Cosmic Blueprint card — printed and tucked inside.</span>
                     </p>
@@ -826,7 +826,7 @@ export function ChartExplanation({
 
               {/* Insert card teaser — pops out of container bottom */}
               <div className="relative flex flex-col items-center gap-2 mt-2 pb-0">
-                <p className="text-body-sm font-body text-white text-center">
+                <p className="text-body font-body text-white text-center mb-4">
                   <span className="font-bold">✦ Included with every order:</span>{' '}
                   <span className="text-white/60">Your personal Cosmic Blueprint card — printed and tucked inside.</span>
                 </p>
