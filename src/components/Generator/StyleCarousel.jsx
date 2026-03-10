@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
-import { Search } from 'lucide-react';
 import PopularTag from '@/components/ui/PopularTag';
+import tappingIcon from '@/assets/tapping-icon.svg';
 import starsBg from '@/assets/stars-bg.jpg';
 
 /**
