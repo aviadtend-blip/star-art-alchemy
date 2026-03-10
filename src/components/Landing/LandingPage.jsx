@@ -151,14 +151,14 @@ export default function LandingPage() {
       <section className="lg:hidden relative min-h-[700px]" style={{ overflowY: 'clip', overflowX: 'visible' }}>
         {/* Swipe hint icon — centered above carousel, fades on scroll */}
         <div
-          className="absolute z-20 right-4 pointer-events-none transition-opacity duration-300"
-          style={{ top: '272px', opacity: hasScrolledCarousel ? 0 : 0.6 }}
+          className="absolute z-20 left-1/2 -translate-x-1/2 pointer-events-none transition-opacity duration-300"
+          style={{ top: '192px', opacity: hasScrolledCarousel ? 0 : 0.6 }}
         >
           <img src={swipeIcon} alt="" width="60" height="60" className="animate-[pulse_3s_ease-in-out_infinite]" />
         </div>
         <div className="absolute inset-0 pointer-events-auto">
           <div className="flex items-start justify-center h-full pt-[72px]">
-            <ImageMarquee images={heroMarqueeImages} duration={20} onInteraction={() => setHasScrolledCarousel(true)} />
+            <ImageMarquee images={heroMarqueeImages} duration={28} onInteraction={() => setHasScrolledCarousel(true)} />
           </div>
         </div>
         <div className="relative z-10 flex flex-col justify-end min-h-[700px] px-4 py-[15px] pointer-events-none" style={{ marginTop: '-40px' }}>
