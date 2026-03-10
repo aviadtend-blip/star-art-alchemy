@@ -155,15 +155,9 @@ export default function LandingPage() {
         </div>
         <div className="relative z-10 flex flex-col justify-end min-h-[700px] px-4 py-[15px]" style={{ marginTop: '-40px' }}>
 
-          <ShineBorder
-            className="w-full md:max-w-[500px] mx-auto min-w-0"
-            borderRadius={2}
-            borderWidth={1}
-            duration={14}
-            color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
-          >
+          <div className="w-full md:max-w-[500px] mx-auto min-w-0">
             <div
-              className="flex flex-col items-stretch w-full"
+              className="flex flex-col items-stretch w-full rounded-[2px]"
               style={{
                 background: 'rgba(17, 17, 17, 0.70)',
                 backdropFilter: 'blur(17px)',
@@ -184,7 +178,7 @@ export default function LandingPage() {
               )}
               <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} submitLabel="Show me my artwork" gap={9} onStepChange={setMobileHeroStep} isSubmitting={isCalculatingChart} submitError={error} />
             </div>
-          </ShineBorder>
+          </div>
         </div>
       </section>
 
@@ -447,13 +441,7 @@ export default function LandingPage() {
             </h2>
           </div>
 
-          <ShineBorder
-            className="min-w-0 mx-auto w-full max-w-[500px]"
-            borderRadius={2}
-            borderWidth={1}
-            duration={14}
-            color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
-          >
+          <div className="min-w-0 mx-auto w-full max-w-[500px]">
             <div
               className="flex flex-col items-stretch rounded-[2px]"
               style={{
@@ -466,7 +454,7 @@ export default function LandingPage() {
             >
               <BirthDataFormCard formData={formData} setFormData={setFormData} onSubmit={handleFormComplete} gap={30} />
             </div>
-          </ShineBorder>
+          </div>
         </div>
 
         {/* Testimonials — same section, shares galaxy background */}
