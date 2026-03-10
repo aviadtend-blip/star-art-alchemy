@@ -108,7 +108,7 @@ function MarqueeCard({ image, index, totalImages }: { image: MarqueeImage; index
   return (
     <div
       className="relative flex-shrink-0"
-      style={{ transform: `rotate(${angle}deg)`, paddingTop: 14 }}
+      style={{ transform: `rotate(${angle}deg)` }}
     >
       <ArtworkCard
         imageSrc={image.src}
