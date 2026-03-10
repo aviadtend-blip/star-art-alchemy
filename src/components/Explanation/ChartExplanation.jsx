@@ -568,14 +568,22 @@ export function ChartExplanation({
                     className="w-full"
                     style={{ borderBottom: i < hotspots.length - 1 ? '1px solid #3f3f3f' : 'none', paddingBottom: i < hotspots.length - 1 ? 20 : 0 }}
                   >
-                      <div className="flex flex-col" style={{ gap: 4 }}>
-                        <p className="text-subtitle text-white/50">
-                          {h.chartElement}
-                        </p>
-                        <p className="text-a4 text-white">
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-3">
+                          <span
+                            className="flex items-center justify-center font-body flex-shrink-0"
+                            style={{ width: 28, height: 28, borderRadius: 41, border: '1px solid #FFF', fontSize: 13, color: '#FFF' }}
+                          >
+                            {h.id}
+                          </span>
+                          <p className="text-subtitle text-white/50">
+                            {h.chartElement}
+                          </p>
+                        </div>
+                        <p className="text-a4 text-white" style={{ marginLeft: 40, marginTop: 4 }}>
                           {h.artworkElement}
                         </p>
-                        <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7' }}>
+                        <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7', marginLeft: 40, marginTop: 12 }}>
                           {h.explanation}
                         </p>
                       </div>
