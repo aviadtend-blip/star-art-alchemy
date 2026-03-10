@@ -173,11 +173,11 @@ export default function LandingPage() {
               }}
             >
               {mobileHeroStep !== 'photo' && (
-                <div className="flex flex-col gap-3 text-center mb-6">
-                  <h1 className="text-a1 text-foreground">
+                <div className="flex flex-col gap-3 lg:gap-3 text-center mb-6" style={{ gap: '12px' }}>
+                  <h2 className="text-a2 lg:text-a1 text-foreground">
                     Turn Your Birth<br />
                     Into Gallery-Worthy Art
-                  </h1>
+                  </h2>
                   <p className="text-body mx-auto" style={{ color: '#ffffff', maxWidth: '344px' }}>
                     Every element in your artwork corresponds to a specific astrological placement.
                   </p>
