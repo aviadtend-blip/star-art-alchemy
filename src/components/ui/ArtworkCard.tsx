@@ -34,7 +34,7 @@ export default function ArtworkCard({
         </div>
       )}
       {/* Image */}
-      <div className="relative h-[300px] w-[200px] lg:h-[420px] lg:w-[280px] overflow-hidden rounded-[2px]">
+      <div className="relative w-[200px] lg:w-[280px] overflow-hidden rounded-[2px]" style={{ aspectRatio: '2/3' }}>
         <img
           alt={imageAlt}
           className="absolute inset-0 size-full object-cover pointer-events-none"
