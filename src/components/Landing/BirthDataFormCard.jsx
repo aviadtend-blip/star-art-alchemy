@@ -472,7 +472,7 @@ export default function BirthDataFormCard({
     );
 
     const genderToggle = (
-      <div>
+      <div style={{ marginTop: '32px' }}>
         <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>YOUR DOMINANT ENERGY</label>
         <div className="flex rounded-full overflow-hidden border border-white/20">
           {[
@@ -495,6 +495,7 @@ export default function BirthDataFormCard({
           ))}
         </div>
         {genderError && <p className="text-body text-red-400 mt-2">Please select an option</p>}
+        <p className="text-xs text-muted-foreground mt-3 text-center">Your information is private and never shared.</p>
       </div>
     );
 
