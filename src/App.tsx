@@ -70,41 +70,46 @@ const LazyFallback = () => (
   </div>
 );
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <ScrollToTop />
-        <ErrorBoundary>
-          <GeneratorProvider>
-            <Routes>
-              <Route path="/" element={<Index />} />
+const App = () => {
+  useEffect(() => {
+    captureAffiliateDtId();
+  }, []);
 
-              {/* Generator flow + policy pages — all lazy loaded */}
-              <Route element={<Suspense fallback={<LazyFallback />}><Outlet /></Suspense>}>
-                <Route path="/generate" element={<GenerateEntry />} />
-                <Route path="/generate/style" element={<GenerateStyle />} />
-                <Route path="/generate/loading" element={<GenerateLoading />} />
-                <Route path="/generate/preview" element={<GeneratePreview />} />
-                <Route path="/generate/size" element={<GenerateSize />} />
-                <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
-                <Route path="/shipping" element={<ShippingPolicy />} />
-                <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="/terms" element={<TermsConditions />} />
-                <Route path="/returns" element={<ReturnsPolicy />} />
-              </Route>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <ScrollToTop />
+          <ErrorBoundary>
+            <GeneratorProvider>
+              <Routes>
+                <Route path="/" element={<Index />} />
 
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            
-          </GeneratorProvider>
-        </ErrorBoundary>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+                {/* Generator flow + policy pages — all lazy loaded */}
+                <Route element={<Suspense fallback={<LazyFallback />}><Outlet /></Suspense>}>
+                  <Route path="/generate" element={<GenerateEntry />} />
+                  <Route path="/generate/style" element={<GenerateStyle />} />
+                  <Route path="/generate/loading" element={<GenerateLoading />} />
+                  <Route path="/generate/preview" element={<GeneratePreview />} />
+                  <Route path="/generate/size" element={<GenerateSize />} />
+                  <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+                  <Route path="/shipping" element={<ShippingPolicy />} />
+                  <Route path="/privacy" element={<PrivacyPolicy />} />
+                  <Route path="/terms" element={<TermsConditions />} />
+                  <Route path="/returns" element={<ReturnsPolicy />} />
+                </Route>
+
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </GeneratorProvider>
+          </ErrorBoundary>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
