@@ -237,15 +237,19 @@ export function GeneratorProvider({ children }) {
       let celestialOrderId = null;
       try {
         const capturedEmail = sessionStorage.getItem('celestial_captured_email') || '';
-        const { data: saveData, error: saveError } = await supabase.functions.invoke('save-order-data', {
-          body: {
+        const saveResponse = await fetch('https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1/save-order-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
             chartData,
             artworkAnalysis,
             generatedImageUrl: generatedImage,
             subjectExplanation: artworkAnalysis?.subjectExplanation || null,
             customerEmail: capturedEmail || formData?.name || 'unknown',
-          },
+          }),
         });
+        const saveData = await saveResponse.json();
+        const saveError = !saveResponse.ok ? { message: saveData?.error || saveResponse.statusText } : null;
         if (saveError) {
           console.warn('⚠️ Order data save failed (non-blocking):', saveError.message);
         } else if (saveData?.orderId) {
