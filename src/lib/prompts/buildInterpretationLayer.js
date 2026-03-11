@@ -57,7 +57,38 @@ export default function buildInterpretationLayer(chartData) {
   const sunQuality = SUN_SIGN_QUALITIES[chartData.sun?.sign] || 'essential nature';
   interpretation.coreParadox = `${risingClean} Rising intensity on the surface, ${sunSignClean} ${sunQuality} at the core, ${moonSignClean} emotional restlessness underneath`;
 
-  // 4. DIGNITY FLAGS
+  // 4. ADMIRED SUBJECTS (gender + element → subject pool)
+  const ADMIRED_SUBJECTS = {
+    male: {
+      fire:  ['armored knight', 'lion', 'eagle', 'phoenix', 'dragon', 'bull charging through flames', 'mountain lion'],
+      earth: ['bull', 'ancient stag', 'stone guardian', 'armored titan', 'mountain lion', 'bear'],
+      air:   ['hawk in flight', 'winged scholar', 'eagle soaring', 'centaur archer', 'raven', 'griffin'],
+      water: ['sea serpent', 'leviathan', 'great whale', 'armored warrior', 'wolf at the shore'],
+    },
+    female: {
+      fire:  ['lioness', 'phoenix', 'warrior queen', 'eagle', 'valkyrie', 'flame dancer'],
+      earth: ['earth goddess', 'white deer', 'white owl', 'she-wolf', 'forest guardian', 'moon mare'],
+      air:   ['swan queen', 'winged oracle', 'white raven', 'celestial dancer', 'silver hawk'],
+      water: ['sea goddess', 'moon goddess', 'selkie', 'cosmic mermaid', 'pearl serpent'],
+    },
+    neutral: {
+      fire:  ['phoenix', 'lion', 'eagle', 'dragon', 'sun guardian'],
+      earth: ['bull', 'bear', 'ancient wolf', 'forest sovereign'],
+      air:   ['eagle', 'raven', 'griffin', 'winged sage'],
+      water: ['great whale', 'sea serpent', 'moon guardian'],
+    }
+  };
+
+  const genderKey = chartData.gender === 'male' ? 'male'
+                  : chartData.gender === 'female' ? 'female'
+                  : 'neutral';
+  const elementKey = (chartData.dominant_element || 'fire').toLowerCase();
+  const subjectPool = ADMIRED_SUBJECTS[genderKey]?.[elementKey]
+                   || ADMIRED_SUBJECTS.neutral[elementKey]
+                   || ADMIRED_SUBJECTS.neutral.fire;
+  interpretation.suggestedSubjects = subjectPool;
+
+  // 5. DIGNITY FLAGS
   interpretation.dignityFlags = [];
   // Build planet list from either array format or top-level keys
   const planetNames = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn'];
