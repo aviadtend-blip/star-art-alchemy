@@ -41,8 +41,12 @@ serve(async (req) => {
             .map((d: any) => `${d.planet} in ${d.dignity}`)
             .join(", ")
         : "none";
+    const suggestedSubjects: string[] = interpretation.suggestedSubjects || [];
+    const subjectDirective = suggestedSubjects.length > 0
+      ? `\n\nThe main subject of the artwork MUST be one of the following figures: ${suggestedSubjects.join(', ')}. Choose whichever fits the chart's personality best. Do NOT use everyday objects (typewriters, shoes, tools), small or mundane animals (frogs, insects, rodents), or anything the person would not feel proud to be represented by. The subject must feel like a symbol of power, grace, or cosmic identity — something the person would want hanging on their wall as a portrait of who they are.`
+      : '';
 
-    const prompt = `You are a mythic scene painter. Given a birth chart, write ONE paragraph of 60-80 words describing a scene for artwork generation.
+    const prompt = `You are a mythic scene painter. Given a birth chart, write ONE paragraph of 60-80 words describing a scene for artwork generation.${subjectDirective}
 
 The scene MUST be built from the chart's Big Three:
 - The SUBJECT must directly embody the Sun sign: ${sanitizeForPrompt(chartData.sun?.sign)}${isPortraitEdition ? ' — IMPORTANT: the subject MUST be a human figure (a person) whose appearance, clothing, posture or adornments channel the sign. No creatures, no animals, no abstract forms as the main subject — a human face must be clearly visible and central in the composition.' : ' — can be a figure, creature, mythic form or abstract embodiment of the sign.'}${gender && gender !== 'prefer_not_to_say' ? ` The central figure should be ${sanitizeForPrompt(gender)}.` : ''}
