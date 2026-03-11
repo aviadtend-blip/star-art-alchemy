@@ -14,8 +14,8 @@ export default function Header({ variant }) {
       className="flex items-center justify-center md:justify-between"
       style={{
         backgroundColor: isDark ? '#121212' : 'transparent',
-        padding: isDark ? '26px 30px' : undefined,
-        ...(isDark ? {} : { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 30, padding: '20px 24px' }),
+        padding: isDark ? '16px 24px' : undefined,
+        ...(isDark ? {} : { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 30, padding: '14px 24px' }),
       }}
     >
       <Link to="/" className="hover:opacity-80 transition">
