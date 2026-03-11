@@ -460,7 +460,7 @@ export function ChartExplanation({
               />
               {/* Mobile-only hotspot markers — fade in with mobileRevealed */}
               <div
-                className="md:hidden absolute inset-0 transition-opacity duration-700 ease-out"
+                className="md:hidden absolute inset-0 overflow-visible transition-opacity duration-700 ease-out"
                 style={{ opacity: mobileRevealed && showHotspots ? 1 : 0, pointerEvents: mobileRevealed && showHotspots ? 'auto' : 'none' }}
               >
                 {hotspots.map((h) => {
