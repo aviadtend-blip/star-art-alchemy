@@ -104,7 +104,7 @@ export const Card = ({
       }}
       className="max-w-5xl -mt-12 md:mt-[80px] mx-auto h-[30rem] md:h-auto md:max-w-sm md:aspect-[2/3] w-full p-0 bg-[#222222] shadow-2xl"
     >
-      <div className="h-full w-full overflow-hidden bg-gray-100 dark:bg-zinc-900" style={{ borderRadius: '2px' }}>
+      <div className="h-full w-full overflow-visible bg-gray-100 dark:bg-zinc-900" style={{ borderRadius: '2px' }}>
         {children}
       </div>
     </motion.div>
