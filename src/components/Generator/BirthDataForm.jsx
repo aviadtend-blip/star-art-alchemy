@@ -153,6 +153,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
     if (formData.hour === "" || hour < 0 || hour > 23) errs.hour = "Enter a valid hour (0–23)";
     if (formData.minute === "" || minute < 0 || minute > 59) errs.minute = "Enter a valid minute (0–59)";
     if (!formData.city.trim()) errs.city = "Required";
+    if (!formData.gender) errs.gender = "Please select an option";
     return errs;
   };
 
