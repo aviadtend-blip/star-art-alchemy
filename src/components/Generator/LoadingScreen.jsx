@@ -121,7 +121,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
   const HEADLINES = [
     'Calculating planetary positions...',
     `Interpreting your ${sunSign} sun...`,
-    'Balancing elemental colors...',
+    'Weaving elemental symbolism...',
     'Finalizing cosmic geometry...',
     'Almost ready!',
   ];
