@@ -86,7 +86,7 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <DevNav />
+            
           </GeneratorProvider>
         </ErrorBoundary>
       </BrowserRouter>
