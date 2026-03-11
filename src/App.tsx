@@ -45,15 +45,18 @@ const ReturnsPolicy = lazyWithRetry(() => import("./pages/ReturnsPolicy"));
 
 const queryClient = new QueryClient();
 
-// Capture affiliate tracking param before routing
-(() => {
+const captureAffiliateDtId = () => {
   const params = new URLSearchParams(window.location.search);
   const dtId = params.get('dt_id');
-  if (dtId) {
-    sessionStorage.setItem('affiliate_dt_id', dtId);
-    console.log('Affiliate ID captured:', sessionStorage.getItem('affiliate_dt_id'));
-  }
-})();
+
+  if (!dtId || sessionStorage.getItem('affiliate_dt_id') === dtId) return;
+
+  sessionStorage.setItem('affiliate_dt_id', dtId);
+  console.log('Affiliate ID captured:', dtId);
+};
+
+// Capture affiliate tracking param before router can process/alter URL
+captureAffiliateDtId();
 
 function ScrollToTop() {
   const { pathname } = useLocation();
