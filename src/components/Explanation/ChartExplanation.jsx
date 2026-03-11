@@ -448,7 +448,7 @@ export function ChartExplanation({
             }
             onSettled={() => setMobileRevealed(true)}
           >
-            <div className="relative h-full w-full">
+            <div className="relative h-full w-full overflow-visible">
               <img
                 src={selectedImage}
                 alt={`Birth chart artwork for ${chartData?.sun?.sign || ''} Sun`}

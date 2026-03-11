@@ -364,20 +364,20 @@
 
 /* Hotspot pulse ring — active */
 @keyframes hotspot-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(255, 191, 0, 0.6), 0 0 12px 4px rgba(255, 191, 0, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(255, 191, 0, 0), 0 0 18px 8px rgba(255, 191, 0, 0.15); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 191, 0, 0), 0 0 12px 4px rgba(255, 191, 0, 0.4); }
+  0% { box-shadow: 0 0 0 0 rgba(255, 191, 0, 0.7), 0 0 16px 6px rgba(255, 191, 0, 0.5); }
+  70% { box-shadow: 0 0 0 14px rgba(255, 191, 0, 0), 0 0 24px 10px rgba(255, 191, 0, 0.1); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 191, 0, 0), 0 0 16px 6px rgba(255, 191, 0, 0.5); }
 }
 .hotspot-pulse {
-  animation: hotspot-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: hotspot-pulse 1.6s ease-out infinite;
 }
 
 /* Hotspot pulse ring — idle (attention-drawing ripple) */
 @keyframes hotspot-pulse-idle {
-  0% { box-shadow: 0 0 0 0 rgba(255, 191, 0, 0.5), 0 0 8px 3px rgba(255, 191, 0, 0.3); }
-  70% { box-shadow: 0 0 0 8px rgba(255, 191, 0, 0), 0 0 12px 5px rgba(255, 191, 0, 0.1); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 191, 0, 0), 0 0 8px 3px rgba(255, 191, 0, 0.3); }
+  0% { box-shadow: 0 0 0 0 rgba(255, 191, 0, 0.6), 0 0 12px 4px rgba(255, 191, 0, 0.4); }
+  70% { box-shadow: 0 0 0 12px rgba(255, 191, 0, 0), 0 0 18px 8px rgba(255, 191, 0, 0.08); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 191, 0, 0), 0 0 12px 4px rgba(255, 191, 0, 0.4); }
 }
 .hotspot-pulse-idle {
-  animation: hotspot-pulse-idle 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: hotspot-pulse-idle 2s ease-out infinite;
 }
