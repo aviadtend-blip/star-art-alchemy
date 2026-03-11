@@ -136,7 +136,6 @@ export default function StyleCarousel({
                 alt={style.name}
                 className="w-full h-full object-cover"
                 style={{ borderRadius: 2, display: 'block' }}
-                loading="lazy"
               />
 
               {/* Tapping hint icon — all cards, disappears after first tap */}

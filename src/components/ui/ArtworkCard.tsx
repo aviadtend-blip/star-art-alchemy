@@ -10,6 +10,8 @@ interface ArtworkCardProps {
   imageAlt?: string;
   tags?: ZodiacTag[];
   className?: string;
+  /** Set to 'high' for LCP / above-the-fold cards, leave undefined for others */
+  fetchPriority?: 'high' | 'low' | 'auto';
 }
 
 export default function ArtworkCard({
@@ -17,6 +19,7 @@ export default function ArtworkCard({
   imageAlt = "Celestial artwork",
   tags = [],
   className,
+  fetchPriority,
 }: ArtworkCardProps) {
   return (
     <div className={`relative flex-shrink-0 ${className ?? ""}`}>
@@ -39,7 +42,7 @@ export default function ArtworkCard({
           alt={imageAlt}
           className="absolute inset-0 size-full object-cover pointer-events-none"
           src={imageSrc}
-          loading="lazy"
+          fetchPriority={fetchPriority ?? 'auto'}
         />
       </div>
     </div>

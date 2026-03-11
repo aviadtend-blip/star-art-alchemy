@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import { ProductCustomization } from '@/components/Purchase/ProductCustomization';
+import { useImagePreloader } from '@/hooks/useImagePreloader';
+import { GENERATE_SIZE_IMAGES } from '@/data/imageManifest';
 
 export default function GenerateSize() {
   const navigate = useNavigate();
@@ -10,6 +12,9 @@ export default function GenerateSize() {
     handleCheckout, handleTestCheckout, handleBackToPreview, handleEditBirthData,
     isCheckingOut,
   } = useGenerator();
+
+  // Ensure all size/customization page images are loaded
+  useImagePreloader(GENERATE_SIZE_IMAGES);
 
   // useEffect(() => {
   //   if (!chartData) navigate('/');

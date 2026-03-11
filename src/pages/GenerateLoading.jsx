@@ -2,10 +2,17 @@ import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import LoadingScreen from '@/components/Generator/LoadingScreen';
+import { useImagePreloader } from '@/hooks/useImagePreloader';
+import { GENERATE_LOADING_IMAGES, GENERATE_PREVIEW_IMAGES } from '@/data/imageManifest';
 
 export default function GenerateLoading() {
   const navigate = useNavigate();
   const ctx = useGenerator();
+
+  // Loading screen asset (gif) — high priority
+  useImagePreloader(GENERATE_LOADING_IMAGES);
+  // Preload all mockup / preview images while AI is generating — user has ~20s of wait time
+  useImagePreloader(GENERATE_PREVIEW_IMAGES, { defer: 500 });
 
   useEffect(() => {
     if (!ctx.chartData) navigate('/');

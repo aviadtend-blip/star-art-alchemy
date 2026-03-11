@@ -179,6 +179,7 @@ function MarqueeCard({ image, index, totalImages }: { image: MarqueeImage; index
         imageSrc={image.src}
         imageAlt={`Gallery image ${(index % totalImages) + 1}`}
         tags={image.tags}
+        fetchPriority={index === 0 ? 'high' : 'auto'}
       />
       <div
         className="absolute inset-x-0 bottom-0 h-[40%] pointer-events-none rounded-[2px]"

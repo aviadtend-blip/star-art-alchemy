@@ -40,7 +40,6 @@ export default function GalleryTile({ image, name, signs, explanations = [], sho
           src={image}
           alt={`${name} artwork`}
           className="w-full h-full object-cover"
-          loading="lazy"
         />
 
         {/* Tap hint icon — centered, pulsing, disappears on first tap */}

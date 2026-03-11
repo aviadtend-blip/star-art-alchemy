@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
+import { useImagePreloader } from '@/hooks/useImagePreloader';
+import { GENERATE_STYLE_IMAGES } from '@/data/imageManifest';
 
 /**
  * Entry point for /generate — reads query params, calculates chart, redirects to /generate/style.
@@ -11,6 +13,9 @@ export default function GenerateEntry() {
   const navigate = useNavigate();
   const { handleFormSubmit } = useGenerator();
   const autoSubmitted = useRef(false);
+
+  // Prefetch style page images while chart is calculating
+  useImagePreloader(GENERATE_STYLE_IMAGES);
 
   useEffect(() => {
     if (autoSubmitted.current) return;

@@ -5,6 +5,8 @@ import { ChartExplanation } from '@/components/Explanation/ChartExplanation';
 import { analyzeArtwork } from '@/lib/explanations/analyzeArtwork';
 import { getNextVariation, generateImage } from '@/lib/api/replicateClient';
 import { preloadAllMockups, clearCompositeCache } from '@/hooks/useCompositedMockups';
+import { useImagePreloader } from '@/hooks/useImagePreloader';
+import { GENERATE_PREVIEW_IMAGES, GENERATE_SIZE_IMAGES } from '@/data/imageManifest';
 
 import taurusExample from '@/assets/gallery/taurus-example.jpg';
 import demoImage from '@/assets/gallery/demo-cosmic-collision.webp';
@@ -72,6 +74,11 @@ export default function GeneratePreview() {
   const [reimagineMessage, setReimagineMessage] = useState('');
   const [variationsExhausted, setVariationsExhausted] = useState(false);
   const preloadCleanup = useRef(null);
+
+  // Ensure all static preview images are cached immediately
+  useImagePreloader(GENERATE_PREVIEW_IMAGES);
+  // Prefetch size/customization page assets while user reads the preview
+  useImagePreloader(GENERATE_SIZE_IMAGES, { defer: 1500 });
 
   const isDemo = !chartData;
   const displayChart = chartData || DEMO_CHART;

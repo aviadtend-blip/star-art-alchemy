@@ -2,12 +2,18 @@ import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import StyleSelection from '@/components/Generator/StyleSelection';
+import { useImagePreloader } from '@/hooks/useImagePreloader';
+import { GENERATE_STYLE_IMAGES, GENERATE_LOADING_IMAGES } from '@/data/imageManifest';
 
 export default function GenerateStyle() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { chartData, formData, handleFormSubmit, handleStyleSelect, handleEditBirthData, handleRetry, isPortraitEdition } = useGenerator();
   const autoSubmitted = useRef(false);
+
+  // Ensure style thumbnails are ready; prefetch loading screen assets immediately
+  useImagePreloader(GENERATE_STYLE_IMAGES);
+  useImagePreloader(GENERATE_LOADING_IMAGES, { defer: 500 });
 
   // If we arrived with query params (from landing page), start chart calculation
   useEffect(() => {
