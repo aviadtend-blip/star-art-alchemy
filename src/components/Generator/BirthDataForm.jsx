@@ -542,19 +542,19 @@ const BirthDataFormJsx = ({ onSubmit }) => {
           {/* Gender */}
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-2 font-body uppercase tracking-wide">
-              Gender
+              Your Dominant Energy
             </label>
             <div className="flex rounded-full overflow-hidden border border-border">
               {[
-                { value: 'male', label: 'Male' },
-                { value: 'female', label: 'Female' },
-                { value: 'prefer_not_to_say', label: 'Prefer not to say' },
+                { value: 'male', label: 'Masculine' },
+                { value: 'female', label: 'Feminine' },
+                { value: 'prefer_not_to_say', label: 'Neutral' },
               ].map((opt) => (
                 <button
                   key={opt.value}
                   type="button"
                   onClick={() => handleChange('gender', opt.value)}
-                  className={`flex-1 py-2.5 text-sm font-body transition-all ${
+                  className={`flex-1 min-w-0 px-6 py-2.5 text-sm font-body transition-all ${
                     formData.gender === opt.value
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-transparent text-foreground hover:bg-accent/30'

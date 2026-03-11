@@ -173,7 +173,7 @@ export default function LandingPage() {
                 padding: '32px 16px 8px 16px',
               }}
             >
-              {mobileHeroStep !== 'photo' && (
+              {mobileHeroStep === 'date' && (
                 <div className="flex flex-col items-center text-center mb-6" style={{ gap: '12px' }}>
                   <h2 className="text-a2 lg:text-a1 text-foreground">
                     Turn Your Birth<br />
