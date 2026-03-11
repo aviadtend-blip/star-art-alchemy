@@ -9,7 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
  * @param {object} chartData - Chart data with `.interpretation` layer attached
  * @returns {Promise<string>} 4-sentence narrative paragraph
  */
-export default async function getAIInterpretation(chartData, isPortraitEdition = false) {
+export default async function getAIInterpretation(chartData, isPortraitEdition = false, gender = null) {
   const { interpretation } = chartData;
 
   // Build fallback text from rule-based data
