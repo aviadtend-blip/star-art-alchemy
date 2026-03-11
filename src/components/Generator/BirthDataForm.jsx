@@ -277,6 +277,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
         nation: formData.nation.trim() || "US",
         lat: formData.lat,
         lng: formData.lng,
+        gender: formData.gender,
         userPhotoUrl: withPhoto ? uploadedPhotoUrl : null,
       });
     }
