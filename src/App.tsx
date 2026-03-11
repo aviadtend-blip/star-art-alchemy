@@ -71,7 +71,6 @@ const LazyFallback = () => (
 
 const App = () => {
   useEffect(() => {
-    console.log('App mounted, checking for dt_id...');
     captureAffiliateDtId();
   }, []);
 
