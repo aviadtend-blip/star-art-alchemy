@@ -72,10 +72,10 @@ const ELEMENT_TRAITS = {
 };
 
 const ELEMENT_DESCRIPTIONS = {
-  Fire: 'warm, bold tones with dynamic energy',
-  Water: 'deep blues and flowing, fluid forms',
-  Earth: 'grounded, intellectual aesthetics',
-  Air: 'light, airy compositions with soft gradients',
+  Fire: 'bold, dynamic energy with striking intensity',
+  Water: 'flowing, fluid forms with emotional depth',
+  Earth: 'grounded, textured compositions with quiet strength',
+  Air: 'light, layered compositions with elegant movement',
 };
 
 /**
@@ -121,7 +121,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
   const HEADLINES = [
     'Calculating planetary positions...',
     `Interpreting your ${sunSign} sun...`,
-    'Balancing elemental colors...',
+    'Weaving elemental symbolism...',
     'Finalizing cosmic geometry...',
     'Almost ready!',
   ];
@@ -461,10 +461,10 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
                 <div className="text-body font-body text-surface-foreground opacity-70 w-full">
                   {(() => {
                     const ELEMENT_HINTS = {
-                      Fire: "Bold, warm tones — reds, oranges, and golds reflecting your fire energy",
-                      Earth: "Rich, grounded textures — deep greens, browns, and amber from your earth placements",
-                      Air: "Light, layered compositions — cool blues and silvers echoing your air-dominant chart",
-                      Water: "Fluid, flowing forms — deep blues and teals channeling your water energy",
+                      Fire: "Bold, striking imagery — intense forms and dynamic shapes reflecting your fire energy",
+                      Earth: "Rich, grounded textures — layered materials and organic forms from your earth placements",
+                      Air: "Light, layered compositions — delicate structures and flowing movement echoing your air-dominant chart",
+                      Water: "Fluid, flowing forms — deep currents and layered depths channeling your water energy",
                     };
                     const planetKeys = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
                     const planetCount = chartData ? planetKeys.filter(k => chartData[k]?.sign).length : 10;
