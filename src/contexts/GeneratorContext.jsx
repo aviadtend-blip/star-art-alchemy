@@ -69,6 +69,7 @@ export function GeneratorProvider({ children }) {
 
       setGenerationProgress('Calculating your birth chart...');
       const chart = await calculateNatalChart(data);
+      chart.gender = data.gender || null;
       setChartData(chart);
 
       // Only navigate if we're not already on the style page
