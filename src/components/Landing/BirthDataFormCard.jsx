@@ -27,8 +27,9 @@ export default function BirthDataFormCard({
   // Photo step state
   const [showPhotoStep, setShowPhotoStep] = useState(false);
 
-  // Notify parent of step changes
-  useEffect(() => {
+  // Notify parent of step changes — useLayoutEffect to avoid flicker
+  const { useLayoutEffect: useIsomorphicLayoutEffect } = React;
+  useIsomorphicLayoutEffect(() => {
     onStepChange?.(showPhotoStep ? 'photo' : showTimeStep ? 'time' : 'date');
   }, [showPhotoStep, showTimeStep]);
   const [photoFile, setPhotoFile] = useState(null);
