@@ -541,7 +541,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
 
           {/* Gender */}
           <div className="mt-8">
-            <label className="block text-sm font-medium text-muted-foreground mb-6 font-body uppercase tracking-wide">
+            <label className="block text-sm font-medium text-muted-foreground mb-2 font-body uppercase tracking-wide">
               Your Dominant Energy
             </label>
             <div className="flex rounded-full overflow-hidden border border-border">
