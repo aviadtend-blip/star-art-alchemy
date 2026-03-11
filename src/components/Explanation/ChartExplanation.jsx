@@ -472,7 +472,7 @@ export function ChartExplanation({
                         setActiveHotspot(h.id);
                         scrollToCard(h.id);
                       }}
-                      className={`absolute flex items-center justify-center transition-[width,height,background-color] duration-300 cursor-pointer z-10 ${isActive ? 'hotspot-pulse' : ''}`}
+                      className={`absolute flex items-center justify-center transition-[width,height,background-color] duration-300 cursor-pointer z-10 ${isActive ? 'hotspot-pulse' : 'hotspot-pulse-idle'}`}
                       style={{
                         top: h.position.top,
                         left: h.position.left,
