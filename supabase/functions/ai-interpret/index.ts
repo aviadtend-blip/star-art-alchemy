@@ -17,7 +17,7 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
 
   try {
-    const { chartData, isPortraitEdition } = await req.json();
+    const { chartData, isPortraitEdition, gender } = await req.json();
     if (!chartData?.interpretation) {
       return new Response(
         JSON.stringify({ error: "Missing interpretation data" }),
