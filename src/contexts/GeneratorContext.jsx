@@ -236,26 +236,24 @@ export function GeneratorProvider({ children }) {
       // Step 1: Save order data to database
       let celestialOrderId = null;
       try {
-        const capturedEmail = sessionStorage.getItem('celestial_captured_email') || '';
-        const saveResponse = await fetch('https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1/save-order-data', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chartData,
-            artworkAnalysis,
-            generatedImageUrl: generatedImage,
-            subjectExplanation: artworkAnalysis?.subjectExplanation || null,
-            customerEmail: capturedEmail || formData?.name || 'unknown',
-          }),
-        });
+        const saveResponse = await fetch(
+          'https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1/save-order-data',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              customerName: formData?.name || null,
+              customerEmail: sessionStorage.getItem('celestial_captured_email') || null,
+              chartData: chartData,
+              artworkAnalysis: artworkAnalysis,
+              generatedImageUrl: generatedImage,
+              subjectExplanation: artworkAnalysis?.subjectExplanation || null,
+            }),
+          }
+        );
         const saveData = await saveResponse.json();
-        const saveError = !saveResponse.ok ? { message: saveData?.error || saveResponse.statusText } : null;
-        if (saveError) {
-          console.warn('⚠️ Order data save failed (non-blocking):', saveError.message);
-        } else if (saveData?.orderId) {
-          celestialOrderId = saveData.orderId;
-          sessionStorage.setItem('celestial_order_id', celestialOrderId);
-        }
+        celestialOrderId = saveData.orderId;
+        sessionStorage.setItem('celestial_order_id', celestialOrderId);
       } catch (saveErr) {
         console.warn('⚠️ Order data save failed (non-blocking):', saveErr);
       }
