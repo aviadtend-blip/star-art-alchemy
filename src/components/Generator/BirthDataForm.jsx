@@ -20,6 +20,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
     nation: "US",
     lat: null,
     lng: null,
+    gender: null,
   });
 
   const [errors, setErrors] = useState({});

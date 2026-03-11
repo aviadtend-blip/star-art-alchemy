@@ -139,7 +139,15 @@ export default function BirthDataFormCard({
     setShowTimeStep(true);
   };
 
+  const [gender, setGender] = useState(null); // 'male' | 'female' | 'prefer_not_to_say' | null
+  const [genderError, setGenderError] = useState(false);
+
   const handleStep1bSubmit = () => {
+    if (!gender) {
+      setGenderError(true);
+      return;
+    }
+    setGenderError(false);
     let hour = 12;
     let minute = 0;
     if (!dontKnowTime) {
@@ -159,6 +167,7 @@ export default function BirthDataFormCard({
       nation: formData.birthCountry,
       lat: formData.lat,
       lng: formData.lng,
+      gender,
     };
     // Skip photo step — submit directly
     onSubmit(submitData);
