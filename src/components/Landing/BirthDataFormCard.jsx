@@ -521,7 +521,7 @@ export default function BirthDataFormCard({
           </button>
         </div>
         {genderToggle}
-        <div className="lg:hidden flex gap-3">
+        <div className="lg:hidden flex gap-3" style={{ marginTop: '24px' }}>
           <button type="button" onClick={() => setShowTimeStep(false)} className="h-12 px-6 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10">
             Back
           </button>
