@@ -539,6 +539,36 @@ const BirthDataFormJsx = ({ onSubmit }) => {
             />
           </div>
 
+          {/* Gender */}
+          <div>
+            <label className="block text-sm font-medium text-muted-foreground mb-2 font-body uppercase tracking-wide">
+              Gender
+            </label>
+            <div className="flex rounded-full overflow-hidden border border-border">
+              {[
+                { value: 'male', label: 'Male' },
+                { value: 'female', label: 'Female' },
+                { value: 'prefer_not_to_say', label: 'Prefer not to say' },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => handleChange('gender', opt.value)}
+                  className={`flex-1 py-2.5 text-sm font-body transition-all ${
+                    formData.gender === opt.value
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-transparent text-foreground hover:bg-accent/30'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+            {errors.gender && touched.gender && (
+              <p className="text-destructive text-xs mt-1">{errors.gender}</p>
+            )}
+          </div>
+
           <button
             type="button"
             onClick={handleNext}
