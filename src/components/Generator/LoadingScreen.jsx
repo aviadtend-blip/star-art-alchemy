@@ -72,10 +72,10 @@ const ELEMENT_TRAITS = {
 };
 
 const ELEMENT_DESCRIPTIONS = {
-  Fire: 'warm, bold tones with dynamic energy',
-  Water: 'deep blues and flowing, fluid forms',
-  Earth: 'grounded, intellectual aesthetics',
-  Air: 'light, airy compositions with soft gradients',
+  Fire: 'bold, dynamic energy with striking intensity',
+  Water: 'flowing, fluid forms with emotional depth',
+  Earth: 'grounded, textured compositions with quiet strength',
+  Air: 'light, layered compositions with elegant movement',
 };
 
 /**
