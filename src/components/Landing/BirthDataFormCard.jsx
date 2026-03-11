@@ -473,18 +473,18 @@ export default function BirthDataFormCard({
 
     const genderToggle = (
       <div>
-        <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>GENDER</label>
+        <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>YOUR DOMINANT ENERGY</label>
         <div className="flex rounded-full overflow-hidden border border-white/20">
           {[
-            { value: 'male', label: 'Male' },
-            { value: 'female', label: 'Female' },
-            { value: 'prefer_not_to_say', label: 'Prefer not to say' },
+            { value: 'male', label: 'Masculine' },
+            { value: 'female', label: 'Feminine' },
+            { value: 'prefer_not_to_say', label: 'Neutral' },
           ].map((opt) => (
             <button
               key={opt.value}
               type="button"
               onClick={() => { setGender(opt.value); setGenderError(false); }}
-              className={`flex-1 py-2.5 text-a5 font-body transition-all ${
+              className={`flex-1 min-w-0 px-6 py-2.5 text-a5 font-body transition-all ${
                 gender === opt.value
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-transparent text-foreground hover:bg-white/5'
