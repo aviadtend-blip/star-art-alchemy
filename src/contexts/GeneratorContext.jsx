@@ -257,15 +257,19 @@ export function GeneratorProvider({ children }) {
       }
 
       // Step 2: Create Shopify checkout
+      const checkoutBody = {
+        orderDetails: enrichedDetails,
+        chartData,
+        artworkImageUrl: generatedImage,
+        customerName: formData?.name,
+        artworkId,
+        celestialOrderId,
+      };
+      const affiliateDtId = sessionStorage.getItem('affiliate_dt_id');
+      if (affiliateDtId) checkoutBody.affiliate_dt_id = affiliateDtId;
+
       const { data, error: fnError } = await supabase.functions.invoke('create-shopify-checkout', {
-        body: {
-          orderDetails: enrichedDetails,
-          chartData,
-          artworkImageUrl: generatedImage,
-          customerName: formData?.name,
-          artworkId,
-          celestialOrderId,
-        },
+        body: checkoutBody,
       });
 
       if (fnError) throw new Error(fnError.message);

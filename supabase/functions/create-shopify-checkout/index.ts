@@ -73,6 +73,12 @@ serve(async (req) => {
       { key: "_celestial_order_id", value: celestialOrderId || "" },
     ];
 
+    // Add affiliate tracking as a note attribute if present
+    const noteAttributes: { name: string; value: string }[] = [];
+    if (affiliate_dt_id) {
+      noteAttributes.push({ name: "dt_id", value: affiliate_dt_id });
+    }
+
     const variables = {
       input: {
         lines: [{
@@ -82,6 +88,7 @@ serve(async (req) => {
         }],
         attributes,
         note,
+        ...(noteAttributes.length > 0 ? { noteAttributes } : {}),
       },
     };
 
