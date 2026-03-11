@@ -540,7 +540,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
           </div>
 
           {/* Gender */}
-          <div>
+          <div className="mt-8">
             <label className="block text-sm font-medium text-muted-foreground mb-2 font-body uppercase tracking-wide">
               Your Dominant Energy
             </label>
@@ -567,6 +567,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
             {errors.gender && touched.gender && (
               <p className="text-destructive text-xs mt-1">{errors.gender}</p>
             )}
+            <p className="text-xs text-muted-foreground mt-3 text-center">Your information is private and never shared.</p>
           </div>
 
           <button
