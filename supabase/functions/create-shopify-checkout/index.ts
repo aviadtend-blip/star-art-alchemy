@@ -24,7 +24,7 @@ serve(async (req) => {
       throw new Error("Shopify configuration is missing");
     }
 
-    const { orderDetails, chartData, artworkImageUrl, customerName, artworkId, celestialOrderId } = await req.json();
+    const { orderDetails, chartData, artworkImageUrl, customerName, artworkId, celestialOrderId, affiliate_dt_id } = await req.json();
 
     if (!orderDetails || !orderDetails.total) {
       throw new Error("Missing order details");
@@ -50,6 +50,11 @@ serve(async (req) => {
       { key: "canvas_size", value: orderDetails.size || "" },
       { key: "size_label", value: orderDetails.sizeLabel || "" },
     ];
+
+    // Add affiliate tracking as a cart attribute if present
+    if (affiliate_dt_id) {
+      attributes.push({ key: "dt_id", value: affiliate_dt_id });
+    }
 
     const note = [
       `Celestial Artwork for ${customerName || "customer"}`,
