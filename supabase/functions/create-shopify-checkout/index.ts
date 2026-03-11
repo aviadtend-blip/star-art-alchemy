@@ -51,6 +51,11 @@ serve(async (req) => {
       { key: "size_label", value: orderDetails.sizeLabel || "" },
     ];
 
+    // Add affiliate tracking as a cart attribute if present
+    if (affiliate_dt_id) {
+      attributes.push({ key: "dt_id", value: affiliate_dt_id });
+    }
+
     const note = [
       `Celestial Artwork for ${customerName || "customer"}`,
       `Sun: ${chartData?.sun?.sign || "N/A"}`,
@@ -73,12 +78,6 @@ serve(async (req) => {
       { key: "_celestial_order_id", value: celestialOrderId || "" },
     ];
 
-    // Add affiliate tracking as a note attribute if present
-    const noteAttributes: { name: string; value: string }[] = [];
-    if (affiliate_dt_id) {
-      noteAttributes.push({ name: "dt_id", value: affiliate_dt_id });
-    }
-
     const variables = {
       input: {
         lines: [{
@@ -88,7 +87,6 @@ serve(async (req) => {
         }],
         attributes,
         note,
-        ...(noteAttributes.length > 0 ? { noteAttributes } : {}),
       },
     };
 
