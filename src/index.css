@@ -362,7 +362,7 @@
   to { transform: translateX(0); }
 }
 
-/* Hotspot pulse ring */
+/* Hotspot pulse ring — active */
 @keyframes hotspot-pulse {
   0% { box-shadow: 0 0 12px 4px rgba(255, 191, 0, 0.5); }
   50% { box-shadow: 0 0 18px 10px rgba(255, 191, 0, 0.25); }
@@ -370,4 +370,14 @@
 }
 .hotspot-pulse {
   animation: hotspot-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Hotspot pulse ring — idle (subtle attention-drawing) */
+@keyframes hotspot-pulse-idle {
+  0% { box-shadow: 0 0 6px 2px rgba(255, 191, 0, 0.3); }
+  50% { box-shadow: 0 0 12px 6px rgba(255, 191, 0, 0.15); }
+  100% { box-shadow: 0 0 6px 2px rgba(255, 191, 0, 0.3); }
+}
+.hotspot-pulse-idle {
+  animation: hotspot-pulse-idle 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

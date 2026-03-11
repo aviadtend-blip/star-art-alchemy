@@ -521,7 +521,7 @@ export function ChartExplanation({
                       const el = document.getElementById(`desktop-hotspot-${h.id}`);
                       el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }}
-                    className={`absolute flex items-center justify-center transition-[width,height,background-color] duration-300 cursor-pointer z-10 ${isActive ? 'hotspot-pulse' : ''}`}
+                    className={`absolute flex items-center justify-center transition-[width,height,background-color] duration-300 cursor-pointer z-10 ${isActive ? 'hotspot-pulse' : 'hotspot-pulse-idle'}`}
                     style={{
                       top: h.position.top,
                       left: h.position.left,
