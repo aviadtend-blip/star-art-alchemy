@@ -30,7 +30,7 @@ const Footer = forwardRef(function Footer({ onScrollToForm }, ref) {
           {/* Right — Help */}
           <div>
             <p className="text-subtitle text-white tracking-[2px] mb-4">NEED HELP?</p>
-            <p className="text-white/60 mb-3">✦</p>
+            
             <p className="text-body-sm text-white/80 mb-1.5">hello@celestialartworks.com</p>
             <p className="text-body-sm text-white/60 mb-1.5">Available Mon-Fri 9am-6pm EST</p>
             <p className="text-body-sm text-white/80">(+1) 407-768-4186</p>
