@@ -268,6 +268,7 @@ export function GeneratorProvider({ children }) {
       const affiliateDtId = sessionStorage.getItem('affiliate_dt_id');
       if (affiliateDtId) checkoutBody.affiliate_dt_id = affiliateDtId;
 
+      console.log('Checkout request body:', JSON.stringify(checkoutBody));
       const { data, error: fnError } = await supabase.functions.invoke('create-shopify-checkout', {
         body: checkoutBody,
       });

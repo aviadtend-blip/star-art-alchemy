@@ -49,7 +49,10 @@ const queryClient = new QueryClient();
 (() => {
   const params = new URLSearchParams(window.location.search);
   const dtId = params.get('dt_id');
-  if (dtId) sessionStorage.setItem('affiliate_dt_id', dtId);
+  if (dtId) {
+    sessionStorage.setItem('affiliate_dt_id', dtId);
+    console.log('Affiliate ID captured:', sessionStorage.getItem('affiliate_dt_id'));
+  }
 })();
 
 function ScrollToTop() {
