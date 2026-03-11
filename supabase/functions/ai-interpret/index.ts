@@ -17,7 +17,7 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
 
   try {
-    const { chartData, isPortraitEdition } = await req.json();
+    const { chartData, isPortraitEdition, gender } = await req.json();
     if (!chartData?.interpretation) {
       return new Response(
         JSON.stringify({ error: "Missing interpretation data" }),
@@ -45,7 +45,7 @@ serve(async (req) => {
     const prompt = `You are a mythic scene painter. Given a birth chart, write ONE paragraph of 60-80 words describing a scene for artwork generation.
 
 The scene MUST be built from the chart's Big Three:
-- The SUBJECT must directly embody the Sun sign: ${sanitizeForPrompt(chartData.sun?.sign)}${isPortraitEdition ? ' — IMPORTANT: the subject MUST be a human figure (a person) whose appearance, clothing, posture or adornments channel the sign. No creatures, no animals, no abstract forms as the main subject — a human face must be clearly visible and central in the composition.' : ' — can be a figure, creature, mythic form or abstract embodiment of the sign.'}
+- The SUBJECT must directly embody the Sun sign: ${sanitizeForPrompt(chartData.sun?.sign)}${isPortraitEdition ? ' — IMPORTANT: the subject MUST be a human figure (a person) whose appearance, clothing, posture or adornments channel the sign. No creatures, no animals, no abstract forms as the main subject — a human face must be clearly visible and central in the composition.' : ' — can be a figure, creature, mythic form or abstract embodiment of the sign.'}${gender && gender !== 'prefer_not_to_say' ? ` The central figure should be ${sanitizeForPrompt(gender)}.` : ''}
 - The ENVIRONMENT/LANDSCAPE must reflect the Moon sign: ${sanitizeForPrompt(chartData.moon?.sign)}
 - The MOOD and SURFACE TEXTURE must channel the Rising sign: ${sanitizeForPrompt(chartData.rising)}
 

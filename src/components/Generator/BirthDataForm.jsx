@@ -20,6 +20,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
     nation: "US",
     lat: null,
     lng: null,
+    gender: null,
   });
 
   const [errors, setErrors] = useState({});
@@ -152,6 +153,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
     if (formData.hour === "" || hour < 0 || hour > 23) errs.hour = "Enter a valid hour (0–23)";
     if (formData.minute === "" || minute < 0 || minute > 59) errs.minute = "Enter a valid minute (0–59)";
     if (!formData.city.trim()) errs.city = "Required";
+    if (!formData.gender) errs.gender = "Please select an option";
     return errs;
   };
 
@@ -181,7 +183,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
       const errs = validateStep2();
       if (Object.keys(errs).length > 0) {
         setErrors(errs);
-        setTouched((prev) => ({ ...prev, hour: true, minute: true, city: true }));
+        setTouched((prev) => ({ ...prev, hour: true, minute: true, city: true, gender: true }));
         return;
       }
       if (SHOW_PORTRAIT_STEP) {
@@ -275,6 +277,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
         nation: formData.nation.trim() || "US",
         lat: formData.lat,
         lng: formData.lng,
+        gender: formData.gender,
         userPhotoUrl: withPhoto ? uploadedPhotoUrl : null,
       });
     }
@@ -534,6 +537,36 @@ const BirthDataFormJsx = ({ onSubmit }) => {
               className={inputClass("nation")}
               maxLength={100}
             />
+          </div>
+
+          {/* Gender */}
+          <div>
+            <label className="block text-sm font-medium text-muted-foreground mb-2 font-body uppercase tracking-wide">
+              Gender
+            </label>
+            <div className="flex rounded-full overflow-hidden border border-border">
+              {[
+                { value: 'male', label: 'Male' },
+                { value: 'female', label: 'Female' },
+                { value: 'prefer_not_to_say', label: 'Prefer not to say' },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => handleChange('gender', opt.value)}
+                  className={`flex-1 py-2.5 text-sm font-body transition-all ${
+                    formData.gender === opt.value
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-transparent text-foreground hover:bg-accent/30'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+            {errors.gender && touched.gender && (
+              <p className="text-destructive text-xs mt-1">{errors.gender}</p>
+            )}
           </div>
 
           <button

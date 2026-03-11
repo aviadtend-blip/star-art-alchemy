@@ -139,7 +139,15 @@ export default function BirthDataFormCard({
     setShowTimeStep(true);
   };
 
+  const [gender, setGender] = useState(null); // 'male' | 'female' | 'prefer_not_to_say' | null
+  const [genderError, setGenderError] = useState(false);
+
   const handleStep1bSubmit = () => {
+    if (!gender) {
+      setGenderError(true);
+      return;
+    }
+    setGenderError(false);
     let hour = 12;
     let minute = 0;
     if (!dontKnowTime) {
@@ -159,6 +167,7 @@ export default function BirthDataFormCard({
       nation: formData.birthCountry,
       lat: formData.lat,
       lng: formData.lng,
+      gender,
     };
     // Skip photo step — submit directly
     onSubmit(submitData);
@@ -462,6 +471,33 @@ export default function BirthDataFormCard({
       </div>
     );
 
+    const genderToggle = (
+      <div>
+        <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>GENDER</label>
+        <div className="flex rounded-full overflow-hidden border border-white/20">
+          {[
+            { value: 'male', label: 'Male' },
+            { value: 'female', label: 'Female' },
+            { value: 'prefer_not_to_say', label: 'Prefer not to say' },
+          ].map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => { setGender(opt.value); setGenderError(false); }}
+              className={`flex-1 py-2.5 text-a5 font-body transition-all ${
+                gender === opt.value
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-transparent text-foreground hover:bg-white/5'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+        {genderError && <p className="text-body text-red-400 mt-2">Please select an option</p>}
+      </div>
+    );
+
     return (
       <div className="flex flex-col" style={{ gap }}>
         <div>
@@ -469,22 +505,11 @@ export default function BirthDataFormCard({
           <div className="hidden lg:block">
             <div className="flex items-end gap-4">
               <div className="flex-1 min-w-0">{timeInputsDesktop}</div>
-              <PrimaryButton onClick={handleStep1bSubmit} className="flex-shrink-0">
-                Continue
-              </PrimaryButton>
             </div>
           </div>
           <div className="lg:hidden flex flex-col gap-6">
             {timeInputMobile}
             {checkboxEl}
-            <div className="flex gap-3">
-              <button type="button" onClick={() => setShowTimeStep(false)} className="h-12 px-6 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10">
-                Back
-              </button>
-              <PrimaryButton onClick={handleStep1bSubmit} className="flex-1">
-                Continue
-              </PrimaryButton>
-            </div>
           </div>
         </div>
         <div className="hidden lg:flex items-start justify-between">
@@ -492,6 +517,20 @@ export default function BirthDataFormCard({
           <button type="button" onClick={() => setShowTimeStep(false)} className="link-a5 font-body text-foreground py-0 flex-shrink-0" style={{ textDecoration: 'underline' }}>
             Back
           </button>
+        </div>
+        {genderToggle}
+        <div className="lg:hidden flex gap-3">
+          <button type="button" onClick={() => setShowTimeStep(false)} className="h-12 px-6 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10">
+            Back
+          </button>
+          <PrimaryButton onClick={handleStep1bSubmit} className="flex-1" disabled={isSubmitting}>
+            {isSubmitting ? 'Generating…' : 'Continue'}
+          </PrimaryButton>
+        </div>
+        <div className="hidden lg:block">
+          <PrimaryButton onClick={handleStep1bSubmit} className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? 'Generating…' : 'Continue'}
+          </PrimaryButton>
         </div>
       </div>
     );
