@@ -52,7 +52,6 @@ const captureAffiliateDtId = () => {
   if (!dtId || sessionStorage.getItem('affiliate_dt_id') === dtId) return;
 
   sessionStorage.setItem('affiliate_dt_id', dtId);
-  console.log('Affiliate ID captured:', dtId);
 };
 
 // Capture affiliate tracking param before router can process/alter URL
