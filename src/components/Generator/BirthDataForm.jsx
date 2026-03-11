@@ -183,7 +183,7 @@ const BirthDataFormJsx = ({ onSubmit }) => {
       const errs = validateStep2();
       if (Object.keys(errs).length > 0) {
         setErrors(errs);
-        setTouched((prev) => ({ ...prev, hour: true, minute: true, city: true }));
+        setTouched((prev) => ({ ...prev, hour: true, minute: true, city: true, gender: true }));
         return;
       }
       if (SHOW_PORTRAIT_STEP) {
