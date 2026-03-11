@@ -8,7 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { GeneratorProvider } from "./contexts/GeneratorContext";
 import ErrorBoundary from "./components/ErrorBoundary";
-import DevNav from "./components/DevNav";
+
 
 // Auto-reload on stale chunk errors (happens after deploys when users have cached HTML)
 function lazyWithRetry<T extends ComponentType<any>>(
@@ -86,7 +86,7 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <DevNav />
+            
           </GeneratorProvider>
         </ErrorBoundary>
       </BrowserRouter>
