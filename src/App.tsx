@@ -45,6 +45,13 @@ const ReturnsPolicy = lazyWithRetry(() => import("./pages/ReturnsPolicy"));
 
 const queryClient = new QueryClient();
 
+// Capture affiliate tracking param before routing
+(() => {
+  const params = new URLSearchParams(window.location.search);
+  const dtId = params.get('dt_id');
+  if (dtId) sessionStorage.setItem('affiliate_dt_id', dtId);
+})();
+
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
