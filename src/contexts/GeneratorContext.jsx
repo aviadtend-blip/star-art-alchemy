@@ -234,7 +234,10 @@ export function GeneratorProvider({ children }) {
 
     try {
       // Save order data to production Supabase
-      console.log('DEBUG formData keys:', formData ? Object.keys(formData) : 'null');
+      console.log('DEBUG - all state:', JSON.stringify({
+        formData,
+        chartData: chartData ? Object.keys(chartData) : null,
+      }));
       const saveResponse = await fetch(
         'https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1/save-order-data',
         {
