@@ -25,6 +25,48 @@ function saveSession(state) {
   } catch { /* quota exceeded — ignore */ }
 }
 
+function readSessionJSON(key) {
+  try {
+    const raw = sessionStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function toBirthDate(data) {
+  if (!data) return null;
+  if (data.date) return String(data.date);
+
+  const year = data.year ?? data.birthYear;
+  const month = data.month ?? data.birthMonth;
+  const day = data.day ?? data.birthDay;
+
+  if (!year || !month || !day) return null;
+  return `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
+
+function toBirthTime(data) {
+  if (!data) return null;
+  if (data.time) return String(data.time);
+
+  const hour = data.hour ?? data.birthHour;
+  const minute = data.minute ?? data.birthMinute;
+
+  if (hour === undefined || hour === null || minute === undefined || minute === null) return null;
+  return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+}
+
+function toBirthPlace(data) {
+  if (!data) return null;
+  if (data.location) return String(data.location);
+
+  const city = data.city ?? data.birthCity;
+  const country = data.nation ?? data.birthCountry;
+  if (!city) return null;
+  return country ? `${city}, ${country}` : String(city);
+}
+
 export function GeneratorProvider({ children }) {
   const navigate = useNavigate();
   const cached = loadSession();
