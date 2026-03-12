@@ -234,15 +234,21 @@ export function GeneratorProvider({ children }) {
 
     try {
       // Save order data to production Supabase
+      console.log('[DEBUG] formData at checkout:', JSON.stringify(formData, null, 2));
       const saveResponse = await fetch(
         'https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1/save-order-data',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            customerName: formData?.name || null,
+            customerName: formData?.name || formData?.fullName || null,
             customerEmail: sessionStorage.getItem('celestial_captured_email') || formData?.email || null,
-            chartData: chartData,
+            chartData: {
+              ...chartData,
+              birth_date: formData?.date || formData?.birthDate || null,
+              birth_time: formData?.time || formData?.birthTime || null,
+              birth_place: formData?.location || formData?.birthPlace || formData?.place || null,
+            },
             artworkAnalysis: artworkAnalysis,
             generatedImageUrl: generatedImage,
             subjectExplanation: artworkAnalysis?.subjectExplanation || null,
