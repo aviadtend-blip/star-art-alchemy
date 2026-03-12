@@ -233,30 +233,26 @@ export function GeneratorProvider({ children }) {
     setError(null);
 
     try {
-      // Step 1: Save order data to database
-      let celestialOrderId = null;
-      try {
-        const saveResponse = await fetch(
-          'https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1/save-order-data',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              customerName: formData?.name || null,
-              customerEmail: sessionStorage.getItem('celestial_captured_email') || null,
-              chartData: chartData,
-              artworkAnalysis: artworkAnalysis,
-              generatedImageUrl: generatedImage,
-              subjectExplanation: artworkAnalysis?.subjectExplanation || null,
-            }),
-          }
-        );
-        const saveData = await saveResponse.json();
-        celestialOrderId = saveData.orderId;
-        sessionStorage.setItem('celestial_order_id', celestialOrderId);
-      } catch (saveErr) {
-        console.warn('⚠️ Order data save failed (non-blocking):', saveErr);
-      }
+      // Save order data to production Supabase
+      const saveResponse = await fetch(
+        'https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1/save-order-data',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customerName: formData?.name || null,
+            customerEmail: sessionStorage.getItem('celestial_captured_email') || formData?.email || null,
+            chartData: chartData,
+            artworkAnalysis: artworkAnalysis,
+            generatedImageUrl: generatedImage,
+            subjectExplanation: artworkAnalysis?.subjectExplanation || null,
+          }),
+        }
+      );
+      const saveData = await saveResponse.json();
+      if (!saveData.success) throw new Error('Failed to save order: ' + saveData.error);
+      const celestialOrderId = saveData.orderId;
+      sessionStorage.setItem('celestial_order_id', celestialOrderId);
 
       // Step 2: Create Shopify checkout
       const checkoutBody = {
