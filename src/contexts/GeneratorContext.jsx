@@ -265,11 +265,16 @@ export function GeneratorProvider({ children }) {
   }, [navigate]);
 
   const handleCheckout = useCallback(async (details) => {
+    const checkoutFormData = {
+      ...(readSessionJSON('celestial_form_data') || {}),
+      ...(formData || {}),
+    };
+
     const enrichedDetails = {
       ...details,
       orderNumber: `#CA-${Date.now().toString(36).toUpperCase()}`,
       date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-      firstName: formData?.name || '',
+      firstName: checkoutFormData?.name || '',
     };
     setOrderDetails(enrichedDetails);
     setIsCheckingOut(true);
@@ -277,8 +282,7 @@ export function GeneratorProvider({ children }) {
 
     try {
       // Save order data to production Supabase
-      const sessionFormData = readSessionJSON('celestial_form_data') || {};
-      const resolvedFormData = { ...sessionFormData, ...(formData || {}) };
+      const resolvedFormData = checkoutFormData;
       const customerName = resolvedFormData?.name || null;
       const birthDate = toBirthDate(resolvedFormData);
       const birthTime = toBirthTime(resolvedFormData);
