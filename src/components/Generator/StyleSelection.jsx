@@ -285,7 +285,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
           {/* Fixed top header */}
           <div className="shrink-0 px-6 pt-6 pb-4 z-10 text-center" onClick={(e) => e.stopPropagation()}>
             <p className="font-display text-subtitle text-white/50">{STYLE_LABELS[lightbox.styleId]?.title}</p>
-            <h2 className="font-display text-a2 text-white mt-1">Style examples</h2>
+            <h2 className="font-display text-a2 text-white mt-1">Additional examples</h2>
           </div>
 
           {/* Scrollable image area */}
@@ -303,7 +303,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
           </div>
 
           {/* Fixed bottom buttons */}
-          <div className="shrink-0 px-6 pb-6 pt-4 z-10 flex flex-col md:flex-row md:justify-center" style={{ gap: 12 }} onClick={(e) => e.stopPropagation()}>
+          <div className="shrink-0 px-6 pb-6 pt-4 z-10 flex flex-col md:flex-row-reverse md:justify-center mx-auto w-full" style={{ gap: 12, maxWidth: 600 }} onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => {
                 closeLightbox();
