@@ -277,21 +277,31 @@ export function GeneratorProvider({ children }) {
 
     try {
       // Save order data to production Supabase
+      const sessionFormData = readSessionJSON('celestial_form_data') || {};
+      const resolvedFormData = { ...sessionFormData, ...(formData || {}) };
+      const customerName = resolvedFormData?.name || null;
+      const birthDate = toBirthDate(resolvedFormData);
+      const birthTime = toBirthTime(resolvedFormData);
+      const birthPlace = toBirthPlace(resolvedFormData);
+
       console.log('formData at checkout:', formData);
-      const resolvedFormData = formData || JSON.parse(sessionStorage.getItem('celestial_form_data') || '{}');
+      console.log('resolvedFormData at checkout:', resolvedFormData);
+      console.log('insert card fields at checkout:', { customerName, birthDate, birthTime, birthPlace });
+
       const saveResponse = await fetch(
         'https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1/save-order-data',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            customerName: resolvedFormData?.name || null,
+            customerName,
             customerEmail: sessionStorage.getItem('celestial_captured_email') || resolvedFormData?.email || null,
             chartData: {
               ...chartData,
-              birth_date: resolvedFormData?.date || null,
-              birth_time: resolvedFormData?.time || null,
-              birth_place: resolvedFormData?.location || null,
+              customer_name: customerName,
+              birth_date: birthDate,
+              birth_time: birthTime,
+              birth_place: birthPlace,
             },
             artworkAnalysis: artworkAnalysis,
             generatedImageUrl: generatedImage,
@@ -309,7 +319,7 @@ export function GeneratorProvider({ children }) {
         orderDetails: enrichedDetails,
         chartData,
         artworkImageUrl: generatedImage,
-        customerName: formData?.name,
+        customerName,
         artworkId,
         celestialOrderId,
       };
