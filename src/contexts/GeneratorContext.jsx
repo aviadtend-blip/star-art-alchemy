@@ -58,6 +58,7 @@ export function GeneratorProvider({ children }) {
       setIsCalculatingChart(true);
       setError(null);
       setFormData(data);
+      sessionStorage.setItem('celestial_form_data', JSON.stringify(data));
 
       if (data.userPhotoUrl) {
         setUserPhotoUrl(data.userPhotoUrl);
