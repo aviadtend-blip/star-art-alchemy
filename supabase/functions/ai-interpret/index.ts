@@ -68,7 +68,7 @@ RULES:
 
 Output ONLY the scene paragraph. Nothing else.`;
 
-    console.log("AI interpret prompt built, calling gateway...");
+    console.log("[DEBUG] gender:", chartData.gender, "| suggestedSubjects:", JSON.stringify(suggestedSubjects), "| prompt preview:", prompt.substring(0, 200));
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
