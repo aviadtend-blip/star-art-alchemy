@@ -514,23 +514,15 @@ export default function BirthDataFormCard({
             {checkboxEl}
           </div>
         </div>
-        <div className="hidden lg:flex items-start justify-between">
+        <div className="hidden lg:block">
           {checkboxEl}
-          <button type="button" onClick={() => setShowTimeStep(false)} className="link-a5 font-body text-foreground py-0 flex-shrink-0" style={{ textDecoration: 'underline' }}>
-            Back
-          </button>
         </div>
         {genderToggle}
-        <div className="lg:hidden flex gap-3" style={{ marginTop: '24px' }}>
+        <div className="flex gap-3" style={{ marginTop: '24px' }}>
           <button type="button" onClick={() => setShowTimeStep(false)} className="h-12 px-6 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10">
             Back
           </button>
           <PrimaryButton onClick={handleStep1bSubmit} className="flex-1" disabled={isSubmitting}>
-            {isSubmitting ? 'Generating…' : 'Continue'}
-          </PrimaryButton>
-        </div>
-        <div className="hidden lg:block">
-          <PrimaryButton onClick={handleStep1bSubmit} className="w-full" disabled={isSubmitting}>
             {isSubmitting ? 'Generating…' : 'Continue'}
           </PrimaryButton>
         </div>
