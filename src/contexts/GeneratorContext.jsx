@@ -275,12 +275,13 @@ export function GeneratorProvider({ children }) {
       ...(readSessionJSON('celestial_form_data') || {}),
       ...(formData || {}),
     };
+    const persistedBirthDetails = readSessionJSON('celestial_birth_details') || {};
 
     const enrichedDetails = {
       ...details,
       orderNumber: `#CA-${Date.now().toString(36).toUpperCase()}`,
       date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-      firstName: checkoutFormData?.name || '',
+      firstName: checkoutFormData?.name || persistedBirthDetails?.customerName || '',
     };
     setOrderDetails(enrichedDetails);
     setIsCheckingOut(true);
@@ -289,14 +290,32 @@ export function GeneratorProvider({ children }) {
     try {
       // Save order data to production Supabase
       const resolvedFormData = checkoutFormData;
-      const customerName = resolvedFormData?.name || null;
-      const birthDate = toBirthDate(resolvedFormData);
-      const birthTime = toBirthTime(resolvedFormData);
-      const birthPlace = toBirthPlace(resolvedFormData);
+      const customerName =
+        resolvedFormData?.name ||
+        persistedBirthDetails?.customerName ||
+        sessionStorage.getItem('celestial_captured_first_name') ||
+        chartData?.customer_name ||
+        null;
+      const customerEmail =
+        sessionStorage.getItem('celestial_captured_email') ||
+        resolvedFormData?.email ||
+        details?.email ||
+        null;
+      const birthDate = toBirthDate(resolvedFormData) || persistedBirthDetails?.birthDate || chartData?.birth_date || null;
+      const birthTime = toBirthTime(resolvedFormData) || persistedBirthDetails?.birthTime || chartData?.birth_time || null;
+      const birthPlace = toBirthPlace(resolvedFormData) || persistedBirthDetails?.birthPlace || chartData?.birth_place || null;
+
+      sessionStorage.setItem('celestial_birth_details', JSON.stringify({
+        customerName,
+        customerEmail,
+        birthDate,
+        birthTime,
+        birthPlace,
+      }));
 
       console.log('formData at checkout:', formData);
       console.log('resolvedFormData at checkout:', resolvedFormData);
-      console.log('insert card fields at checkout:', { customerName, birthDate, birthTime, birthPlace });
+      console.log('insert card fields at checkout:', { customerName, customerEmail, birthDate, birthTime, birthPlace });
 
       const saveResponse = await fetch(
         'https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1/save-order-data',
@@ -305,7 +324,7 @@ export function GeneratorProvider({ children }) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             customerName,
-            customerEmail: sessionStorage.getItem('celestial_captured_email') || resolvedFormData?.email || null,
+            customerEmail,
             chartData: {
               ...chartData,
               customer_name: customerName,
