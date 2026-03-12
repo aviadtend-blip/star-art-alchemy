@@ -38,3 +38,15 @@ verify_jwt = false
 
 [functions.save-order-data]
 verify_jwt = false
+
+[functions.shopify-order-webhook]
+verify_jwt = false
+
+[functions.fulfill-order]
+verify_jwt = false
+
+[functions.generate-insert-card]
+verify_jwt = false
+
+[functions.google-places-autocomplete]
+verify_jwt = false
