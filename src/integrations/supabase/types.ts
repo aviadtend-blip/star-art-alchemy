@@ -158,36 +158,51 @@ export type Database = {
       orders: {
         Row: {
           artwork_analysis: Json | null
+          canvas_size: string | null
           chart_data: Json
           created_at: string
           customer_email: string
+          fulfillment_error: string | null
+          fulfillment_status: string | null
           generated_image_url: string
           id: string
           insert_card_url: string | null
+          prodigi_order_id: string | null
+          prodigi_sku: string | null
           shopify_order_id: string | null
           shopify_order_number: string | null
           subject_explanation: string | null
         }
         Insert: {
           artwork_analysis?: Json | null
+          canvas_size?: string | null
           chart_data?: Json
           created_at?: string
           customer_email: string
+          fulfillment_error?: string | null
+          fulfillment_status?: string | null
           generated_image_url: string
           id?: string
           insert_card_url?: string | null
+          prodigi_order_id?: string | null
+          prodigi_sku?: string | null
           shopify_order_id?: string | null
           shopify_order_number?: string | null
           subject_explanation?: string | null
         }
         Update: {
           artwork_analysis?: Json | null
+          canvas_size?: string | null
           chart_data?: Json
           created_at?: string
           customer_email?: string
+          fulfillment_error?: string | null
+          fulfillment_status?: string | null
           generated_image_url?: string
           id?: string
           insert_card_url?: string | null
+          prodigi_order_id?: string | null
+          prodigi_sku?: string | null
           shopify_order_id?: string | null
           shopify_order_number?: string | null
           subject_explanation?: string | null
