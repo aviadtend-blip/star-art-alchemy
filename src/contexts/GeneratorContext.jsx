@@ -318,7 +318,7 @@ export function GeneratorProvider({ children }) {
       console.log('insert card fields at checkout:', { customerName, customerEmail, birthDate, birthTime, birthPlace });
 
       const saveResponse = await fetch(
-        'https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1/save-order-data',
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/save-order-data`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
