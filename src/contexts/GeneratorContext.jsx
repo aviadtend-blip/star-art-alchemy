@@ -205,6 +205,7 @@ export function GeneratorProvider({ children }) {
       const sessionId = sessionStorage.getItem('celestial_session_id') || crypto.randomUUID();
       sessionStorage.setItem('celestial_session_id', sessionId);
 
+      const storedImageUrl = result.imageUrl;
       supabase.functions.invoke('store-artwork', {
         body: {
           cdnUrl: result.imageUrl,
@@ -224,7 +225,8 @@ export function GeneratorProvider({ children }) {
         }
         if (storeData?.permanentUrl) {
           console.log('✅ Artwork stored permanently:', storeData.permanentUrl);
-          setGeneratedImage(storeData.permanentUrl);
+          // Only update if the user hasn't reimagined to a different image
+          setGeneratedImage(prev => prev === storedImageUrl ? storeData.permanentUrl : prev);
           setArtworkId(storeData.artworkId);
           try {
             sessionStorage.setItem('celestial_artwork_id', storeData.artworkId);
