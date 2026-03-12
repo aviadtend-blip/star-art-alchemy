@@ -303,7 +303,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
           </div>
 
           {/* Fixed bottom buttons */}
-          <div className="shrink-0 px-6 pb-6 pt-4 z-10 flex flex-col" style={{ gap: 12 }} onClick={(e) => e.stopPropagation()}>
+          <div className="shrink-0 px-6 pb-6 pt-4 z-10 flex flex-col md:flex-row md:justify-center" style={{ gap: 12 }} onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => {
                 closeLightbox();
