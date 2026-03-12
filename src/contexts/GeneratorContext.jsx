@@ -25,6 +25,48 @@ function saveSession(state) {
   } catch { /* quota exceeded — ignore */ }
 }
 
+function readSessionJSON(key) {
+  try {
+    const raw = sessionStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function toBirthDate(data) {
+  if (!data) return null;
+  if (data.date) return String(data.date);
+
+  const year = data.year ?? data.birthYear;
+  const month = data.month ?? data.birthMonth;
+  const day = data.day ?? data.birthDay;
+
+  if (!year || !month || !day) return null;
+  return `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
+
+function toBirthTime(data) {
+  if (!data) return null;
+  if (data.time) return String(data.time);
+
+  const hour = data.hour ?? data.birthHour;
+  const minute = data.minute ?? data.birthMinute;
+
+  if (hour === undefined || hour === null || minute === undefined || minute === null) return null;
+  return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+}
+
+function toBirthPlace(data) {
+  if (!data) return null;
+  if (data.location) return String(data.location);
+
+  const city = data.city ?? data.birthCity;
+  const country = data.nation ?? data.birthCountry;
+  if (!city) return null;
+  return country ? `${city}, ${country}` : String(city);
+}
+
 export function GeneratorProvider({ children }) {
   const navigate = useNavigate();
   const cached = loadSession();
@@ -223,11 +265,16 @@ export function GeneratorProvider({ children }) {
   }, [navigate]);
 
   const handleCheckout = useCallback(async (details) => {
+    const checkoutFormData = {
+      ...(readSessionJSON('celestial_form_data') || {}),
+      ...(formData || {}),
+    };
+
     const enrichedDetails = {
       ...details,
       orderNumber: `#CA-${Date.now().toString(36).toUpperCase()}`,
       date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-      firstName: formData?.name || '',
+      firstName: checkoutFormData?.name || '',
     };
     setOrderDetails(enrichedDetails);
     setIsCheckingOut(true);
@@ -235,21 +282,30 @@ export function GeneratorProvider({ children }) {
 
     try {
       // Save order data to production Supabase
+      const resolvedFormData = checkoutFormData;
+      const customerName = resolvedFormData?.name || null;
+      const birthDate = toBirthDate(resolvedFormData);
+      const birthTime = toBirthTime(resolvedFormData);
+      const birthPlace = toBirthPlace(resolvedFormData);
+
       console.log('formData at checkout:', formData);
-      const resolvedFormData = formData || JSON.parse(sessionStorage.getItem('celestial_form_data') || '{}');
+      console.log('resolvedFormData at checkout:', resolvedFormData);
+      console.log('insert card fields at checkout:', { customerName, birthDate, birthTime, birthPlace });
+
       const saveResponse = await fetch(
         'https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1/save-order-data',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            customerName: resolvedFormData?.name || null,
+            customerName,
             customerEmail: sessionStorage.getItem('celestial_captured_email') || resolvedFormData?.email || null,
             chartData: {
               ...chartData,
-              birth_date: resolvedFormData?.date || null,
-              birth_time: resolvedFormData?.time || null,
-              birth_place: resolvedFormData?.location || null,
+              customer_name: customerName,
+              birth_date: birthDate,
+              birth_time: birthTime,
+              birth_place: birthPlace,
             },
             artworkAnalysis: artworkAnalysis,
             generatedImageUrl: generatedImage,
@@ -267,7 +323,7 @@ export function GeneratorProvider({ children }) {
         orderDetails: enrichedDetails,
         chartData,
         artworkImageUrl: generatedImage,
-        customerName: formData?.name,
+        customerName,
         artworkId,
         celestialOrderId,
       };
