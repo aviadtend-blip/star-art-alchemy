@@ -47,8 +47,8 @@ serve(async (req) => {
       { key: "sun_sign", value: chartData?.sun?.sign || "" },
       { key: "moon_sign", value: chartData?.moon?.sign || "" },
       { key: "rising_sign", value: chartData?.rising || "" },
-      { key: "canvas_size", value: orderDetails.size || "" },
-      { key: "size_label", value: orderDetails.sizeLabel || "" },
+      { key: "canvas_size", value: (orderDetails.size || "").toLowerCase().replace(/\s/g, "") },
+      { key: "size_label", value: orderDetails.sizeLabel || (orderDetails.size || "").toLowerCase().replace(/\s/g, "") },
     ];
 
     // Add affiliate tracking as a cart attribute if present
