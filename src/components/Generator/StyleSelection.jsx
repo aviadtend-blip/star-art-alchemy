@@ -275,27 +275,22 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
       {/* Lightbox Modal — Vertical Image Stack */}
       {lightbox && (
         <div
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center transition-all duration-250"
+          className="fixed inset-0 z-50 flex flex-col transition-all duration-250"
           style={{
             backgroundColor: lightboxVisible ? 'rgba(0,0,0,0.95)' : 'rgba(0,0,0,0)',
             opacity: lightboxVisible ? 1 : 0,
           }}
           onClick={closeLightbox}
         >
-          <button
-            onClick={closeLightbox}
-            className="absolute top-5 right-5 z-60 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
-          >
-            <X className="w-5 h-5 text-white" />
-          </button>
-
-          <div className="absolute top-6 left-6 text-white/80 z-10">
-            <p className="text-a4 font-display">{STYLE_LABELS[lightbox.styleId]?.title}</p>
-            <p className="text-body text-white/50">{STYLE_LABELS[lightbox.styleId]?.sub}</p>
+          {/* Fixed top header */}
+          <div className="shrink-0 px-6 pt-6 pb-4 z-10" onClick={(e) => e.stopPropagation()}>
+            <p className="font-body text-body-sm uppercase tracking-widest text-white/50">{STYLE_LABELS[lightbox.styleId]?.title}</p>
+            <h2 className="font-display text-a2 text-white mt-1">Style examples</h2>
           </div>
 
+          {/* Scrollable image area */}
           <div
-            className="flex-1 flex items-center justify-center w-full py-16"
+            className="flex-1 flex items-center justify-center w-full overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <VerticalImageStack
@@ -305,6 +300,29 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
                 alt: `${STYLE_LABELS[lightbox.styleId]?.title || 'Style'} example ${i + 1}`,
               }))}
             />
+          </div>
+
+          {/* Fixed bottom buttons */}
+          <div className="shrink-0 px-6 pb-6 pt-4 z-10 flex flex-col" style={{ gap: 12 }} onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => {
+                closeLightbox();
+                const idx = carouselStyles.findIndex(s => s.id === lightbox.styleId);
+                if (idx !== -1) setActiveIndex(idx);
+                setTimeout(() => {
+                  if (lightbox.styleId) onSelect(lightbox.styleId);
+                }, 300);
+              }}
+              className="btn-base btn-primary w-full"
+            >
+              Choose style
+            </button>
+            <button
+              onClick={closeLightbox}
+              className="btn-base btn-dark-outline w-full"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
