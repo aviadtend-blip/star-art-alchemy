@@ -69,7 +69,7 @@ export default function buildInterpretationLayer(chartData) {
       fire:  ['lioness', 'phoenix', 'warrior queen', 'eagle', 'valkyrie', 'flame dancer'],
       earth: ['earth goddess', 'white deer', 'white owl', 'she-wolf', 'forest guardian', 'moon mare'],
       air:   ['swan queen', 'winged oracle', 'white raven', 'celestial dancer', 'silver hawk'],
-      water: ['sea goddess', 'moon goddess', 'selkie', 'cosmic mermaid', 'pearl serpent'],
+      water: ['moon goddess', 'storm oracle', 'silver wolf', 'sea queen on a throne', 'winged sorceress'],
     },
     neutral: {
       fire:  ['phoenix', 'lion', 'eagle', 'dragon', 'sun guardian'],
