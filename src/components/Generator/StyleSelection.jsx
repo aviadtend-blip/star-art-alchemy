@@ -306,11 +306,16 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
           <div className="shrink-0 px-6 pb-6 pt-4 z-10 flex flex-col md:flex-row-reverse md:justify-center mx-auto w-full" style={{ gap: 12, maxWidth: 600 }} onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => {
+                if (isLoading) {
+                  toast({ title: 'Almost ready…', description: 'Still calculating your birth chart. Try again in a moment.' });
+                  return;
+                }
+                const styleId = lightbox.styleId;
                 closeLightbox();
-                const idx = carouselStyles.findIndex(s => s.id === lightbox.styleId);
+                const idx = carouselStyles.findIndex(s => s.id === styleId);
                 if (idx !== -1) setActiveIndex(idx);
                 setTimeout(() => {
-                  if (lightbox.styleId) onSelect(lightbox.styleId);
+                  if (styleId) onSelect(styleId);
                 }, 300);
               }}
               className="btn-base btn-primary w-full"
