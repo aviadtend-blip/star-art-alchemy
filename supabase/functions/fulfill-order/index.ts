@@ -43,6 +43,7 @@ async function fulfillOrder(order: any, supabase: any, prodigiKey: string, prodi
   const sizeMatch = sku.match(SIZE_RE);
   await supabase.from("orders").update({ canvas_size: sizeMatch ? sizeMatch[0].toLowerCase() : null, prodigi_sku: sku, fulfillment_status: "submitting" }).eq("id", celestialOrderId);
   const insertCardUrl = await generateInsertCard(celestialOrder);
+  console.log("fulfill-order: insertCardUrl =", insertCardUrl);
   const prodigiResult = await submitToProdigi({ shopifyOrderNumber, customerName, customerEmail, shippingAddress, artworkUrl: celestialOrder.generated_image_url, insertCardUrl, sku, prodigiKey, prodigiSandbox });
   const prodigiOrderId = prodigiResult?.order?.id ?? prodigiResult?.id ?? null;
   if (prodigiOrderId) {
@@ -51,7 +52,7 @@ async function fulfillOrder(order: any, supabase: any, prodigiKey: string, prodi
     const msg = "Prodigi returned no order ID. Response: " + JSON.stringify(prodigiResult).substring(0, 300);
     await supabase.from("orders").update({ fulfillment_status: "failed", fulfillment_error: msg }).eq("id", celestialOrderId);
   }
-  return { success: true, prodigiOrderId, sku };
+  return { success: true, prodigiOrderId, sku, insertCardUrl };
 }
 
 async function generateInsertCard(celestialOrder: any): Promise<string> {
@@ -68,7 +69,7 @@ async function generateInsertCard(celestialOrder: any): Promise<string> {
   const resp = await fetch(`${supabaseUrl}/functions/v1/generate-insert-card`, { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${serviceKey}` }, body: JSON.stringify({ orderId: celestialOrder.id, customerName: celestialOrder.customer_name ?? "", birthDate: chartData.birth_date ?? "", birthTime: chartData.birth_time ?? "", birthPlace: chartData.birth_place ?? chartData.location ?? "", artworkAnalysis }) });
   if (!resp.ok) throw new Error("generate-insert-card failed: " + resp.status + " " + await resp.text());
   const result = await resp.json();
-  if (!result.success || !result.insertCardUrl) throw new Error("No insert card URL");
+  if (!result.success || !result.insertCardUrl) throw new Error("No insert card URL returned");
   return result.insertCardUrl;
 }
 
@@ -124,8 +125,17 @@ async function submitToProdigi(args: any) {
   const addr = args.shippingAddress ?? {};
   const address: Record<string, string> = { line1: addr.address1 ?? "", postalOrZipCode: addr.zip ?? "", townOrCity: addr.city ?? "", stateOrCounty: addr.province ?? "", countryCode: addr.country_code ?? addr.country ?? "US" };
   if (addr.address2?.trim()) address.line2 = addr.address2;
-  const payload: any = { merchantReference: String(args.shopifyOrderNumber), shippingMethod: "Standard", recipient: { name: args.customerName || "Customer", email: args.customerEmail, address }, items: [{ merchantReference: `${args.shopifyOrderNumber}-1`, sku: args.sku, copies: 1, sizing: "fillPrintArea", attributes: { color: resolveFrameColor(args.sku) }, assets: [{ printArea: "default", url: args.artworkUrl }] }] };
-  if (args.insertCardUrl) payload.branding = { flyer: { url: args.insertCardUrl } };
+  const payload: any = {
+    merchantReference: String(args.shopifyOrderNumber),
+    shippingMethod: "Standard",
+    recipient: { name: args.customerName || "Customer", email: args.customerEmail, address },
+    items: [{ merchantReference: `${args.shopifyOrderNumber}-1`, sku: args.sku, copies: 1, sizing: "fillPrintArea", attributes: { color: resolveFrameColor(args.sku) }, assets: [{ printArea: "default", url: args.artworkUrl }] }],
+  };
+  // CRITICAL: include insert card as branding flyer
+  if (args.insertCardUrl) {
+    payload.branding = { flyer: { url: args.insertCardUrl } };
+  }
+  console.log("submitToProdigi: payload.branding =", JSON.stringify(payload.branding));
   const resp = await fetch(`${base}/orders`, { method: "POST", headers: { "X-API-Key": prodigiKey, "Content-Type": "application/json" }, body: JSON.stringify(payload) });
   const text = await resp.text();
   console.log("submitToProdigi:", resp.status, text.substring(0, 400));
