@@ -84,6 +84,8 @@ export function identifyProfile({
   const artworkExpiry = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
   const cosmic10Expiry = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
+  const captureTs = captureTimestamp || now.toISOString();
+
   withKlaviyo((kl) => {
     kl.push([
       'identify',
@@ -94,16 +96,29 @@ export function identifyProfile({
         moon_sign: moonSign,
         rising_sign: risingSign,
         artwork_url: artworkUrl,
+        artwork_variation_url: artworkUrl,
+        artwork_download_url: artworkUrl,
         email_mockup_url: emailMockupUrl,
+        email_mockup_small: emailMockupUrl,
+        email_mockup_medium: emailMockupUrl,
+        email_mockup_large: emailMockupUrl,
         artwork_id: artworkId,
-        capture_timestamp: captureTimestamp || now.toISOString(),
+        capture_timestamp: captureTs,
+        capture_date: captureTs,
         peak_season: peakSeason || detectPeakSeason(),
         dominant_element: dominantElement,
         element_balance: elementBalance,
         artwork_expiry_date: artworkExpiry.toISOString(),
+        expiry_date: artworkExpiry.toISOString(),
         cosmic10_expiry: cosmic10Expiry.toISOString(),
         nurture_branch: 'preview_only',
         discount_code_active: 'COSMIC10',
+        product_url: 'https://celestialartworks.com/shop',
+        sun_sign_interpretation: sunSign ? getSignInterpretation('Sun', sunSign) : '',
+        moon_sign_interpretation: moonSign ? getSignInterpretation('Moon', moonSign) : '',
+        rising_sign_interpretation: risingSign ? getSignInterpretation('Rising', risingSign) : '',
+        delivery_cutoff_date: '',
+        season_gifting_copy: '',
       },
     ]);
   });
