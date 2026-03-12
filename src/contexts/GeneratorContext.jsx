@@ -101,6 +101,12 @@ export function GeneratorProvider({ children }) {
       setError(null);
       setFormData(data);
       sessionStorage.setItem('celestial_form_data', JSON.stringify(data));
+      sessionStorage.setItem('celestial_birth_details', JSON.stringify({
+        customerName: data?.name || null,
+        birthDate: toBirthDate(data),
+        birthTime: toBirthTime(data),
+        birthPlace: toBirthPlace(data),
+      }));
 
       if (data.userPhotoUrl) {
         setUserPhotoUrl(data.userPhotoUrl);
