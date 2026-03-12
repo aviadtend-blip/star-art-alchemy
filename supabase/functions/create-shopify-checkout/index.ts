@@ -74,8 +74,12 @@ serve(async (req) => {
     `;
 
     // Build line item custom attributes (underscore prefix hides from customer receipt)
+    const canonicalSize = (orderDetails.size || "").toLowerCase().replace(/\s/g, "");
+    const sizeLabel = orderDetails.sizeLabel || canonicalSize;
     const lineAttributes = [
-      { key: "_celestial_order_id", value: celestialOrderId || "" },
+      { key: "_celestialorderid", value: celestialOrderId || "" },
+      { key: "canvas_size", value: canonicalSize },
+      { key: "size_label", value: sizeLabel },
     ];
 
     const variables = {
