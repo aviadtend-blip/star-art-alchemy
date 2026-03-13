@@ -6,6 +6,63 @@ import PrimaryButton from '@/components/ui/PrimaryButton';
 
 const INPUT_CLASS = "w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-left text-foreground placeholder:text-[#B1B1B1] focus:border-primary focus:ring-0 transition outline-none";
 
+function buildProxyImageUrl(url) {
+  if (!url) return '';
+  return `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image?url=${encodeURIComponent(url)}`;
+}
+
+async function findStoredArtworkUrl({ artworkId, sessionId }) {
+  if (artworkId) {
+    const { data } = await supabase
+      .from('artworks')
+      .select('artwork_url')
+      .eq('id', artworkId)
+      .maybeSingle();
+
+    if (data?.artwork_url) return data.artwork_url;
+  }
+
+  if (sessionId) {
+    const { data } = await supabase
+      .from('artworks')
+      .select('artwork_url')
+      .eq('session_id', sessionId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (data?.artwork_url) return data.artwork_url;
+  }
+
+  return '';
+}
+
+async function resolveEmailArtworkUrl({ artworkUrl, artworkId, sessionId }) {
+  const storedState = (() => {
+    try {
+      const raw = sessionStorage.getItem('celestial_generator_state');
+      return raw ? JSON.parse(raw) : {};
+    } catch {
+      return {};
+    }
+  })();
+
+  const sessionImage = storedState.generatedImage || '';
+  if (sessionImage.includes('supabase.co')) return sessionImage;
+  if (artworkUrl?.includes('supabase.co')) return artworkUrl;
+
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    const storedUrl = await findStoredArtworkUrl({ artworkId, sessionId });
+    if (storedUrl) return storedUrl;
+
+    if (attempt < 3) {
+      await new Promise((resolve) => setTimeout(resolve, 750));
+    }
+  }
+
+  return buildProxyImageUrl(artworkUrl || sessionImage);
+}
+
 export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkUrl, formData }) {
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState(() => formData?.name?.split(' ')[0] || '');
@@ -51,33 +108,30 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
     const peakSeason = detectPeakSeason();
     const captureTimestamp = new Date().toISOString();
 
-    // Use permanent Supabase Storage URL if available; fall back to current artworkUrl
-    const storedState = (() => {
-      try {
-        const raw = sessionStorage.getItem('celestial_generator_state');
-        return raw ? JSON.parse(raw) : {};
-      } catch { return {}; }
-    })();
-    const permanentUrl = storedState.generatedImage || artworkUrl;
-    // Prefer the permanent (Supabase Storage) URL for emails — CDN URLs expire
-    const emailArtworkUrl = permanentUrl.includes('supabase.co') ? permanentUrl : artworkUrl;
-
-    const profileData = {
-      email: email.trim(),
-      firstName: firstName.trim(),
-      sunSign,
-      moonSign,
-      risingSign,
-      artworkUrl: emailArtworkUrl,
-      emailMockupUrl: emailArtworkUrl,
-      artworkId: artworkId || storedState.artworkId || null,
-      captureTimestamp,
-      peakSeason,
-      dominantElement,
-      elementBalance,
-    };
-
     try {
+      const resolvedArtworkId = artworkId || sessionStorage.getItem('celestial_artwork_id') || null;
+      const emailArtworkUrl = await resolveEmailArtworkUrl({
+        artworkUrl,
+        artworkId: resolvedArtworkId,
+        sessionId,
+      });
+
+      const profileData = {
+        email: email.trim(),
+        firstName: firstName.trim(),
+        sunSign,
+        moonSign,
+        risingSign,
+        artworkUrl: emailArtworkUrl,
+        emailMockupUrl: emailArtworkUrl,
+        artworkId: resolvedArtworkId,
+        sessionId,
+        captureTimestamp,
+        peakSeason,
+        dominantElement,
+        elementBalance,
+      };
+
       const { error } = await supabase.functions.invoke('capture-email', {
         body: { ...profileData, sessionId },
       });
