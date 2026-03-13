@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import { ProductCustomization } from '@/components/Purchase/ProductCustomization';
@@ -12,7 +12,7 @@ export default function GenerateSize() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const {
-    chartData, generatedImage, formData,
+    chartData, generatedImage, formData, artworkId,
     handleCheckout, handleTestCheckout, handleBackToPreview, handleEditBirthData,
     isCheckingOut,
     setChartData,
@@ -22,16 +22,37 @@ export default function GenerateSize() {
     setGenerationComplete,
     setArtworkId,
   } = useGenerator();
-  const [isRestoring, setIsRestoring] = useState(false);
-  const [restoreError, setRestoreError] = useState('');
   const restoreArtworkId = searchParams.get('artwork_id');
   const restoreSessionId = searchParams.get('session_id');
+  const restoreKey = restoreArtworkId
+    ? `artwork:${restoreArtworkId}`
+    : restoreSessionId
+      ? `session:${restoreSessionId}`
+      : '';
+  const restoreAttemptedKeyRef = useRef('');
+  const [isRestoring, setIsRestoring] = useState(() => Boolean(restoreKey));
+  const [restoreError, setRestoreError] = useState('');
 
   // Ensure all size/customization page images are loaded
   useImagePreloader(GENERATE_SIZE_IMAGES);
 
   useEffect(() => {
-    if ((chartData && generatedImage) || (!restoreArtworkId && !restoreSessionId)) return;
+    if (!restoreKey) {
+      restoreAttemptedKeyRef.current = '';
+      setIsRestoring(false);
+      return;
+    }
+
+    // Email deep links should always override any stale session state in the browser.
+    // Without this, an old generator session can block the saved artwork from loading.
+    const alreadyRestoredThisLink =
+      restoreAttemptedKeyRef.current === restoreKey &&
+      ((restoreArtworkId && artworkId === restoreArtworkId) ||
+        (!restoreArtworkId && restoreSessionId && generatedImage));
+
+    if (alreadyRestoredThisLink) return;
+
+    restoreAttemptedKeyRef.current = restoreKey;
 
     let active = true;
 
@@ -115,10 +136,10 @@ export default function GenerateSize() {
       active = false;
     };
   }, [
-    chartData,
-    generatedImage,
+    artworkId,
     restoreArtworkId,
     restoreSessionId,
+    restoreKey,
     setArtworkAnalysis,
     setArtworkId,
     setChartData,
