@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { enforceExpensiveUsageLimit } from "../_shared/expensiveUsage.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -127,6 +128,15 @@ serve(async (req) => {
         JSON.stringify({ error: "Prompt is required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
+    }
+
+    const limitResponse = await enforceExpensiveUsageLimit({
+      req,
+      functionName: "generate-artwork",
+      corsHeaders,
+    });
+    if (limitResponse) {
+      return limitResponse;
     }
 
     console.log(`Prompt length: ${prompt.length}`);

@@ -11,6 +11,7 @@ import galaxyBg from '@/assets/galaxy-bg.jpg';
 import canvasDetail from '@/assets/gallery/canvas-detail.jpg';
 import womanHolding from '@/assets/gallery/woman-holding.webp';
 import ReviewsList from '@/components/ui/ReviewsList';
+import { CANVAS_SIZES, CANVAS_SIZE_MAP } from '@/lib/canvasSizes';
 
 // 12x18 mockups
 import mockup12x18_1 from '@/assets/mockups/12x18/mockup-1.webp';
@@ -40,11 +41,10 @@ import mockup20x30_6 from '@/assets/mockups/20x30/mockup-6.webp';
 import mockup20x30_7 from '@/assets/mockups/20x30/mockup-7.webp';
 import mockup20x30_8 from '@/assets/mockups/20x30/mockup-8.webp';
 
-const SIZE_OPTIONS = [
-  { id: '12x18', label: '12" × 18"', description: 'Perfect for combinations', price: 79 },
-  { id: '16x24', label: '16" × 24"', description: 'Statement piece (34% choose this)', price: 119, popular: true },
-  { id: '20x30', label: '20" × 30"', description: 'Gallery showpiece', price: 179 },
-];
+const SIZE_OPTIONS = CANVAS_SIZES.map((size) => ({
+  ...size,
+  popular: size.id === '16x24',
+}));
 
 // Each mockup has a numeric ID so we can match across sizes when switching
 // Ordered low→high. When switching sizes, we try to keep the same mockup number.
@@ -181,7 +181,7 @@ function SizeSelector({ vertical = false, selectedSize, onSizeChange, sizeCarous
         </div>
       )}
       <p className="text-body-sm" style={{ color: '#888888', marginTop: '4px' }}>
-        💡 Not sure? We recommend 18"×24" for most spaces
+        💡 Not sure? We recommend 16" × 24" for most spaces
       </p>
     </div>
   );
@@ -255,7 +255,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
   const sizeCarouselRef = useRef(null);
   const isFirstSizeScroll = useRef(true);
 
-  const sizeData = SIZE_OPTIONS.find(s => s.id === selectedSize);
+  const sizeData = CANVAS_SIZE_MAP[selectedSize];
   const total = sizeData?.price || 119;
   const mockups = useMemo(() => getMockupSrcs(selectedSize), [selectedSize]);
   const mockupNums = useMemo(() => getMockupNums(selectedSize), [selectedSize]);
@@ -266,7 +266,7 @@ export function ProductCustomization({ chartData, artworkImage, onCheckout, onBa
 
   // Background-preload the other two sizes so switching is instant
   const otherMockupSets = useMemo(() => {
-    const allSizes = ['12x16', '18x24', '24x32'];
+    const allSizes = SIZE_OPTIONS.map((size) => size.id);
     return allSizes.filter(s => s !== selectedSize).map(getMockupSrcs);
   }, [selectedSize]);
   useBackgroundPreload(otherMockupSets, artworkImage);

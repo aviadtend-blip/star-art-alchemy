@@ -11,7 +11,11 @@ serve(async (req) => {
   }
 
   try {
-    const { url } = await req.json();
+    const requestUrl = new URL(req.url);
+    const url =
+      req.method === 'GET'
+        ? requestUrl.searchParams.get('url')
+        : (await req.json()).url;
 
     if (!url || typeof url !== 'string') {
       return new Response(

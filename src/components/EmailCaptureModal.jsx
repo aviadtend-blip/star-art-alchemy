@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { identifyProfile, trackEmailCaptured, detectPeakSeason } from '@/lib/klaviyo';
 import { getAlternateVariation } from '@/lib/api/replicateClient';
+import { createEmailMockupGallery } from '@/lib/emailMockupGallery';
 import PrimaryButton from '@/components/ui/PrimaryButton';
 
 const INPUT_CLASS = "w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-left text-foreground placeholder:text-[#B1B1B1] focus:border-primary focus:ring-0 transition outline-none";
@@ -127,6 +128,15 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
         primaryArtworkUrl: emailArtworkUrl,
         currentArtworkUrl: artworkUrl,
       });
+      const emailMockupGallery = await createEmailMockupGallery({
+        artworkSrc: emailArtworkUrl,
+        artworkId: resolvedArtworkId,
+        sessionId,
+      }).catch((error) => {
+        console.warn('[EmailCaptureModal] Email mockup gallery generation failed:', error);
+        return { small: '', medium: '', large: '' };
+      });
+      const emailMockupUrl = emailMockupGallery.medium || emailArtworkUrl;
 
       const profileData = {
         email: email.trim(),
@@ -136,7 +146,10 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
         risingSign,
         artworkUrl: emailArtworkUrl,
         artworkVariationUrl,
-        emailMockupUrl: emailArtworkUrl,
+        emailMockupUrl,
+        emailMockupSmallUrl: emailMockupGallery.small,
+        emailMockupMediumUrl: emailMockupGallery.medium,
+        emailMockupLargeUrl: emailMockupGallery.large,
         artworkId: resolvedArtworkId,
         sessionId,
         captureTimestamp,

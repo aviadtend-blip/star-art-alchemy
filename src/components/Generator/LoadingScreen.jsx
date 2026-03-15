@@ -5,6 +5,7 @@ import Footer from '@/components/Layout/Footer';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import artistGif from '@/assets/artist-painting.gif';
 import FloatingProgressBar from '@/components/Generator/FloatingProgressBar';
+import { CANVAS_SIZES } from '@/lib/canvasSizes';
 
 const FUN_FACTS = [
   "Fun fact: Your chart has never been created as artwork before today.",
@@ -102,7 +103,7 @@ export default function LoadingScreen({ chartData, selectedStyle, generationProg
   const [tickerMessages] = useState(() => {
     const names = ["Sarah", "Emily", "Jessica", "Maria", "Rachel", "Lauren", "Ashley", "Amanda", "Stephanie", "Nicole"];
     const cities = ["Austin", "Brooklyn", "Denver", "Portland", "Nashville", "London", "Toronto", "Seattle", "Chicago", "San Diego"];
-    const sizes = ["12×18", "16×24", "24×32"];
+    const sizes = CANVAS_SIZES.map((size) => size.label.replace(/"/g, ''));
     const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
     return [
       "🎨 1,847 charts created this month",

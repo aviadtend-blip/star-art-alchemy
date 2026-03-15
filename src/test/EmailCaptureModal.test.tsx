@@ -16,6 +16,7 @@ const {
   trackEmailCapturedMock,
   detectPeakSeasonMock,
   getAlternateVariationMock,
+  createEmailMockupGalleryMock,
 } = vi.hoisted(() => ({
   invokeMock: vi.fn(),
   fromMock: vi.fn(),
@@ -28,6 +29,7 @@ const {
   trackEmailCapturedMock: vi.fn(),
   detectPeakSeasonMock: vi.fn(() => "holiday"),
   getAlternateVariationMock: vi.fn(),
+  createEmailMockupGalleryMock: vi.fn(),
 }));
 
 vi.mock("@/integrations/supabase/client", () => ({
@@ -49,11 +51,20 @@ vi.mock("@/lib/api/replicateClient", () => ({
   getAlternateVariation: getAlternateVariationMock,
 }));
 
+vi.mock("@/lib/emailMockupGallery", () => ({
+  createEmailMockupGallery: createEmailMockupGalleryMock,
+}));
+
 describe("EmailCaptureModal", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     invokeMock.mockResolvedValue({ error: null });
     getAlternateVariationMock.mockReturnValue(null);
+    createEmailMockupGalleryMock.mockResolvedValue({
+      small: "",
+      medium: "",
+      large: "",
+    });
     maybeSingleMock.mockResolvedValue({ data: null });
     limitMock.mockReturnValue({ maybeSingle: maybeSingleMock });
     orderMock.mockReturnValue({ limit: limitMock });
@@ -71,6 +82,11 @@ describe("EmailCaptureModal", () => {
       imageUrl: "https://project.supabase.co/storage/v1/object/public/artworks/variation-2.jpg",
       variationNumber: 2,
       totalVariations: 4,
+    });
+    createEmailMockupGalleryMock.mockResolvedValue({
+      small: "https://project.supabase.co/storage/v1/object/public/artworks/mockup-small.jpg",
+      medium: "https://project.supabase.co/storage/v1/object/public/artworks/mockup-medium.jpg",
+      large: "https://project.supabase.co/storage/v1/object/public/artworks/mockup-large.jpg",
     });
 
     sessionStorage.setItem(
@@ -114,7 +130,10 @@ describe("EmailCaptureModal", () => {
       artworkUrl: "https://project.supabase.co/storage/v1/object/public/artworks/final.jpg",
       artworkVariationUrl:
         "https://project.supabase.co/storage/v1/object/public/artworks/variation-2.jpg",
-      emailMockupUrl: "https://project.supabase.co/storage/v1/object/public/artworks/final.jpg",
+      emailMockupUrl: "https://project.supabase.co/storage/v1/object/public/artworks/mockup-medium.jpg",
+      emailMockupSmallUrl: "https://project.supabase.co/storage/v1/object/public/artworks/mockup-small.jpg",
+      emailMockupMediumUrl: "https://project.supabase.co/storage/v1/object/public/artworks/mockup-medium.jpg",
+      emailMockupLargeUrl: "https://project.supabase.co/storage/v1/object/public/artworks/mockup-large.jpg",
       artworkId: "art_from_state",
       sessionId: "session_123",
       captureTimestamp: expect.any(String),
@@ -160,6 +179,9 @@ describe("EmailCaptureModal", () => {
       artworkUrl: "",
       artworkVariationUrl: "",
       emailMockupUrl: "",
+      emailMockupSmallUrl: "",
+      emailMockupMediumUrl: "",
+      emailMockupLargeUrl: "",
       artworkId: null,
       sessionId: null,
       captureTimestamp: expect.any(String),
@@ -176,6 +198,9 @@ describe("EmailCaptureModal", () => {
       artworkUrl: "",
       artworkVariationUrl: "",
       emailMockupUrl: "",
+      emailMockupSmallUrl: "",
+      emailMockupMediumUrl: "",
+      emailMockupLargeUrl: "",
       artworkId: null,
       sessionId: null,
       captureTimestamp: expect.any(String),
@@ -192,6 +217,9 @@ describe("EmailCaptureModal", () => {
       artworkUrl: "",
       artworkVariationUrl: "",
       emailMockupUrl: "",
+      emailMockupSmallUrl: "",
+      emailMockupMediumUrl: "",
+      emailMockupLargeUrl: "",
       artworkId: null,
       captureTimestamp: expect.any(String),
       peakSeason: "holiday",

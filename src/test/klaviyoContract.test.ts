@@ -62,6 +62,9 @@ describe("klaviyoContract", () => {
       artworkUrl: "https://cdn.example.com/artwork.jpg",
       artworkVariationUrl: "https://cdn.example.com/variation.jpg",
       emailMockupUrl: "https://cdn.example.com/mockup.jpg",
+      emailMockupSmallUrl: "https://cdn.example.com/mockup-small.jpg",
+      emailMockupMediumUrl: "https://cdn.example.com/mockup-medium.jpg",
+      emailMockupLargeUrl: "https://cdn.example.com/mockup-large.jpg",
       artworkId: "art_123",
       sessionId: "session_123",
       peakSeason: "holiday",
@@ -80,6 +83,9 @@ describe("klaviyoContract", () => {
     expect(identify.properties.artwork_url).toBe("https://cdn.example.com/artwork.jpg");
     expect(identify.properties.artwork_variation_url).toBe("https://cdn.example.com/variation.jpg");
     expect(identify.properties.email_mockup_url).toBe("https://cdn.example.com/mockup.jpg");
+    expect(identify.properties.email_mockup_small).toBe("https://cdn.example.com/mockup-small.jpg");
+    expect(identify.properties.email_mockup_medium).toBe("https://cdn.example.com/mockup-medium.jpg");
+    expect(identify.properties.email_mockup_large).toBe("https://cdn.example.com/mockup-large.jpg");
     expect(identify.properties.artwork_image_url).toBe("https://cdn.example.com/artwork.jpg");
     expect(identify.properties.preview_image_url).toBe("https://cdn.example.com/mockup.jpg");
     expect(identify.properties.session_id).toBe("session_123");

@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { enforceExpensiveUsageLimit } from "../_shared/expensiveUsage.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -22,6 +23,15 @@ serve(async (req) => {
         JSON.stringify({ error: "prompt and face_image_url are required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
+    }
+
+    const limitResponse = await enforceExpensiveUsageLimit({
+      req,
+      functionName: "generate-portrait-artwork",
+      corsHeaders,
+    });
+    if (limitResponse) {
+      return limitResponse;
     }
 
     if (!APIFRAME_API_KEY || !REPLICATE_API_TOKEN) {

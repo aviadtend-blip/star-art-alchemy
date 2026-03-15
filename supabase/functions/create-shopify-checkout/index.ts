@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { resolveCanvasSize } from "../../../src/lib/canvasSizes.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -30,7 +31,17 @@ serve(async (req) => {
       throw new Error("Missing order details");
     }
 
-    const sizeKey = orderDetails.size;
+    const resolvedSize = resolveCanvasSize({
+      size: orderDetails.size,
+      sizeLabel: orderDetails.sizeLabel,
+    });
+    if (!resolvedSize) {
+      throw new Error(
+        `Unknown size. Received size=${JSON.stringify(orderDetails.size)} sizeLabel=${JSON.stringify(orderDetails.sizeLabel)}`
+      );
+    }
+
+    const sizeKey = resolvedSize.id;
     const envVarName = VARIANT_ENV_MAP[sizeKey];
     if (!envVarName) { throw new Error(`Unknown size: ${sizeKey}`); }
     const variantId = Deno.env.get(envVarName);
@@ -47,8 +58,13 @@ serve(async (req) => {
       { key: "sun_sign", value: chartData?.sun?.sign || "" },
       { key: "moon_sign", value: chartData?.moon?.sign || "" },
       { key: "rising_sign", value: chartData?.rising || "" },
+<<<<<<< Updated upstream
       { key: "canvas_size", value: (orderDetails.size || "").toLowerCase().replace(/\s/g, "") },
       { key: "size_label", value: orderDetails.sizeLabel || (orderDetails.size || "").toLowerCase().replace(/\s/g, "") },
+=======
+      { key: "canvas_size", value: resolvedSize.id },
+      { key: "size_label", value: resolvedSize.label },
+>>>>>>> Stashed changes
     ];
 
     // Add affiliate tracking as a cart attribute if present
@@ -61,7 +77,7 @@ serve(async (req) => {
       `Sun: ${chartData?.sun?.sign || "N/A"}`,
       `Moon: ${chartData?.moon?.sign || "N/A"}`,
       `Rising: ${chartData?.rising || "N/A"}`,
-      `Size: ${orderDetails.sizeLabel || orderDetails.size}`,
+      `Size: ${resolvedSize.label}`,
     ].join(" | ");
 
     const mutation = `
@@ -77,9 +93,15 @@ serve(async (req) => {
     const canonicalSize = (orderDetails.size || "").toLowerCase().replace(/\s/g, "");
     const sizeLabel = orderDetails.sizeLabel || canonicalSize;
     const lineAttributes = [
+<<<<<<< Updated upstream
       { key: "_celestialorderid", value: celestialOrderId || "" },
       { key: "canvas_size", value: canonicalSize },
       { key: "size_label", value: sizeLabel },
+=======
+      { key: "_celestial_order_id", value: celestialOrderId || "" },
+      { key: "_canvas_size", value: resolvedSize.id },
+      { key: "_size_label", value: resolvedSize.label },
+>>>>>>> Stashed changes
     ];
 
     const variables = {

@@ -68,9 +68,14 @@ export function buildKlaviyoProfileProperties(input) {
     new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
   );
   const artworkUrl = normalizeText(input.artworkUrl);
-  const emailMockupUrl = normalizeText(input.emailMockupUrl) || artworkUrl;
+  const explicitEmailMockupUrl = normalizeText(input.emailMockupUrl);
+  const emailMockupMediumUrl = normalizeText(input.emailMockupMediumUrl);
+  const emailMockupUrl = explicitEmailMockupUrl || emailMockupMediumUrl || artworkUrl;
   const primaryArtworkUrl = artworkUrl || emailMockupUrl;
   const artworkVariationUrl = buildArtworkVariationUrl(input, primaryArtworkUrl);
+  const emailMockupSmallUrl = normalizeText(input.emailMockupSmallUrl) || emailMockupUrl || primaryArtworkUrl;
+  const normalizedEmailMockupMediumUrl = emailMockupMediumUrl || emailMockupUrl || primaryArtworkUrl;
+  const emailMockupLargeUrl = normalizeText(input.emailMockupLargeUrl) || emailMockupUrl || primaryArtworkUrl;
   const nurtureBranch = normalizeText(input.nurtureBranch) || KLAVIYO_DEFAULTS.nurtureBranch;
   const peakSeason = normalizeText(input.peakSeason) || KLAVIYO_DEFAULTS.peakSeason;
   const firstName = normalizeText(input.firstName);
@@ -93,9 +98,9 @@ export function buildKlaviyoProfileProperties(input) {
     preview_image_url: emailMockupUrl || primaryArtworkUrl,
     download_url: primaryArtworkUrl,
     email_mockup_url: emailMockupUrl || primaryArtworkUrl,
-    email_mockup_small: emailMockupUrl || primaryArtworkUrl,
-    email_mockup_medium: emailMockupUrl || primaryArtworkUrl,
-    email_mockup_large: emailMockupUrl || primaryArtworkUrl,
+    email_mockup_small: emailMockupSmallUrl,
+    email_mockup_medium: normalizedEmailMockupMediumUrl,
+    email_mockup_large: emailMockupLargeUrl,
     artwork_id: normalizeText(input.artworkId),
     session_id: normalizeText(input.sessionId),
     peak_season: peakSeason,
