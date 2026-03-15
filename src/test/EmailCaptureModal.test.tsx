@@ -166,7 +166,6 @@ describe("EmailCaptureModal", () => {
       peakSeason: "holiday",
       dominantElement: undefined,
       elementBalance: undefined,
-      sessionId: null,
     });
     expect(identifyProfileMock).toHaveBeenCalledWith({
       email: "sparse@example.com",
