@@ -19,3 +19,5 @@ export const CANVAS_SIZE_MAP = {
     dimensions: { width: 20, height: 30 },
   },
 };
+
+export const CANVAS_SIZES = Object.values(CANVAS_SIZE_MAP);
