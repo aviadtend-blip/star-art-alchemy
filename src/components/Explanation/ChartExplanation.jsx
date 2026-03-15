@@ -453,8 +453,7 @@ export function ChartExplanation({
                 src={selectedImage}
                 alt={`Birth chart artwork for ${chartData?.sun?.sign || ''} Sun`}
                 className="mx-auto object-cover h-full w-full"
-                style={{ ...{ WebkitUserSelect: 'none', userSelect: 'none', pointerEvents: 'none' }, borderRadius: '2px' }}
-                style={{ WebkitUserSelect: 'none', userSelect: 'none', pointerEvents: 'none' }}
+                style={{ WebkitUserSelect: 'none', userSelect: 'none', pointerEvents: 'none', borderRadius: '2px' }}
                 draggable={false}
                 onContextMenu={(e) => e.preventDefault()}
               />
