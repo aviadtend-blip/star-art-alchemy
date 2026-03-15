@@ -225,7 +225,7 @@ serve(async (req) => {
           moon_sign: moonSign || null,
           rising_sign: risingSign || null,
           artwork_url: resolvedArtworkUrl || null,
-          email_mockup_url: resolvedArtworkUrl || null,
+          email_mockup_url: emailMockupMediumUrl || emailMockupUrl || resolvedArtworkUrl || null,
           artwork_id: artworkId || null,
           session_id: sessionId || null,
           peak_season: peakSeason || "default",
