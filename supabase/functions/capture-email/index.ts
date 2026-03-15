@@ -187,6 +187,9 @@ serve(async (req) => {
       artworkUrl,
       artworkVariationUrl,
       emailMockupUrl,
+      emailMockupSmallUrl,
+      emailMockupMediumUrl,
+      emailMockupLargeUrl,
       artworkId,
       sessionId,
       peakSeason,
@@ -222,7 +225,7 @@ serve(async (req) => {
           moon_sign: moonSign || null,
           rising_sign: risingSign || null,
           artwork_url: resolvedArtworkUrl || null,
-          email_mockup_url: resolvedArtworkUrl || null,
+          email_mockup_url: emailMockupMediumUrl || emailMockupUrl || resolvedArtworkUrl || null,
           artwork_id: artworkId || null,
           session_id: sessionId || null,
           peak_season: peakSeason || "default",
@@ -262,6 +265,9 @@ serve(async (req) => {
         artworkUrl: resolvedArtworkUrl,
         artworkVariationUrl,
         emailMockupUrl: resolvedArtworkUrl,
+        emailMockupSmallUrl,
+        emailMockupMediumUrl,
+        emailMockupLargeUrl,
         artworkId,
         sessionId,
         peakSeason,
@@ -370,6 +376,9 @@ interface KlaviyoClientSyncParams {
   artworkUrl?: string;
   artworkVariationUrl?: string;
   emailMockupUrl?: string;
+  emailMockupSmallUrl?: string;
+  emailMockupMediumUrl?: string;
+  emailMockupLargeUrl?: string;
   artworkId?: string;
   sessionId?: string;
   peakSeason?: string;
@@ -391,6 +400,9 @@ async function syncToKlaviyoClientAPI(params: KlaviyoClientSyncParams) {
     artworkUrl,
     artworkVariationUrl,
     emailMockupUrl,
+    emailMockupSmallUrl,
+    emailMockupMediumUrl,
+    emailMockupLargeUrl,
     artworkId,
     sessionId,
     peakSeason,
@@ -416,6 +428,9 @@ async function syncToKlaviyoClientAPI(params: KlaviyoClientSyncParams) {
     artworkUrl,
     artworkVariationUrl,
     emailMockupUrl,
+    emailMockupSmallUrl,
+    emailMockupMediumUrl,
+    emailMockupLargeUrl,
     artworkId,
     sessionId,
     peakSeason,
@@ -434,6 +449,9 @@ async function syncToKlaviyoClientAPI(params: KlaviyoClientSyncParams) {
     artworkUrl,
     artworkVariationUrl,
     emailMockupUrl,
+    emailMockupSmallUrl,
+    emailMockupMediumUrl,
+    emailMockupLargeUrl,
     artworkId,
     sessionId,
     peakSeason,
