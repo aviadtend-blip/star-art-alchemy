@@ -376,6 +376,9 @@ interface KlaviyoClientSyncParams {
   artworkUrl?: string;
   artworkVariationUrl?: string;
   emailMockupUrl?: string;
+  emailMockupSmallUrl?: string;
+  emailMockupMediumUrl?: string;
+  emailMockupLargeUrl?: string;
   artworkId?: string;
   sessionId?: string;
   peakSeason?: string;
@@ -397,6 +400,9 @@ async function syncToKlaviyoClientAPI(params: KlaviyoClientSyncParams) {
     artworkUrl,
     artworkVariationUrl,
     emailMockupUrl,
+    emailMockupSmallUrl,
+    emailMockupMediumUrl,
+    emailMockupLargeUrl,
     artworkId,
     sessionId,
     peakSeason,
