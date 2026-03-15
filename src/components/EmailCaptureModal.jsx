@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { identifyProfile, trackEmailCaptured, detectPeakSeason } from '@/lib/klaviyo';
+import { getAlternateVariation } from '@/lib/api/replicateClient';
 import PrimaryButton from '@/components/ui/PrimaryButton';
 
 const INPUT_CLASS = "w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-left text-foreground placeholder:text-[#B1B1B1] focus:border-primary focus:ring-0 transition outline-none";
@@ -63,6 +64,13 @@ async function resolveEmailArtworkUrl({ artworkUrl, artworkId, sessionId }) {
   return buildProxyImageUrl(artworkUrl || sessionImage);
 }
 
+function resolveEmailVariationUrl({ primaryArtworkUrl, currentArtworkUrl }) {
+  const alternateVariation = getAlternateVariation(currentArtworkUrl || primaryArtworkUrl)?.imageUrl || '';
+  if (!alternateVariation) return '';
+  if (alternateVariation.includes('supabase.co')) return alternateVariation;
+  return buildProxyImageUrl(alternateVariation);
+}
+
 export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkUrl, formData }) {
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState(() => formData?.name?.split(' ')[0] || '');
@@ -115,6 +123,10 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
         artworkId: resolvedArtworkId,
         sessionId,
       });
+      const artworkVariationUrl = resolveEmailVariationUrl({
+        primaryArtworkUrl: emailArtworkUrl,
+        currentArtworkUrl: artworkUrl,
+      });
 
       const profileData = {
         email: email.trim(),
@@ -123,6 +135,7 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
         moonSign,
         risingSign,
         artworkUrl: emailArtworkUrl,
+        artworkVariationUrl,
         emailMockupUrl: emailArtworkUrl,
         artworkId: resolvedArtworkId,
         sessionId,

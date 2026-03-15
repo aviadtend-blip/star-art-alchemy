@@ -7,6 +7,7 @@
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
+const GENERATION_CACHE_KEY = 'celestial_generation_cache';
 
 /**
  * Fetch with retry for 5xx errors (exponential backoff)
@@ -42,6 +43,37 @@ let currentGenerationCache = {
   taskId: null,
   actions: [],
 };
+
+function persistGenerationCache() {
+  try {
+    sessionStorage.setItem(GENERATION_CACHE_KEY, JSON.stringify(currentGenerationCache));
+  } catch {
+    // Ignore storage failures in the browser session cache.
+  }
+}
+
+function hydrateGenerationCache() {
+  if (currentGenerationCache.allOutputs.length > 0 || typeof sessionStorage === 'undefined') {
+    return;
+  }
+
+  try {
+    const raw = sessionStorage.getItem(GENERATION_CACHE_KEY);
+    if (!raw) return;
+
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed?.allOutputs)) return;
+
+    currentGenerationCache = {
+      allOutputs: parsed.allOutputs.filter((value) => typeof value === 'string' && value.trim()),
+      currentIndex: Number.isInteger(parsed?.currentIndex) ? parsed.currentIndex : 0,
+      taskId: typeof parsed?.taskId === 'string' ? parsed.taskId : null,
+      actions: Array.isArray(parsed?.actions) ? parsed.actions : [],
+    };
+  } catch {
+    // Ignore cache hydration failures and use the in-memory cache only.
+  }
+}
 
 /**
  * Poll the generate-artwork edge function for task status
@@ -142,6 +174,7 @@ export async function generateImage(prompt, sref, personalization, profileCode, 
     taskId: result.task_id || submitData.task_id,
     actions: result.actions || [],
   };
+  persistGenerationCache();
 
   console.log(`Generation complete: ${currentGenerationCache.allOutputs.length} variations cached`);
 
@@ -156,6 +189,8 @@ export async function generateImage(prompt, sref, personalization, profileCode, 
  * Get next variation for reimagine feature
  */
 export function getNextVariation() {
+  hydrateGenerationCache();
+
   const { allOutputs, currentIndex } = currentGenerationCache;
   const nextIndex = currentIndex + 1;
 
@@ -165,6 +200,7 @@ export function getNextVariation() {
   }
 
   currentGenerationCache.currentIndex = nextIndex;
+  persistGenerationCache();
   const nextUrl = allOutputs[nextIndex];
 
   console.log(`Reimagine: showing variation ${nextIndex + 1}/${allOutputs.length}`);
@@ -181,13 +217,42 @@ export function getNextVariation() {
  * Get all cached image URLs (for preloading mockups)
  */
 export function getAllCachedOutputs() {
+  hydrateGenerationCache();
   return currentGenerationCache.allOutputs;
+}
+
+export function getAlternateVariation(currentImageUrl = null) {
+  hydrateGenerationCache();
+
+  const outputs = currentGenerationCache.allOutputs.filter(
+    (value) => typeof value === 'string' && value.trim(),
+  );
+
+  if (outputs.length < 2) {
+    return null;
+  }
+
+  const normalizedCurrent = typeof currentImageUrl === 'string' ? currentImageUrl.trim() : '';
+  const currentIndex = outputs.findIndex((value) => value === normalizedCurrent);
+  const alternateIndex = currentIndex >= 0 ? (currentIndex === 0 ? 1 : 0) : 1;
+  const alternateUrl = outputs[alternateIndex] || outputs.find((value) => value !== normalizedCurrent);
+
+  if (!alternateUrl) {
+    return null;
+  }
+
+  return {
+    imageUrl: alternateUrl,
+    variationNumber: alternateIndex + 1,
+    totalVariations: outputs.length,
+  };
 }
 
 /**
  * Get the current task ID (for potential upscaling)
  */
 export function getCurrentTaskId() {
+  hydrateGenerationCache();
   return currentGenerationCache.taskId;
 }
 
@@ -201,4 +266,5 @@ export function resetGenerationCache() {
     taskId: null,
     actions: [],
   };
+  persistGenerationCache();
 }

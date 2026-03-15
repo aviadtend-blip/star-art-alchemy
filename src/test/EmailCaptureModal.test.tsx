@@ -15,6 +15,7 @@ const {
   identifyProfileMock,
   trackEmailCapturedMock,
   detectPeakSeasonMock,
+  getAlternateVariationMock,
 } = vi.hoisted(() => ({
   invokeMock: vi.fn(),
   fromMock: vi.fn(),
@@ -26,6 +27,7 @@ const {
   identifyProfileMock: vi.fn(),
   trackEmailCapturedMock: vi.fn(),
   detectPeakSeasonMock: vi.fn(() => "holiday"),
+  getAlternateVariationMock: vi.fn(),
 }));
 
 vi.mock("@/integrations/supabase/client", () => ({
@@ -43,10 +45,15 @@ vi.mock("@/lib/klaviyo", () => ({
   detectPeakSeason: detectPeakSeasonMock,
 }));
 
+vi.mock("@/lib/api/replicateClient", () => ({
+  getAlternateVariation: getAlternateVariationMock,
+}));
+
 describe("EmailCaptureModal", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     invokeMock.mockResolvedValue({ error: null });
+    getAlternateVariationMock.mockReturnValue(null);
     maybeSingleMock.mockResolvedValue({ data: null });
     limitMock.mockReturnValue({ maybeSingle: maybeSingleMock });
     orderMock.mockReturnValue({ limit: limitMock });
@@ -60,6 +67,12 @@ describe("EmailCaptureModal", () => {
   });
 
   it("submits normalized data for the Klaviyo nurture flow", async () => {
+    getAlternateVariationMock.mockReturnValue({
+      imageUrl: "https://project.supabase.co/storage/v1/object/public/artworks/variation-2.jpg",
+      variationNumber: 2,
+      totalVariations: 4,
+    });
+
     sessionStorage.setItem(
       "celestial_generator_state",
       JSON.stringify({
@@ -99,6 +112,8 @@ describe("EmailCaptureModal", () => {
       moonSign: "Cancer",
       risingSign: "Leo",
       artworkUrl: "https://project.supabase.co/storage/v1/object/public/artworks/final.jpg",
+      artworkVariationUrl:
+        "https://project.supabase.co/storage/v1/object/public/artworks/variation-2.jpg",
       emailMockupUrl: "https://project.supabase.co/storage/v1/object/public/artworks/final.jpg",
       artworkId: "art_from_state",
       sessionId: "session_123",
@@ -143,6 +158,7 @@ describe("EmailCaptureModal", () => {
       moonSign: undefined,
       risingSign: undefined,
       artworkUrl: "",
+      artworkVariationUrl: "",
       emailMockupUrl: "",
       artworkId: null,
       sessionId: null,
@@ -159,6 +175,7 @@ describe("EmailCaptureModal", () => {
       moonSign: undefined,
       risingSign: undefined,
       artworkUrl: "",
+      artworkVariationUrl: "",
       emailMockupUrl: "",
       artworkId: null,
       sessionId: null,
@@ -174,6 +191,7 @@ describe("EmailCaptureModal", () => {
       moonSign: undefined,
       risingSign: undefined,
       artworkUrl: "",
+      artworkVariationUrl: "",
       emailMockupUrl: "",
       artworkId: null,
       captureTimestamp: expect.any(String),

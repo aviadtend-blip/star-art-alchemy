@@ -60,6 +60,7 @@ describe("klaviyoContract", () => {
       moonSign: "Cancer",
       risingSign: "Leo",
       artworkUrl: "https://cdn.example.com/artwork.jpg",
+      artworkVariationUrl: "https://cdn.example.com/variation.jpg",
       emailMockupUrl: "https://cdn.example.com/mockup.jpg",
       artworkId: "art_123",
       sessionId: "session_123",
@@ -77,6 +78,7 @@ describe("klaviyoContract", () => {
     expect(identify.email).toBe("user@example.com");
     expect(identify.first_name).toBe("Aviad");
     expect(identify.properties.artwork_url).toBe("https://cdn.example.com/artwork.jpg");
+    expect(identify.properties.artwork_variation_url).toBe("https://cdn.example.com/variation.jpg");
     expect(identify.properties.email_mockup_url).toBe("https://cdn.example.com/mockup.jpg");
     expect(identify.properties.artwork_image_url).toBe("https://cdn.example.com/artwork.jpg");
     expect(identify.properties.preview_image_url).toBe("https://cdn.example.com/mockup.jpg");
@@ -138,5 +140,16 @@ describe("klaviyoContract", () => {
     expect(identify.properties.artwork_url).toBe("https://cdn.example.com/mockup.jpg");
     expect(identify.properties.artwork_primary_url).toBe("https://cdn.example.com/mockup.jpg");
     expect(identify.properties.email_mockup_url).toBe("https://cdn.example.com/mockup.jpg");
+  });
+
+  it("falls back to the primary artwork when no separate variation exists", () => {
+    const identify = buildKlaviyoIdentifyAttributes({
+      email: "user@example.com",
+      artworkUrl: "https://cdn.example.com/artwork.jpg",
+      captureTimestamp: "2026-03-13T12:00:00.000Z",
+    });
+
+    expect(identify.properties.artwork_url).toBe("https://cdn.example.com/artwork.jpg");
+    expect(identify.properties.artwork_variation_url).toBe("https://cdn.example.com/artwork.jpg");
   });
 });

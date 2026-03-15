@@ -43,6 +43,10 @@ function normalizeText(value) {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function buildArtworkVariationUrl(input, primaryArtworkUrl) {
+  return normalizeText(input.artworkVariationUrl) || primaryArtworkUrl;
+}
+
 function buildProductUrl(input) {
   const explicitProductUrl = normalizeText(input.productUrl);
 
@@ -66,6 +70,7 @@ export function buildKlaviyoProfileProperties(input) {
   const artworkUrl = normalizeText(input.artworkUrl);
   const emailMockupUrl = normalizeText(input.emailMockupUrl) || artworkUrl;
   const primaryArtworkUrl = artworkUrl || emailMockupUrl;
+  const artworkVariationUrl = buildArtworkVariationUrl(input, primaryArtworkUrl);
   const nurtureBranch = normalizeText(input.nurtureBranch) || KLAVIYO_DEFAULTS.nurtureBranch;
   const peakSeason = normalizeText(input.peakSeason) || KLAVIYO_DEFAULTS.peakSeason;
   const firstName = normalizeText(input.firstName);
@@ -80,7 +85,7 @@ export function buildKlaviyoProfileProperties(input) {
     moon: normalizeText(input.moonSign),
     rising: normalizeText(input.risingSign),
     artwork_url: primaryArtworkUrl,
-    artwork_variation_url: primaryArtworkUrl,
+    artwork_variation_url: artworkVariationUrl,
     artwork_download_url: primaryArtworkUrl,
     artwork_primary_url: primaryArtworkUrl,
     artwork_image_url: primaryArtworkUrl,

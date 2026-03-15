@@ -33,6 +33,7 @@ serve(async (req) => {
       moonSign,
       risingSign,
       artworkUrl,
+      artworkVariationUrl,
       emailMockupUrl,
       artworkId,
       sessionId,
@@ -107,6 +108,7 @@ serve(async (req) => {
         moonSign,
         risingSign,
         artworkUrl: resolvedArtworkUrl,
+        artworkVariationUrl,
         emailMockupUrl: resolvedArtworkUrl,
         artworkId,
         sessionId,
@@ -214,6 +216,7 @@ interface KlaviyoClientSyncParams {
   moonSign?: string;
   risingSign?: string;
   artworkUrl?: string;
+  artworkVariationUrl?: string;
   emailMockupUrl?: string;
   artworkId?: string;
   sessionId?: string;
@@ -234,6 +237,7 @@ async function syncToKlaviyoClientAPI(params: KlaviyoClientSyncParams) {
     moonSign,
     risingSign,
     artworkUrl,
+    artworkVariationUrl,
     emailMockupUrl,
     artworkId,
     sessionId,
@@ -258,6 +262,7 @@ async function syncToKlaviyoClientAPI(params: KlaviyoClientSyncParams) {
     moonSign,
     risingSign,
     artworkUrl,
+    artworkVariationUrl,
     emailMockupUrl,
     artworkId,
     sessionId,
@@ -275,6 +280,7 @@ async function syncToKlaviyoClientAPI(params: KlaviyoClientSyncParams) {
     moonSign,
     risingSign,
     artworkUrl,
+    artworkVariationUrl,
     emailMockupUrl,
     artworkId,
     sessionId,
