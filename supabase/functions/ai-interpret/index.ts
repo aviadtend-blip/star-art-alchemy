@@ -43,7 +43,7 @@ serve(async (req) => {
         : "none";
     const suggestedSubjects: string[] = interpretation.suggestedSubjects || [];
     const subjectDirective = suggestedSubjects.length > 0
-      ? `\n\nThe main subject of the artwork MUST be one of the following figures: ${suggestedSubjects.join(', ')}. Choose whichever fits the chart's personality best. Do NOT use everyday objects (typewriters, shoes, tools), small or mundane animals (frogs, insects, rodents), or anything the person would not feel proud to be represented by. The subject must feel like a symbol of power, grace, or cosmic identity — something the person would want hanging on their wall as a portrait of who they are.`
+      ? `\n\nThe artwork must weave together multiple visual elements that represent this person's chart. Include one figure from the following list as ONE element of the composition — not the dominant focal point: ${suggestedSubjects.join(', ')}. This figure should occupy no more than a third of the visual weight. The rest of the composition should be filled with symbolic objects, textures, environments, and atmospheric details drawn from the chart's aspects, element balance, and planetary tensions. Think of it as a rich collage where the figure lives AMONG the other symbols, not above them. Do NOT create a portrait centered on the figure — create a world that contains the figure.`
       : '';
 
     const prompt = `You are a mythic scene painter. Given a birth chart, write ONE paragraph of 60-80 words describing a scene for artwork generation.${subjectDirective}
