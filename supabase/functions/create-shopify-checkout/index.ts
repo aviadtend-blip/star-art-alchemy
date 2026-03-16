@@ -1,5 +1,19 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { resolveCanvasSize } from "../../../src/lib/canvasSizes.ts";
+
+const CANVAS_SIZE_MAP: Record<string, { id: string; label: string; price: number }> = {
+  "12x18": { id: "12x18", label: '12" × 18"', price: 79 },
+  "16x24": { id: "16x24", label: '16" × 24"', price: 119 },
+  "20x30": { id: "20x30", label: '20" × 30"', price: 179 },
+};
+
+function resolveCanvasSize({ size, sizeLabel }: { size?: string; sizeLabel?: string }) {
+  if (size && CANVAS_SIZE_MAP[size]) return CANVAS_SIZE_MAP[size];
+  if (sizeLabel) {
+    const match = Object.values(CANVAS_SIZE_MAP).find((s) => s.label === sizeLabel);
+    if (match) return match;
+  }
+  return null;
+}
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
