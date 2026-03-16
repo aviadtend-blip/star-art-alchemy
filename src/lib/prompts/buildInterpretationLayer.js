@@ -60,22 +60,22 @@ export default function buildInterpretationLayer(chartData) {
   // 4. ADMIRED SUBJECTS (gender + element → subject pool)
   const ADMIRED_SUBJECTS = {
     male: {
-      fire:  ['armored knight', 'lion', 'eagle', 'phoenix', 'dragon', 'bull charging through flames', 'mountain lion'],
-      earth: ['bull', 'ancient stag', 'stone guardian', 'armored titan', 'mountain lion', 'bear'],
-      air:   ['hawk in flight', 'winged scholar', 'eagle soaring', 'centaur archer', 'raven', 'griffin'],
-      water: ['sea serpent', 'leviathan', 'great whale', 'armored warrior', 'wolf at the shore'],
+      fire:  ['armored knight', 'lion', 'eagle', 'phoenix', 'dragon', 'mountain lion', 'samurai warrior', 'fire hawk', 'golden stag', 'war horse', 'sun king', 'flame wolf', 'iron bull', 'crimson falcon', 'gladiator'],
+      earth: ['bull', 'ancient stag', 'stone guardian', 'armored titan', 'mountain lion', 'bear', 'iron wolf', 'oak king', 'granite warrior', 'desert falcon', 'bison', 'mountain ram', 'stone eagle', 'bronze sentinel', 'earth colossus'],
+      air:   ['hawk in flight', 'winged scholar', 'eagle soaring', 'centaur archer', 'raven', 'griffin', 'storm rider', 'silver falcon', 'thunderbird', 'wind sage', 'celestial stag', 'sky serpent', 'cloud walker', 'platinum owl', 'storm hawk'],
+      water: ['sea serpent', 'leviathan', 'great whale', 'armored warrior', 'wolf at the shore', 'frost wolf', 'ice king', 'storm captain', 'arctic bear', 'river dragon', 'tidal titan', 'trident guardian', 'deep sea hawk', 'polar stag', 'shadow kraken'],
     },
     female: {
-      fire:  ['lioness', 'phoenix', 'warrior queen', 'eagle', 'valkyrie', 'flame dancer'],
-      earth: ['earth goddess', 'white deer', 'white owl', 'she-wolf', 'forest guardian', 'moon mare'],
-      air:   ['swan queen', 'winged oracle', 'white raven', 'celestial dancer', 'silver hawk'],
-      water: ['moon goddess', 'storm oracle', 'silver wolf', 'sea queen on a throne', 'winged sorceress'],
+      fire:  ['lioness', 'phoenix', 'warrior queen', 'eagle', 'valkyrie', 'flame dancer', 'sun priestess', 'fire fox', 'golden mare', 'ember witch', 'crimson falcon', 'war goddess', 'flame oracle', 'scarlet lioness', 'solar empress'],
+      earth: ['earth goddess', 'white deer', 'white owl', 'she-wolf', 'forest guardian', 'moon mare', 'rose queen', 'crystal priestess', 'autumn queen', 'jade serpent', 'golden bee queen', 'vine empress', 'marble sphinx', 'ivory stag', 'stone oracle'],
+      air:   ['swan queen', 'winged oracle', 'white raven', 'celestial dancer', 'silver hawk', 'cloud empress', 'star weaver', 'sky priestess', 'pearl dove', 'aurora spirit', 'frost butterfly', 'platinum owl', 'wind sorceress', 'feathered serpent', 'moonlit crane'],
+      water: ['moon goddess', 'storm oracle', 'silver wolf', 'sea queen on a throne', 'winged sorceress', 'tide priestess', 'ice queen', 'pearl dragon', 'coral empress', 'mist walker', 'luminous jellyfish queen', 'frost swan', 'abyssal oracle', 'river sphinx', 'moonlit serpent'],
     },
     neutral: {
-      fire:  ['phoenix', 'lion', 'eagle', 'dragon', 'sun guardian'],
-      earth: ['bull', 'bear', 'ancient wolf', 'forest sovereign'],
-      air:   ['eagle', 'raven', 'griffin', 'winged sage'],
-      water: ['great whale', 'sea serpent', 'moon guardian'],
+      fire:  ['phoenix', 'lion', 'eagle', 'dragon', 'sun guardian', 'flame serpent', 'golden hawk', 'ember guardian', 'volcanic eagle', 'fire spirit', 'solar wolf', 'crimson stag', 'blazing fox', 'inferno owl', 'radiant bull'],
+      earth: ['bull', 'bear', 'ancient wolf', 'forest sovereign', 'stone phoenix', 'crystal guardian', 'mountain eagle', 'earth serpent', 'granite owl', 'iron stag', 'moss titan', 'obsidian panther', 'cedar spirit', 'amber fox', 'ancient tortoise'],
+      air:   ['eagle', 'raven', 'griffin', 'winged sage', 'thunderbird', 'sky guardian', 'cloud serpent', 'silver phoenix', 'storm owl', 'platinum crane', 'wind dragon', 'celestial fox', 'aurora hawk', 'sapphire falcon', 'ether spirit'],
+      water: ['great whale', 'sea serpent', 'moon guardian', 'frost phoenix', 'tide serpent', 'storm eagle', 'ice guardian', 'deep oracle', 'pearl wolf', 'silver eel king', 'tidal raven', 'glacier bear', 'mist dragon', 'abyssal owl', 'lunar fox'],
     }
   };
 
