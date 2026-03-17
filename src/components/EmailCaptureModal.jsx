@@ -53,12 +53,15 @@ async function resolveEmailArtworkUrl({ artworkUrl, artworkId, sessionId }) {
   if (sessionImage.includes('supabase.co')) return sessionImage;
   if (artworkUrl?.includes('supabase.co')) return artworkUrl;
 
-  for (let attempt = 0; attempt < 4; attempt += 1) {
-    const storedUrl = await findStoredArtworkUrl({ artworkId, sessionId });
-    if (storedUrl) return storedUrl;
+  // Only query DB if we have an ID to look up
+  if (artworkId || sessionId) {
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      const storedUrl = await findStoredArtworkUrl({ artworkId, sessionId });
+      if (storedUrl) return storedUrl;
 
-    if (attempt < 3) {
-      await new Promise((resolve) => setTimeout(resolve, 750));
+      if (attempt < 3) {
+        await new Promise((resolve) => setTimeout(resolve, 750));
+      }
     }
   }
 
@@ -117,8 +120,16 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
     const peakSeason = detectPeakSeason();
     const captureTimestamp = new Date().toISOString();
 
+    // Also check generator state for artworkId (set there before the separate key)
+    const generatorArtworkId = (() => {
+      try {
+        const raw = sessionStorage.getItem('celestial_generator_state');
+        return raw ? JSON.parse(raw).artworkId : null;
+      } catch { return null; }
+    })();
+
     try {
-      const resolvedArtworkId = artworkId || sessionStorage.getItem('celestial_artwork_id') || null;
+      const resolvedArtworkId = artworkId || generatorArtworkId || null;
       const emailArtworkUrl = await resolveEmailArtworkUrl({
         artworkUrl,
         artworkId: resolvedArtworkId,
@@ -133,7 +144,7 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
         artworkId: resolvedArtworkId,
         sessionId,
       }).catch((error) => {
-        console.warn('[EmailCaptureModal] Email mockup gallery generation failed:', error);
+        console.error('[EmailCaptureModal] Email mockup gallery generation failed:', error?.message || error, { artworkSrc: emailArtworkUrl, artworkId: resolvedArtworkId, sessionId });
         return { small: '', medium: '', large: '' };
       });
       const emailMockupUrl = emailMockupGallery.medium || emailArtworkUrl;

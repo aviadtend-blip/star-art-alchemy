@@ -97,6 +97,7 @@ describe("EmailCaptureModal", () => {
       }),
     );
     sessionStorage.setItem("celestial_session_id", "session_123");
+    sessionStorage.setItem("celestial_artwork_id", "art_from_state");
 
     render(
       <EmailCaptureModal
@@ -221,6 +222,7 @@ describe("EmailCaptureModal", () => {
       emailMockupMediumUrl: "",
       emailMockupLargeUrl: "",
       artworkId: null,
+      sessionId: null,
       captureTimestamp: expect.any(String),
       peakSeason: "holiday",
       dominantElement: undefined,
