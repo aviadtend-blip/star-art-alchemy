@@ -124,6 +124,17 @@ export function buildKlaviyoProfileProperties(input) {
     rising_sign_interpretation: getSignInterpretation("Rising", input.risingSign),
     delivery_cutoff_date: normalizeText(input.deliveryCutoffDate),
     season_gifting_copy: normalizeText(input.seasonGiftingCopy),
+    // Email 2: Story Behind Your Art — hotspot crop fields
+    email_story_subject_explanation: normalizeText(input.emailStorySubjectExplanation),
+    email_story_sun_title: normalizeText(input.emailStorySunTitle),
+    email_story_sun_copy: normalizeText(input.emailStorySunCopy),
+    email_story_sun_crop_url: normalizeText(input.emailStorySunCropUrl),
+    email_story_moon_title: normalizeText(input.emailStoryMoonTitle),
+    email_story_moon_copy: normalizeText(input.emailStoryMoonCopy),
+    email_story_moon_crop_url: normalizeText(input.emailStoryMoonCropUrl),
+    email_story_rising_title: normalizeText(input.emailStoryRisingTitle),
+    email_story_rising_copy: normalizeText(input.emailStoryRisingCopy),
+    email_story_rising_crop_url: normalizeText(input.emailStoryRisingCropUrl),
   };
 }
 
