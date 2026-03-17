@@ -39,6 +39,14 @@ function toIsoString(value) {
   return value ? value.toISOString() : "";
 }
 
+function toDisplayDate(value) {
+  if (!value) return "";
+  const mm = String(value.getMonth() + 1).padStart(2, "0");
+  const dd = String(value.getDate()).padStart(2, "0");
+  const yy = String(value.getFullYear()).slice(-2);
+  return `${mm}/${dd}/${yy}`;
+}
+
 function normalizeText(value) {
   return typeof value === "string" ? value.trim() : "";
 }
@@ -116,6 +124,8 @@ export function buildKlaviyoProfileProperties(input) {
     discount_amount: KLAVIYO_DEFAULTS.discountAmount,
     capture_timestamp: now.toISOString(),
     capture_date: now.toISOString(),
+    capture_date_display: toDisplayDate(now),
+    expiry_date_display: toDisplayDate(artworkExpiryDate),
     greeting_name: greetingName,
     first_name_fallback: greetingName,
     product_url: productUrl,
