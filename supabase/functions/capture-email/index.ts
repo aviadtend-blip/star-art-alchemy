@@ -136,6 +136,17 @@ function buildKlaviyoProfileProperties(input: any) {
     rising_sign_interpretation: getSignInterpretation("Rising", input.risingSign),
     delivery_cutoff_date: _normalizeText(input.deliveryCutoffDate),
     season_gifting_copy: _normalizeText(input.seasonGiftingCopy),
+    // Email 2: Story Behind Your Art — hotspot crop fields
+    email_story_subject_explanation: _normalizeText(input.emailStorySubjectExplanation),
+    email_story_sun_title: _normalizeText(input.emailStorySunTitle),
+    email_story_sun_copy: _normalizeText(input.emailStorySunCopy),
+    email_story_sun_crop_url: _normalizeText(input.emailStorySunCropUrl),
+    email_story_moon_title: _normalizeText(input.emailStoryMoonTitle),
+    email_story_moon_copy: _normalizeText(input.emailStoryMoonCopy),
+    email_story_moon_crop_url: _normalizeText(input.emailStoryMoonCropUrl),
+    email_story_rising_title: _normalizeText(input.emailStoryRisingTitle),
+    email_story_rising_copy: _normalizeText(input.emailStoryRisingCopy),
+    email_story_rising_crop_url: _normalizeText(input.emailStoryRisingCropUrl),
   };
 }
 
@@ -205,6 +216,16 @@ serve(async (req) => {
       peakSeason,
       dominantElement,
       elementBalance,
+        emailStorySubjectExplanation,
+        emailStorySunTitle,
+        emailStorySunCopy,
+        emailStorySunCropUrl,
+        emailStoryMoonTitle,
+        emailStoryMoonCopy,
+        emailStoryMoonCropUrl,
+        emailStoryRisingTitle,
+        emailStoryRisingCopy,
+        emailStoryRisingCropUrl,
     } = await req.json();
 
     if (!email) {
@@ -314,6 +335,16 @@ serve(async (req) => {
         artworkExpiryDate,
         cosmic10Expiry,
         captureTimestamp: now,
+          emailStorySubjectExplanation,
+          emailStorySunTitle,
+          emailStorySunCopy,
+          emailStorySunCropUrl,
+          emailStoryMoonTitle,
+          emailStoryMoonCopy,
+          emailStoryMoonCropUrl,
+          emailStoryRisingTitle,
+          emailStoryRisingCopy,
+          emailStoryRisingCropUrl,
       });
     } catch (klaviyoErr) {
       console.warn("[capture-email] Klaviyo Client API sync failed (non-blocking):", klaviyoErr);
@@ -425,6 +456,16 @@ interface KlaviyoClientSyncParams {
   artworkExpiryDate: Date;
   cosmic10Expiry: Date;
   captureTimestamp: Date;
+  emailStorySubjectExplanation?: string;
+  emailStorySunTitle?: string;
+  emailStorySunCopy?: string;
+  emailStorySunCropUrl?: string;
+  emailStoryMoonTitle?: string;
+  emailStoryMoonCopy?: string;
+  emailStoryMoonCropUrl?: string;
+  emailStoryRisingTitle?: string;
+  emailStoryRisingCopy?: string;
+  emailStoryRisingCropUrl?: string;
 }
 
 async function syncToKlaviyoClientAPI(params: KlaviyoClientSyncParams) {
