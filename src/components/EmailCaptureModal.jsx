@@ -53,12 +53,15 @@ async function resolveEmailArtworkUrl({ artworkUrl, artworkId, sessionId }) {
   if (sessionImage.includes('supabase.co')) return sessionImage;
   if (artworkUrl?.includes('supabase.co')) return artworkUrl;
 
-  for (let attempt = 0; attempt < 4; attempt += 1) {
-    const storedUrl = await findStoredArtworkUrl({ artworkId, sessionId });
-    if (storedUrl) return storedUrl;
+  // Only query DB if we have an ID to look up
+  if (artworkId || sessionId) {
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      const storedUrl = await findStoredArtworkUrl({ artworkId, sessionId });
+      if (storedUrl) return storedUrl;
 
-    if (attempt < 3) {
-      await new Promise((resolve) => setTimeout(resolve, 750));
+      if (attempt < 3) {
+        await new Promise((resolve) => setTimeout(resolve, 750));
+      }
     }
   }
 
