@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { identifyProfile, trackEmailCaptured, detectPeakSeason } from '@/lib/klaviyo';
 import { getAlternateVariation } from '@/lib/api/replicateClient';
 import { createEmailMockupGallery } from '@/lib/emailMockupGallery';
+import { createEmailStoryGallery } from '@/lib/emailStoryGallery';
 import PrimaryButton from '@/components/ui/PrimaryButton';
 
 const INPUT_CLASS = "w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-left text-foreground placeholder:text-[#B1B1B1] focus:border-primary focus:ring-0 transition outline-none";
@@ -162,6 +163,19 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
       }
       const emailMockupUrl = emailMockupGallery.medium || emailArtworkUrl;
 
+        // Email 2: Generate story hotspot crops
+        const emailStoryGallery = await createEmailStoryGallery({
+          artworkSrc: emailArtworkUrl,
+          sunSign,
+          moonSign,
+          risingSign,
+          artworkId: resolvedArtworkId,
+          sessionId,
+        }).catch((error) => {
+          console.error('[EmailCaptureModal] Story gallery generation failed:', error?.message || error);
+          return { sunCropUrl: '', moonCropUrl: '', risingCropUrl: '' };
+        });
+
       const profileData = {
         email: email.trim(),
         firstName: firstName.trim(),
@@ -180,6 +194,17 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
         peakSeason,
         dominantElement,
         elementBalance,
+        // Email 2: Story Behind Your Art — hotspot crop URLs and sign story data
+        emailStorySubjectExplanation: '',
+        emailStorySunTitle: sunSign ? `Your ${sunSign} Sun` : '',
+        emailStorySunCopy: '',
+        emailStorySunCropUrl: emailStoryGallery.sunCropUrl,
+        emailStoryMoonTitle: moonSign ? `Your ${moonSign} Moon` : '',
+        emailStoryMoonCopy: '',
+        emailStoryMoonCropUrl: emailStoryGallery.moonCropUrl,
+        emailStoryRisingTitle: risingSign ? `Your ${risingSign} Rising` : '',
+        emailStoryRisingCopy: '',
+        emailStoryRisingCropUrl: emailStoryGallery.risingCropUrl,
       };
 
       const { error } = await supabase.functions.invoke('capture-email', {
