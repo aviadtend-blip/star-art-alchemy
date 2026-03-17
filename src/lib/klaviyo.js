@@ -71,44 +71,8 @@ export function detectPeakSeason() {
 /*  4. Identify profile                                                */
 /* ------------------------------------------------------------------ */
 
-export function identifyProfile({
-  email,
-  firstName,
-  sunSign,
-  moonSign,
-  risingSign,
-  artworkUrl,
-  artworkVariationUrl,
-  emailMockupUrl,
-  emailMockupSmallUrl,
-  emailMockupMediumUrl,
-  emailMockupLargeUrl,
-  artworkId,
-  sessionId,
-  captureTimestamp,
-  peakSeason,
-  dominantElement,
-  elementBalance,
-}) {
-  const identifyAttributes = buildKlaviyoIdentifyAttributes({
-    email,
-    firstName,
-    sunSign,
-    moonSign,
-    risingSign,
-    artworkUrl,
-    artworkVariationUrl,
-    emailMockupUrl,
-    emailMockupSmallUrl,
-    emailMockupMediumUrl,
-    emailMockupLargeUrl,
-    artworkId,
-    sessionId,
-    captureTimestamp,
-    peakSeason,
-    dominantElement,
-    elementBalance,
-  });
+export function identifyProfile(profileData) {
+  const identifyAttributes = buildKlaviyoIdentifyAttributes(profileData);
 
   withKlaviyo((kl) => {
     kl.push([
