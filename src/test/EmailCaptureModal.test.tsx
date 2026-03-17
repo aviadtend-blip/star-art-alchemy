@@ -222,6 +222,7 @@ describe("EmailCaptureModal", () => {
       emailMockupMediumUrl: "",
       emailMockupLargeUrl: "",
       artworkId: null,
+      sessionId: null,
       captureTimestamp: expect.any(String),
       peakSeason: "holiday",
       dominantElement: undefined,
