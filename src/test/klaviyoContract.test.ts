@@ -16,6 +16,7 @@ const EXPECTED_PROFILE_PROPERTY_KEYS = [
   "artwork_url",
   "artwork_variation_url",
   "capture_date",
+  "capture_date_display",
   "capture_timestamp",
   "cosmic10_expiry",
   "delivery_cutoff_date",
