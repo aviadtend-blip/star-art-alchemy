@@ -41,6 +41,7 @@ const EXPECTED_PROFILE_PROPERTY_KEYS = [
   "email_story_sun_crop_url",
   "email_story_sun_title",
   "expiry_date",
+  "expiry_date_display",
   "first_name_fallback",
   "greeting_name",
   "image_url",

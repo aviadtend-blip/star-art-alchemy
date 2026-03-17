@@ -124,6 +124,8 @@ export function buildKlaviyoProfileProperties(input) {
     discount_amount: KLAVIYO_DEFAULTS.discountAmount,
     capture_timestamp: now.toISOString(),
     capture_date: now.toISOString(),
+    capture_date_display: toDisplayDate(now),
+    expiry_date_display: toDisplayDate(artworkExpiryDate),
     greeting_name: greetingName,
     first_name_fallback: greetingName,
     product_url: productUrl,
