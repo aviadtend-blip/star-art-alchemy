@@ -76,9 +76,6 @@ export function buildKlaviyoProfileProperties(input) {
   const emailMockupUrl = explicitEmailMockupUrl || emailMockupMediumUrl || artworkUrl;
   const primaryArtworkUrl = artworkUrl || emailMockupUrl;
   const artworkVariationUrl = buildArtworkVariationUrl(input, primaryArtworkUrl);
-  const emailMockupSmallUrl = normalizeText(input.emailMockupSmallUrl) || emailMockupUrl || primaryArtworkUrl;
-  const normalizedEmailMockupMediumUrl = emailMockupMediumUrl || emailMockupUrl || primaryArtworkUrl;
-  const emailMockupLargeUrl = normalizeText(input.emailMockupLargeUrl) || emailMockupUrl || primaryArtworkUrl;
   const nurtureBranch = normalizeText(input.nurtureBranch) || KLAVIYO_DEFAULTS.nurtureBranch;
   const peakSeason = normalizeText(input.peakSeason) || KLAVIYO_DEFAULTS.peakSeason;
   const firstName = normalizeText(input.firstName);
