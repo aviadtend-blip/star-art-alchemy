@@ -70,6 +70,9 @@ export function buildKlaviyoProfileProperties(input) {
   const artworkUrl = normalizeText(input.artworkUrl);
   const explicitEmailMockupUrl = normalizeText(input.emailMockupUrl);
   const emailMockupMediumUrl = normalizeText(input.emailMockupMediumUrl);
+  const emailMockupSmallUrl = normalizeText(input.emailMockupSmallUrl);
+  const emailMockupLargeUrl = normalizeText(input.emailMockupLargeUrl);
+  // For the primary mockup URL, prefer explicit > medium > artwork
   const emailMockupUrl = explicitEmailMockupUrl || emailMockupMediumUrl || artworkUrl;
   const primaryArtworkUrl = artworkUrl || emailMockupUrl;
   const artworkVariationUrl = buildArtworkVariationUrl(input, primaryArtworkUrl);
