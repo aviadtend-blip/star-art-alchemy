@@ -144,7 +144,7 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
         artworkId: resolvedArtworkId,
         sessionId,
       }).catch((error) => {
-        console.warn('[EmailCaptureModal] Email mockup gallery generation failed:', error);
+        console.error('[EmailCaptureModal] Email mockup gallery generation failed:', error?.message || error, { artworkSrc: emailArtworkUrl, artworkId: resolvedArtworkId, sessionId });
         return { small: '', medium: '', large: '' };
       });
       const emailMockupUrl = emailMockupGallery.medium || emailArtworkUrl;
