@@ -214,6 +214,34 @@ serve(async (req) => {
       supabaseUrl: SUPABASE_URL,
     });
 
+    // --- Validate mockup URLs: only use them if they look like real composited mockups ---
+    const isMockupUrl = (url?: string) => {
+      if (!url || typeof url !== 'string') return false;
+      const trimmed = url.trim();
+      if (!trimmed) return false;
+      // Must be different from the flat artwork URL to count as a real mockup
+      if (trimmed === resolvedArtworkUrl) return false;
+      if (trimmed === artworkUrl) return false;
+      // Must look like a hosted URL (supabase storage or similar)
+      return trimmed.startsWith('http');
+    };
+
+    const validMockupSmall = isMockupUrl(emailMockupSmallUrl) ? emailMockupSmallUrl.trim() : '';
+    const validMockupMedium = isMockupUrl(emailMockupMediumUrl) ? emailMockupMediumUrl.trim() : '';
+    const validMockupLarge = isMockupUrl(emailMockupLargeUrl) ? emailMockupLargeUrl.trim() : '';
+    const validMockupPrimary = validMockupMedium || validMockupSmall || validMockupLarge || '';
+
+    console.log(`[capture-email] Mockup validation:`, {
+      receivedSmall: emailMockupSmallUrl || '(empty)',
+      receivedMedium: emailMockupMediumUrl || '(empty)',
+      receivedLarge: emailMockupLargeUrl || '(empty)',
+      validSmall: validMockupSmall || '(none)',
+      validMedium: validMockupMedium || '(none)',
+      validLarge: validMockupLarge || '(none)',
+      artworkUrl: resolvedArtworkUrl || '(empty)',
+      mockupsAreReal: !!(validMockupSmall && validMockupMedium && validMockupLarge),
+    });
+
     // Upsert into email_captures
     const { data: capture, error: upsertError } = await supabase
       .from("email_captures")
