@@ -147,6 +147,19 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
         console.error('[EmailCaptureModal] Email mockup gallery generation failed:', error?.message || error, { artworkSrc: emailArtworkUrl, artworkId: resolvedArtworkId, sessionId });
         return { small: '', medium: '', large: '' };
       });
+
+      // Log whether we got real mockup URLs or empty strings
+      const mockupsGenerated = !!(emailMockupGallery.small && emailMockupGallery.medium && emailMockupGallery.large);
+      console.log('[EmailCaptureModal] Mockup gallery result:', {
+        mockupsGenerated,
+        small: emailMockupGallery.small ? emailMockupGallery.small.substring(0, 60) + '...' : '(empty)',
+        medium: emailMockupGallery.medium ? emailMockupGallery.medium.substring(0, 60) + '...' : '(empty)',
+        large: emailMockupGallery.large ? emailMockupGallery.large.substring(0, 60) + '...' : '(empty)',
+        artworkUrl: emailArtworkUrl?.substring(0, 60) + '...',
+      });
+      if (!mockupsGenerated) {
+        console.warn('[EmailCaptureModal] ⚠️ Mockup generation failed or incomplete — Klaviyo will receive empty mockup fields');
+      }
       const emailMockupUrl = emailMockupGallery.medium || emailArtworkUrl;
 
       const profileData = {

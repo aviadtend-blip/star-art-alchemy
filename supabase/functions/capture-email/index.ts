@@ -76,7 +76,7 @@ function buildKlaviyoProfileProperties(input: any) {
   const artworkExpiryDate = _coerceDate(input.artworkExpiryDate, new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000));
   const cosmic10Expiry = _coerceDate(input.cosmic10Expiry, new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000));
   const artworkUrl = _normalizeText(input.artworkUrl);
-  const emailMockupUrl = _normalizeText(input.emailMockupUrl) || artworkUrl;
+  const emailMockupUrl = _normalizeText(input.emailMockupUrl);
   const primaryArtworkUrl = artworkUrl || emailMockupUrl;
   const artworkVariationUrl = _buildArtworkVariationUrl(input, primaryArtworkUrl);
   const nurtureBranch = _normalizeText(input.nurtureBranch) || KLAVIYO_DEFAULTS.nurtureBranch;
@@ -84,6 +84,13 @@ function buildKlaviyoProfileProperties(input: any) {
   const firstName = _normalizeText(input.firstName);
   const greetingName = firstName || KLAVIYO_DEFAULTS.greetingName;
   const productUrl = _buildProductUrl(input);
+
+  // Mockup fields: use the value as-is; empty string means mockup generation failed
+  const emailMockupSmallUrl = _normalizeText(input.emailMockupSmallUrl);
+  const emailMockupMediumUrl = _normalizeText(input.emailMockupMediumUrl);
+  const emailMockupLargeUrl = _normalizeText(input.emailMockupLargeUrl);
+  // For the primary mockup URL used in preview_image_url etc, prefer real mockup, fall back to artwork
+  const resolvedMockupUrl = emailMockupUrl || emailMockupMediumUrl || primaryArtworkUrl;
 
   return {
     sun_sign: _normalizeText(input.sunSign),
@@ -98,12 +105,15 @@ function buildKlaviyoProfileProperties(input: any) {
     artwork_primary_url: primaryArtworkUrl,
     artwork_image_url: primaryArtworkUrl,
     image_url: primaryArtworkUrl,
-    preview_image_url: emailMockupUrl || primaryArtworkUrl,
+    preview_image_url: resolvedMockupUrl,
     download_url: primaryArtworkUrl,
-    email_mockup_url: emailMockupUrl || primaryArtworkUrl,
-    email_mockup_small: _normalizeText(input.emailMockupSmallUrl) || emailMockupUrl || primaryArtworkUrl,
-    email_mockup_medium: _normalizeText(input.emailMockupMediumUrl) || emailMockupUrl || primaryArtworkUrl,
-    email_mockup_large: _normalizeText(input.emailMockupLargeUrl) || emailMockupUrl || primaryArtworkUrl,
+    email_mockup_url: resolvedMockupUrl,
+    // CRITICAL: Do NOT fall back to artworkUrl for individual mockup sizes.
+    // Empty string signals that mockup generation failed; Klaviyo template
+    // should handle missing values rather than showing the flat artwork.
+    email_mockup_small: emailMockupSmallUrl,
+    email_mockup_medium: emailMockupMediumUrl,
+    email_mockup_large: emailMockupLargeUrl,
     artwork_id: _normalizeText(input.artworkId),
     session_id: _normalizeText(input.sessionId),
     peak_season: peakSeason,
@@ -214,6 +224,34 @@ serve(async (req) => {
       supabaseUrl: SUPABASE_URL,
     });
 
+    // --- Validate mockup URLs: only use them if they look like real composited mockups ---
+    const isMockupUrl = (url?: string) => {
+      if (!url || typeof url !== 'string') return false;
+      const trimmed = url.trim();
+      if (!trimmed) return false;
+      // Must be different from the flat artwork URL to count as a real mockup
+      if (trimmed === resolvedArtworkUrl) return false;
+      if (trimmed === artworkUrl) return false;
+      // Must look like a hosted URL (supabase storage or similar)
+      return trimmed.startsWith('http');
+    };
+
+    const validMockupSmall = isMockupUrl(emailMockupSmallUrl) ? emailMockupSmallUrl.trim() : '';
+    const validMockupMedium = isMockupUrl(emailMockupMediumUrl) ? emailMockupMediumUrl.trim() : '';
+    const validMockupLarge = isMockupUrl(emailMockupLargeUrl) ? emailMockupLargeUrl.trim() : '';
+    const validMockupPrimary = validMockupMedium || validMockupSmall || validMockupLarge || '';
+
+    console.log(`[capture-email] Mockup validation:`, {
+      receivedSmall: emailMockupSmallUrl || '(empty)',
+      receivedMedium: emailMockupMediumUrl || '(empty)',
+      receivedLarge: emailMockupLargeUrl || '(empty)',
+      validSmall: validMockupSmall || '(none)',
+      validMedium: validMockupMedium || '(none)',
+      validLarge: validMockupLarge || '(none)',
+      artworkUrl: resolvedArtworkUrl || '(empty)',
+      mockupsAreReal: !!(validMockupSmall && validMockupMedium && validMockupLarge),
+    });
+
     // Upsert into email_captures
     const { data: capture, error: upsertError } = await supabase
       .from("email_captures")
@@ -225,7 +263,7 @@ serve(async (req) => {
           moon_sign: moonSign || null,
           rising_sign: risingSign || null,
           artwork_url: resolvedArtworkUrl || null,
-          email_mockup_url: emailMockupMediumUrl || emailMockupUrl || resolvedArtworkUrl || null,
+          email_mockup_url: validMockupPrimary || null,
           artwork_id: artworkId || null,
           session_id: sessionId || null,
           peak_season: peakSeason || "default",
@@ -264,10 +302,10 @@ serve(async (req) => {
         risingSign,
         artworkUrl: resolvedArtworkUrl,
         artworkVariationUrl,
-        emailMockupUrl: resolvedArtworkUrl,
-        emailMockupSmallUrl,
-        emailMockupMediumUrl,
-        emailMockupLargeUrl,
+        emailMockupUrl: validMockupPrimary,
+        emailMockupSmallUrl: validMockupSmall,
+        emailMockupMediumUrl: validMockupMedium,
+        emailMockupLargeUrl: validMockupLarge,
         artworkId,
         sessionId,
         peakSeason,
