@@ -71,44 +71,8 @@ export function detectPeakSeason() {
 /*  4. Identify profile                                                */
 /* ------------------------------------------------------------------ */
 
-export function identifyProfile({
-  email,
-  firstName,
-  sunSign,
-  moonSign,
-  risingSign,
-  artworkUrl,
-  artworkVariationUrl,
-  emailMockupUrl,
-  emailMockupSmallUrl,
-  emailMockupMediumUrl,
-  emailMockupLargeUrl,
-  artworkId,
-  sessionId,
-  captureTimestamp,
-  peakSeason,
-  dominantElement,
-  elementBalance,
-}) {
-  const identifyAttributes = buildKlaviyoIdentifyAttributes({
-    email,
-    firstName,
-    sunSign,
-    moonSign,
-    risingSign,
-    artworkUrl,
-    artworkVariationUrl,
-    emailMockupUrl,
-    emailMockupSmallUrl,
-    emailMockupMediumUrl,
-    emailMockupLargeUrl,
-    artworkId,
-    sessionId,
-    captureTimestamp,
-    peakSeason,
-    dominantElement,
-    elementBalance,
-  });
+export function identifyProfile(profileData) {
+  const identifyAttributes = buildKlaviyoIdentifyAttributes(profileData);
 
   withKlaviyo((kl) => {
     kl.push([
@@ -136,69 +100,18 @@ export function trackEvent(eventName, properties = {}) {
 /*  6. Track "Email Captured"                                          */
 /* ------------------------------------------------------------------ */
 
-export function trackEmailCaptured({
-  email,
-  firstName,
-  sunSign,
-  moonSign,
-  risingSign,
-  artworkUrl,
-  artworkVariationUrl,
-  emailMockupUrl,
-  emailMockupSmallUrl,
-  emailMockupMediumUrl,
-  emailMockupLargeUrl,
-  artworkId,
-  sessionId,
-  captureTimestamp,
-  peakSeason,
-  dominantElement,
-  elementBalance,
-}) {
-  const normalizedPeakSeason = peakSeason || detectPeakSeason();
+export function trackEmailCaptured(profileData) {
+  const normalizedData = {
+    ...profileData,
+    peakSeason: profileData.peakSeason || detectPeakSeason(),
+  };
 
   // Ensure the profile is identified first
-  identifyProfile({
-    email,
-    firstName,
-    sunSign,
-    moonSign,
-    risingSign,
-    artworkUrl,
-    artworkVariationUrl,
-    emailMockupUrl,
-    emailMockupSmallUrl,
-    emailMockupMediumUrl,
-    emailMockupLargeUrl,
-    artworkId,
-    sessionId,
-    captureTimestamp,
-    peakSeason: normalizedPeakSeason,
-    dominantElement,
-    elementBalance,
-  });
+  identifyProfile(normalizedData);
 
   trackEvent(
     'Email Captured',
-    buildEmailCapturedEventProperties({
-      email,
-      firstName,
-      sunSign,
-      moonSign,
-      risingSign,
-      artworkUrl,
-      artworkVariationUrl,
-      emailMockupUrl,
-      emailMockupSmallUrl,
-      emailMockupMediumUrl,
-      emailMockupLargeUrl,
-      artworkId,
-      sessionId,
-      captureTimestamp,
-      peakSeason: normalizedPeakSeason,
-      dominantElement,
-      elementBalance,
-    }),
+    buildEmailCapturedEventProperties(normalizedData),
   );
 }
 
