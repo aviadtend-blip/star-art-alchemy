@@ -117,8 +117,16 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
     const peakSeason = detectPeakSeason();
     const captureTimestamp = new Date().toISOString();
 
+    // Also check generator state for artworkId (set there before the separate key)
+    const generatorArtworkId = (() => {
+      try {
+        const raw = sessionStorage.getItem('celestial_generator_state');
+        return raw ? JSON.parse(raw).artworkId : null;
+      } catch { return null; }
+    })();
+
     try {
-      const resolvedArtworkId = artworkId || sessionStorage.getItem('celestial_artwork_id') || null;
+      const resolvedArtworkId = artworkId || generatorArtworkId || null;
       const emailArtworkUrl = await resolveEmailArtworkUrl({
         artworkUrl,
         artworkId: resolvedArtworkId,
