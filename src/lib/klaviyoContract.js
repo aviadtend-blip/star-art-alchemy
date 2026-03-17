@@ -98,8 +98,9 @@ export function buildKlaviyoProfileProperties(input) {
     preview_image_url: emailMockupUrl || primaryArtworkUrl,
     download_url: primaryArtworkUrl,
     email_mockup_url: emailMockupUrl || primaryArtworkUrl,
+    // Do NOT fall back to artworkUrl — empty string means generation failed
     email_mockup_small: emailMockupSmallUrl,
-    email_mockup_medium: normalizedEmailMockupMediumUrl,
+    email_mockup_medium: emailMockupMediumUrl,
     email_mockup_large: emailMockupLargeUrl,
     artwork_id: normalizeText(input.artworkId),
     session_id: normalizeText(input.sessionId),
