@@ -145,41 +145,59 @@ async function uploadCompositeMockup({ blob, artworkId, sessionId, variantKey })
 }
 
 export async function createEmailMockupGallery({ artworkSrc, artworkId, sessionId }) {
+  const emptyResult = { small: "", medium: "", large: "" };
+
   if (!artworkSrc) {
-    return {
-      small: "",
-      medium: "",
-      large: "",
-    };
+    console.warn('[emailMockupGallery] No artworkSrc provided, skipping mockup generation');
+    return emptyResult;
   }
 
-  const artworkImg = await loadArtworkViaProxy(artworkSrc);
+  console.log('[emailMockupGallery] Starting mockup generation', { artworkSrc: artworkSrc?.substring(0, 80), artworkId, sessionId });
+
+  let artworkImg;
+  try {
+    artworkImg = await loadArtworkViaProxy(artworkSrc);
+  } catch (loadErr) {
+    console.error('[emailMockupGallery] Failed to load artwork image:', loadErr?.message || loadErr);
+    return emptyResult;
+  }
 
   try {
     const results = await Promise.allSettled(
       EMAIL_MOCKUP_SPECS.map(async ({ key, src }) => {
         const blob = await compositeMockup(src, artworkImg);
+        console.log(`[emailMockupGallery] Composited ${key} mockup (${blob.size} bytes)`);
         const publicUrl = await uploadCompositeMockup({
           blob,
           artworkId,
           sessionId,
           variantKey: key,
         });
-
+        console.log(`[emailMockupGallery] Uploaded ${key} mockup: ${publicUrl?.substring(0, 80)}`);
         return [key, publicUrl];
       }),
     );
 
-    return results.reduce(
-      (gallery, result) => {
+    const gallery = results.reduce(
+      (acc, result) => {
         if (result.status === "fulfilled") {
           const [key, url] = result.value;
-          gallery[key] = url;
+          acc[key] = url;
+        } else {
+          console.error(`[emailMockupGallery] Mockup variant failed:`, result.reason?.message || result.reason);
         }
-        return gallery;
+        return acc;
       },
       { small: "", medium: "", large: "" },
     );
+
+    console.log('[emailMockupGallery] Final gallery result:', {
+      small: gallery.small ? '✓' : '✗',
+      medium: gallery.medium ? '✓' : '✗',
+      large: gallery.large ? '✓' : '✗',
+    });
+
+    return gallery;
   } finally {
     revokeImageObjectUrl(artworkImg);
   }
