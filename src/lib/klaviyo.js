@@ -100,69 +100,18 @@ export function trackEvent(eventName, properties = {}) {
 /*  6. Track "Email Captured"                                          */
 /* ------------------------------------------------------------------ */
 
-export function trackEmailCaptured({
-  email,
-  firstName,
-  sunSign,
-  moonSign,
-  risingSign,
-  artworkUrl,
-  artworkVariationUrl,
-  emailMockupUrl,
-  emailMockupSmallUrl,
-  emailMockupMediumUrl,
-  emailMockupLargeUrl,
-  artworkId,
-  sessionId,
-  captureTimestamp,
-  peakSeason,
-  dominantElement,
-  elementBalance,
-}) {
-  const normalizedPeakSeason = peakSeason || detectPeakSeason();
+export function trackEmailCaptured(profileData) {
+  const normalizedData = {
+    ...profileData,
+    peakSeason: profileData.peakSeason || detectPeakSeason(),
+  };
 
   // Ensure the profile is identified first
-  identifyProfile({
-    email,
-    firstName,
-    sunSign,
-    moonSign,
-    risingSign,
-    artworkUrl,
-    artworkVariationUrl,
-    emailMockupUrl,
-    emailMockupSmallUrl,
-    emailMockupMediumUrl,
-    emailMockupLargeUrl,
-    artworkId,
-    sessionId,
-    captureTimestamp,
-    peakSeason: normalizedPeakSeason,
-    dominantElement,
-    elementBalance,
-  });
+  identifyProfile(normalizedData);
 
   trackEvent(
     'Email Captured',
-    buildEmailCapturedEventProperties({
-      email,
-      firstName,
-      sunSign,
-      moonSign,
-      risingSign,
-      artworkUrl,
-      artworkVariationUrl,
-      emailMockupUrl,
-      emailMockupSmallUrl,
-      emailMockupMediumUrl,
-      emailMockupLargeUrl,
-      artworkId,
-      sessionId,
-      captureTimestamp,
-      peakSeason: normalizedPeakSeason,
-      dominantElement,
-      elementBalance,
-    }),
+    buildEmailCapturedEventProperties(normalizedData),
   );
 }
 
