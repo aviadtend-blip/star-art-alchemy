@@ -214,7 +214,7 @@ function OrderSummary({ sunSign, sizeLabel, total, onCheckout }) {
           </div>
           <div className="flex justify-between text-body-sm" style={{ color: '#CCCCCC' }}>
             <span>Shipping</span>
-            <span>Free shipping unlocked</span>
+            <span>Calculated at checkout</span>
           </div>
           <div className="flex justify-between items-center pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.25)' }}>
             <span className="text-a4" style={{ color: '#FFFFFF' }}>TOTAL</span>
