@@ -629,7 +629,7 @@ export function ChartExplanation({
                   <div className="relative flex flex-col gap-4 items-center w-full">
                     <div className="flex flex-wrap gap-2.5 w-full">
                       <button onClick={onGetFramed} className="btn-base btn-primary flex-1">
-                        Choose Your Size ($79 - $199)
+                        Choose Your Size ($97 - $179)
                       </button>
                       <button onClick={() => setShowEmailModal(true)} className="btn-base btn-dark-outline flex-1">
                         Download Preview (Free)
@@ -803,7 +803,7 @@ export function ChartExplanation({
                   onClick={onGetFramed}
                   className="btn-base btn-primary w-full"
                 >
-                  Choose Your Size ($79 - $199)
+                  Choose Your Size ($97 - $179)
                 </button>
                 <button
                   onClick={() => setShowEmailModal(true)}
