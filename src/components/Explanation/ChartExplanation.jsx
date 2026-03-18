@@ -803,7 +803,7 @@ export function ChartExplanation({
                   onClick={onGetFramed}
                   className="btn-base btn-primary w-full"
                 >
-                  Choose Your Size ($79 - $199)
+                  Choose Your Size ($97 - $179)
                 </button>
                 <button
                   onClick={() => setShowEmailModal(true)}
