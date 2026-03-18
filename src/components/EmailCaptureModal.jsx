@@ -5,6 +5,7 @@ import { identifyProfile, trackEmailCaptured, detectPeakSeason } from '@/lib/kla
 import { getAlternateVariation } from '@/lib/api/replicateClient';
 import { createEmailMockupGallery } from '@/lib/emailMockupGallery';
 import { createEmailStoryGallery } from '@/lib/emailStoryGallery';
+import { buildEmailStoryContent } from '@/lib/emailStoryContent';
 import PrimaryButton from '@/components/ui/PrimaryButton';
 
 const INPUT_CLASS = "w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-left text-foreground placeholder:text-[#B1B1B1] focus:border-primary focus:ring-0 transition outline-none";
@@ -12,6 +13,29 @@ const INPUT_CLASS = "w-full bg-transparent border-0 border-b border-white/20 rou
 function buildProxyImageUrl(url) {
   if (!url) return '';
   return `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image?url=${encodeURIComponent(url)}`;
+}
+
+function summarizeStoryLog(story) {
+  return {
+    emailStorySubjectExplanation: story.emailStorySubjectExplanation || '(empty)',
+    emailStorySunTitle: story.emailStorySunTitle || '(empty)',
+    emailStorySunCopy: story.emailStorySunCopy || '(empty)',
+    emailStoryMoonTitle: story.emailStoryMoonTitle || '(empty)',
+    emailStoryMoonCopy: story.emailStoryMoonCopy || '(empty)',
+    emailStoryRisingTitle: story.emailStoryRisingTitle || '(empty)',
+    emailStoryRisingCopy: story.emailStoryRisingCopy || '(empty)',
+  };
+}
+
+function summarizeCropGalleryLog(gallery) {
+  return {
+    sunCropUrl: gallery.sunCropUrl || '(empty)',
+    moonCropUrl: gallery.moonCropUrl || '(empty)',
+    risingCropUrl: gallery.risingCropUrl || '(empty)',
+    hostedCropUrls: ['sunCropUrl', 'moonCropUrl', 'risingCropUrl'].every(
+      (key) => typeof gallery[key] === 'string' && gallery[key].startsWith('http'),
+    ),
+  };
 }
 
 async function findStoredArtworkUrl({ artworkId, sessionId }) {
@@ -54,7 +78,6 @@ async function resolveEmailArtworkUrl({ artworkUrl, artworkId, sessionId }) {
   if (sessionImage.includes('supabase.co')) return sessionImage;
   if (artworkUrl?.includes('supabase.co')) return artworkUrl;
 
-  // Only query DB if we have an ID to look up
   if (artworkId || sessionId) {
     for (let attempt = 0; attempt < 4; attempt += 1) {
       const storedUrl = await findStoredArtworkUrl({ artworkId, sessionId });
@@ -76,7 +99,14 @@ function resolveEmailVariationUrl({ primaryArtworkUrl, currentArtworkUrl }) {
   return buildProxyImageUrl(alternateVariation);
 }
 
-export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkUrl, formData }) {
+export default function EmailCaptureModal({
+  isOpen,
+  onClose,
+  chartData,
+  artworkUrl,
+  formData,
+  artworkAnalysis,
+}) {
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState(() => formData?.name?.split(' ')[0] || '');
   const [status, setStatus] = useState('idle');
@@ -121,12 +151,13 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
     const peakSeason = detectPeakSeason();
     const captureTimestamp = new Date().toISOString();
 
-    // Also check generator state for artworkId (set there before the separate key)
     const generatorArtworkId = (() => {
       try {
         const raw = sessionStorage.getItem('celestial_generator_state');
         return raw ? JSON.parse(raw).artworkId : null;
-      } catch { return null; }
+      } catch {
+        return null;
+      }
     })();
 
     try {
@@ -145,11 +176,14 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
         artworkId: resolvedArtworkId,
         sessionId,
       }).catch((error) => {
-        console.error('[EmailCaptureModal] Email mockup gallery generation failed:', error?.message || error, { artworkSrc: emailArtworkUrl, artworkId: resolvedArtworkId, sessionId });
+        console.error('[EmailCaptureModal] Email mockup gallery generation failed:', error?.message || error, {
+          artworkSrc: emailArtworkUrl,
+          artworkId: resolvedArtworkId,
+          sessionId,
+        });
         return { small: '', medium: '', large: '' };
       });
 
-      // Log whether we got real mockup URLs or empty strings
       const mockupsGenerated = !!(emailMockupGallery.small && emailMockupGallery.medium && emailMockupGallery.large);
       console.log('[EmailCaptureModal] Mockup gallery result:', {
         mockupsGenerated,
@@ -163,18 +197,24 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
       }
       const emailMockupUrl = emailMockupGallery.medium || emailArtworkUrl;
 
-        // Email 2: Generate story hotspot crops
-        const emailStoryGallery = await createEmailStoryGallery({
-          artworkSrc: emailArtworkUrl,
-          sunSign,
-          moonSign,
-          risingSign,
-          artworkId: resolvedArtworkId,
-          sessionId,
-        }).catch((error) => {
-          console.error('[EmailCaptureModal] Story gallery generation failed:', error?.message || error);
-          return { sunCropUrl: '', moonCropUrl: '', risingCropUrl: '' };
-        });
+      const emailStoryContent = buildEmailStoryContent({
+        chartData,
+        artworkAnalysis,
+      });
+      console.log('[EmailCaptureModal] Email story content before capture:', summarizeStoryLog(emailStoryContent));
+
+      const emailStoryGallery = await createEmailStoryGallery({
+        artworkSrc: emailArtworkUrl,
+        sunSign,
+        moonSign,
+        risingSign,
+        artworkId: resolvedArtworkId,
+        sessionId,
+      }).catch((error) => {
+        console.error('[EmailCaptureModal] Story gallery generation failed:', error?.message || error);
+        return { sunCropUrl: '', moonCropUrl: '', risingCropUrl: '' };
+      });
+      console.log('[EmailCaptureModal] Email story crop gallery result before capture:', summarizeCropGalleryLog(emailStoryGallery));
 
       const profileData = {
         email: email.trim(),
@@ -194,18 +234,18 @@ export default function EmailCaptureModal({ isOpen, onClose, chartData, artworkU
         peakSeason,
         dominantElement,
         elementBalance,
-        // Email 2: Story Behind Your Art — hotspot crop URLs and sign story data
-        emailStorySubjectExplanation: '',
-        emailStorySunTitle: sunSign ? `Your ${sunSign} Sun` : '',
-        emailStorySunCopy: '',
+        ...emailStoryContent,
         emailStorySunCropUrl: emailStoryGallery.sunCropUrl,
-        emailStoryMoonTitle: moonSign ? `Your ${moonSign} Moon` : '',
-        emailStoryMoonCopy: '',
         emailStoryMoonCropUrl: emailStoryGallery.moonCropUrl,
-        emailStoryRisingTitle: risingSign ? `Your ${risingSign} Rising` : '',
-        emailStoryRisingCopy: '',
         emailStoryRisingCropUrl: emailStoryGallery.risingCropUrl,
       };
+
+      console.log('[EmailCaptureModal] Final Email 2 payload fields sent into capture-email:', {
+        ...summarizeStoryLog(profileData),
+        emailStorySunCropUrl: profileData.emailStorySunCropUrl || '(empty)',
+        emailStoryMoonCropUrl: profileData.emailStoryMoonCropUrl || '(empty)',
+        emailStoryRisingCropUrl: profileData.emailStoryRisingCropUrl || '(empty)',
+      });
 
       const { error } = await supabase.functions.invoke('capture-email', {
         body: { ...profileData, sessionId },

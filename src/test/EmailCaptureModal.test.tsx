@@ -17,6 +17,7 @@ const {
   detectPeakSeasonMock,
   getAlternateVariationMock,
   createEmailMockupGalleryMock,
+  createEmailStoryGalleryMock,
 } = vi.hoisted(() => ({
   invokeMock: vi.fn(),
   fromMock: vi.fn(),
@@ -30,6 +31,7 @@ const {
   detectPeakSeasonMock: vi.fn(() => "holiday"),
   getAlternateVariationMock: vi.fn(),
   createEmailMockupGalleryMock: vi.fn(),
+  createEmailStoryGalleryMock: vi.fn(),
 }));
 
 vi.mock("@/integrations/supabase/client", () => ({
@@ -55,6 +57,10 @@ vi.mock("@/lib/emailMockupGallery", () => ({
   createEmailMockupGallery: createEmailMockupGalleryMock,
 }));
 
+vi.mock("@/lib/emailStoryGallery", () => ({
+  createEmailStoryGallery: createEmailStoryGalleryMock,
+}));
+
 describe("EmailCaptureModal", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -64,6 +70,11 @@ describe("EmailCaptureModal", () => {
       small: "",
       medium: "",
       large: "",
+    });
+    createEmailStoryGalleryMock.mockResolvedValue({
+      sunCropUrl: "",
+      moonCropUrl: "",
+      risingCropUrl: "",
     });
     maybeSingleMock.mockResolvedValue({ data: null });
     limitMock.mockReturnValue({ maybeSingle: maybeSingleMock });
@@ -77,7 +88,7 @@ describe("EmailCaptureModal", () => {
     sessionStorage.clear();
   });
 
-  it("submits normalized data for the Klaviyo nurture flow", async () => {
+  it("submits populated Email 2 story fields for the Klaviyo nurture flow", async () => {
     getAlternateVariationMock.mockReturnValue({
       imageUrl: "https://project.supabase.co/storage/v1/object/public/artworks/variation-2.jpg",
       variationNumber: 2,
@@ -87,6 +98,11 @@ describe("EmailCaptureModal", () => {
       small: "https://project.supabase.co/storage/v1/object/public/artworks/mockup-small.jpg",
       medium: "https://project.supabase.co/storage/v1/object/public/artworks/mockup-medium.jpg",
       large: "https://project.supabase.co/storage/v1/object/public/artworks/mockup-large.jpg",
+    });
+    createEmailStoryGalleryMock.mockResolvedValue({
+      sunCropUrl: "https://project.supabase.co/storage/v1/object/public/artworks/story-sun.jpg",
+      moonCropUrl: "https://project.supabase.co/storage/v1/object/public/artworks/story-moon.jpg",
+      risingCropUrl: "https://project.supabase.co/storage/v1/object/public/artworks/story-rising.jpg",
     });
 
     sessionStorage.setItem(
@@ -98,6 +114,24 @@ describe("EmailCaptureModal", () => {
     );
     sessionStorage.setItem("celestial_session_id", "session_123");
     sessionStorage.setItem("celestial_artwork_id", "art_from_state");
+
+    const artworkAnalysis = {
+      subjectExplanation: "Every symbol in this piece connects back to your natal blueprint.",
+      elements: [
+        {
+          artworkElement: "The blazing central crest",
+          explanation: "Your Sun story is anchored in the artwork's central focal point.",
+        },
+        {
+          artworkElement: "The tidal crescent arc",
+          explanation: "Your Moon story appears in the softer lunar rhythm of the composition.",
+        },
+        {
+          artworkElement: "The ascending outer frame",
+          explanation: "Your Rising story shapes the first impression around the edge of the piece.",
+        },
+      ],
+    };
 
     render(
       <EmailCaptureModal
@@ -111,6 +145,7 @@ describe("EmailCaptureModal", () => {
           rising: "Leo",
           element_balance: { fire: 6, water: 2, air: 1, earth: 1 },
         }}
+        artworkAnalysis={artworkAnalysis}
       />,
     );
 
@@ -141,6 +176,16 @@ describe("EmailCaptureModal", () => {
       peakSeason: "holiday",
       dominantElement: "fire",
       elementBalance: { fire: 6, water: 2, air: 1, earth: 1 },
+      emailStorySubjectExplanation: "Every symbol in this piece connects back to your natal blueprint.",
+      emailStorySunTitle: "The blazing central crest",
+      emailStorySunCopy: "Your Sun story is anchored in the artwork's central focal point.",
+      emailStorySunCropUrl: "https://project.supabase.co/storage/v1/object/public/artworks/story-sun.jpg",
+      emailStoryMoonTitle: "The tidal crescent arc",
+      emailStoryMoonCopy: "Your Moon story appears in the softer lunar rhythm of the composition.",
+      emailStoryMoonCropUrl: "https://project.supabase.co/storage/v1/object/public/artworks/story-moon.jpg",
+      emailStoryRisingTitle: "The ascending outer frame",
+      emailStoryRisingCopy: "Your Rising story shapes the first impression around the edge of the piece.",
+      emailStoryRisingCropUrl: "https://project.supabase.co/storage/v1/object/public/artworks/story-rising.jpg",
     };
 
     expect(invokeMock.mock.calls[0][0]).toBe("capture-email");
@@ -189,6 +234,16 @@ describe("EmailCaptureModal", () => {
       peakSeason: "holiday",
       dominantElement: undefined,
       elementBalance: undefined,
+      emailStorySubjectExplanation: "A one-of-a-kind artwork, uniquely crafted from your celestial blueprint.",
+      emailStorySunTitle: "",
+      emailStorySunCopy: "",
+      emailStorySunCropUrl: "",
+      emailStoryMoonTitle: "",
+      emailStoryMoonCopy: "",
+      emailStoryMoonCropUrl: "",
+      emailStoryRisingTitle: "",
+      emailStoryRisingCopy: "",
+      emailStoryRisingCropUrl: "",
     });
     expect(identifyProfileMock).toHaveBeenCalledWith({
       email: "sparse@example.com",
@@ -208,6 +263,16 @@ describe("EmailCaptureModal", () => {
       peakSeason: "holiday",
       dominantElement: undefined,
       elementBalance: undefined,
+      emailStorySubjectExplanation: "A one-of-a-kind artwork, uniquely crafted from your celestial blueprint.",
+      emailStorySunTitle: "",
+      emailStorySunCopy: "",
+      emailStorySunCropUrl: "",
+      emailStoryMoonTitle: "",
+      emailStoryMoonCopy: "",
+      emailStoryMoonCropUrl: "",
+      emailStoryRisingTitle: "",
+      emailStoryRisingCopy: "",
+      emailStoryRisingCropUrl: "",
     });
     expect(trackEmailCapturedMock).toHaveBeenCalledWith({
       email: "sparse@example.com",
@@ -227,6 +292,16 @@ describe("EmailCaptureModal", () => {
       peakSeason: "holiday",
       dominantElement: undefined,
       elementBalance: undefined,
+      emailStorySubjectExplanation: "A one-of-a-kind artwork, uniquely crafted from your celestial blueprint.",
+      emailStorySunTitle: "",
+      emailStorySunCopy: "",
+      emailStorySunCropUrl: "",
+      emailStoryMoonTitle: "",
+      emailStoryMoonCopy: "",
+      emailStoryMoonCropUrl: "",
+      emailStoryRisingTitle: "",
+      emailStoryRisingCopy: "",
+      emailStoryRisingCropUrl: "",
     });
   });
 });
