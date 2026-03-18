@@ -814,7 +814,7 @@ export function ChartExplanation({
               </div>
 
               <p className="relative text-body-sm font-body text-white/70 text-center">
-                ✓ Free shipping · 📦 30-day guarantee · 🔒 Secure checkout
+                📦 30-day guarantee · 🔒 Secure checkout
               </p>
 
               <div className="relative w-full">

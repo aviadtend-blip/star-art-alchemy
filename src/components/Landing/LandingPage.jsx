@@ -231,8 +231,6 @@ export default function LandingPage() {
       <div className="hidden md:flex items-center justify-center gap-6 py-3.5 text-body" style={{ backgroundColor: '#F2F1EF', color: '#000000' }}>
         <span>🔒 Secure Payment</span>
         <span style={{ color: '#00000030' }}>|</span>
-        <span>📦 Free Shipping</span>
-        <span style={{ color: '#00000030' }}>|</span>
         <span>↩️ 30-Day Quality Guarantee</span>
       </div>
 
