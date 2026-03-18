@@ -860,6 +860,7 @@ export function ChartExplanation({
         chartData={chartData}
         artworkUrl={selectedImage}
         formData={formData}
+        artworkAnalysis={explanation}
       />
     </div>
   );

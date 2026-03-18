@@ -84,7 +84,11 @@ function buildKlaviyoProfileProperties(input: any) {
   const artworkExpiryDate = _coerceDate(input.artworkExpiryDate, new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000));
   const cosmic10Expiry = _coerceDate(input.cosmic10Expiry, new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000));
   const artworkUrl = _normalizeText(input.artworkUrl);
-  const emailMockupUrl = _normalizeText(input.emailMockupUrl);
+  const explicitEmailMockupUrl = _normalizeText(input.emailMockupUrl);
+  const emailMockupMediumUrl = _normalizeText(input.emailMockupMediumUrl);
+  const emailMockupSmallUrl = _normalizeText(input.emailMockupSmallUrl);
+  const emailMockupLargeUrl = _normalizeText(input.emailMockupLargeUrl);
+  const emailMockupUrl = explicitEmailMockupUrl || emailMockupMediumUrl || artworkUrl;
   const primaryArtworkUrl = artworkUrl || emailMockupUrl;
   const artworkVariationUrl = _buildArtworkVariationUrl(input, primaryArtworkUrl);
   const nurtureBranch = _normalizeText(input.nurtureBranch) || KLAVIYO_DEFAULTS.nurtureBranch;
@@ -92,13 +96,6 @@ function buildKlaviyoProfileProperties(input: any) {
   const firstName = _normalizeText(input.firstName);
   const greetingName = firstName || KLAVIYO_DEFAULTS.greetingName;
   const productUrl = _buildProductUrl(input);
-
-  // Mockup fields: use the value as-is; empty string means mockup generation failed
-  const emailMockupSmallUrl = _normalizeText(input.emailMockupSmallUrl);
-  const emailMockupMediumUrl = _normalizeText(input.emailMockupMediumUrl);
-  const emailMockupLargeUrl = _normalizeText(input.emailMockupLargeUrl);
-  // For the primary mockup URL used in preview_image_url etc, prefer real mockup, fall back to artwork
-  const resolvedMockupUrl = emailMockupUrl || emailMockupMediumUrl || primaryArtworkUrl;
 
   return {
     sun_sign: _normalizeText(input.sunSign),
@@ -113,12 +110,9 @@ function buildKlaviyoProfileProperties(input: any) {
     artwork_primary_url: primaryArtworkUrl,
     artwork_image_url: primaryArtworkUrl,
     image_url: primaryArtworkUrl,
-    preview_image_url: resolvedMockupUrl,
+    preview_image_url: emailMockupUrl || primaryArtworkUrl,
     download_url: primaryArtworkUrl,
-    email_mockup_url: resolvedMockupUrl,
-    // CRITICAL: Do NOT fall back to artworkUrl for individual mockup sizes.
-    // Empty string signals that mockup generation failed; Klaviyo template
-    // should handle missing values rather than showing the flat artwork.
+    email_mockup_url: emailMockupUrl || primaryArtworkUrl,
     email_mockup_small: emailMockupSmallUrl,
     email_mockup_medium: emailMockupMediumUrl,
     email_mockup_large: emailMockupLargeUrl,
@@ -146,7 +140,6 @@ function buildKlaviyoProfileProperties(input: any) {
     rising_sign_interpretation: getSignInterpretation("Rising", input.risingSign),
     delivery_cutoff_date: _normalizeText(input.deliveryCutoffDate),
     season_gifting_copy: _normalizeText(input.seasonGiftingCopy),
-    // Email 2: Story Behind Your Art — hotspot crop fields
     email_story_subject_explanation: _normalizeText(input.emailStorySubjectExplanation),
     email_story_sun_title: _normalizeText(input.emailStorySunTitle),
     email_story_sun_copy: _normalizeText(input.emailStorySunCopy),
@@ -194,6 +187,21 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+function summarizeStoryFields(input: Record<string, unknown>) {
+  return {
+    email_story_subject_explanation: _normalizeText(input.emailStorySubjectExplanation),
+    email_story_sun_title: _normalizeText(input.emailStorySunTitle),
+    email_story_sun_copy: _normalizeText(input.emailStorySunCopy),
+    email_story_sun_crop_url: _normalizeText(input.emailStorySunCropUrl),
+    email_story_moon_title: _normalizeText(input.emailStoryMoonTitle),
+    email_story_moon_copy: _normalizeText(input.emailStoryMoonCopy),
+    email_story_moon_crop_url: _normalizeText(input.emailStoryMoonCropUrl),
+    email_story_rising_title: _normalizeText(input.emailStoryRisingTitle),
+    email_story_rising_copy: _normalizeText(input.emailStoryRisingCopy),
+    email_story_rising_crop_url: _normalizeText(input.emailStoryRisingCropUrl),
+  };
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -209,6 +217,7 @@ serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
+    const requestBody = await req.json();
     const {
       email,
       firstName,
@@ -226,23 +235,24 @@ serve(async (req) => {
       peakSeason,
       dominantElement,
       elementBalance,
-        emailStorySubjectExplanation,
-        emailStorySunTitle,
-        emailStorySunCopy,
-        emailStorySunCropUrl,
-        emailStoryMoonTitle,
-        emailStoryMoonCopy,
-        emailStoryMoonCropUrl,
-        emailStoryRisingTitle,
-        emailStoryRisingCopy,
-        emailStoryRisingCropUrl,
-    } = await req.json();
+      emailStorySubjectExplanation,
+      emailStorySunTitle,
+      emailStorySunCopy,
+      emailStorySunCropUrl,
+      emailStoryMoonTitle,
+      emailStoryMoonCopy,
+      emailStoryMoonCropUrl,
+      emailStoryRisingTitle,
+      emailStoryRisingCopy,
+      emailStoryRisingCropUrl,
+    } = requestBody;
 
     if (!email) {
       throw new Error("Missing email");
     }
 
     console.log(`[capture-email] Processing capture for ${email}`);
+    console.log("[capture-email] Incoming Email 2 story fields:", summarizeStoryFields(requestBody));
 
     const now = new Date();
     const artworkExpiryDate = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -255,35 +265,31 @@ serve(async (req) => {
       supabaseUrl: SUPABASE_URL,
     });
 
-    // --- Validate mockup URLs: only use them if they look like real composited mockups ---
     const isMockupUrl = (url?: string) => {
-      if (!url || typeof url !== 'string') return false;
+      if (!url || typeof url !== "string") return false;
       const trimmed = url.trim();
       if (!trimmed) return false;
-      // Must be different from the flat artwork URL to count as a real mockup
       if (trimmed === resolvedArtworkUrl) return false;
       if (trimmed === artworkUrl) return false;
-      // Must look like a hosted URL (supabase storage or similar)
-      return trimmed.startsWith('http');
+      return trimmed.startsWith("http");
     };
 
-    const validMockupSmall = isMockupUrl(emailMockupSmallUrl) ? emailMockupSmallUrl.trim() : '';
-    const validMockupMedium = isMockupUrl(emailMockupMediumUrl) ? emailMockupMediumUrl.trim() : '';
-    const validMockupLarge = isMockupUrl(emailMockupLargeUrl) ? emailMockupLargeUrl.trim() : '';
-    const validMockupPrimary = validMockupMedium || validMockupSmall || validMockupLarge || '';
+    const validMockupSmall = isMockupUrl(emailMockupSmallUrl) ? emailMockupSmallUrl.trim() : "";
+    const validMockupMedium = isMockupUrl(emailMockupMediumUrl) ? emailMockupMediumUrl.trim() : "";
+    const validMockupLarge = isMockupUrl(emailMockupLargeUrl) ? emailMockupLargeUrl.trim() : "";
+    const validMockupPrimary = validMockupMedium || validMockupSmall || validMockupLarge || "";
 
     console.log(`[capture-email] Mockup validation:`, {
-      receivedSmall: emailMockupSmallUrl || '(empty)',
-      receivedMedium: emailMockupMediumUrl || '(empty)',
-      receivedLarge: emailMockupLargeUrl || '(empty)',
-      validSmall: validMockupSmall || '(none)',
-      validMedium: validMockupMedium || '(none)',
-      validLarge: validMockupLarge || '(none)',
-      artworkUrl: resolvedArtworkUrl || '(empty)',
+      receivedSmall: emailMockupSmallUrl || "(empty)",
+      receivedMedium: emailMockupMediumUrl || "(empty)",
+      receivedLarge: emailMockupLargeUrl || "(empty)",
+      validSmall: validMockupSmall || "(none)",
+      validMedium: validMockupMedium || "(none)",
+      validLarge: validMockupLarge || "(none)",
+      artworkUrl: resolvedArtworkUrl || "(empty)",
       mockupsAreReal: !!(validMockupSmall && validMockupMedium && validMockupLarge),
     });
 
-    // Upsert into email_captures
     const { data: capture, error: upsertError } = await supabase
       .from("email_captures")
       .upsert(
@@ -320,7 +326,6 @@ serve(async (req) => {
     const captureId = capture?.id;
     console.log(`[capture-email] Upserted capture: ${captureId}`);
 
-    // --- Klaviyo Client API integration (no private key needed) ---
     const KLAVIYO_COMPANY_ID = "XEPXRf";
 
     try {
@@ -345,16 +350,16 @@ serve(async (req) => {
         artworkExpiryDate,
         cosmic10Expiry,
         captureTimestamp: now,
-          emailStorySubjectExplanation,
-          emailStorySunTitle,
-          emailStorySunCopy,
-          emailStorySunCropUrl,
-          emailStoryMoonTitle,
-          emailStoryMoonCopy,
-          emailStoryMoonCropUrl,
-          emailStoryRisingTitle,
-          emailStoryRisingCopy,
-          emailStoryRisingCropUrl,
+        emailStorySubjectExplanation,
+        emailStorySunTitle,
+        emailStorySunCopy,
+        emailStorySunCropUrl,
+        emailStoryMoonTitle,
+        emailStoryMoonCopy,
+        emailStoryMoonCropUrl,
+        emailStoryRisingTitle,
+        emailStoryRisingCopy,
+        emailStoryRisingCropUrl,
       });
     } catch (klaviyoErr) {
       console.warn("[capture-email] Klaviyo Client API sync failed (non-blocking):", klaviyoErr);
@@ -500,6 +505,16 @@ async function syncToKlaviyoClientAPI(params: KlaviyoClientSyncParams) {
     artworkExpiryDate,
     cosmic10Expiry,
     captureTimestamp,
+    emailStorySubjectExplanation,
+    emailStorySunTitle,
+    emailStorySunCopy,
+    emailStorySunCropUrl,
+    emailStoryMoonTitle,
+    emailStoryMoonCopy,
+    emailStoryMoonCropUrl,
+    emailStoryRisingTitle,
+    emailStoryRisingCopy,
+    emailStoryRisingCropUrl,
   } = params;
 
   const revision = "2024-10-15";
@@ -508,7 +523,7 @@ async function syncToKlaviyoClientAPI(params: KlaviyoClientSyncParams) {
     revision,
   };
 
-  const identifyAttributes = buildKlaviyoIdentifyAttributes({
+  const klaviyoInput = {
     email,
     firstName,
     sunSign,
@@ -528,30 +543,48 @@ async function syncToKlaviyoClientAPI(params: KlaviyoClientSyncParams) {
     artworkExpiryDate,
     cosmic10Expiry,
     captureTimestamp,
-  });
-  const eventAttributes = buildEmailCapturedEventAttributes({
-    email,
-    firstName,
-    sunSign,
-    moonSign,
-    risingSign,
-    artworkUrl,
-    artworkVariationUrl,
-    emailMockupUrl,
-    emailMockupSmallUrl,
-    emailMockupMediumUrl,
-    emailMockupLargeUrl,
-    artworkId,
-    sessionId,
-    peakSeason,
-    dominantElement,
-    elementBalance,
-    artworkExpiryDate,
-    cosmic10Expiry,
-    captureTimestamp,
+    emailStorySubjectExplanation,
+    emailStorySunTitle,
+    emailStorySunCopy,
+    emailStorySunCropUrl,
+    emailStoryMoonTitle,
+    emailStoryMoonCopy,
+    emailStoryMoonCropUrl,
+    emailStoryRisingTitle,
+    emailStoryRisingCopy,
+    emailStoryRisingCropUrl,
+  };
+
+  const identifyAttributes = buildKlaviyoIdentifyAttributes(klaviyoInput);
+  const eventAttributes = buildEmailCapturedEventAttributes(klaviyoInput);
+
+  console.log("[capture-email] Final Email 2 story payload sent to Klaviyo:", {
+    profile: {
+      email_story_subject_explanation: identifyAttributes.properties.email_story_subject_explanation,
+      email_story_sun_title: identifyAttributes.properties.email_story_sun_title,
+      email_story_sun_copy: identifyAttributes.properties.email_story_sun_copy,
+      email_story_sun_crop_url: identifyAttributes.properties.email_story_sun_crop_url,
+      email_story_moon_title: identifyAttributes.properties.email_story_moon_title,
+      email_story_moon_copy: identifyAttributes.properties.email_story_moon_copy,
+      email_story_moon_crop_url: identifyAttributes.properties.email_story_moon_crop_url,
+      email_story_rising_title: identifyAttributes.properties.email_story_rising_title,
+      email_story_rising_copy: identifyAttributes.properties.email_story_rising_copy,
+      email_story_rising_crop_url: identifyAttributes.properties.email_story_rising_crop_url,
+    },
+    event: {
+      email_story_subject_explanation: eventAttributes.properties.email_story_subject_explanation,
+      email_story_sun_title: eventAttributes.properties.email_story_sun_title,
+      email_story_sun_copy: eventAttributes.properties.email_story_sun_copy,
+      email_story_sun_crop_url: eventAttributes.properties.email_story_sun_crop_url,
+      email_story_moon_title: eventAttributes.properties.email_story_moon_title,
+      email_story_moon_copy: eventAttributes.properties.email_story_moon_copy,
+      email_story_moon_crop_url: eventAttributes.properties.email_story_moon_crop_url,
+      email_story_rising_title: eventAttributes.properties.email_story_rising_title,
+      email_story_rising_copy: eventAttributes.properties.email_story_rising_copy,
+      email_story_rising_crop_url: eventAttributes.properties.email_story_rising_crop_url,
+    },
   });
 
-  // 1. Identify profile via Client API
   const identifyPayload = {
     data: {
       type: "profile",
@@ -575,7 +608,6 @@ async function syncToKlaviyoClientAPI(params: KlaviyoClientSyncParams) {
     console.warn(`[capture-email] Klaviyo identify failed (${identifyRes.status}): ${body}`);
   }
 
-  // 2. Track "Email Captured" event via Client API
   const eventPayload = {
     data: {
       type: "event",
