@@ -42,7 +42,7 @@ const TIMELINE_STEPS = [
     label: 'STEP 4 — NEXT WEEK (5-7 DAYS)',
     icon: '📦',
     title: 'Shipped to You',
-    desc: 'Free shipping with tracking to your door. Arrives ready to display — no assembly required.',
+    desc: 'Shipped with tracking to your door. Arrives ready to display — no assembly required.',
   },
 ];
 

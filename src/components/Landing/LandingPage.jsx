@@ -81,7 +81,7 @@ const faqs = [
   { q: "What if I don't like my preview?", a: "No problem! You only pay if you love it. The preview is completely free—there's zero obligation to purchase." },
   { q: "Can I see examples of different chart combinations?", a: "Yes! Check out our gallery above to see how different astrological placements create unique artwork. Each piece reflects the individual's birth chart." },
   { q: "What sizes are available?", a: "We offer three canvas sizes: 12\"×18\" ($79), 16\"×24\" ($119 — most popular), and 20\"×30\" ($179). All prints are museum-quality stretched canvas, ready to hang." },
-  { q: "Do you ship internationally?", a: "Yes! We offer free shipping to the US, UK, Canada, and Australia." },
+  { q: "Do you ship internationally?", a: "Yes! We ship to the US, UK, Canada, and Australia. Shipping costs are calculated at checkout." },
   { q: "What's your refund policy?", a: "We stand behind every print. If your artwork arrives damaged or defective, contact us within 30 days — we'll reprint it for free or issue a full refund, your choice." },
 ];
 
@@ -230,8 +230,6 @@ export default function LandingPage() {
       {/* Trust badges strip */}
       <div className="hidden md:flex items-center justify-center gap-6 py-3.5 text-body" style={{ backgroundColor: '#F2F1EF', color: '#000000' }}>
         <span>🔒 Secure Payment</span>
-        <span style={{ color: '#00000030' }}>|</span>
-        <span>📦 Free Shipping</span>
         <span style={{ color: '#00000030' }}>|</span>
         <span>↩️ 30-Day Quality Guarantee</span>
       </div>
