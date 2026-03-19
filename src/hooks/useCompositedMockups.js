@@ -1,15 +1,21 @@
-import { useEffect, useState, useRef } from 'react';
-import { findGreenBounds, isGreenPixel, findGreenQuadCorners, bilinearInverse } from '../lib/mockup/chromaKey';
+import { useEffect, useState } from 'react';
+import { findGreenBounds, isGreenPixel } from '../lib/mockup/chromaKey';
+import { applyArtworkToMask, createArtworkSampler } from '../lib/mockup/applyArtworkToMask';
 
 const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
 const MAX_CANVAS_DIM = 800;
 const PARALLEL_BATCH = 3;
+const COMPOSITE_ALGORITHM_VERSION = '2026-03-19-phone-case-oriented';
 
 // ── Shared global caches ──────────────────────────────────────────────
 const compositeCache = new Map();   // cacheKey → dataUrl
 const greenBoundsCache = new Map(); // mockupSrc → bounds|null
 let _artworkCache = { src: null, img: null, promise: null };
 let _lastArtworkForComposites = null; // tracks which artwork the composites were built for
+
+function getCompositeCacheKey(mockupSrc, mode = 'default') {
+  return `${COMPOSITE_ALGORITHM_VERSION}:${mode}:${mockupSrc}`;
+}
 
 function loadImage(src) {
   return new Promise((resolve, reject) => {
@@ -50,8 +56,8 @@ function getArtworkImage(src) {
   return _artworkCache.promise;
 }
 
-function compositeSingleMockup(mockupSrc, artworkImg) {
-  const cacheKey = mockupSrc;
+function compositeSingleMockup(mockupSrc, artworkSampler, mode = 'default') {
+  const cacheKey = getCompositeCacheKey(mockupSrc, mode);
   if (compositeCache.has(cacheKey)) return Promise.resolve(compositeCache.get(cacheKey));
 
   return loadImage(mockupSrc).then(mockupImg => {
@@ -80,100 +86,26 @@ function compositeSingleMockup(mockupSrc, artworkImg) {
       const { minX, minY, maxX, maxY } = bounds;
       const bw = maxX - minX + 1;
       const bh = maxY - minY + 1;
-
-      // Save original mockup pixels for the green region
-      const originalData = ctx.getImageData(minX, minY, bw, bh);
-
-      // Build green mask from original mockup
+      const maskData = ctx.getImageData(minX, minY, bw, bh);
       const greenMask = new Uint8Array(bw * bh);
+
       for (let i = 0; i < greenMask.length; i++) {
-        const o = i * 4;
-        if (isGreenPixel(originalData.data[o], originalData.data[o + 1], originalData.data[o + 2])) {
+        const offset = i * 4;
+        if (isGreenPixel(maskData.data[offset], maskData.data[offset + 1], maskData.data[offset + 2])) {
           greenMask[i] = 1;
         }
       }
 
-      // Prepare artwork for sampling
-      const artW = artworkImg.naturalWidth;
-      const artH = artworkImg.naturalHeight;
-      const artMaxDim = 800;
-      const artDownscale = Math.min(1, artMaxDim / Math.max(artW, artH));
-      const sampW = Math.max(1, Math.round(artW * artDownscale));
-      const sampH = Math.max(1, Math.round(artH * artDownscale));
+      applyArtworkToMask({
+        maskData,
+        greenMask,
+        sampler: artworkSampler,
+        bw,
+        bh,
+        mode,
+      });
 
-      const artCanvas = document.createElement('canvas');
-      artCanvas.width = sampW;
-      artCanvas.height = sampH;
-      const artCtx = artCanvas.getContext('2d');
-      artCtx.drawImage(artworkImg, 0, 0, sampW, sampH);
-      const artData = artCtx.getImageData(0, 0, sampW, sampH);
-
-      // Find quad corners for perspective mapping
-      const corners = findGreenQuadCorners(greenMask, bw, bh);
-
-      if (corners) {
-        // Use the quad dimensions for cover calculation (not bounding box)
-        const quadTopW = Math.sqrt((corners.tr.x - corners.tl.x) ** 2 + (corners.tr.y - corners.tl.y) ** 2);
-        const quadBotW = Math.sqrt((corners.br.x - corners.bl.x) ** 2 + (corners.br.y - corners.bl.y) ** 2);
-        const quadLeftH = Math.sqrt((corners.bl.x - corners.tl.x) ** 2 + (corners.bl.y - corners.tl.y) ** 2);
-        const quadRightH = Math.sqrt((corners.br.x - corners.tr.x) ** 2 + (corners.br.y - corners.tr.y) ** 2);
-        const quadW = (quadTopW + quadBotW) / 2;
-        const quadH = (quadLeftH + quadRightH) / 2;
-
-        // Cover: scale artwork to fill the quad's aspect ratio
-        const artAspect = artW / artH;
-        const quadAspect = quadW / quadH;
-        let cropU = 1, cropV = 1;
-        if (artAspect > quadAspect) {
-          // Artwork is wider — crop sides
-          cropU = quadAspect / artAspect;
-        } else {
-          // Artwork is taller — crop top/bottom
-          cropV = artAspect / quadAspect;
-        }
-        const offU = (1 - cropU) / 2;
-        const offV = (1 - cropV) / 2;
-
-        for (let i = 0; i < greenMask.length; i++) {
-          if (!greenMask[i]) continue;
-          const px = i % bw;
-          const py = (i - px) / bw;
-
-          const { u, v } = bilinearInverse(px, py, corners.tl, corners.tr, corners.bl, corners.br);
-          const artU = offU + u * cropU;
-          const artV = offV + v * cropV;
-
-          const ax = Math.min(sampW - 1, Math.max(0, Math.round(artU * (sampW - 1))));
-          const ay = Math.min(sampH - 1, Math.max(0, Math.round(artV * (sampH - 1))));
-          const srcO = (ay * sampW + ax) * 4;
-          const dstO = i * 4;
-          originalData.data[dstO]     = artData.data[srcO];
-          originalData.data[dstO + 1] = artData.data[srcO + 1];
-          originalData.data[dstO + 2] = artData.data[srcO + 2];
-          originalData.data[dstO + 3] = 255;
-        }
-      } else {
-        // Flat fallback — draw artwork scaled to cover bounding box
-        const scale = Math.max(bw / artW, bh / artH);
-        const dw = artW * scale;
-        const dh = artH * scale;
-        const flatCanvas = document.createElement('canvas');
-        flatCanvas.width = bw;
-        flatCanvas.height = bh;
-        const flatCtx = flatCanvas.getContext('2d');
-        flatCtx.drawImage(artworkImg, (bw - dw) / 2, (bh - dh) / 2, dw, dh);
-        const flatData = flatCtx.getImageData(0, 0, bw, bh);
-
-        for (let i = 0; i < greenMask.length; i++) {
-          if (!greenMask[i]) continue;
-          const o = i * 4;
-          originalData.data[o]     = flatData.data[o];
-          originalData.data[o + 1] = flatData.data[o + 1];
-          originalData.data[o + 2] = flatData.data[o + 2];
-          originalData.data[o + 3] = 255;
-        }
-      }
-      ctx.putImageData(originalData, minX, minY);
+      ctx.putImageData(maskData, minX, minY);
     }
 
     const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
@@ -182,13 +114,13 @@ function compositeSingleMockup(mockupSrc, artworkImg) {
   }).catch(() => mockupSrc);
 }
 
-async function compositeAll(mockupSrcs, artworkImg, signal) {
+async function compositeAll(mockupSrcs, artworkSampler, signal, mode = 'default') {
   const results = [];
   for (let i = 0; i < mockupSrcs.length; i += PARALLEL_BATCH) {
     if (signal?.aborted) return results;
     const batch = mockupSrcs.slice(i, i + PARALLEL_BATCH);
     const batchResults = await Promise.all(
-      batch.map(src => compositeSingleMockup(src, artworkImg))
+      batch.map(src => compositeSingleMockup(src, artworkSampler, mode))
     );
     results.push(...batchResults);
     await new Promise(r => setTimeout(r, 0));
@@ -200,9 +132,10 @@ async function compositeAll(mockupSrcs, artworkImg, signal) {
  * Composites mockups for the selected size.
  * Returns instantly from global cache if already composited (e.g. by background preload).
  */
-export default function useCompositedMockups(mockupSrcs, artworkSrc) {
+export default function useCompositedMockups(mockupSrcs, artworkSrc, options = {}) {
   const [composited, setComposited] = useState([]);
   const [loading, setLoading] = useState(true);
+  const mode = options.mode ?? 'default';
 
   useEffect(() => {
     if (!mockupSrcs?.length) { setComposited([]); setLoading(false); return; }
@@ -216,9 +149,9 @@ export default function useCompositedMockups(mockupSrcs, artworkSrc) {
     _lastArtworkForComposites = artworkSrc;
 
     // Check if all are cached already (instant switch)
-    const allCached = mockupSrcs.every(src => compositeCache.has(src));
+    const allCached = mockupSrcs.every(src => compositeCache.has(getCompositeCacheKey(src, mode)));
     if (allCached) {
-      setComposited(mockupSrcs.map(src => compositeCache.get(src)));
+      setComposited(mockupSrcs.map(src => compositeCache.get(getCompositeCacheKey(src, mode))));
       setLoading(false);
       return;
     }
@@ -236,7 +169,8 @@ export default function useCompositedMockups(mockupSrcs, artworkSrc) {
       }
       if (controller.signal.aborted) return;
 
-      const results = await compositeAll(mockupSrcs, artworkImg, controller.signal);
+      const artworkSampler = createArtworkSampler(artworkImg);
+      const results = await compositeAll(mockupSrcs, artworkSampler, controller.signal, mode);
       if (!controller.signal.aborted) {
         setComposited(results.length ? results : mockupSrcs);
         setLoading(false);
@@ -244,7 +178,7 @@ export default function useCompositedMockups(mockupSrcs, artworkSrc) {
     })();
 
     return () => controller.abort();
-  }, [mockupSrcs, artworkSrc]);
+  }, [mockupSrcs, artworkSrc, mode]);
 
   return { composited, loading };
 }
@@ -265,10 +199,12 @@ export function useBackgroundPreload(otherMockupSets, artworkSrc) {
         artworkImg = await getArtworkImage(artworkSrc);
       } catch { return; }
 
+      const artworkSampler = createArtworkSampler(artworkImg);
+
       for (const mockupSrcs of otherMockupSets) {
         if (controller.signal.aborted) return;
-        if (mockupSrcs.every(src => compositeCache.has(src))) continue;
-        await compositeAll(mockupSrcs, artworkImg, controller.signal);
+        if (mockupSrcs.every(src => compositeCache.has(getCompositeCacheKey(src)))) continue;
+        await compositeAll(mockupSrcs, artworkSampler, controller.signal);
       }
     })();
 
@@ -309,10 +245,12 @@ export function preloadAllMockups(allMockupSets, artworkSrc) {
       artworkImg = await getArtworkImage(artworkSrc);
     } catch { return; }
 
+    const artworkSampler = createArtworkSampler(artworkImg);
+
     for (const mockupSrcs of allMockupSets) {
       if (controller.signal.aborted) return;
-      if (mockupSrcs.every(src => compositeCache.has(src))) continue;
-      await compositeAll(mockupSrcs, artworkImg, controller.signal);
+      if (mockupSrcs.every(src => compositeCache.has(getCompositeCacheKey(src)))) continue;
+      await compositeAll(mockupSrcs, artworkSampler, controller.signal);
     }
   })();
 
