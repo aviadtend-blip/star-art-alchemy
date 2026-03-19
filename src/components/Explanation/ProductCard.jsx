@@ -28,6 +28,11 @@ export default function ProductCard({
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/80" />
           </>
         )}
+        {badge && (
+          <div className="absolute z-10 left-1/2 -translate-x-1/2 bottom-0 translate-y-1/2">
+            <PopularTag>{badge}</PopularTag>
+          </div>
+        )}
       </div>
 
       {/* Dark content area */}
@@ -35,13 +40,8 @@ export default function ProductCard({
         className="flex flex-col items-center gap-6 flex-1 px-5 pb-5 pt-5"
         style={{ boxShadow: '0 0 114px 0 #000 inset' }}
       >
-        {/* Title + description + optional badge */}
+        {/* Title + description */}
         <div className="flex flex-col items-center gap-4 w-full relative">
-          {badge && (
-            <div className="absolute z-10" style={{ top: -41, left: '50%', transform: 'translateX(-50%)' }}>
-              <PopularTag>{badge}</PopularTag>
-            </div>
-          )}
           <h3 className="text-a2 text-white text-center" style={{ whiteSpace: 'pre-line' }}>
             {title}
           </h3>
