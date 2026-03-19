@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { findGreenBounds, isGreenPixel } from '../lib/mockup/chromaKey';
 import { applyArtworkToMask, createArtworkSampler, featherMaskEdges } from '../lib/mockup/applyArtworkToMask';
+import { compositeAlpha, extractMockupKey, hasCompositableRegion } from '../lib/mockup/alphaComposite';
 
 const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
 const MAX_CANVAS_DIM = 800;
 const PARALLEL_BATCH = 3;
-const COMPOSITE_ALGORITHM_VERSION = '2026-03-19-phone-case-edge-spill-v8';
+const COMPOSITE_ALGORITHM_VERSION = '2026-03-19-alpha-channel-v1';
 
 // ── Shared global caches ──────────────────────────────────────────────
 const compositeCache = new Map();   // cacheKey → dataUrl
