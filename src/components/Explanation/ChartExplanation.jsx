@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import EmailCaptureModal from '@/components/EmailCaptureModal';
 import MakeItYoursSection from '@/components/Explanation/MakeItYoursSection';
+import MoreThanArtSection from '@/components/Explanation/MoreThanArtSection';
 import { generateChartExplanation } from '@/lib/explanations/generateExplanation';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
@@ -616,6 +617,7 @@ export function ChartExplanation({
             onDownloadPreview={() => setShowEmailModal(true)}
             artworkSrc={selectedImage}
           />
+          <MoreThanArtSection />
           <ReviewsList theme="dark" gap={6} py={6} className="pt-8 pb-[60px] w-full" />
         </div>
         <div className="hidden md:block" style={{ height: 60 }} />
@@ -727,6 +729,10 @@ export function ChartExplanation({
               onDownloadPreview={() => setShowEmailModal(true)}
               artworkSrc={selectedImage}
             />
+          </div>
+
+          <div className="px-4">
+            <MoreThanArtSection />
           </div>
 
           {/* Reviews — dark */}
