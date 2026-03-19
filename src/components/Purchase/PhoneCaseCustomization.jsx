@@ -326,19 +326,19 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
             </div>
 
             {/* Right — scrollable content */}
-            <div className="flex-1" style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
+            <div className="flex-1" style={{ display: 'flex', flexDirection: 'column' }}>
               {/* Headline + description */}
               <div>
                 <h1 className="text-a1-special text-surface-foreground" style={{ marginBottom: '16px' }}>
                   Built to Last, Designed to Decompose
                 </h1>
                 <p className="text-body text-surface-muted">
-                  Your Cosmic Collage is printed directly onto a slim, matte-finish case made from bamboo fibre and biodegradable bioplastic. It's tough enough to survive a 5-foot drop, scratch-resistant, and slim enough to forget it's there — until someone asks about it (and they will).
+                  A premium eco case wrapped in your one-of-a-kind birth chart art. No two are alike — because there's no one quite like you. Slim enough to forget it's there, until someone asks about it (and they will).
                 </p>
               </div>
 
               {/* Model selector dropdown */}
-              <div>
+              <div style={{ marginTop: '20px' }}>
                 <h3 className="text-a3 text-surface-foreground" style={{ marginBottom: '12px' }}>Select Your Phone</h3>
                 <Select value={selectedModel} onValueChange={handleModelChange}>
                   <SelectTrigger
@@ -378,10 +378,10 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
               </div>
 
               {/* Feature bullets */}
-              <div className="flex flex-col" style={{ gap: '12px' }}>
+              <div className="flex flex-col" style={{ gap: '12px', marginTop: '20px' }}>
                 <p className="text-body text-surface-foreground">🥊 5-ft drop tested — Shock-absorbing protection</p>
                 <p className="text-body text-surface-foreground">🌿 100% biodegradable — Bamboo fibre &amp; bioplastic, zero BPA</p>
-                <p className="text-body text-surface-foreground">📶 Wireless charging compatible</p>
+                <p className="text-body text-surface-foreground">📶 Compatible with wireless charging (not MagSafe)</p>
                 <p className="text-body text-surface-foreground">🎨 UV printed, matte finish — Vivid color that won't scratch off</p>
               </div>
 
