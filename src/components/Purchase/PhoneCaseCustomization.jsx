@@ -354,9 +354,9 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
                   >
                     <SelectValue placeholder="Choose your model to see a preview">
                       {selectedModel && modelData && (
-                        <span className="flex items-center justify-between w-full pr-2">
-                          <span className="text-a4" style={{ color: '#333333' }}>{modelData.label}</span>
-                          <span className="text-a4 font-bold" style={{ color: '#333333' }}>${modelData.price}</span>
+                        <span className="flex items-center w-full" style={{ gap: '24px' }}>
+                          <span className="text-a4 flex-1" style={{ color: '#333333' }}>{modelData.label}</span>
+                          <span className="text-a4 font-bold flex-shrink-0" style={{ color: '#333333' }}>${modelData.price}</span>
                         </span>
                       )}
                     </SelectValue>
