@@ -237,7 +237,8 @@ function paintArtworkWithOrientedStrips(targetData, greenMask, sampler, bw, bh, 
   const panelWidth = Math.max(0.01, 1 - fit.panelInsetU * 2);
   const panelHeight = Math.max(0.01, 1 - fit.panelInsetVStart - fit.panelInsetVEnd);
   const crop = getCoverCrop(sampler.artAspect, (averageCoreWidth * panelWidth) / (coreSpan * panelHeight));
-  const fillColor = computePhoneCaseFillColor(targetData, greenMask, bw, bh);
+  const sourceData = new Uint8ClampedArray(targetData);
+  const fillColor = computePhoneCaseFillColor(sourceData, greenMask, bw, bh);
   const usableCropUScale = Math.max(0.01, 1 - fit.cropInsetU * 2);
   const usableCropVScale = Math.max(0.01, 1 - fit.cropInsetVStart - fit.cropInsetVEnd);
 
@@ -256,7 +257,7 @@ function paintArtworkWithOrientedStrips(targetData, greenMask, sampler, bw, bh, 
       : 0.5;
 
     if (!isInsidePhoneCasePanel(rawU, rawV, fit)) {
-      paintCaseSurface(targetData, index * 4, targetData, greenMask, bw, bh, x, y, fillColor);
+      paintCaseSurface(targetData, index * 4, sourceData, greenMask, bw, bh, x, y, fillColor);
       return;
     }
 
@@ -309,7 +310,7 @@ function isInsidePhoneCasePanel(u, v, fit) {
   return dx * dx + dy * dy <= radius * radius;
 }
 
-function computePhoneCaseFillColor(targetData, greenMask, bw, bh) {
+function computePhoneCaseFillColor(sourceData, greenMask, bw, bh) {
   let red = 0;
   let green = 0;
   let blue = 0;
@@ -317,7 +318,7 @@ function computePhoneCaseFillColor(targetData, greenMask, bw, bh) {
 
   forEachGreenPixel(greenMask, bw, (x, y) => {
     if (!isMaskBoundaryPixel(greenMask, bw, bh, x, y)) return;
-    const [r, g, b] = sampleNearbyColor(targetData, bw, bh, x, y);
+    const [r, g, b] = sampleNearbyColor(sourceData, bw, bh, x, y);
     red += r;
     green += g;
     blue += b;
@@ -333,9 +334,9 @@ function computePhoneCaseFillColor(targetData, greenMask, bw, bh) {
   ];
 }
 
-function paintCaseSurface(targetData, targetOffset, imageData, greenMask, bw, bh, x, y, fallbackFill) {
+function paintCaseSurface(targetData, targetOffset, sourceData, greenMask, bw, bh, x, y, fallbackFill) {
   if (isMaskBoundaryPixel(greenMask, bw, bh, x, y)) {
-    const [r, g, b] = sampleNearbyColor(imageData, bw, bh, x, y);
+    const [r, g, b] = sampleNearbyColor(sourceData, bw, bh, x, y);
     targetData[targetOffset] = r;
     targetData[targetOffset + 1] = g;
     targetData[targetOffset + 2] = b;
