@@ -1,4 +1,4 @@
-import { bilinearInverse, findGreenQuadCorners, sampleNearbyColor } from './chromaKey';
+import { bilinearInverse, findGreenQuadCorners, isGreenPixel, sampleNearbyColor } from './chromaKey';
 
 const DEFAULT_ARTWORK_MAX_DIM = 800;
 const MIN_AXIS_SPAN = 24;
