@@ -306,10 +306,10 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
                   padding: '15px 20px',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  color: selectedModel ? '#333333' : '#999999',
+                  color: selectedModel ? '#333333' : '#BDBDBD',
                 }}
               >
-                <SelectValue placeholder="Choose your model to see a preview">
+                <SelectValue placeholder="Choose your model">
                   {selectedModel && modelData && (
                     <span style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', alignSelf: 'stretch', width: '100%' }}>
                       <span className="text-a4" style={{ color: '#333333' }}>{modelData.label}</span>
