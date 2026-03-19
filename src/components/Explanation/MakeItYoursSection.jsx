@@ -15,8 +15,9 @@ export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, art
         <h2 className="text-a1 text-white text-center">Make It Yours</h2>
       </div>
 
-      {/* Cards row */}
-      <div className="flex flex-col md:flex-row items-stretch gap-4 w-full">
+      {/* Cards row — horizontal scroll on mobile, grid on desktop */}
+      <div className="flex md:flex-row items-stretch gap-4 w-full overflow-x-auto md:overflow-visible snap-x snap-mandatory scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div className="flex-shrink-0 w-[85vw] md:w-0 md:flex-1 snap-start md:snap-align-none min-w-0">
         {/* Phone Case */}
         <ProductCard
           imageSlot={
