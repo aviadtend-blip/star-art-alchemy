@@ -1,5 +1,6 @@
 import ProductCard from '@/components/Explanation/ProductCard';
 import CTARoomMockup from '@/components/Explanation/CTARoomMockup';
+import PhoneCaseMockup from '@/components/Explanation/PhoneCaseMockup';
 
 /**
  * "Make It Yours" section with three product offering cards.
@@ -17,7 +18,12 @@ export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, art
       <div className="flex flex-col md:flex-row items-stretch gap-4 w-full">
         {/* Phone Case */}
         <ProductCard
-          image={artworkSrc}
+          imageSlot={
+            <>
+              <PhoneCaseMockup artworkSrc={artworkSrc} className="w-full h-full" />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/80" />
+            </>
+          }
           title="Carry Your Stars Everywhere"
           description="Your birth chart art, wrapped around a premium eco case"
           badge="Most popular"
