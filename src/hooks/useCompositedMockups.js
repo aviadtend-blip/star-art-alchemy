@@ -93,29 +93,58 @@ function compositeSingleMockup(mockupSrc, artworkImg) {
         }
       }
 
-      // Draw artwork scaled to cover the green area
+      // Prepare artwork for sampling
       const artW = artworkImg.naturalWidth;
       const artH = artworkImg.naturalHeight;
-      const scale = Math.max(bw / artW, bh / artH);
-      const dw = artW * scale;
-      const dh = artH * scale;
+      const artMaxDim = 800;
+      const artDownscale = Math.min(1, artMaxDim / Math.max(artW, artH));
+      const sampW = Math.max(1, Math.round(artW * artDownscale));
+      const sampH = Math.max(1, Math.round(artH * artDownscale));
 
       const artCanvas = document.createElement('canvas');
-      artCanvas.width = bw;
-      artCanvas.height = bh;
+      artCanvas.width = sampW;
+      artCanvas.height = sampH;
       const artCtx = artCanvas.getContext('2d');
-      artCtx.drawImage(artworkImg, (bw - dw) / 2, (bh - dh) / 2, dw, dh);
-      const artData = artCtx.getImageData(0, 0, bw, bh);
+      artCtx.drawImage(artworkImg, 0, 0, sampW, sampH);
+      const artData = artCtx.getImageData(0, 0, sampW, sampH);
 
-      // Replace only green pixels with artwork pixels
+      // Compute cover-mode UV offsets
+      const coverScale = Math.max(bw / artW, bh / artH);
+      const effectiveW = artW * coverScale;
+      const effectiveH = artH * coverScale;
+      const coverOffU = (effectiveW - bw) / (2 * effectiveW);
+      const coverOffV = (effectiveH - bh) / (2 * effectiveH);
+      const coverScaleU = bw / effectiveW;
+      const coverScaleV = bh / effectiveH;
+
+      // Try to find quad corners for perspective mapping
+      const corners = findGreenQuadCorners(greenMask, bw, bh);
+
       for (let i = 0; i < greenMask.length; i++) {
-        if (greenMask[i]) {
-          const o = i * 4;
-          originalData.data[o] = artData.data[o];
-          originalData.data[o + 1] = artData.data[o + 1];
-          originalData.data[o + 2] = artData.data[o + 2];
-          originalData.data[o + 3] = 255;
+        if (!greenMask[i]) continue;
+        const px = i % bw;
+        const py = (i - px) / bw;
+
+        let artU, artV;
+        if (corners) {
+          // Perspective-aware: bilinear inverse maps pixel to UV within the quad
+          const { u, v } = bilinearInverse(px, py, corners.tl, corners.tr, corners.bl, corners.br);
+          artU = coverOffU + u * coverScaleU;
+          artV = coverOffV + v * coverScaleV;
+        } else {
+          // Flat fallback
+          artU = coverOffU + (px / bw) * coverScaleU;
+          artV = coverOffV + (py / bh) * coverScaleV;
         }
+
+        const ax = Math.min(sampW - 1, Math.max(0, Math.round(artU * sampW)));
+        const ay = Math.min(sampH - 1, Math.max(0, Math.round(artV * sampH)));
+        const srcO = (ay * sampW + ax) * 4;
+        const dstO = i * 4;
+        originalData.data[dstO]     = artData.data[srcO];
+        originalData.data[dstO + 1] = artData.data[srcO + 1];
+        originalData.data[dstO + 2] = artData.data[srcO + 2];
+        originalData.data[dstO + 3] = 255;
       }
       ctx.putImageData(originalData, minX, minY);
     }
