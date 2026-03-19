@@ -82,9 +82,15 @@ export function createArtworkSampler(artworkImg, maxDim = DEFAULT_ARTWORK_MAX_DI
 }
 
 export function applyArtworkToMask({ maskData, greenMask, sampler, bw, bh, mode = 'default', sourceKey = '' }) {
-  if (mode === 'phone-case' && paintArtworkWithOrientedStrips(maskData.data, greenMask, sampler, bw, bh, sourceKey)) {
-    cleanupRemainingGreen(maskData.data, greenMask, bw);
-    return;
+  if (mode === 'phone-case') {
+    // Fill interior holes (e.g. camera cutout) so strip warp sees a continuous region
+    const holeMask = fillInteriorHoles(greenMask, bw, bh);
+    if (paintArtworkWithOrientedStrips(maskData.data, holeMask, sampler, bw, bh, sourceKey)) {
+      // Restore hole pixels: revert any pixel that was in holeMask but NOT in original greenMask
+      // (i.e. the filled hole pixels should show original mockup, not artwork)
+      cleanupRemainingGreen(maskData.data, greenMask, bw);
+      return;
+    }
   }
 
   if (paintArtworkWithQuad(maskData.data, greenMask, sampler, bw, bh)) {
@@ -96,32 +102,26 @@ export function applyArtworkToMask({ maskData, greenMask, sampler, bw, bh, mode 
 
 /**
  * Feather the edges of the composited mask region by blending with the original mockup.
- * This smooths jagged edges and removes fringe around holes (e.g. camera cutout).
- * Call AFTER applyArtworkToMask and BEFORE putImageData.
- *
- * @param {ImageData} maskData - The composited region (mutated in place)
- * @param {Uint8ClampedArray} originalData - Snapshot of the region BEFORE compositing
- * @param {Uint8Array} greenMask - The green pixel mask
- * @param {number} bw - Region width
- * @param {number} bh - Region height
- * @param {number} radius - Feather radius in pixels (default 2)
+ * Also restores any interior-hole pixels that were temporarily filled for strip computation.
  */
 export function featherMaskEdges(maskData, originalData, greenMask, bw, bh, radius = 2) {
   const data = maskData.data;
-  // Build distance-to-edge map for green mask pixels
-  // distance = min distance to a non-green pixel (0 = boundary, radius+ = interior)
   const distMap = new Float32Array(greenMask.length);
   distMap.fill(radius + 1);
 
-  // For non-green pixels and green pixels adjacent to non-green, set distance
   for (let i = 0; i < greenMask.length; i++) {
     if (!greenMask[i]) {
       distMap[i] = 0;
+      // Restore non-green pixels to original (in case holes were filled during strip warp)
+      const off = i * 4;
+      data[off]     = originalData[off];
+      data[off + 1] = originalData[off + 1];
+      data[off + 2] = originalData[off + 2];
+      data[off + 3] = originalData[off + 3];
       continue;
     }
     const x = i % bw;
     const y = (i - x) / bw;
-    // Check immediate neighbors
     let onEdge = false;
     for (let dy = -1; dy <= 1 && !onEdge; dy++) {
       for (let dx = -1; dx <= 1 && !onEdge; dx++) {
@@ -135,7 +135,6 @@ export function featherMaskEdges(maskData, originalData, greenMask, bw, bh, radi
     if (onEdge) distMap[i] = 1;
   }
 
-  // Propagate distances up to radius using simple BFS-like passes
   for (let pass = 2; pass <= radius; pass++) {
     for (let i = 0; i < greenMask.length; i++) {
       if (distMap[i] !== radius + 1) continue;
@@ -156,17 +155,70 @@ export function featherMaskEdges(maskData, originalData, greenMask, bw, bh, radi
     }
   }
 
-  // Blend boundary pixels
   for (let i = 0; i < greenMask.length; i++) {
     if (!greenMask[i]) continue;
     const dist = distMap[i];
-    if (dist > radius) continue; // fully interior, no blending needed
-    // alpha=0 at edge (dist=1), alpha=1 at dist=radius
+    if (dist > radius) continue;
     const alpha = Math.min(1, Math.max(0, (dist - 0.5) / radius));
     const off = i * 4;
     data[off]     = Math.round(data[off]     * alpha + originalData[off]     * (1 - alpha));
     data[off + 1] = Math.round(data[off + 1] * alpha + originalData[off + 1] * (1 - alpha));
     data[off + 2] = Math.round(data[off + 2] * alpha + originalData[off + 2] * (1 - alpha));
+  }
+}
+
+/**
+ * Fill interior holes in the green mask (e.g. camera cutout).
+ * Returns a NEW mask with holes filled so strip warp sees a continuous region.
+ * Uses flood fill from all border non-green pixels; anything not reached is interior.
+ */
+function fillInteriorHoles(greenMask, bw, bh) {
+  const filled = new Uint8Array(greenMask);
+  const visited = new Uint8Array(bw * bh);
+  const queue = [];
+
+  // Seed from all border pixels that are NOT green
+  for (let x = 0; x < bw; x++) {
+    if (!greenMask[x]) { queue.push(x); visited[x] = 1; }
+    const bottom = (bh - 1) * bw + x;
+    if (!greenMask[bottom]) { queue.push(bottom); visited[bottom] = 1; }
+  }
+  for (let y = 1; y < bh - 1; y++) {
+    const left = y * bw;
+    const right = y * bw + bw - 1;
+    if (!greenMask[left]) { queue.push(left); visited[left] = 1; }
+    if (!greenMask[right]) { queue.push(right); visited[right] = 1; }
+  }
+
+  // BFS flood fill
+  let head = 0;
+  while (head < queue.length) {
+    const idx = queue[head++];
+    const x = idx % bw;
+    const y = (idx - x) / bw;
+    const neighbors = [
+      y > 0 ? idx - bw : -1,
+      y < bh - 1 ? idx + bw : -1,
+      x > 0 ? idx - 1 : -1,
+      x < bw - 1 ? idx + 1 : -1,
+    ];
+    for (const ni of neighbors) {
+      if (ni < 0 || visited[ni]) continue;
+      if (greenMask[ni]) continue;
+      visited[ni] = 1;
+      queue.push(ni);
+    }
+  }
+
+  // Any non-green pixel NOT visited from border is an interior hole → fill it
+  for (let i = 0; i < filled.length; i++) {
+    if (!filled[i] && !visited[i]) {
+      filled[i] = 1;
+    }
+  }
+
+  return filled;
+}
   }
 }
 
