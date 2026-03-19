@@ -65,10 +65,26 @@ function getArtworkImage(src) {
   return _artworkCache.promise;
 }
 
-function compositeSingleMockup(mockupSrc, artworkSampler, mode = 'default') {
+function compositeSingleMockup(mockupSrc, artworkSampler, mode = 'default', artworkImg = null) {
   const cacheKey = getCompositeCacheKey(mockupSrc, mode);
   if (compositeCache.has(cacheKey)) return Promise.resolve(compositeCache.get(cacheKey));
 
+  // Phone-case mode: use alpha-channel compositing (no green detection)
+  if (mode === 'phone-case') {
+    const mockupKey = extractMockupKey(mockupSrc);
+    if (!hasCompositableRegion(mockupKey)) {
+      // Non-compositable mockup (detail shot) — return as-is
+      compositeCache.set(cacheKey, mockupSrc);
+      return Promise.resolve(mockupSrc);
+    }
+    return loadImage(mockupSrc).then(mockupImg => {
+      const dataUrl = compositeAlpha(mockupImg, artworkImg, mockupKey, MAX_CANVAS_DIM);
+      compositeCache.set(cacheKey, dataUrl);
+      return dataUrl;
+    }).catch(() => mockupSrc);
+  }
+
+  // Default mode: green-screen chroma key compositing
   return loadImage(mockupSrc).then(mockupImg => {
     const fullW = mockupImg.naturalWidth;
     const fullH = mockupImg.naturalHeight;
