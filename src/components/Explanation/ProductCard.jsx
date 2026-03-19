@@ -37,7 +37,7 @@ export default function ProductCard({
 
       {/* Dark content area */}
       <div
-        className="flex flex-col items-center gap-6 flex-1 px-5 pb-5 pt-5"
+        className="flex flex-col items-center gap-6 flex-1 px-5 pb-8 pt-5"
         style={{ boxShadow: '0 0 114px 0 #000 inset' }}
       >
         {/* Title + description */}
