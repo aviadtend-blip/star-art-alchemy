@@ -344,21 +344,31 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
                   <SelectTrigger
                     className="w-full text-body"
                     style={{
-                      height: '56px',
-                      borderRadius: '8px',
+                      height: 'auto',
+                      borderRadius: '4px',
                       border: '1px solid #E0E0E0',
-                      backgroundColor: '#F9F9F9',
-                      padding: '0 16px',
+                      backgroundColor: '#FFFFFF',
+                      padding: '15px 20px',
                       fontSize: '16px',
                       color: selectedModel ? '#333333' : '#999999',
                     }}
                   >
-                    <SelectValue placeholder="Choose your model to see a preview" />
+                    <SelectValue placeholder="Choose your model to see a preview">
+                      {selectedModel && modelData && (
+                        <span className="flex items-center justify-between w-full pr-2">
+                          <span className="text-body" style={{ color: '#333333' }}>{modelData.label}</span>
+                          <span className="text-body font-bold" style={{ color: '#333333' }}>${modelData.price}</span>
+                        </span>
+                      )}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {MODEL_OPTIONS.map((model) => (
                       <SelectItem key={model.id} value={model.id}>
-                        {model.label}
+                        <span className="flex items-center justify-between w-full">
+                          <span>{model.label}</span>
+                          <span className="font-bold ml-4">${model.price}</span>
+                        </span>
                       </SelectItem>
                     ))}
                   </SelectContent>
