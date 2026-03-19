@@ -605,17 +605,18 @@ export function ChartExplanation({
                 )}
               </div>
 
-              {/* Make It Yours — three product cards */}
-              <MakeItYoursSection
-                onGetFramed={onGetFramed}
-                onDownloadPreview={() => setShowEmailModal(true)}
-                artworkSrc={selectedImage}
-              />
-
-              {/* Reviews — list layout */}
-              <ReviewsList theme="dark" gap={6} py={6} className="pt-8 pb-[60px] w-full" />
             </div>
           </div>
+        </div>
+
+        {/* Make It Yours — full-width, outside the two-column layout */}
+        <div className="hidden md:block w-full px-8" style={{ maxWidth: 1060, margin: '0 auto' }}>
+          <MakeItYoursSection
+            onGetFramed={onGetFramed}
+            onDownloadPreview={() => setShowEmailModal(true)}
+            artworkSrc={selectedImage}
+          />
+          <ReviewsList theme="dark" gap={6} py={6} className="pt-8 pb-[60px] w-full" />
         </div>
         <div className="hidden md:block" style={{ height: 60 }} />
 
