@@ -329,7 +329,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
             <div className="flex-1" style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
               {/* Headline + description */}
               <div>
-                <h1 className="text-a1 text-surface-foreground" style={{ marginBottom: '16px' }}>
+                <h1 className="text-a1-special text-surface-foreground" style={{ marginBottom: '16px' }}>
                   Built to Last, Designed to Decompose
                 </h1>
                 <p className="text-body text-surface-muted">
