@@ -316,10 +316,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
               <SelectContent>
                 {MODEL_OPTIONS.map((model) => (
                   <SelectItem key={model.id} value={model.id}>
-                    <span className="flex items-center justify-between w-full">
-                      <span>{model.label}</span>
-                      <span className="font-bold ml-4">${model.price}</span>
-                    </span>
+                    {model.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -450,10 +447,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
                   <SelectContent>
                     {MODEL_OPTIONS.map((model) => (
                       <SelectItem key={model.id} value={model.id}>
-                        <span className="flex items-center justify-between w-full">
-                          <span>{model.label}</span>
-                          <span className="font-bold ml-4">${model.price}</span>
-                        </span>
+                        {model.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
