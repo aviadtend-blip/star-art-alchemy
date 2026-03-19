@@ -338,7 +338,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
               </div>
 
               {/* Model selector dropdown */}
-              <div>
+              <div style={{ marginTop: '20px' }}>
                 <h3 className="text-a3 text-surface-foreground" style={{ marginBottom: '12px' }}>Select Your Phone</h3>
                 <Select value={selectedModel} onValueChange={handleModelChange}>
                   <SelectTrigger
@@ -378,10 +378,10 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
               </div>
 
               {/* Feature bullets */}
-              <div className="flex flex-col" style={{ gap: '12px' }}>
+              <div className="flex flex-col" style={{ gap: '12px', marginTop: '20px' }}>
                 <p className="text-body text-surface-foreground">🥊 5-ft drop tested — Shock-absorbing protection</p>
                 <p className="text-body text-surface-foreground">🌿 100% biodegradable — Bamboo fibre &amp; bioplastic, zero BPA</p>
-                <p className="text-body text-surface-foreground">📶 Wireless charging compatible</p>
+                <p className="text-body text-surface-foreground">📶 Compatible with wireless charging (not MagSafe)</p>
                 <p className="text-body text-surface-foreground">🎨 UV printed, matte finish — Vivid color that won't scratch off</p>
               </div>
 
