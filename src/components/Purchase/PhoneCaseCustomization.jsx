@@ -9,6 +9,7 @@ import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carouse
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import ReviewsList from '@/components/ui/ReviewsList';
 import { PHONE_CASE_MODELS, PHONE_CASE_MODEL_MAP } from '@/lib/phoneCaseSizes';
+import useCompositedMockups from '@/hooks/useCompositedMockups';
 
 // Phone case carousel images (static — no chroma key compositing needed for gallery)
 import caseMockup1 from '@/assets/mockups/phone-case/mockup-1.webp';
