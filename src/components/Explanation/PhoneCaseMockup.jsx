@@ -152,6 +152,7 @@ export default function PhoneCaseMockup({ artworkSrc, className = '' }) {
               maskData.data[dstO + 3] = 255;
             }
           }
+          ctx.putImageData(maskData, minX, minY);
         }
 
         if (controller.signal.aborted) return;
