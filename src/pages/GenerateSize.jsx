@@ -183,12 +183,12 @@ export default function GenerateSize() {
   return (
     <>
       <ProductCustomization
-        chartData={chartData}
-        artworkImage={generatedImage}
+        chartData={displayChart}
+        artworkImage={displayImage}
         onCheckout={handleCheckout}
-        onBack={handleBackToPreview}
+        onBack={handleBackToPreview || (() => navigate('/generate/preview'))}
         formData={formData}
-        onEditBirthData={handleEditBirthData}
+        onEditBirthData={handleEditBirthData || (() => navigate('/'))}
       />
 
       {import.meta.env.DEV && (
