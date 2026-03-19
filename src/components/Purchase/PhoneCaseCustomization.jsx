@@ -408,7 +408,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
             </div>
           </div>
           <div>
-            <img src={womanHolding} alt="Happy customer with their personalized phone case" className="w-full object-cover" style={{ borderRadius: 2, aspectRatio: '40/29' }} loading="lazy" />
+            <img src={phoneCaseGift} alt="Happy customer showing off their personalized phone case" className="w-full object-cover" style={{ borderRadius: 2, aspectRatio: '40/29' }} loading="lazy" />
             <div className="mt-4">
               <p className="text-subtitle text-surface-muted tracking-widest mb-2">THE PERFECT GIFT</p>
               <h3 className="text-a2 text-surface-foreground mb-4">Impossible to Duplicate. Impossible to Forget.</h3>
