@@ -445,7 +445,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
         </div>
 
         <div style={{ marginTop: '42px' }}>
-          <ReviewsList theme="light" gap={5} py={5} className="px-4 pb-24" />
+          <ReviewsList theme="light" gap={5} py={5} className="px-4 pb-24" reviews={PHONE_CASE_REVIEWS} />
         </div>
 
         {/* Floating CTA — slides down when inline CTA is visible */}
