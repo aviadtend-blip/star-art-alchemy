@@ -341,7 +341,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
             <h3 className="text-a3 text-surface-foreground" style={{ marginBottom: '12px' }}>Select Your Phone</h3>
             <Select value={selectedModel} onValueChange={handleModelChange}>
               <SelectTrigger
-                className="w-full text-a4 [&>span]:flex-1 [&>span]:overflow-visible [&>span]:line-clamp-none gap-6"
+                className="w-full text-a4 text-left [&>span]:flex-1 [&>span]:overflow-visible [&>span]:line-clamp-none"
                 style={{
                   display: 'flex',
                   height: '74px',
@@ -498,7 +498,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
                 <h3 className="text-a3 text-surface-foreground" style={{ marginBottom: '12px' }}>Select Your Phone</h3>
                 <Select value={selectedModel} onValueChange={handleModelChange}>
                   <SelectTrigger
-                    className="w-full text-a4 [&>span]:flex-1 [&>span]:overflow-visible [&>span]:line-clamp-none gap-6"
+                    className="w-full text-a4 text-left [&>span]:flex-1 [&>span]:overflow-visible [&>span]:line-clamp-none"
                     style={{
                       display: 'flex',
                       height: '74px',
