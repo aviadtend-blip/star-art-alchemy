@@ -165,6 +165,35 @@ export function featherMaskEdges(maskData, originalData, greenMask, bw, bh, radi
     data[off + 1] = Math.round(data[off + 1] * alpha + originalData[off + 1] * (1 - alpha));
     data[off + 2] = Math.round(data[off + 2] * alpha + originalData[off + 2] * (1 - alpha));
   }
+
+  // Post-pass: neutralize any greenish pixels OUTSIDE the mask but near boundaries
+  // (catches anti-aliased semi-green fringe the mask didn't include)
+  const FRINGE_RADIUS = 4;
+  for (let i = 0; i < greenMask.length; i++) {
+    if (greenMask[i]) continue; // skip mask pixels, already handled
+    const off = i * 4;
+    const r = data[off], g = data[off + 1], b = data[off + 2];
+    // Only process greenish pixels
+    if (!(g > 80 && (g - r) > 10 && (g - b) > 10)) continue;
+    // Check if near a mask boundary
+    const x = i % bw;
+    const y = (i - x) / bw;
+    let nearMask = false;
+    for (let dy = -FRINGE_RADIUS; dy <= FRINGE_RADIUS && !nearMask; dy++) {
+      for (let dx = -FRINGE_RADIUS; dx <= FRINGE_RADIUS && !nearMask; dx++) {
+        const nx = x + dx, ny = y + dy;
+        if (nx >= 0 && nx < bw && ny >= 0 && ny < bh && greenMask[ny * bw + nx]) {
+          nearMask = true;
+        }
+      }
+    }
+    if (!nearMask) continue;
+    // Desaturate the greenish pixel
+    const lum = Math.round(r * 0.3 + g * 0.59 + b * 0.11);
+    data[off] = lum;
+    data[off + 1] = lum;
+    data[off + 2] = lum;
+  }
 }
 
 /**
