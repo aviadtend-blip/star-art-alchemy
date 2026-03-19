@@ -386,7 +386,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
               </div>
 
               {/* CTA button */}
-              <div id="case-order-summary-desktop">
+              <div id="case-order-summary-desktop" style={{ marginTop: '32px' }}>
                 <button
                   onClick={handleCheckout}
                   className="btn-base btn-primary w-full justify-center"
@@ -397,12 +397,12 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
               </div>
 
               {/* Trust badges */}
-              <div className="flex flex-col" style={{ gap: '16px' }}>
+              <div className="flex flex-col" style={{ gap: '16px', marginTop: '16px' }}>
                 <div className="flex items-start gap-3">
                   <span style={{ fontSize: '24px' }}>🔄</span>
                   <div>
-                    <p className="text-a5 text-surface-foreground">30-day quality guarantee</p>
-                    <p className="text-body-sm text-surface-muted" style={{ marginTop: '2px' }}>Damaged or defective? We'll replace or refund.</p>
+                    <p className="text-a5 text-surface-foreground">30-day money-back guarantee.</p>
+                    <p className="text-body-sm text-surface-muted" style={{ marginTop: '2px' }}>Love it or your money back. No questions asked.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
