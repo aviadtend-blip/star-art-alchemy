@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { findGreenBounds, isGreenPixel } from '@/lib/mockup/chromaKey';
-import { applyArtworkToMask, createArtworkSampler } from '@/lib/mockup/applyArtworkToMask';
+import { applyArtworkToMask, createArtworkSampler, featherMaskEdges } from '@/lib/mockup/applyArtworkToMask';
 import phoneCaseMockup from '@/assets/mockups/phone-case-mockup.webp';
 
 const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
