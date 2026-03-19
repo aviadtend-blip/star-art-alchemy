@@ -426,12 +426,16 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
           <ReviewsList theme="light" gap={5} py={5} className="px-4 pb-24" />
         </div>
 
-        {/* Floating CTA */}
+        {/* Floating CTA — slides down when inline CTA is visible */}
         <div
-          className="fixed bottom-0 left-0 right-0 z-40 md:hidden"
+          className="fixed left-0 right-0 z-40 md:hidden"
           style={{
+            bottom: 0,
             background: 'linear-gradient(to top, #FFFFFF 80%, rgba(255,255,255,0))',
             padding: '12px 16px 16px',
+            transform: inlineCtaVisible ? 'translateY(100%)' : 'translateY(0)',
+            transition: 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+            pointerEvents: inlineCtaVisible ? 'none' : 'auto',
           }}
         >
           <button
