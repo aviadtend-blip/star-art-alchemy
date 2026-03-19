@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import EmailCaptureModal from '@/components/EmailCaptureModal';
+import MakeItYoursSection from '@/components/Explanation/MakeItYoursSection';
 import { generateChartExplanation } from '@/lib/explanations/generateExplanation';
 import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
@@ -604,70 +605,12 @@ export function ChartExplanation({
                 )}
               </div>
 
-              {/* CTA Card — dark with golden glow, rounded */}
-              <div className="relative rounded-xl overflow-hidden flex flex-col items-center w-full">
-                {/* Room mockup with composited artwork */}
-                <CTARoomMockup artworkSrc={selectedImage} className="rounded-t-xl" />
-
-                {/* Dark content section */}
-                <div className="relative bg-[#2b2b2b] flex flex-col gap-6 items-center justify-center pt-8 pb-[34px] px-8 w-full">
-                  <div
-                    aria-hidden
-                    className="absolute inset-0 pointer-events-none"
-                    style={{ boxShadow: 'inset 0px 0px 114px 0px black' }}
-                  />
-
-                  <div className="relative flex flex-col gap-4 items-center text-center text-white w-full">
-                    <h2 className="text-a1 text-white font-display">
-                      Frame it. Hang it. Treasure it forever
-                    </h2>
-                    <p className="text-body-sm font-body text-white/70" style={{ maxWidth: 281 }}>
-                      Gallery-quality printing. Solid wood frames. Ready to hang. Built to last 100 years.
-                    </p>
-                  </div>
-
-                  <div className="relative flex flex-col gap-4 items-center w-full">
-                    <div className="flex flex-wrap gap-2.5 w-full">
-                      <button onClick={onGetFramed} className="btn-base btn-primary flex-1">
-                        Choose Your Size ($97 - $179)
-                      </button>
-                      <button onClick={() => setShowEmailModal(true)} className="btn-base btn-dark-outline flex-1">
-                        Download Preview (Free)
-                      </button>
-                    </div>
-
-                    <p className="text-body-sm font-body text-white/70 text-center">
-                      📦 30-day guarantee · 🔒 Secure checkout
-                    </p>
-                  </div>
-
-                  <div className="relative w-full">
-                    <RotatingBanner />
-                  </div>
-
-                  {/* Insert card teaser — pops out of container bottom */}
-                  <div className="flex flex-col items-center gap-2 mt-2 pb-0">
-                    <p className="text-body font-body text-white text-center mb-4">
-                      <span className="font-bold">✦ Included with every order:</span>{' '}
-                      <span className="text-white/60">Your personal Cosmic Blueprint card — printed and tucked inside.</span>
-                    </p>
-                    <div className="relative mt-1 mb-[-40px]">
-                      <img
-                        src={insertCardPreview}
-                        alt="Cosmic Blueprint insert card"
-                        className="w-[280px] shadow-lg"
-                        loading="lazy"
-                        style={{ transform: 'rotate(2deg)' }}
-                      />
-                      <img
-                        src={arrowSvg}
-                        alt=""
-                        className="absolute -right-8 top-0 w-[54px] h-[58px] pointer-events-none"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {/* Make It Yours — three product cards */}
+              <MakeItYoursSection
+                onGetFramed={onGetFramed}
+                onDownloadPreview={() => setShowEmailModal(true)}
+                artworkSrc={selectedImage}
+              />
 
               {/* Reviews — list layout */}
               <ReviewsList theme="dark" gap={6} py={6} className="pt-8 pb-[60px] w-full" />
@@ -776,73 +719,13 @@ export function ChartExplanation({
             )}
           </div>
 
-          {/* CTA Banner — room mockup + dark content */}
-          <div className="relative w-full flex flex-col items-center overflow-hidden">
-            {/* Room mockup with composited artwork */}
-            <CTARoomMockup artworkSrc={selectedImage} />
-
-            {/* Dark content section */}
-            <div className="relative bg-[#2b2b2b] flex flex-col gap-6 items-center justify-center pt-8 pb-[34px] px-8 w-full">
-              <div
-                aria-hidden
-                className="absolute inset-0 pointer-events-none"
-                style={{ boxShadow: 'inset 0px 0px 114px 0px black' }}
-              />
-
-              <div className="relative flex flex-col gap-4 items-center text-center text-white" style={{ maxWidth: 250 }}>
-                <h2 className="text-a1 text-white font-display">
-                  Frame it. Hang it.{'\n'}Treasure it forever
-                </h2>
-                <p className="text-body-sm font-body text-white/70">
-                  Gallery-quality printing. Solid wood frames.{'\n'}Ready to hang. Built to last 100 years.
-                </p>
-              </div>
-
-              <div className="relative flex flex-col gap-2.5 w-full">
-                <button
-                  onClick={onGetFramed}
-                  className="btn-base btn-primary w-full"
-                >
-                  Choose Your Size ($97 - $179)
-                </button>
-                <button
-                  onClick={() => setShowEmailModal(true)}
-                  className="btn-base btn-dark-outline w-full"
-                >
-                  Download Preview (Free)
-                </button>
-              </div>
-
-              <p className="relative text-body-sm font-body text-white/70 text-center">
-                📦 30-day guarantee · 🔒 Secure checkout
-              </p>
-
-              <div className="relative w-full">
-                <RotatingBanner />
-              </div>
-
-              {/* Insert card teaser — pops out of container bottom */}
-              <div className="relative flex flex-col items-center gap-2 mt-2 pb-0">
-                <p className="text-body font-body text-white text-center mb-4">
-                  <span className="font-bold">✦ Included with every order:</span>{' '}
-                  <span className="text-white/60">Your personal Cosmic Blueprint card — printed and tucked inside.</span>
-                </p>
-                <div className="relative mt-1 mb-[-40px]">
-                  <img
-                    src={insertCardPreview}
-                    alt="Cosmic Blueprint insert card"
-                    className="w-[280px] shadow-lg"
-                    loading="lazy"
-                    style={{ transform: 'rotate(2deg)' }}
-                  />
-                  <img
-                    src={arrowSvg}
-                    alt=""
-                    className="absolute -right-8 top-0 w-[54px] h-[58px] pointer-events-none"
-                  />
-                </div>
-              </div>
-            </div>
+          {/* Make It Yours — three product cards */}
+          <div className="px-4">
+            <MakeItYoursSection
+              onGetFramed={onGetFramed}
+              onDownloadPreview={() => setShowEmailModal(true)}
+              artworkSrc={selectedImage}
+            />
           </div>
 
           {/* Reviews — dark */}
