@@ -310,6 +310,10 @@ function isInsidePhoneCasePanel(u, v, fit) {
   return dx * dx + dy * dy <= radius * radius;
 }
 
+function isGreenishColor(r, g, b) {
+  return g > 100 && g > r * 1.2 && g > b * 1.2;
+}
+
 function computePhoneCaseFillColor(sourceData, greenMask, bw, bh) {
   let red = 0;
   let green = 0;
@@ -319,6 +323,8 @@ function computePhoneCaseFillColor(sourceData, greenMask, bw, bh) {
   forEachGreenPixel(greenMask, bw, (x, y) => {
     if (!isMaskBoundaryPixel(greenMask, bw, bh, x, y)) return;
     const [r, g, b] = sampleNearbyColor(sourceData, bw, bh, x, y);
+    // Reject samples that are still greenish (anti-aliased edges)
+    if (isGreenishColor(r, g, b)) return;
     red += r;
     green += g;
     blue += b;
@@ -327,11 +333,15 @@ function computePhoneCaseFillColor(sourceData, greenMask, bw, bh) {
 
   if (!samples) return DEFAULT_PHONE_CASE_FILL;
 
-  return [
+  const result = [
     Math.round(red / samples),
     Math.round(green / samples),
     Math.round(blue / samples),
   ];
+
+  // Final safety: if averaged result is still greenish, use default
+  if (isGreenishColor(result[0], result[1], result[2])) return DEFAULT_PHONE_CASE_FILL;
+  return result;
 }
 
 function paintCaseSurface(targetData, targetOffset, sourceData, greenMask, bw, bh, x, y, fallbackFill) {
