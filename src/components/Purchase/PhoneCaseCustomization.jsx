@@ -259,7 +259,18 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
     isFirstScroll.current = false;
   }, [selectedModel]);
 
-  const scrollToOrder = () => {
+  // Track when inline CTA enters/leaves viewport to hide/show floating CTA
+  useEffect(() => {
+    const el = inlineCtaRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setInlineCtaVisible(entry.isIntersecting),
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
     const el = document.getElementById('case-order-summary-mobile') || document.getElementById('case-order-summary-desktop');
     el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
