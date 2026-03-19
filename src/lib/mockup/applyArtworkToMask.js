@@ -311,7 +311,9 @@ function isInsidePhoneCasePanel(u, v, fit) {
 }
 
 function isGreenishColor(r, g, b) {
-  return g > 100 && g > r * 1.2 && g > b * 1.2;
+  if (g > 100 && g > r * 1.15 && g > b * 1.15) return true;
+  if (g > 80 && (g - r) > 15 && (g - b) > 15) return true;
+  return false;
 }
 
 function computePhoneCaseFillColor(sourceData, greenMask, bw, bh) {

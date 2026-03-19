@@ -6,8 +6,11 @@ const MAX_ASPECT_RATIO = 1.4;
 const FALLBACK_MIN_COVERAGE = 0.02;
 
 export function isGreenPixel(r, g, b) {
-  // Strict green-screen detection: bright, saturated green with low red and blue
-  return g > 120 && r < 150 && b < 150 && g > r * 1.5 && g > b * 1.5;
+  // Green-screen detection: catches bright greens AND softer/anti-aliased green fringe
+  if (g > 120 && r < 150 && b < 150 && g > r * 1.5 && g > b * 1.5) return true;
+  // Catch lighter green fringes (anti-aliased edges)
+  if (g > 100 && g > r * 1.15 && g > b * 1.15 && (g - r) > 20 && (g - b) > 20) return true;
+  return false;
 }
 
 export function sampleNearbyColor(data, w, h, px, py) {
