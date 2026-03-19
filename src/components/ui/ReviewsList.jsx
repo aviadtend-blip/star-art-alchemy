@@ -31,7 +31,7 @@ export const TESTIMONIALS = [
  *   className?: string,
  * }} props
  */
-export default function ReviewsList({ theme = 'dark', gap = 6, py = 6, className = '' }) {
+export default function ReviewsList({ theme = 'dark', gap = 6, py = 6, className = '', reviews }) {
   const isDark = theme === 'dark';
   const textColor = isDark ? 'text-white' : '';
   const mutedColor = isDark ? 'text-white/50' : '';
