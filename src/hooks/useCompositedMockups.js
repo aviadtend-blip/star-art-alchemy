@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { findGreenBounds, isGreenPixel } from '../lib/mockup/chromaKey';
 import { applyArtworkToMask, createArtworkSampler, featherMaskEdges } from '../lib/mockup/applyArtworkToMask';
+import { compositeAlpha, extractMockupKey, hasCompositableRegion } from '../lib/mockup/alphaComposite';
 
 const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
 const MAX_CANVAS_DIM = 800;
 const PARALLEL_BATCH = 3;
-const COMPOSITE_ALGORITHM_VERSION = '2026-03-19-phone-case-edge-spill-v8';
+const COMPOSITE_ALGORITHM_VERSION = '2026-03-19-alpha-channel-v1';
 
 // ── Shared global caches ──────────────────────────────────────────────
 const compositeCache = new Map();   // cacheKey → dataUrl
@@ -64,10 +65,26 @@ function getArtworkImage(src) {
   return _artworkCache.promise;
 }
 
-function compositeSingleMockup(mockupSrc, artworkSampler, mode = 'default') {
+function compositeSingleMockup(mockupSrc, artworkSampler, mode = 'default', artworkImg = null) {
   const cacheKey = getCompositeCacheKey(mockupSrc, mode);
   if (compositeCache.has(cacheKey)) return Promise.resolve(compositeCache.get(cacheKey));
 
+  // Phone-case mode: use alpha-channel compositing (no green detection)
+  if (mode === 'phone-case') {
+    const mockupKey = extractMockupKey(mockupSrc);
+    if (!hasCompositableRegion(mockupKey)) {
+      // Non-compositable mockup (detail shot) — return as-is
+      compositeCache.set(cacheKey, mockupSrc);
+      return Promise.resolve(mockupSrc);
+    }
+    return loadImage(mockupSrc).then(mockupImg => {
+      const dataUrl = compositeAlpha(mockupImg, artworkImg, mockupKey, MAX_CANVAS_DIM);
+      compositeCache.set(cacheKey, dataUrl);
+      return dataUrl;
+    }).catch(() => mockupSrc);
+  }
+
+  // Default mode: green-screen chroma key compositing
   return loadImage(mockupSrc).then(mockupImg => {
     const fullW = mockupImg.naturalWidth;
     const fullH = mockupImg.naturalHeight;
@@ -126,13 +143,13 @@ function compositeSingleMockup(mockupSrc, artworkSampler, mode = 'default') {
   }).catch(() => mockupSrc);
 }
 
-async function compositeAll(mockupSrcs, artworkSampler, signal, mode = 'default') {
+async function compositeAll(mockupSrcs, artworkSampler, signal, mode = 'default', artworkImg = null) {
   const results = [];
   for (let i = 0; i < mockupSrcs.length; i += PARALLEL_BATCH) {
     if (signal?.aborted) return results;
     const batch = mockupSrcs.slice(i, i + PARALLEL_BATCH);
     const batchResults = await Promise.all(
-      batch.map(src => compositeSingleMockup(src, artworkSampler, mode))
+      batch.map(src => compositeSingleMockup(src, artworkSampler, mode, artworkImg))
     );
     results.push(...batchResults);
     await new Promise(r => setTimeout(r, 0));
@@ -181,8 +198,8 @@ export default function useCompositedMockups(mockupSrcs, artworkSrc, options = {
       }
       if (controller.signal.aborted) return;
 
-      const artworkSampler = createArtworkSampler(artworkImg);
-      const results = await compositeAll(mockupSrcs, artworkSampler, controller.signal, mode);
+      const artworkSampler = mode === 'phone-case' ? null : createArtworkSampler(artworkImg);
+      const results = await compositeAll(mockupSrcs, artworkSampler, controller.signal, mode, artworkImg);
       if (!controller.signal.aborted) {
         setComposited(results.length ? results : mockupSrcs);
         setLoading(false);

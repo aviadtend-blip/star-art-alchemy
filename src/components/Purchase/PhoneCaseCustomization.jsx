@@ -11,12 +11,12 @@ import ReviewsList from '@/components/ui/ReviewsList';
 import { PHONE_CASE_MODELS, PHONE_CASE_MODEL_MAP } from '@/lib/phoneCaseSizes';
 import useCompositedMockups from '@/hooks/useCompositedMockups';
 
-// Phone case carousel images (static — no chroma key compositing needed for gallery)
-import caseMockup1 from '@/assets/mockups/phone-case/mockup-1.webp';
-import caseMockup2 from '@/assets/mockups/phone-case/mockup-2.webp';
-import caseMockup3 from '@/assets/mockups/phone-case/mockup-3.webp';
-import caseMockup4 from '@/assets/mockups/phone-case/mockup-4.webp';
-import caseMockup5 from '@/assets/mockups/phone-case/mockup-5.webp';
+// Phone case mockups with transparent alpha cutout (no green screen)
+import caseMockup1 from '@/assets/mockups/phone-case-alpha/mockup-1.png';
+import caseMockup2 from '@/assets/mockups/phone-case-alpha/mockup-2.png';
+import caseMockup3 from '@/assets/mockups/phone-case-alpha/mockup-3.png';
+import caseMockup4 from '@/assets/mockups/phone-case-alpha/mockup-4.png';
+import caseMockup5 from '@/assets/mockups/phone-case-alpha/mockup-5.png';
 
 // Detail images reused from canvas page
 import womanHolding from '@/assets/gallery/woman-holding.webp';
