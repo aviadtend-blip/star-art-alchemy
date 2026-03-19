@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import demoImage from '@/assets/gallery/demo-cosmic-collision.webp';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import { ProductCustomization } from '@/components/Purchase/ProductCustomization';
 import { useImagePreloader } from '@/hooks/useImagePreloader';
@@ -175,19 +176,19 @@ export default function GenerateSize() {
     );
   }
 
-  if (!chartData || !generatedImage) {
-    return null;
-  }
+  const isDemo = !chartData || !generatedImage;
+  const displayChart = chartData || { sun: { sign: 'Scorpio', house: 8 }, moon: { sign: 'Pisces', house: 12 }, rising: 'Capricorn' };
+  const displayImage = generatedImage || demoImage;
 
   return (
     <>
       <ProductCustomization
-        chartData={chartData}
-        artworkImage={generatedImage}
+        chartData={displayChart}
+        artworkImage={displayImage}
         onCheckout={handleCheckout}
-        onBack={handleBackToPreview}
+        onBack={handleBackToPreview || (() => navigate('/generate/preview'))}
         formData={formData}
-        onEditBirthData={handleEditBirthData}
+        onEditBirthData={handleEditBirthData || (() => navigate('/'))}
       />
 
       {import.meta.env.DEV && (

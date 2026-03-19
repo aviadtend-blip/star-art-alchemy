@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import { PhoneCaseCustomization } from '@/components/Purchase/PhoneCaseCustomization';
+import demoImage from '@/assets/gallery/demo-cosmic-collision.webp';
 
 export default function GeneratePhoneCase() {
   const navigate = useNavigate();
@@ -10,9 +11,8 @@ export default function GeneratePhoneCase() {
     isCheckingOut,
   } = useGenerator();
 
-  if (!chartData || !generatedImage) {
-    return null;
-  }
+  const displayChart = chartData || { sun: { sign: 'Scorpio', house: 8 }, moon: { sign: 'Pisces', house: 12 }, rising: 'Capricorn' };
+  const displayImage = generatedImage || demoImage;
 
   const handleCheckout = (orderData) => {
     // TODO: wire up phone case checkout via Shopify
@@ -22,12 +22,12 @@ export default function GeneratePhoneCase() {
   return (
     <>
       <PhoneCaseCustomization
-        chartData={chartData}
-        artworkImage={generatedImage}
+        chartData={displayChart}
+        artworkImage={displayImage}
         onCheckout={handleCheckout}
-        onBack={handleBackToPreview}
+        onBack={handleBackToPreview || (() => navigate('/generate/preview'))}
         formData={formData}
-        onEditBirthData={handleEditBirthData}
+        onEditBirthData={handleEditBirthData || (() => navigate('/'))}
       />
 
       {isCheckingOut && (
