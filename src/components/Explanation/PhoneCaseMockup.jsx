@@ -75,28 +75,44 @@ export default function PhoneCaseMockup({ artworkSrc, className = '' }) {
           const { minX, minY, maxX, maxY } = bounds;
           const bw = maxX - minX + 1;
           const bh = maxY - minY + 1;
-          const artW = artworkImg.naturalWidth;
-          const artH = artworkImg.naturalHeight;
-          const pad = 3;
-          const scale = Math.max((bw + pad * 2) / artW, (bh + pad * 2) / artH);
-          const dw = artW * scale;
-          const dh = artH * scale;
-          const dx = minX - pad + (bw + pad * 2 - dw) / 2;
-          const dy = minY - pad + (bh + pad * 2 - dh) / 2;
-          ctx.drawImage(artworkImg, dx, dy, dw, dh);
 
-          const compData = ctx.getImageData(minX, minY, bw, bh);
-          for (let i = 0; i < compData.data.length; i += 4) {
-            if (isGreenPixel(compData.data[i], compData.data[i + 1], compData.data[i + 2])) {
-              const px = (i / 4) % bw;
-              const py = Math.floor((i / 4) / bw);
-              const nc = sampleNearbyColor(compData.data, bw, bh, px, py);
-              compData.data[i] = nc[0];
-              compData.data[i + 1] = nc[1];
-              compData.data[i + 2] = nc[2];
+          // Build a mask of which pixels are green (within bounds region)
+          const maskData = ctx.getImageData(minX, minY, bw, bh);
+          const greenMask = new Uint8Array(bw * bh);
+          for (let i = 0; i < greenMask.length; i++) {
+            const o = i * 4;
+            if (isGreenPixel(maskData.data[o], maskData.data[o + 1], maskData.data[o + 2])) {
+              greenMask[i] = 1;
             }
           }
-          ctx.putImageData(compData, minX, minY);
+
+          // Draw artwork into an offscreen canvas, scaled to cover the green area
+          const artW = artworkImg.naturalWidth;
+          const artH = artworkImg.naturalHeight;
+          const scale = Math.max(bw / artW, bh / artH);
+          const dw = artW * scale;
+          const dh = artH * scale;
+          const dx = (bw - dw) / 2;
+          const dy = (bh - dh) / 2;
+
+          const artCanvas = document.createElement('canvas');
+          artCanvas.width = bw;
+          artCanvas.height = bh;
+          const artCtx = artCanvas.getContext('2d');
+          artCtx.drawImage(artworkImg, dx, dy, dw, dh);
+          const artData = artCtx.getImageData(0, 0, bw, bh);
+
+          // Replace only green pixels with artwork pixels
+          for (let i = 0; i < greenMask.length; i++) {
+            if (greenMask[i]) {
+              const o = i * 4;
+              maskData.data[o] = artData.data[o];
+              maskData.data[o + 1] = artData.data[o + 1];
+              maskData.data[o + 2] = artData.data[o + 2];
+              maskData.data[o + 3] = 255;
+            }
+          }
+          ctx.putImageData(maskData, minX, minY);
         }
 
         if (controller.signal.aborted) return;
