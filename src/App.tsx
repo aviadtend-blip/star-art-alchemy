@@ -31,6 +31,7 @@ function lazyWithRetry<T extends ComponentType<any>>(
 
 // Lazy-loaded generator routes
 const GenerateEntry = lazyWithRetry(() => import("./pages/GenerateEntry"));
+const GenerateProductSelection = lazyWithRetry(() => import("./pages/GenerateProductSelection"));
 const GenerateStyle = lazyWithRetry(() => import("./pages/GenerateStyle"));
 const GenerateLoading = lazyWithRetry(() => import("./pages/GenerateLoading"));
 const GeneratePreview = lazyWithRetry(() => import("./pages/GeneratePreview"));
