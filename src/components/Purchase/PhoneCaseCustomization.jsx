@@ -339,7 +339,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
 
               {/* Model selector dropdown */}
               <div>
-                <h2 className="text-a2 text-surface-foreground" style={{ marginBottom: '12px' }}>Select Your Phone</h2>
+                <h3 className="text-a3 text-surface-foreground" style={{ marginBottom: '12px' }}>Select Your Phone</h3>
                 <Select value={selectedModel} onValueChange={handleModelChange}>
                   <SelectTrigger
                     className="w-full text-a4"
