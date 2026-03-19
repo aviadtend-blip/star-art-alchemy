@@ -65,8 +65,8 @@ export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, art
 
       {/* Cards — horizontal snap scroll on mobile, 3-col on desktop */}
       <div
-        className="flex items-stretch gap-3 overflow-x-auto md:overflow-visible snap-x snap-mandatory scrollbar-hide pl-4 md:pl-0 md:px-0"
-        style={{ WebkitOverflowScrolling: 'touch' }}
+        className="flex items-stretch gap-3 overflow-x-auto md:overflow-visible snap-x snap-mandatory scrollbar-hide md:pl-0 md:px-0"
+        style={{ WebkitOverflowScrolling: 'touch', paddingLeft: 20 }}
       >
         {cards.map((card) => (
           <div
