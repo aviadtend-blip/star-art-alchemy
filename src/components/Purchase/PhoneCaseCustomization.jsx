@@ -410,7 +410,24 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
         </div>
 
         <div style={{ marginTop: '42px' }}>
-          <ReviewsList theme="light" gap={5} py={5} className="px-4 pb-16" />
+          <ReviewsList theme="light" gap={5} py={5} className="px-4 pb-24" />
+        </div>
+
+        {/* Floating CTA */}
+        <div
+          className="fixed bottom-0 left-0 right-0 z-40 md:hidden"
+          style={{
+            background: 'linear-gradient(to top, #FFFFFF 80%, rgba(255,255,255,0))',
+            padding: '12px 16px 16px',
+          }}
+        >
+          <button
+            onClick={handleCheckout}
+            className="btn-base btn-primary w-full justify-center"
+            style={{ borderRadius: '40px', height: '52px', fontSize: '14px' }}
+          >
+            {selectedModel && modelData ? `Add to Order — $${total}` : 'Add to Order'}
+          </button>
         </div>
       </div>
 
