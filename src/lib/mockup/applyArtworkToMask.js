@@ -83,12 +83,8 @@ export function createArtworkSampler(artworkImg, maxDim = DEFAULT_ARTWORK_MAX_DI
 
 export function applyArtworkToMask({ maskData, greenMask, sampler, bw, bh, mode = 'default', sourceKey = '' }) {
   if (mode === 'phone-case') {
-    // Fill interior holes (e.g. camera cutout) so strip warp sees a continuous region
     const holeMask = fillInteriorHoles(greenMask, bw, bh);
     if (paintArtworkWithOrientedStrips(maskData.data, holeMask, sampler, bw, bh, sourceKey)) {
-      // Restore hole pixels: revert any pixel that was in holeMask but NOT in original greenMask
-      // (i.e. the filled hole pixels should show original mockup, not artwork)
-      cleanupRemainingGreen(maskData.data, greenMask, bw);
       return;
     }
   }
@@ -112,26 +108,31 @@ export function featherMaskEdges(maskData, originalData, greenMask, bw, bh, radi
   for (let i = 0; i < greenMask.length; i++) {
     if (!greenMask[i]) {
       distMap[i] = 0;
-      // Restore non-green pixels to original (in case holes were filled during strip warp)
       const off = i * 4;
-      data[off]     = originalData[off];
+      data[off] = originalData[off];
       data[off + 1] = originalData[off + 1];
       data[off + 2] = originalData[off + 2];
       data[off + 3] = originalData[off + 3];
       continue;
     }
+
     const x = i % bw;
     const y = (i - x) / bw;
     let onEdge = false;
+
     for (let dy = -1; dy <= 1 && !onEdge; dy++) {
       for (let dx = -1; dx <= 1 && !onEdge; dx++) {
         if (dx === 0 && dy === 0) continue;
         const nx = x + dx;
         const ny = y + dy;
-        if (nx < 0 || nx >= bw || ny < 0 || ny >= bh) { onEdge = true; continue; }
+        if (nx < 0 || nx >= bw || ny < 0 || ny >= bh) {
+          onEdge = true;
+          continue;
+        }
         if (!greenMask[ny * bw + nx]) onEdge = true;
       }
     }
+
     if (onEdge) distMap[i] = 1;
   }
 
@@ -141,16 +142,18 @@ export function featherMaskEdges(maskData, originalData, greenMask, bw, bh, radi
       const x = i % bw;
       const y = (i - x) / bw;
       let nearEdge = false;
+
       for (let dy = -1; dy <= 1 && !nearEdge; dy++) {
         for (let dx = -1; dx <= 1 && !nearEdge; dx++) {
           if (dx === 0 && dy === 0) continue;
           const nx = x + dx;
           const ny = y + dy;
-          if (nx >= 0 && nx < bw && ny >= 0 && ny < bh) {
-            if (distMap[ny * bw + nx] === pass - 1) nearEdge = true;
+          if (nx >= 0 && nx < bw && ny >= 0 && ny < bh && distMap[ny * bw + nx] === pass - 1) {
+            nearEdge = true;
           }
         }
       }
+
       if (nearEdge) distMap[i] = pass;
     }
   }
@@ -159,41 +162,83 @@ export function featherMaskEdges(maskData, originalData, greenMask, bw, bh, radi
     if (!greenMask[i]) continue;
     const dist = distMap[i];
     if (dist > radius) continue;
-    const alpha = Math.min(1, Math.max(0, (dist - 0.5) / radius));
-    const off = i * 4;
-    data[off]     = Math.round(data[off]     * alpha + originalData[off]     * (1 - alpha));
-    data[off + 1] = Math.round(data[off + 1] * alpha + originalData[off + 1] * (1 - alpha));
-    data[off + 2] = Math.round(data[off + 2] * alpha + originalData[off + 2] * (1 - alpha));
-  }
 
-  // Post-pass: neutralize any greenish pixels OUTSIDE the mask but near boundaries
-  // (catches anti-aliased semi-green fringe the mask didn't include)
-  const FRINGE_RADIUS = 4;
-  for (let i = 0; i < greenMask.length; i++) {
-    if (greenMask[i]) continue; // skip mask pixels, already handled
-    const off = i * 4;
-    const r = data[off], g = data[off + 1], b = data[off + 2];
-    // Only process greenish pixels
-    if (!(g > 80 && (g - r) > 10 && (g - b) > 10)) continue;
-    // Check if near a mask boundary
     const x = i % bw;
     const y = (i - x) / bw;
-    let nearMask = false;
-    for (let dy = -FRINGE_RADIUS; dy <= FRINGE_RADIUS && !nearMask; dy++) {
-      for (let dx = -FRINGE_RADIUS; dx <= FRINGE_RADIUS && !nearMask; dx++) {
-        const nx = x + dx, ny = y + dy;
-        if (nx >= 0 && nx < bw && ny >= 0 && ny < bh && greenMask[ny * bw + nx]) {
-          nearMask = true;
-        }
+    const alpha = Math.min(1, Math.max(0, (dist - 0.5) / radius));
+    const off = i * 4;
+    const [baseR, baseG, baseB] = getSpillSafeOriginalColor(originalData, bw, bh, x, y);
+
+    data[off] = Math.round(data[off] * alpha + baseR * (1 - alpha));
+    data[off + 1] = Math.round(data[off + 1] * alpha + baseG * (1 - alpha));
+    data[off + 2] = Math.round(data[off + 2] * alpha + baseB * (1 - alpha));
+  }
+
+  cleanupBoundaryGreenSpill({
+    targetData: data,
+    originalData,
+    greenMask,
+    bw,
+    bh,
+    radius: 4,
+  });
+}
+
+function cleanupBoundaryGreenSpill({ targetData, originalData, greenMask, bw, bh, radius = 4 }) {
+  for (let i = 0; i < greenMask.length; i++) {
+    if (greenMask[i]) continue;
+
+    const off = i * 4;
+    const r = targetData[off];
+    const g = targetData[off + 1];
+    const b = targetData[off + 2];
+    if (!isGreenSpillCandidate(r, g, b)) continue;
+
+    const x = i % bw;
+    const y = (i - x) / bw;
+    if (!isNearMaskBoundary(greenMask, bw, bh, x, y, radius)) continue;
+
+    const [safeR, safeG, safeB] = getSpillSafeOriginalColor(originalData, bw, bh, x, y);
+    targetData[off] = safeR;
+    targetData[off + 1] = safeG;
+    targetData[off + 2] = safeB;
+  }
+}
+
+function getSpillSafeOriginalColor(originalData, w, h, px, py) {
+  const off = (py * w + px) * 4;
+  const r = originalData[off];
+  const g = originalData[off + 1];
+  const b = originalData[off + 2];
+
+  if (!isGreenSpillCandidate(r, g, b)) {
+    return [r, g, b];
+  }
+
+  const sampled = sampleNearbyColor(originalData, w, h, px, py);
+  if (isGreenSpillCandidate(sampled[0], sampled[1], sampled[2])) {
+    return DEFAULT_PHONE_CASE_FILL;
+  }
+
+  return sampled;
+}
+
+function isGreenSpillCandidate(r, g, b) {
+  return g > 80 && (g - r) > 10 && (g - b) > 10 && g > r * 1.05 && g > b * 1.05;
+}
+
+function isNearMaskBoundary(greenMask, bw, bh, x, y, radius) {
+  for (let dy = -radius; dy <= radius; dy++) {
+    for (let dx = -radius; dx <= radius; dx++) {
+      const nx = x + dx;
+      const ny = y + dy;
+      if (nx >= 0 && nx < bw && ny >= 0 && ny < bh && greenMask[ny * bw + nx]) {
+        return true;
       }
     }
-    if (!nearMask) continue;
-    // Desaturate the greenish pixel
-    const lum = Math.round(r * 0.3 + g * 0.59 + b * 0.11);
-    data[off] = lum;
-    data[off + 1] = lum;
-    data[off + 2] = lum;
   }
+
+  return false;
 }
 
 /**
