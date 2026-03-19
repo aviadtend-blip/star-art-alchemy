@@ -5,7 +5,7 @@ import { applyArtworkToMask, createArtworkSampler, featherMaskEdges } from '../l
 const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
 const MAX_CANVAS_DIM = 800;
 const PARALLEL_BATCH = 3;
-const COMPOSITE_ALGORITHM_VERSION = '2026-03-19-feather-v5';
+const COMPOSITE_ALGORITHM_VERSION = '2026-03-19-hole-fill-v6';
 
 // ── Shared global caches ──────────────────────────────────────────────
 const compositeCache = new Map();   // cacheKey → dataUrl
