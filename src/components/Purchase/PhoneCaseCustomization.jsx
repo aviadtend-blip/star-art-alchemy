@@ -205,8 +205,10 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
   const [selectedModel, setSelectedModel] = useState('');
   const [activeThumb, setActiveThumb] = useState(0);
   const [showModelWarning, setShowModelWarning] = useState(false);
+  const [inlineCtaVisible, setInlineCtaVisible] = useState(false);
   const modelCarouselRef = useRef(null);
   const modelSelectorRef = useRef(null);
+  const inlineCtaRef = useRef(null);
   const isFirstScroll = useRef(true);
 
   const modelData = PHONE_CASE_MODEL_MAP[selectedModel];
@@ -257,7 +259,18 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
     isFirstScroll.current = false;
   }, [selectedModel]);
 
-  const scrollToOrder = () => {
+  // Track when inline CTA enters/leaves viewport to hide/show floating CTA
+  useEffect(() => {
+    const el = inlineCtaRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setInlineCtaVisible(entry.isIntersecting),
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
     const el = document.getElementById('case-order-summary-mobile') || document.getElementById('case-order-summary-desktop');
     el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
@@ -349,14 +362,14 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
             <p className="text-body text-surface-foreground">🎨 UV printed, matte finish — Vivid color that won't scratch off</p>
           </div>
 
-          {/* CTA button */}
-          <div id="case-order-summary-mobile" style={{ marginTop: '32px' }}>
+          {/* CTA button (inline) */}
+          <div ref={inlineCtaRef} id="case-order-summary-mobile" style={{ marginTop: '32px' }}>
             <button
               onClick={handleCheckout}
               className="btn-base btn-primary w-full justify-center"
               style={{ borderRadius: '40px', height: '52px', fontSize: '14px' }}
             >
-              Add to Order — ${total}
+              {selectedModel && modelData ? `Add to Order — $${total}` : 'Add to Order'}
             </button>
           </div>
 
@@ -413,12 +426,16 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
           <ReviewsList theme="light" gap={5} py={5} className="px-4 pb-24" />
         </div>
 
-        {/* Floating CTA */}
+        {/* Floating CTA — slides down when inline CTA is visible */}
         <div
-          className="fixed bottom-0 left-0 right-0 z-40 md:hidden"
+          className="fixed left-0 right-0 z-40 md:hidden"
           style={{
+            bottom: 0,
             background: 'linear-gradient(to top, #FFFFFF 80%, rgba(255,255,255,0))',
             padding: '12px 16px 16px',
+            transform: inlineCtaVisible ? 'translateY(100%)' : 'translateY(0)',
+            transition: 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+            pointerEvents: inlineCtaVisible ? 'none' : 'auto',
           }}
         >
           <button
