@@ -167,6 +167,7 @@ function compositeSingleMockup(mockupSrc, artworkImg) {
           originalData.data[dstO + 3] = 255;
         }
       }
+      ctx.putImageData(originalData, minX, minY);
     }
 
     const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
