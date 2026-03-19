@@ -263,6 +263,11 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
   };
 
   const handleCheckout = () => {
+    if (!selectedModel) {
+      setShowModelWarning(true);
+      modelSelectorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
     onCheckout({
       size: selectedModel,
       sizeLabel: modelData?.label,
