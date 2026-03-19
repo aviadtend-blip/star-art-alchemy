@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { findGreenBounds, isGreenPixel } from '../lib/mockup/chromaKey';
+import { findGreenBounds, isGreenPixel, findGreenQuadCorners, bilinearInverse } from '../lib/mockup/chromaKey';
 
 const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
 const MAX_CANVAS_DIM = 800;
@@ -93,78 +93,84 @@ function compositeSingleMockup(mockupSrc, artworkImg) {
         }
       }
 
-      // Precompute per-row green extents for scanline mapping
-      const rowExtents = new Array(bh);
-      let firstGreenRow = -1, lastGreenRow = -1;
-      for (let y = 0; y < bh; y++) {
-        let left = -1, right = -1;
-        const rowStart = y * bw;
-        for (let x = 0; x < bw; x++) {
-          if (greenMask[rowStart + x]) {
-            if (left === -1) left = x;
-            right = x;
-          }
+      // Prepare artwork for sampling
+      const artW = artworkImg.naturalWidth;
+      const artH = artworkImg.naturalHeight;
+      const artMaxDim = 800;
+      const artDownscale = Math.min(1, artMaxDim / Math.max(artW, artH));
+      const sampW = Math.max(1, Math.round(artW * artDownscale));
+      const sampH = Math.max(1, Math.round(artH * artDownscale));
+
+      const artCanvas = document.createElement('canvas');
+      artCanvas.width = sampW;
+      artCanvas.height = sampH;
+      const artCtx = artCanvas.getContext('2d');
+      artCtx.drawImage(artworkImg, 0, 0, sampW, sampH);
+      const artData = artCtx.getImageData(0, 0, sampW, sampH);
+
+      // Find quad corners for perspective mapping
+      const corners = findGreenQuadCorners(greenMask, bw, bh);
+
+      if (corners) {
+        // Use the quad dimensions for cover calculation (not bounding box)
+        const quadTopW = Math.sqrt((corners.tr.x - corners.tl.x) ** 2 + (corners.tr.y - corners.tl.y) ** 2);
+        const quadBotW = Math.sqrt((corners.br.x - corners.bl.x) ** 2 + (corners.br.y - corners.bl.y) ** 2);
+        const quadLeftH = Math.sqrt((corners.bl.x - corners.tl.x) ** 2 + (corners.bl.y - corners.tl.y) ** 2);
+        const quadRightH = Math.sqrt((corners.br.x - corners.tr.x) ** 2 + (corners.br.y - corners.tr.y) ** 2);
+        const quadW = (quadTopW + quadBotW) / 2;
+        const quadH = (quadLeftH + quadRightH) / 2;
+
+        // Cover: scale artwork to fill the quad's aspect ratio
+        const artAspect = artW / artH;
+        const quadAspect = quadW / quadH;
+        let cropU = 1, cropV = 1;
+        if (artAspect > quadAspect) {
+          // Artwork is wider — crop sides
+          cropU = quadAspect / artAspect;
+        } else {
+          // Artwork is taller — crop top/bottom
+          cropV = artAspect / quadAspect;
         }
-        rowExtents[y] = { left, right };
-        if (left !== -1) {
-          if (firstGreenRow === -1) firstGreenRow = y;
-          lastGreenRow = y;
-        }
-      }
+        const offU = (1 - cropU) / 2;
+        const offV = (1 - cropV) / 2;
 
-      const greenHeight = lastGreenRow - firstGreenRow;
-      if (greenHeight <= 0) { ctx.putImageData(originalData, minX, minY); }
-      else {
-        // Prepare artwork for sampling
-        const artW = artworkImg.naturalWidth;
-        const artH = artworkImg.naturalHeight;
-        const artMaxDim = 800;
-        const artDownscale = Math.min(1, artMaxDim / Math.max(artW, artH));
-        const sampW = Math.max(1, Math.round(artW * artDownscale));
-        const sampH = Math.max(1, Math.round(artH * artDownscale));
-
-        const artCanvas = document.createElement('canvas');
-        artCanvas.width = sampW;
-        artCanvas.height = sampH;
-        const artCtx = artCanvas.getContext('2d');
-        artCtx.drawImage(artworkImg, 0, 0, sampW, sampH);
-        const artData = artCtx.getImageData(0, 0, sampW, sampH);
-
-        // Compute cover-mode scaling
-        const coverScale = Math.max(bw / artW, bh / artH);
-        const effectiveW = artW * coverScale;
-        const effectiveH = artH * coverScale;
-        const coverOffU = (effectiveW - bw) / (2 * effectiveW);
-        const coverOffV = (effectiveH - bh) / (2 * effectiveH);
-        const coverScaleU = bw / effectiveW;
-        const coverScaleV = bh / effectiveH;
-
-        // Scanline-based perspective mapping:
-        // Each row maps artwork proportionally across its green span
         for (let i = 0; i < greenMask.length; i++) {
           if (!greenMask[i]) continue;
           const px = i % bw;
           const py = (i - px) / bw;
 
-          const { left, right } = rowExtents[py];
-          const rowWidth = right - left;
+          const { u, v } = bilinearInverse(px, py, corners.tl, corners.tr, corners.bl, corners.br);
+          const artU = offU + u * cropU;
+          const artV = offV + v * cropV;
 
-          // Horizontal: position within this row's green span
-          const u = rowWidth > 0 ? (px - left) / rowWidth : 0.5;
-          // Vertical: position within the full green height
-          const v = (py - firstGreenRow) / greenHeight;
-
-          const artU = coverOffU + u * coverScaleU;
-          const artV = coverOffV + v * coverScaleV;
-
-          const ax = Math.min(sampW - 1, Math.max(0, Math.round(artU * sampW)));
-          const ay = Math.min(sampH - 1, Math.max(0, Math.round(artV * sampH)));
+          const ax = Math.min(sampW - 1, Math.max(0, Math.round(artU * (sampW - 1))));
+          const ay = Math.min(sampH - 1, Math.max(0, Math.round(artV * (sampH - 1))));
           const srcO = (ay * sampW + ax) * 4;
           const dstO = i * 4;
           originalData.data[dstO]     = artData.data[srcO];
           originalData.data[dstO + 1] = artData.data[srcO + 1];
           originalData.data[dstO + 2] = artData.data[srcO + 2];
           originalData.data[dstO + 3] = 255;
+        }
+      } else {
+        // Flat fallback — draw artwork scaled to cover bounding box
+        const scale = Math.max(bw / artW, bh / artH);
+        const dw = artW * scale;
+        const dh = artH * scale;
+        const flatCanvas = document.createElement('canvas');
+        flatCanvas.width = bw;
+        flatCanvas.height = bh;
+        const flatCtx = flatCanvas.getContext('2d');
+        flatCtx.drawImage(artworkImg, (bw - dw) / 2, (bh - dh) / 2, dw, dh);
+        const flatData = flatCtx.getImageData(0, 0, bw, bh);
+
+        for (let i = 0; i < greenMask.length; i++) {
+          if (!greenMask[i]) continue;
+          const o = i * 4;
+          originalData.data[o]     = flatData.data[o];
+          originalData.data[o + 1] = flatData.data[o + 1];
+          originalData.data[o + 2] = flatData.data[o + 2];
+          originalData.data[o + 3] = 255;
         }
       }
       ctx.putImageData(originalData, minX, minY);
