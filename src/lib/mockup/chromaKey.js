@@ -139,3 +139,69 @@ function toBounds(component) {
   const { minX, minY, maxX, maxY } = component;
   return { minX, minY, maxX, maxY };
 }
+
+/**
+ * Find the four corner points of the green quad within a green mask.
+ * Returns { tl, tr, bl, br } each with { x, y } relative to the mask,
+ * or null if the green region is empty.
+ */
+export function findGreenQuadCorners(greenMask, bw, bh) {
+  let firstRow = -1, lastRow = -1;
+  const rowExtents = new Array(bh);
+
+  for (let y = 0; y < bh; y++) {
+    let left = -1, right = -1;
+    const rowStart = y * bw;
+    for (let x = 0; x < bw; x++) {
+      if (greenMask[rowStart + x]) {
+        if (left === -1) left = x;
+        right = x;
+      }
+    }
+    rowExtents[y] = { left, right };
+    if (left !== -1) {
+      if (firstRow === -1) firstRow = y;
+      lastRow = y;
+    }
+  }
+
+  if (firstRow === -1) return null;
+
+  return {
+    tl: { x: rowExtents[firstRow].left,  y: firstRow },
+    tr: { x: rowExtents[firstRow].right, y: firstRow },
+    bl: { x: rowExtents[lastRow].left,   y: lastRow },
+    br: { x: rowExtents[lastRow].right,  y: lastRow },
+  };
+}
+
+/**
+ * Inverse bilinear interpolation: given a point (px, py) inside a quad
+ * defined by corners tl, tr, bl, br, find (u, v) ∈ [0,1]².
+ */
+export function bilinearInverse(px, py, tl, tr, bl, br) {
+  let u = 0.5, v = 0.5;
+
+  for (let iter = 0; iter < 5; iter++) {
+    const omU = 1 - u, omV = 1 - v;
+    const fx = omU * omV * tl.x + u * omV * tr.x + omU * v * bl.x + u * v * br.x;
+    const fy = omU * omV * tl.y + u * omV * tr.y + omU * v * bl.y + u * v * br.y;
+
+    const ex = px - fx;
+    const ey = py - fy;
+    if (ex * ex + ey * ey < 0.25) break;
+
+    const dxdu = -omV * tl.x + omV * tr.x - v * bl.x + v * br.x;
+    const dxdv = -omU * tl.x - u * tr.x + omU * bl.x + u * br.x;
+    const dydu = -omV * tl.y + omV * tr.y - v * bl.y + v * br.y;
+    const dydv = -omU * tl.y - u * tr.y + omU * bl.y + u * br.y;
+
+    const det = dxdu * dydv - dxdv * dydu;
+    if (Math.abs(det) < 1e-10) break;
+
+    u += (dydv * ex - dxdv * ey) / det;
+    v += (dxdu * ey - dydu * ex) / det;
+  }
+
+  return { u, v };
+}
