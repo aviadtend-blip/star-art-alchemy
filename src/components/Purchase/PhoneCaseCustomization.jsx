@@ -414,7 +414,9 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
                 </div>
               </div>
 
-              <ReviewsList theme="light" gap={6} py={6} />
+              <div style={{ marginTop: '42px' }}>
+                <ReviewsList theme="light" gap={6} py={6} />
+              </div>
             </div>
           </div>
         </div>
