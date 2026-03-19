@@ -21,7 +21,7 @@ const BG_COLOR = '#F5F5F5';
  * Coordinates are in the original asset's pixel space.
  */
 const MOCKUP_REGIONS = {
-  'mockup-1': { x: 621, y: 193, width: 677, height: 1383 },
+  'mockup-1': { x: 540, y: 205, width: 725, height: 1475 },
   'mockup-2': { x: 112, y: 158, width: 1656, height: 1356 },
   'mockup-3': { x: 579, y: 157, width: 857, height: 1627 },
   'mockup-4': null,  // No green region — detail/lifestyle shot, pass through
