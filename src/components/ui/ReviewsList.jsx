@@ -45,11 +45,11 @@ export default function ReviewsList({ theme = 'dark', gap = 6, py = 6, className
         <span className={`text-subtitle font-display ${mutedColor} uppercase`} style={isDark ? undefined : { color: '#888888' }}>from 287 customers</span>
       </div>
       <div className="flex flex-col">
-        {TESTIMONIALS.map((t, i) => (
+        {(reviews || TESTIMONIALS).map((t, i) => (
           <div
             key={i}
             className={`flex gap-${gap} items-start py-${py}`}
-            style={{ borderBottom: i < TESTIMONIALS.length - 1 ? `1px solid ${borderColor}` : 'none' }}
+            style={{ borderBottom: i < (reviews || TESTIMONIALS).length - 1 ? `1px solid ${borderColor}` : 'none' }}
           >
             <div className="w-20 flex-shrink-0 overflow-hidden rounded-[2px]" style={{ aspectRatio: '3/4' }}>
               <img
