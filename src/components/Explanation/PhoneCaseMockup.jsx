@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { findGreenBounds, isGreenPixel } from '@/lib/mockup/chromaKey';
-import { applyArtworkToMask, createArtworkSampler, featherMaskEdges } from '@/lib/mockup/applyArtworkToMask';
-import phoneCaseMockup from '@/assets/mockups/phone-case-mockup.webp';
+import { compositeAlpha } from '@/lib/mockup/alphaComposite';
+import phoneCaseMockup from '@/assets/mockups/phone-case-alpha/mockup-1.png';
 
 const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
 
@@ -35,7 +34,7 @@ async function loadArtworkViaProxy(src) {
 }
 
 /**
- * Composites the user's artwork onto the phone case mockup (green-screen replacement).
+ * Composites the user's artwork onto the phone case mockup using alpha-channel overlay.
  */
 export default function PhoneCaseMockup({ artworkSrc, className = '' }) {
   const [composited, setComposited] = useState(null);
@@ -56,55 +55,9 @@ export default function PhoneCaseMockup({ artworkSrc, className = '' }) {
         ]);
         if (controller.signal.aborted) return;
 
-        const MAX_DIM = 900;
-        const fullW = mockupImg.naturalWidth;
-        const fullH = mockupImg.naturalHeight;
-        const downscale = Math.min(1, MAX_DIM / Math.max(fullW, fullH));
-        const w = Math.max(1, Math.round(fullW * downscale));
-        const h = Math.max(1, Math.round(fullH * downscale));
-
-        const canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        ctx.drawImage(mockupImg, 0, 0, w, h);
-
-        const imageData = ctx.getImageData(0, 0, w, h);
-        const bounds = findGreenBounds(imageData.data, w, h);
-
-        if (bounds) {
-          const { minX, minY, maxX, maxY } = bounds;
-          const bw = maxX - minX + 1;
-          const bh = maxY - minY + 1;
-          const maskData = ctx.getImageData(minX, minY, bw, bh);
-          const originalSnapshot = new Uint8ClampedArray(maskData.data);
-          const greenMask = new Uint8Array(bw * bh);
-          const sourceKey = 'phone-case-mockup';
-
-          for (let i = 0; i < greenMask.length; i++) {
-            const offset = i * 4;
-            if (isGreenPixel(maskData.data[offset], maskData.data[offset + 1], maskData.data[offset + 2])) {
-              greenMask[i] = 1;
-            }
-          }
-
-          const sampler = createArtworkSampler(artworkImg);
-          applyArtworkToMask({
-            maskData,
-            greenMask,
-            sampler,
-            bw,
-            bh,
-            mode: 'phone-case',
-            sourceKey,
-          });
-
-          featherMaskEdges(maskData, originalSnapshot, greenMask, bw, bh, 3);
-          ctx.putImageData(maskData, minX, minY);
-        }
-
+        const dataUrl = compositeAlpha(mockupImg, artworkImg, 'mockup-1', 900);
         if (controller.signal.aborted) return;
-        setComposited(canvas.toDataURL('image/jpeg', 0.88));
+        setComposited(dataUrl);
       } catch (err) {
         console.error('PhoneCaseMockup composite failed:', err);
       }
