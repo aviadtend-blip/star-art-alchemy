@@ -142,10 +142,9 @@ export default function GenerateProductSelection() {
         ...(lat && lng ? { lat: Number(lat), lng: Number(lng) } : {}),
         userPhotoUrl: searchParams.get('userPhotoUrl') || null,
       });
-    } else if (!chartData) {
-      navigate('/');
     }
-  }, [searchParams, navigate, chartData, handleFormSubmit]);
+    // No redirect — allow direct access for preview/testing
+  }, [searchParams, chartData, handleFormSubmit]);
 
   // Build display formData from query params while chart loads
   const displayFormData = formData || (() => {
