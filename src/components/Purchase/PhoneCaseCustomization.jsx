@@ -205,8 +205,10 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
   const [selectedModel, setSelectedModel] = useState('');
   const [activeThumb, setActiveThumb] = useState(0);
   const [showModelWarning, setShowModelWarning] = useState(false);
+  const [inlineCtaVisible, setInlineCtaVisible] = useState(false);
   const modelCarouselRef = useRef(null);
   const modelSelectorRef = useRef(null);
+  const inlineCtaRef = useRef(null);
   const isFirstScroll = useRef(true);
 
   const modelData = PHONE_CASE_MODEL_MAP[selectedModel];
