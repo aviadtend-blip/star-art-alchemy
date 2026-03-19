@@ -95,6 +95,7 @@ function compositeSingleMockup(mockupSrc, artworkSampler, mode = 'default') {
       const bw = maxX - minX + 1;
       const bh = maxY - minY + 1;
       const maskData = ctx.getImageData(minX, minY, bw, bh);
+      const originalSnapshot = new Uint8ClampedArray(maskData.data);
       const greenMask = new Uint8Array(bw * bh);
       const sourceKey = getMockupSourceKey(mockupSrc);
 
@@ -115,6 +116,7 @@ function compositeSingleMockup(mockupSrc, artworkSampler, mode = 'default') {
         sourceKey,
       });
 
+      featherMaskEdges(maskData, originalSnapshot, greenMask, bw, bh, 3);
       ctx.putImageData(maskData, minX, minY);
     }
 
