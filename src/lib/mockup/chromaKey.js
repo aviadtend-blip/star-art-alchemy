@@ -142,12 +142,14 @@ function toBounds(component) {
 
 /**
  * Find the four corner points of the green quad within a green mask.
+ * Uses rows with substantial width (≥30% of max) to skip rounded tips.
  * Returns { tl, tr, bl, br } each with { x, y } relative to the mask,
- * or null if the green region is empty.
+ * or null if the green region is empty/too small.
  */
 export function findGreenQuadCorners(greenMask, bw, bh) {
-  let firstRow = -1, lastRow = -1;
+  // Compute per-row extents
   const rowExtents = new Array(bh);
+  let maxRowWidth = 0;
 
   for (let y = 0; y < bh; y++) {
     let left = -1, right = -1;
@@ -160,29 +162,50 @@ export function findGreenQuadCorners(greenMask, bw, bh) {
     }
     rowExtents[y] = { left, right };
     if (left !== -1) {
-      if (firstRow === -1) firstRow = y;
-      lastRow = y;
+      const w = right - left + 1;
+      if (w > maxRowWidth) maxRowWidth = w;
     }
   }
 
-  if (firstRow === -1) return null;
+  if (maxRowWidth < 4) return null;
+
+  // Find first and last rows with substantial width (≥30% of max)
+  const threshold = maxRowWidth * 0.3;
+  let topRow = -1, bottomRow = -1;
+
+  for (let y = 0; y < bh; y++) {
+    const { left, right } = rowExtents[y];
+    if (left !== -1 && (right - left + 1) >= threshold) {
+      if (topRow === -1) topRow = y;
+      bottomRow = y;
+    }
+  }
+
+  if (topRow === -1) return null;
 
   return {
-    tl: { x: rowExtents[firstRow].left,  y: firstRow },
-    tr: { x: rowExtents[firstRow].right, y: firstRow },
-    bl: { x: rowExtents[lastRow].left,   y: lastRow },
-    br: { x: rowExtents[lastRow].right,  y: lastRow },
+    tl: { x: rowExtents[topRow].left,    y: topRow },
+    tr: { x: rowExtents[topRow].right,   y: topRow },
+    bl: { x: rowExtents[bottomRow].left, y: bottomRow },
+    br: { x: rowExtents[bottomRow].right, y: bottomRow },
   };
 }
 
 /**
  * Inverse bilinear interpolation: given a point (px, py) inside a quad
  * defined by corners tl, tr, bl, br, find (u, v) ∈ [0,1]².
+ * Uses Newton iteration for fast convergence.
  */
 export function bilinearInverse(px, py, tl, tr, bl, br) {
-  let u = 0.5, v = 0.5;
+  // Initial guess based on bounding box
+  const minX = Math.min(tl.x, tr.x, bl.x, br.x);
+  const maxX = Math.max(tl.x, tr.x, bl.x, br.x);
+  const minY = Math.min(tl.y, tr.y, bl.y, br.y);
+  const maxY = Math.max(tl.y, tr.y, bl.y, br.y);
+  let u = maxX > minX ? (px - minX) / (maxX - minX) : 0.5;
+  let v = maxY > minY ? (py - minY) / (maxY - minY) : 0.5;
 
-  for (let iter = 0; iter < 5; iter++) {
+  for (let iter = 0; iter < 6; iter++) {
     const omU = 1 - u, omV = 1 - v;
     const fx = omU * omV * tl.x + u * omV * tr.x + omU * v * bl.x + u * v * br.x;
     const fy = omU * omV * tl.y + u * omV * tr.y + omU * v * bl.y + u * v * br.y;
@@ -203,5 +226,5 @@ export function bilinearInverse(px, py, tl, tr, bl, br) {
     v += (dxdu * ey - dydu * ex) / det;
   }
 
-  return { u, v };
+  return { u: Math.max(0, Math.min(1, u)), v: Math.max(0, Math.min(1, v)) };
 }
