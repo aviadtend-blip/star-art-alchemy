@@ -19,7 +19,7 @@ export default function ProductCard({
   showProcessingBar = true,
 }) {
   return (
-    <div className="relative flex flex-col flex-1 overflow-hidden rounded-sm min-w-0">
+    <div className="relative flex flex-col flex-1 overflow-hidden min-w-0" style={{ borderRadius: 2 }}>
       {/* Product image */}
       <div className="relative w-full" style={{ aspectRatio: '147 / 110' }}>
         {imageSlot || (
