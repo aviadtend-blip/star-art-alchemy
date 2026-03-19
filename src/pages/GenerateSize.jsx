@@ -176,9 +176,9 @@ export default function GenerateSize() {
     );
   }
 
-  if (!chartData || !generatedImage) {
-    return null;
-  }
+  const isDemo = !chartData || !generatedImage;
+  const displayChart = chartData || { sun: { sign: 'Scorpio', house: 8 }, moon: { sign: 'Pisces', house: 12 }, rising: 'Capricorn' };
+  const displayImage = generatedImage || demoImage;
 
   return (
     <>
