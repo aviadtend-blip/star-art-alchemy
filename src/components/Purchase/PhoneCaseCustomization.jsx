@@ -349,14 +349,14 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
             <p className="text-body text-surface-foreground">🎨 UV printed, matte finish — Vivid color that won't scratch off</p>
           </div>
 
-          {/* CTA button */}
-          <div id="case-order-summary-mobile" style={{ marginTop: '32px' }}>
+          {/* CTA button (inline) */}
+          <div ref={inlineCtaRef} id="case-order-summary-mobile" style={{ marginTop: '32px' }}>
             <button
               onClick={handleCheckout}
               className="btn-base btn-primary w-full justify-center"
               style={{ borderRadius: '40px', height: '52px', fontSize: '14px' }}
             >
-              Add to Order — ${total}
+              {selectedModel && modelData ? `Add to Order — $${total}` : 'Add to Order'}
             </button>
           </div>
 
