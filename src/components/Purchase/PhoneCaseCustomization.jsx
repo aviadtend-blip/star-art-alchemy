@@ -18,8 +18,8 @@ import caseMockup3 from '@/assets/mockups/phone-case-alpha/mockup-3.png';
 import caseMockup4 from '@/assets/mockups/phone-case-alpha/mockup-4.png';
 import caseMockup5 from '@/assets/mockups/phone-case-alpha/mockup-5.png';
 
-// Detail images reused from canvas page
-import womanHolding from '@/assets/gallery/woman-holding.webp';
+// Detail images
+import phoneCaseGift from '@/assets/gallery/phone-case-gift.webp';
 
 const CASE_IMAGES = [caseMockup1, caseMockup2, caseMockup3, caseMockup4, caseMockup5];
 
