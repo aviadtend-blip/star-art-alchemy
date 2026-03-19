@@ -78,6 +78,7 @@ export default function PhoneCaseMockup({ artworkSrc, className = '' }) {
           const bh = maxY - minY + 1;
           const maskData = ctx.getImageData(minX, minY, bw, bh);
           const greenMask = new Uint8Array(bw * bh);
+          const sourceKey = 'phone-case-mockup';
 
           for (let i = 0; i < greenMask.length; i++) {
             const offset = i * 4;
@@ -94,6 +95,7 @@ export default function PhoneCaseMockup({ artworkSrc, className = '' }) {
             bw,
             bh,
             mode: 'phone-case',
+            sourceKey,
           });
 
           ctx.putImageData(maskData, minX, minY);

@@ -6,6 +6,32 @@ const MIN_STRIP_SPAN = 6;
 const MIN_STRIP_BINS = 96;
 const MAX_STRIP_BINS = 512;
 const STRIP_SMOOTHING_RADIUS = 2;
+const DEFAULT_PHONE_CASE_FIT = {
+  coreWidthRatio: 0.58,
+  uInset: 0.04,
+  vInsetStart: 0.05,
+  vInsetEnd: 0.05,
+};
+const PHONE_CASE_SOURCE_FITS = {
+  'mockup-1': {
+    coreWidthRatio: 0.62,
+    uInset: 0.035,
+    vInsetStart: 0.06,
+    vInsetEnd: 0.05,
+  },
+  'mockup-2': {
+    coreWidthRatio: 0.55,
+    uInset: 0.075,
+    vInsetStart: 0.1,
+    vInsetEnd: 0.08,
+  },
+  'mockup-3': {
+    coreWidthRatio: 0.6,
+    uInset: 0.05,
+    vInsetStart: 0.06,
+    vInsetEnd: 0.04,
+  },
+};
 
 export function createArtworkSampler(artworkImg, maxDim = DEFAULT_ARTWORK_MAX_DIM) {
   const artW = artworkImg.naturalWidth;
@@ -28,8 +54,8 @@ export function createArtworkSampler(artworkImg, maxDim = DEFAULT_ARTWORK_MAX_DI
   };
 }
 
-export function applyArtworkToMask({ maskData, greenMask, sampler, bw, bh, mode = 'default' }) {
-  if (mode === 'phone-case' && paintArtworkWithOrientedStrips(maskData.data, greenMask, sampler, bw, bh)) {
+export function applyArtworkToMask({ maskData, greenMask, sampler, bw, bh, mode = 'default', sourceKey = '' }) {
+  if (mode === 'phone-case' && paintArtworkWithOrientedStrips(maskData.data, greenMask, sampler, bw, bh, sourceKey)) {
     return;
   }
 
@@ -80,7 +106,7 @@ function paintArtworkFlatCover(targetData, greenMask, sampler, bw, bh) {
   }
 }
 
-function paintArtworkWithOrientedStrips(targetData, greenMask, sampler, bw, bh) {
+function paintArtworkWithOrientedStrips(targetData, greenMask, sampler, bw, bh, sourceKey = '') {
   const frame = getPrincipalFrame(greenMask, bw, bh);
   if (!frame) return false;
 
@@ -129,41 +155,89 @@ function paintArtworkWithOrientedStrips(targetData, greenMask, sampler, bw, bh) 
 
   smoothStripExtents(minTByBin, maxTByBin, startBin, endBin);
 
+  const widthByBin = Array(binCount).fill(0);
   let totalWidth = 0;
   let widthSamples = 0;
+  let maxWidth = 0;
+
   for (let i = startBin; i <= endBin; i++) {
-    const width = maxTByBin[i] - minTByBin[i];
+    const width = Math.max(0, maxTByBin[i] - minTByBin[i]);
+    widthByBin[i] = width;
     if (width > 0) {
       totalWidth += width;
       widthSamples += 1;
+      if (width > maxWidth) maxWidth = width;
     }
   }
 
-  if (!widthSamples) {
+  if (!widthSamples || maxWidth < MIN_STRIP_SPAN) {
     return false;
   }
 
+  const fit = getPhoneCaseFit(sourceKey);
+  let coreStartBin = startBin;
+  let coreEndBin = endBin;
+  const coreWidthThreshold = maxWidth * fit.coreWidthRatio;
+
+  while (coreStartBin < endBin && widthByBin[coreStartBin] < coreWidthThreshold) {
+    coreStartBin += 1;
+  }
+
+  while (coreEndBin > startBin && widthByBin[coreEndBin] < coreWidthThreshold) {
+    coreEndBin -= 1;
+  }
+
+  if (coreEndBin <= coreStartBin) {
+    coreStartBin = startBin;
+    coreEndBin = endBin;
+  }
+
+  let coreTotalWidth = 0;
+  let coreWidthSamples = 0;
+  for (let i = coreStartBin; i <= coreEndBin; i++) {
+    if (widthByBin[i] > 0) {
+      coreTotalWidth += widthByBin[i];
+      coreWidthSamples += 1;
+    }
+  }
+
   const averageWidth = totalWidth / widthSamples;
-  const crop = getCoverCrop(sampler.artAspect, averageWidth / axisSpan);
+  const averageCoreWidth = coreWidthSamples ? coreTotalWidth / coreWidthSamples : averageWidth;
+  const axisStep = binCount > 1 ? axisSpan / (binCount - 1) : axisSpan;
+  const coreMinS = minS + coreStartBin * axisStep;
+  const coreMaxS = minS + coreEndBin * axisStep;
+  const coreSpan = Math.max(axisStep, coreMaxS - coreMinS);
+  const crop = getCoverCrop(sampler.artAspect, averageCoreWidth / coreSpan);
+  const usableUScale = Math.max(0.01, 1 - fit.uInset * 2);
+  const usableVScale = Math.max(0.01, 1 - fit.vInsetStart - fit.vInsetEnd);
 
   forEachGreenPixel(greenMask, bw, (x, y, index) => {
     const dx = x - frame.cx;
     const dy = y - frame.cy;
     const s = dx * frame.axisX + dy * frame.axisY;
     const t = dx * frame.normalX + dy * frame.normalY;
-    const v = clamp((s - minS) / axisSpan, 0, 1);
+    const rawV = clamp((s - coreMinS) / coreSpan, 0, 1);
+    const v = fit.vInsetStart + rawV * usableVScale;
     const bin = projectToBin(s, minS, axisSpan, binCount);
     const stripMinT = minTByBin[bin];
     const stripMaxT = maxTByBin[bin];
     const stripSpan = stripMaxT - stripMinT;
-    const u = stripSpan > MIN_STRIP_SPAN
+    const rawU = stripSpan > MIN_STRIP_SPAN
       ? clamp((t - stripMinT) / stripSpan, 0, 1)
       : 0.5;
+    const u = fit.uInset + rawU * usableUScale;
 
     paintSample(targetData, index * 4, sampler, crop.offU + u * crop.cropU, crop.offV + v * crop.cropV);
   });
 
   return true;
+}
+
+function getPhoneCaseFit(sourceKey) {
+  if (!sourceKey) return DEFAULT_PHONE_CASE_FIT;
+
+  const normalizedKey = sourceKey.toLowerCase();
+  return PHONE_CASE_SOURCE_FITS[normalizedKey] ?? DEFAULT_PHONE_CASE_FIT;
 }
 
 function getPrincipalFrame(greenMask, bw, bh) {
