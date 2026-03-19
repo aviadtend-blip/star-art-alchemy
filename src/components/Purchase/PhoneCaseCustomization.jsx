@@ -342,22 +342,21 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
                 <h2 className="text-a2 text-surface-foreground" style={{ marginBottom: '12px' }}>Select Your Phone</h2>
                 <Select value={selectedModel} onValueChange={handleModelChange}>
                   <SelectTrigger
-                    className="w-full text-body"
+                    className="w-full text-a4"
                     style={{
-                      height: 'auto',
-                      borderRadius: '4px',
+                      height: '74px',
+                      borderRadius: '2px',
                       border: '1px solid #E0E0E0',
                       backgroundColor: '#FFFFFF',
-                      padding: '15px 20px',
-                      fontSize: '16px',
+                      padding: '0 20px',
                       color: selectedModel ? '#333333' : '#999999',
                     }}
                   >
                     <SelectValue placeholder="Choose your model to see a preview">
                       {selectedModel && modelData && (
                         <span className="flex items-center justify-between w-full pr-2">
-                          <span className="text-body" style={{ color: '#333333' }}>{modelData.label}</span>
-                          <span className="text-body font-bold" style={{ color: '#333333' }}>${modelData.price}</span>
+                          <span className="text-a4" style={{ color: '#333333' }}>{modelData.label}</span>
+                          <span className="text-a4 font-bold" style={{ color: '#333333' }}>${modelData.price}</span>
                         </span>
                       )}
                     </SelectValue>
