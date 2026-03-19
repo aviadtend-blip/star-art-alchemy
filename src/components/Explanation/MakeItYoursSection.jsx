@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import ProductCard from '@/components/Explanation/ProductCard';
 import CTARoomMockup from '@/components/Explanation/CTARoomMockup';
 import PhoneCaseMockup from '@/components/Explanation/PhoneCaseMockup';
@@ -9,6 +10,7 @@ import PhoneScreenMockup from '@/components/Explanation/PhoneScreenMockup';
  * @param {{ onGetFramed: () => void; onDownloadPreview: () => void; artworkSrc: string }} props
  */
 export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, artworkSrc }) {
+  const navigate = useNavigate();
   const cards = [
     {
       key: 'phone-case',
