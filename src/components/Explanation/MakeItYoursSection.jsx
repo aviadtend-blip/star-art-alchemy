@@ -62,7 +62,7 @@ export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, art
     <section className="flex flex-col items-stretch w-full">
       {/* Section header */}
       <div className="flex flex-col justify-center items-center w-full py-6 md:py-8">
-        <h2 className="text-a1 text-white text-center">Make It Yours</h2>
+        <h2 className="text-a1-special text-white text-center">Make It Yours</h2>
       </div>
 
       {/* Cards — horizontal snap scroll on mobile, 3-col on desktop */}
