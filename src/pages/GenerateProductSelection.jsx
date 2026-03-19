@@ -83,27 +83,10 @@ function ProductCard({ product, selected, onSelect }) {
 
       {/* Labels */}
       <div className="flex flex-col w-full" style={{ gap: '4px', paddingTop: '18px' }}>
-        <p
-          style={{
-            fontSize: '12px',
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            lineHeight: '1.13',
-            letterSpacing: '-0.36px',
-            color: '#000000',
-          }}
-        >
+        <p className="text-subtitle" style={{ color: '#000000' }}>
           {product.title}
         </p>
-        <p
-          style={{
-            fontSize: '14px',
-            fontWeight: 500,
-            lineHeight: '1.13',
-            letterSpacing: '-0.42px',
-            color: 'rgba(114, 114, 114, 0.7)',
-          }}
-        >
+        <p className="text-body" style={{ color: 'rgba(114, 114, 114, 0.7)' }}>
           {product.description}
         </p>
       </div>
