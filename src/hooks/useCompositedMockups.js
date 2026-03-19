@@ -72,18 +72,15 @@ function compositeSingleMockup(mockupSrc, artworkSampler, mode = 'default', artw
   // Phone-case mode: use alpha-channel compositing (no green detection)
   if (mode === 'phone-case') {
     const mockupKey = extractMockupKey(mockupSrc);
-    console.log(`[compositeSingleMockup] phone-case mode, key=${mockupKey}, hasRegion=${hasCompositableRegion(mockupKey)}, hasArtwork=${!!artworkImg}`);
     if (!hasCompositableRegion(mockupKey)) {
-      // Non-compositable mockup (detail shot) — return as-is
       compositeCache.set(cacheKey, mockupSrc);
       return Promise.resolve(mockupSrc);
     }
     return loadImage(mockupSrc).then(mockupImg => {
-      console.log(`[compositeSingleMockup] loaded mockup ${mockupKey}: ${mockupImg.naturalWidth}x${mockupImg.naturalHeight}`);
       const dataUrl = compositeAlpha(mockupImg, artworkImg, mockupKey, MAX_CANVAS_DIM);
       compositeCache.set(cacheKey, dataUrl);
       return dataUrl;
-    }).catch((err) => { console.error(`[compositeSingleMockup] failed for ${mockupKey}:`, err); return mockupSrc; });
+    }).catch(() => mockupSrc);
   }
 
   // Default mode: green-screen chroma key compositing

@@ -38,7 +38,6 @@ const MOCKUP_REGIONS = {
  * @returns {string} Data URL of the composited image (JPEG)
  */
 export function compositeAlpha(mockupImg, artworkImg, mockupKey, maxDim = 800) {
-  console.log(`[alphaComposite] compositing ${mockupKey}, mockup size: ${mockupImg.naturalWidth}x${mockupImg.naturalHeight}, hasArtwork: ${!!artworkImg}`);
   const region = MOCKUP_REGIONS[mockupKey] ?? null;
 
   const fullW = mockupImg.naturalWidth;
