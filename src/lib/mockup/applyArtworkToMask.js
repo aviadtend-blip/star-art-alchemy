@@ -219,8 +219,6 @@ function fillInteriorHoles(greenMask, bw, bh) {
 
   return filled;
 }
-  }
-}
 
 /** Safety pass: overwrite any pixel that's still visually green after compositing */
 function cleanupRemainingGreen(targetData, greenMask, bw) {
