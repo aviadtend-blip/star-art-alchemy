@@ -27,8 +27,8 @@ export default function MoreThanArtSection() {
 
       <div className="flex flex-col md:flex-row gap-6 md:gap-5">
         {ITEMS.map((item) => (
-          <div key={item.title} className="flex-1 flex flex-col gap-4">
-            <div className="w-full overflow-hidden rounded-sm" style={{ aspectRatio: '5 / 4' }}>
+          <div key={item.title} className="flex-1 flex flex-col">
+            <div className="w-full overflow-hidden" style={{ aspectRatio: '3 / 2', borderRadius: 2 }}>
               <img
                 src={item.image}
                 alt={item.title}
@@ -36,8 +36,8 @@ export default function MoreThanArtSection() {
                 loading="lazy"
               />
             </div>
-            <h3 className="text-a3 text-white">{item.title}</h3>
-            <p className="text-body font-body" style={{ color: '#c7c7c7' }}>
+            <h3 className="text-a3 text-white mt-4">{item.title}</h3>
+            <p className="text-body font-body mt-3" style={{ color: '#c7c7c7' }}>
               {item.description}
             </p>
           </div>
