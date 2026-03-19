@@ -1,4 +1,4 @@
-import { bilinearInverse, findGreenQuadCorners, sampleNearbyColor } from './chromaKey';
+import { bilinearInverse, findGreenQuadCorners, isGreenPixel, sampleNearbyColor } from './chromaKey';
 
 const DEFAULT_ARTWORK_MAX_DIM = 800;
 const MIN_AXIS_SPAN = 24;
@@ -83,6 +83,7 @@ export function createArtworkSampler(artworkImg, maxDim = DEFAULT_ARTWORK_MAX_DI
 
 export function applyArtworkToMask({ maskData, greenMask, sampler, bw, bh, mode = 'default', sourceKey = '' }) {
   if (mode === 'phone-case' && paintArtworkWithOrientedStrips(maskData.data, greenMask, sampler, bw, bh, sourceKey)) {
+    cleanupRemainingGreen(maskData.data, greenMask, bw);
     return;
   }
 
@@ -91,6 +92,21 @@ export function applyArtworkToMask({ maskData, greenMask, sampler, bw, bh, mode 
   }
 
   paintArtworkFlatCover(maskData.data, greenMask, sampler, bw, bh);
+}
+
+/** Safety pass: overwrite any pixel that's still visually green after compositing */
+function cleanupRemainingGreen(targetData, greenMask, bw) {
+  for (let i = 0; i < greenMask.length; i++) {
+    if (!greenMask[i]) continue;
+    const off = i * 4;
+    if (isGreenPixel(targetData[off], targetData[off + 1], targetData[off + 2])) {
+      // Neutralize by desaturating: set to gray based on luminance
+      const lum = Math.round(targetData[off] * 0.3 + targetData[off + 1] * 0.59 + targetData[off + 2] * 0.11);
+      targetData[off] = lum;
+      targetData[off + 1] = lum;
+      targetData[off + 2] = lum;
+    }
+  }
 }
 
 function paintArtworkWithQuad(targetData, greenMask, sampler, bw, bh) {
@@ -310,6 +326,10 @@ function isInsidePhoneCasePanel(u, v, fit) {
   return dx * dx + dy * dy <= radius * radius;
 }
 
+function isGreenishColor(r, g, b) {
+  return g > 100 && g > r * 1.2 && g > b * 1.2;
+}
+
 function computePhoneCaseFillColor(sourceData, greenMask, bw, bh) {
   let red = 0;
   let green = 0;
@@ -319,6 +339,8 @@ function computePhoneCaseFillColor(sourceData, greenMask, bw, bh) {
   forEachGreenPixel(greenMask, bw, (x, y) => {
     if (!isMaskBoundaryPixel(greenMask, bw, bh, x, y)) return;
     const [r, g, b] = sampleNearbyColor(sourceData, bw, bh, x, y);
+    // Reject samples that are still greenish (anti-aliased edges)
+    if (isGreenishColor(r, g, b)) return;
     red += r;
     green += g;
     blue += b;
@@ -327,19 +349,30 @@ function computePhoneCaseFillColor(sourceData, greenMask, bw, bh) {
 
   if (!samples) return DEFAULT_PHONE_CASE_FILL;
 
-  return [
+  const result = [
     Math.round(red / samples),
     Math.round(green / samples),
     Math.round(blue / samples),
   ];
+
+  // Final safety: if averaged result is still greenish, use default
+  if (isGreenishColor(result[0], result[1], result[2])) return DEFAULT_PHONE_CASE_FILL;
+  return result;
 }
 
 function paintCaseSurface(targetData, targetOffset, sourceData, greenMask, bw, bh, x, y, fallbackFill) {
   if (isMaskBoundaryPixel(greenMask, bw, bh, x, y)) {
     const [r, g, b] = sampleNearbyColor(sourceData, bw, bh, x, y);
-    targetData[targetOffset] = r;
-    targetData[targetOffset + 1] = g;
-    targetData[targetOffset + 2] = b;
+    // Use sampled color only if it's not greenish, otherwise use fill
+    if (!isGreenishColor(r, g, b)) {
+      targetData[targetOffset] = r;
+      targetData[targetOffset + 1] = g;
+      targetData[targetOffset + 2] = b;
+    } else {
+      targetData[targetOffset] = fallbackFill[0];
+      targetData[targetOffset + 1] = fallbackFill[1];
+      targetData[targetOffset + 2] = fallbackFill[2];
+    }
   } else {
     targetData[targetOffset] = fallbackFill[0];
     targetData[targetOffset + 1] = fallbackFill[1];
