@@ -9,6 +9,7 @@ import PopularTag from '@/components/ui/PopularTag';
  */
 export default function ProductCard({
   image,
+  imageSlot,
   title,
   description,
   badge,
