@@ -35,6 +35,7 @@ const GenerateStyle = lazyWithRetry(() => import("./pages/GenerateStyle"));
 const GenerateLoading = lazyWithRetry(() => import("./pages/GenerateLoading"));
 const GeneratePreview = lazyWithRetry(() => import("./pages/GeneratePreview"));
 const GenerateSize = lazyWithRetry(() => import("./pages/GenerateSize"));
+const GeneratePhoneCase = lazyWithRetry(() => import("./pages/GeneratePhoneCase"));
 const OrderConfirmationPage = lazyWithRetry(() => import("./pages/OrderConfirmation"));
 
 // Policy pages — rarely visited, lazy-load to reduce initial bundle
@@ -93,6 +94,7 @@ const App = () => {
                   <Route path="/generate/loading" element={<GenerateLoading />} />
                   <Route path="/generate/preview" element={<GeneratePreview />} />
                   <Route path="/generate/size" element={<GenerateSize />} />
+                  <Route path="/generate/phone-case" element={<GeneratePhoneCase />} />
                   <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
                   <Route path="/shipping" element={<ShippingPolicy />} />
                   <Route path="/privacy" element={<PrivacyPolicy />} />
