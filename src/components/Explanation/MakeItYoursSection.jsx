@@ -1,6 +1,7 @@
 import ProductCard from '@/components/Explanation/ProductCard';
 import CTARoomMockup from '@/components/Explanation/CTARoomMockup';
 import PhoneCaseMockup from '@/components/Explanation/PhoneCaseMockup';
+import PhoneScreenMockup from '@/components/Explanation/PhoneScreenMockup';
 
 /**
  * "Make It Yours" section with three product offering cards.
