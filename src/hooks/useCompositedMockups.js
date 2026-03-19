@@ -5,7 +5,7 @@ import { applyArtworkToMask, createArtworkSampler } from '../lib/mockup/applyArt
 const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
 const MAX_CANVAS_DIM = 800;
 const PARALLEL_BATCH = 3;
-const COMPOSITE_ALGORITHM_VERSION = '2026-03-19-phone-case-oriented';
+const COMPOSITE_ALGORITHM_VERSION = '2026-03-19-phone-case-inner-fit';
 
 // ── Shared global caches ──────────────────────────────────────────────
 const compositeCache = new Map();   // cacheKey → dataUrl
@@ -15,6 +15,14 @@ let _lastArtworkForComposites = null; // tracks which artwork the composites wer
 
 function getCompositeCacheKey(mockupSrc, mode = 'default') {
   return `${COMPOSITE_ALGORITHM_VERSION}:${mode}:${mockupSrc}`;
+}
+
+function getMockupSourceKey(mockupSrc = '') {
+  const normalizedSrc = String(mockupSrc).toLowerCase();
+  const match = normalizedSrc.match(/mockup-\d+/);
+  if (match) return match[0];
+
+  return normalizedSrc.split('/').pop()?.split('?')[0] ?? '';
 }
 
 function loadImage(src) {
