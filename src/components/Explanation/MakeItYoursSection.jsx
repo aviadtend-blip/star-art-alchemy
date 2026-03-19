@@ -64,29 +64,27 @@ export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, art
       </div>
 
       {/* Cards — horizontal snap scroll on mobile, 3-col on desktop */}
-      <div className="pl-5 md:pl-0">
-        <div
-          className="flex w-[calc(100%+20px)] items-stretch gap-3 overflow-x-auto md:w-auto md:overflow-visible snap-x snap-mandatory scrollbar-hide -mr-5 md:mr-0"
-          style={{ WebkitOverflowScrolling: 'touch' }}
-        >
-          {cards.map((card) => (
-            <div
-              key={card.key}
-              className="flex-shrink-0 w-[80vw] md:w-auto md:flex-1 snap-start min-w-0"
-            >
-              <ProductCard
-                imageSlot={card.imageSlot}
-                title={card.title}
-                description={card.description}
-                badge={card.badge}
-                primaryButton={card.primaryButton}
-                secondaryButton={card.secondaryButton}
-                trustLine={card.trustLine}
-                showProcessingBar={card.showProcessingBar}
-              />
-            </div>
-          ))}
-        </div>
+      <div
+        className="flex items-stretch gap-3 overflow-x-auto md:overflow-visible snap-x snap-mandatory scrollbar-hide px-[10vw] md:px-0"
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
+        {cards.map((card) => (
+          <div
+            key={card.key}
+            className="flex-shrink-0 w-[80vw] md:w-auto md:flex-1 snap-center min-w-0"
+          >
+            <ProductCard
+              imageSlot={card.imageSlot}
+              title={card.title}
+              description={card.description}
+              badge={card.badge}
+              primaryButton={card.primaryButton}
+              secondaryButton={card.secondaryButton}
+              trustLine={card.trustLine}
+              showProcessingBar={card.showProcessingBar}
+            />
+          </div>
+        ))}
       </div>
     </section>
   );
