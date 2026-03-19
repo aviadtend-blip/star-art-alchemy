@@ -723,7 +723,7 @@ export function ChartExplanation({
           </div>
 
           {/* Make It Yours — three product cards */}
-          <div className="px-4">
+          <div className="pr-0">
             <MakeItYoursSection
               onGetFramed={onGetFramed}
               onDownloadPreview={() => setShowEmailModal(true)}
