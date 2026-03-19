@@ -347,9 +347,16 @@ function computePhoneCaseFillColor(sourceData, greenMask, bw, bh) {
 function paintCaseSurface(targetData, targetOffset, sourceData, greenMask, bw, bh, x, y, fallbackFill) {
   if (isMaskBoundaryPixel(greenMask, bw, bh, x, y)) {
     const [r, g, b] = sampleNearbyColor(sourceData, bw, bh, x, y);
-    targetData[targetOffset] = r;
-    targetData[targetOffset + 1] = g;
-    targetData[targetOffset + 2] = b;
+    // Use sampled color only if it's not greenish, otherwise use fill
+    if (!isGreenishColor(r, g, b)) {
+      targetData[targetOffset] = r;
+      targetData[targetOffset + 1] = g;
+      targetData[targetOffset + 2] = b;
+    } else {
+      targetData[targetOffset] = fallbackFill[0];
+      targetData[targetOffset + 1] = fallbackFill[1];
+      targetData[targetOffset + 2] = fallbackFill[2];
+    }
   } else {
     targetData[targetOffset] = fallbackFill[0];
     targetData[targetOffset + 1] = fallbackFill[1];
