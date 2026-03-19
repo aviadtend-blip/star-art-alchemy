@@ -83,6 +83,7 @@ export function createArtworkSampler(artworkImg, maxDim = DEFAULT_ARTWORK_MAX_DI
 
 export function applyArtworkToMask({ maskData, greenMask, sampler, bw, bh, mode = 'default', sourceKey = '' }) {
   if (mode === 'phone-case' && paintArtworkWithOrientedStrips(maskData.data, greenMask, sampler, bw, bh, sourceKey)) {
+    cleanupRemainingGreen(maskData.data, greenMask, bw);
     return;
   }
 
@@ -91,6 +92,21 @@ export function applyArtworkToMask({ maskData, greenMask, sampler, bw, bh, mode 
   }
 
   paintArtworkFlatCover(maskData.data, greenMask, sampler, bw, bh);
+}
+
+/** Safety pass: overwrite any pixel that's still visually green after compositing */
+function cleanupRemainingGreen(targetData, greenMask, bw) {
+  for (let i = 0; i < greenMask.length; i++) {
+    if (!greenMask[i]) continue;
+    const off = i * 4;
+    if (isGreenPixel(targetData[off], targetData[off + 1], targetData[off + 2])) {
+      // Neutralize by desaturating: set to gray based on luminance
+      const lum = Math.round(targetData[off] * 0.3 + targetData[off + 1] * 0.59 + targetData[off + 2] * 0.11);
+      targetData[off] = lum;
+      targetData[off + 1] = lum;
+      targetData[off + 2] = lum;
+    }
+  }
 }
 
 function paintArtworkWithQuad(targetData, greenMask, sampler, bw, bh) {
