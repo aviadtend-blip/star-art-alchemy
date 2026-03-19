@@ -82,9 +82,15 @@ export function createArtworkSampler(artworkImg, maxDim = DEFAULT_ARTWORK_MAX_DI
 }
 
 export function applyArtworkToMask({ maskData, greenMask, sampler, bw, bh, mode = 'default', sourceKey = '' }) {
-  if (mode === 'phone-case' && paintArtworkWithOrientedStrips(maskData.data, greenMask, sampler, bw, bh, sourceKey)) {
-    cleanupRemainingGreen(maskData.data, greenMask, bw);
-    return;
+  if (mode === 'phone-case') {
+    // Fill interior holes (e.g. camera cutout) so strip warp sees a continuous region
+    const holeMask = fillInteriorHoles(greenMask, bw, bh);
+    if (paintArtworkWithOrientedStrips(maskData.data, holeMask, sampler, bw, bh, sourceKey)) {
+      // Restore hole pixels: revert any pixel that was in holeMask but NOT in original greenMask
+      // (i.e. the filled hole pixels should show original mockup, not artwork)
+      cleanupRemainingGreen(maskData.data, greenMask, bw);
+      return;
+    }
   }
 
   if (paintArtworkWithQuad(maskData.data, greenMask, sampler, bw, bh)) {
