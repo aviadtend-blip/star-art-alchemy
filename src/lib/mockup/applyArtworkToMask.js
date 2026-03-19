@@ -94,6 +94,82 @@ export function applyArtworkToMask({ maskData, greenMask, sampler, bw, bh, mode 
   paintArtworkFlatCover(maskData.data, greenMask, sampler, bw, bh);
 }
 
+/**
+ * Feather the edges of the composited mask region by blending with the original mockup.
+ * This smooths jagged edges and removes fringe around holes (e.g. camera cutout).
+ * Call AFTER applyArtworkToMask and BEFORE putImageData.
+ *
+ * @param {ImageData} maskData - The composited region (mutated in place)
+ * @param {Uint8ClampedArray} originalData - Snapshot of the region BEFORE compositing
+ * @param {Uint8Array} greenMask - The green pixel mask
+ * @param {number} bw - Region width
+ * @param {number} bh - Region height
+ * @param {number} radius - Feather radius in pixels (default 2)
+ */
+export function featherMaskEdges(maskData, originalData, greenMask, bw, bh, radius = 2) {
+  const data = maskData.data;
+  // Build distance-to-edge map for green mask pixels
+  // distance = min distance to a non-green pixel (0 = boundary, radius+ = interior)
+  const distMap = new Float32Array(greenMask.length);
+  distMap.fill(radius + 1);
+
+  // For non-green pixels and green pixels adjacent to non-green, set distance
+  for (let i = 0; i < greenMask.length; i++) {
+    if (!greenMask[i]) {
+      distMap[i] = 0;
+      continue;
+    }
+    const x = i % bw;
+    const y = (i - x) / bw;
+    // Check immediate neighbors
+    let onEdge = false;
+    for (let dy = -1; dy <= 1 && !onEdge; dy++) {
+      for (let dx = -1; dx <= 1 && !onEdge; dx++) {
+        if (dx === 0 && dy === 0) continue;
+        const nx = x + dx;
+        const ny = y + dy;
+        if (nx < 0 || nx >= bw || ny < 0 || ny >= bh) { onEdge = true; continue; }
+        if (!greenMask[ny * bw + nx]) onEdge = true;
+      }
+    }
+    if (onEdge) distMap[i] = 1;
+  }
+
+  // Propagate distances up to radius using simple BFS-like passes
+  for (let pass = 2; pass <= radius; pass++) {
+    for (let i = 0; i < greenMask.length; i++) {
+      if (distMap[i] !== radius + 1) continue;
+      const x = i % bw;
+      const y = (i - x) / bw;
+      let nearEdge = false;
+      for (let dy = -1; dy <= 1 && !nearEdge; dy++) {
+        for (let dx = -1; dx <= 1 && !nearEdge; dx++) {
+          if (dx === 0 && dy === 0) continue;
+          const nx = x + dx;
+          const ny = y + dy;
+          if (nx >= 0 && nx < bw && ny >= 0 && ny < bh) {
+            if (distMap[ny * bw + nx] === pass - 1) nearEdge = true;
+          }
+        }
+      }
+      if (nearEdge) distMap[i] = pass;
+    }
+  }
+
+  // Blend boundary pixels
+  for (let i = 0; i < greenMask.length; i++) {
+    if (!greenMask[i]) continue;
+    const dist = distMap[i];
+    if (dist > radius) continue; // fully interior, no blending needed
+    // alpha=0 at edge (dist=1), alpha=1 at dist=radius
+    const alpha = Math.min(1, Math.max(0, (dist - 0.5) / radius));
+    const off = i * 4;
+    data[off]     = Math.round(data[off]     * alpha + originalData[off]     * (1 - alpha));
+    data[off + 1] = Math.round(data[off + 1] * alpha + originalData[off + 1] * (1 - alpha));
+    data[off + 2] = Math.round(data[off + 2] * alpha + originalData[off + 2] * (1 - alpha));
+  }
+}
+
 /** Safety pass: overwrite any pixel that's still visually green after compositing */
 function cleanupRemainingGreen(targetData, greenMask, bw) {
   for (let i = 0; i < greenMask.length; i++) {

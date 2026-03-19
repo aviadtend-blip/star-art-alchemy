@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { findGreenBounds, isGreenPixel } from '../lib/mockup/chromaKey';
-import { applyArtworkToMask, createArtworkSampler } from '../lib/mockup/applyArtworkToMask';
+import { applyArtworkToMask, createArtworkSampler, featherMaskEdges } from '../lib/mockup/applyArtworkToMask';
 
 const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
 const MAX_CANVAS_DIM = 800;
 const PARALLEL_BATCH = 3;
-const COMPOSITE_ALGORITHM_VERSION = '2026-03-19-green-cleanup-v4';
+const COMPOSITE_ALGORITHM_VERSION = '2026-03-19-feather-v5';
 
 // ── Shared global caches ──────────────────────────────────────────────
 const compositeCache = new Map();   // cacheKey → dataUrl
@@ -95,6 +95,7 @@ function compositeSingleMockup(mockupSrc, artworkSampler, mode = 'default') {
       const bw = maxX - minX + 1;
       const bh = maxY - minY + 1;
       const maskData = ctx.getImageData(minX, minY, bw, bh);
+      const originalSnapshot = new Uint8ClampedArray(maskData.data);
       const greenMask = new Uint8Array(bw * bh);
       const sourceKey = getMockupSourceKey(mockupSrc);
 
@@ -115,6 +116,7 @@ function compositeSingleMockup(mockupSrc, artworkSampler, mode = 'default') {
         sourceKey,
       });
 
+      featherMaskEdges(maskData, originalSnapshot, greenMask, bw, bh, 3);
       ctx.putImageData(maskData, minX, minY);
     }
 
