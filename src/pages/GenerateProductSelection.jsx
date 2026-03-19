@@ -82,7 +82,7 @@ function ProductCard({ product, selected, onSelect }) {
       </div>
 
       {/* Labels */}
-      <div className="flex flex-col w-full" style={{ gap: '4px', paddingTop: '18px' }}>
+      <div className="flex flex-col w-full" style={{ gap: '4px', padding: '18px 0 24px' }}>
         <p className="text-subtitle" style={{ color: '#000000' }}>
           {product.title}
         </p>
