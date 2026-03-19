@@ -50,7 +50,12 @@ export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, art
 
         {/* Digital File */}
         <ProductCard
-          image={artworkSrc}
+          imageSlot={
+            <>
+              <PhoneScreenMockup artworkSrc={artworkSrc} className="w-full h-full" />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/80" />
+            </>
+          }
           title="Own the Original File"
           description="Print-ready resolution for any size, any surface, forever yours"
           primaryButton={{ label: 'Download High Resolution ($25)', onClick: onDownloadPreview }}
