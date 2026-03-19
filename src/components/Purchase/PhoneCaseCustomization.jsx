@@ -238,6 +238,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
 
   const handleModelChange = useCallback((modelId) => {
     setSelectedModel(modelId);
+    setShowModelWarning(false);
   }, []);
 
   useEffect(() => {
