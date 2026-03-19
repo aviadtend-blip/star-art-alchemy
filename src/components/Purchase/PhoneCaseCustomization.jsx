@@ -293,9 +293,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
     return () => observer.disconnect();
   }, []);
 
-    const el = document.getElementById('case-order-summary-mobile') || document.getElementById('case-order-summary-desktop');
-    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
+
 
   const handleCheckout = () => {
     if (!selectedModel) {
