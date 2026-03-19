@@ -25,7 +25,7 @@ const MOCKUP_REGIONS = {
   'mockup-2': { x: 113, y: 159, width: 1652, height: 1349 },
   'mockup-3': { x: 582, y: 159, width: 813, height: 1607 },
   'mockup-4': null,  // No green region — detail/lifestyle shot, pass through
-  'mockup-5': { x: 618, y: 247, width: 769, height: 987 },
+  'mockup-5': null,  // No green region — detail/lifestyle shot, pass through
 };
 
 /**
