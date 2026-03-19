@@ -407,7 +407,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
           <div className="flex gap-12 items-start">
             {/* Left — gallery (sticky) */}
             <div className="w-1/2 flex-shrink-0 sticky top-8">
-              <CaseGallery displayImages={CASE_IMAGES} activeThumb={activeThumb} setEmblaApi={setEmblaApi} handleThumbSelect={handleThumbSelect} />
+              <CaseGallery displayImages={displayImages} activeThumb={activeThumb} setEmblaApi={setEmblaApi} handleThumbSelect={handleThumbSelect} />
             </div>
 
             {/* Right — scrollable content */}
