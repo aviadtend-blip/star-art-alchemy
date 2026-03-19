@@ -342,21 +342,24 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
                 <h3 className="text-a3 text-surface-foreground" style={{ marginBottom: '12px' }}>Select Your Phone</h3>
                 <Select value={selectedModel} onValueChange={handleModelChange}>
                   <SelectTrigger
-                    className="w-full text-a4"
+                    className="w-full text-a4 [&>span]:flex-1 [&>span]:overflow-visible [&>span]:line-clamp-none"
                     style={{
+                      display: 'flex',
                       height: '74px',
                       borderRadius: '2px',
                       border: '1px solid #E0E0E0',
                       backgroundColor: '#FFFFFF',
-                      padding: '0 20px',
+                      padding: '15px 20px',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
                       color: selectedModel ? '#333333' : '#999999',
                     }}
                   >
                     <SelectValue placeholder="Choose your model to see a preview">
                       {selectedModel && modelData && (
-                        <span className="flex items-center w-full" style={{ gap: '24px' }}>
-                          <span className="text-a4 flex-1" style={{ color: '#333333' }}>{modelData.label}</span>
-                          <span className="text-a4 font-bold flex-shrink-0" style={{ color: '#333333' }}>${modelData.price}</span>
+                        <span style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', alignSelf: 'stretch', width: '100%' }}>
+                          <span className="text-a4" style={{ color: '#333333' }}>{modelData.label}</span>
+                          <span className="text-a4 font-bold" style={{ color: '#333333' }}>${modelData.price}</span>
                         </span>
                       )}
                     </SelectValue>
