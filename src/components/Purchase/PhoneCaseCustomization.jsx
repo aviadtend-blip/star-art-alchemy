@@ -202,7 +202,7 @@ function CaseOrderSummary({ sunSign, modelLabel, total, onCheckout }) {
 }
 
 export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, onBack, formData, onEditBirthData }) {
-  const [selectedModel, setSelectedModel] = useState('iphone-15');
+  const [selectedModel, setSelectedModel] = useState('');
   const [activeThumb, setActiveThumb] = useState(0);
   const modelCarouselRef = useRef(null);
   const isFirstScroll = useRef(true);
