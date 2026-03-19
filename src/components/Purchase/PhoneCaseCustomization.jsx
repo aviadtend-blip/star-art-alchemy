@@ -278,7 +278,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
 
       {/* Mobile layout */}
       <div className="md:hidden">
-        <CaseGallery displayImages={CASE_IMAGES} activeThumb={activeThumb} setEmblaApi={setEmblaApi} handleThumbSelect={handleThumbSelect} />
+        <CaseGallery displayImages={displayImages} activeThumb={activeThumb} setEmblaApi={setEmblaApi} handleThumbSelect={handleThumbSelect} />
 
         <div className="px-4" style={{ paddingTop: '24px' }}>
           {/* Headline + description */}
