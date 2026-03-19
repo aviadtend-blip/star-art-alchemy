@@ -5,6 +5,7 @@ import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import StepProgressBar from '@/components/ui/StepProgressBar';
+import PrimaryButton from '@/components/ui/PrimaryButton';
 import phoneCaseImg from '@/assets/product-selection/phone-case.webp';
 import canvasImg from '@/assets/product-selection/stretched-canvas.webp';
 
