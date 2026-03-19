@@ -96,6 +96,7 @@ function compositeSingleMockup(mockupSrc, artworkSampler, mode = 'default') {
       const bh = maxY - minY + 1;
       const maskData = ctx.getImageData(minX, minY, bw, bh);
       const greenMask = new Uint8Array(bw * bh);
+      const sourceKey = getMockupSourceKey(mockupSrc);
 
       for (let i = 0; i < greenMask.length; i++) {
         const offset = i * 4;
@@ -111,6 +112,7 @@ function compositeSingleMockup(mockupSrc, artworkSampler, mode = 'default') {
         bw,
         bh,
         mode,
+        sourceKey,
       });
 
       ctx.putImageData(maskData, minX, minY);
