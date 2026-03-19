@@ -11,15 +11,15 @@ import ReviewsList from '@/components/ui/ReviewsList';
 import { PHONE_CASE_MODELS, PHONE_CASE_MODEL_MAP } from '@/lib/phoneCaseSizes';
 import useCompositedMockups from '@/hooks/useCompositedMockups';
 
-import review1 from '@/assets/gallery/reviews/review-1.webp';
-import review2 from '@/assets/gallery/reviews/review-2.webp';
-import review3 from '@/assets/gallery/reviews/review-3.webp';
-import review4 from '@/assets/gallery/reviews/review-4.webp';
-import review5 from '@/assets/gallery/reviews/review-5.webp';
-import review6 from '@/assets/gallery/reviews/review-6.webp';
-import review7 from '@/assets/gallery/reviews/review-7.webp';
-import review8 from '@/assets/gallery/reviews/review-8.webp';
-import review9 from '@/assets/gallery/reviews/review-9.webp';
+import review1 from '@/assets/gallery/reviews-phone/review-1.webp';
+import review2 from '@/assets/gallery/reviews-phone/review-2.webp';
+import review3 from '@/assets/gallery/reviews-phone/review-3.webp';
+import review4 from '@/assets/gallery/reviews-phone/review-4.webp';
+import review5 from '@/assets/gallery/reviews-phone/review-5.webp';
+import review6 from '@/assets/gallery/reviews-phone/review-6.webp';
+import review7 from '@/assets/gallery/reviews-phone/review-7.webp';
+import review8 from '@/assets/gallery/reviews-phone/review-8.webp';
+import review9 from '@/assets/gallery/reviews-phone/review-9.webp';
 
 const PHONE_CASE_REVIEWS = [
   { img: review1, quote: '"got this for my mom\'s birthday and she literally cried when she saw it. best gift ive ever given her"', name: 'JORDAN M, VERIFIED BUYER' },
