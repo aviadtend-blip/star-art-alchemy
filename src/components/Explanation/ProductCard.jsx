@@ -9,6 +9,7 @@ import PopularTag from '@/components/ui/PopularTag';
  */
 export default function ProductCard({
   image,
+  imageSlot,
   title,
   description,
   badge,
@@ -19,10 +20,14 @@ export default function ProductCard({
 }) {
   return (
     <div className="relative flex flex-col flex-1 overflow-hidden rounded-sm min-w-0">
-      {/* Product image with gradient overlay */}
+      {/* Product image */}
       <div className="relative w-full" style={{ aspectRatio: '147 / 110' }}>
-        <img src={image} alt="" className="w-full h-full object-cover" loading="lazy" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/80" />
+        {imageSlot || (
+          <>
+            <img src={image} alt="" className="w-full h-full object-cover" loading="lazy" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/80" />
+          </>
+        )}
       </div>
 
       {/* Dark content area */}
