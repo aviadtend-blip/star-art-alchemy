@@ -326,39 +326,79 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
             </div>
 
             {/* Right — scrollable content */}
-            <div className="flex-1" style={{ display: 'flex', flexDirection: 'column', gap: '60px' }}>
-              <ModelSelector vertical selectedModel={selectedModel} onModelChange={handleModelChange} modelCarouselRef={modelCarouselRef} />
+            <div className="flex-1" style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
+              {/* Headline + description */}
+              <div>
+                <h1 className="text-a1 text-surface-foreground" style={{ marginBottom: '16px' }}>
+                  Built to Last, Designed to Decompose
+                </h1>
+                <p className="text-body text-surface-muted">
+                  Your Cosmic Collage is printed directly onto a slim, matte-finish case made from bamboo fibre and biodegradable bioplastic. It's tough enough to survive a 5-foot drop, scratch-resistant, and slim enough to forget it's there — until someone asks about it (and they will).
+                </p>
+              </div>
+
+              {/* Model selector dropdown */}
+              <div>
+                <h2 className="text-a2 text-surface-foreground" style={{ marginBottom: '12px' }}>Select Your Phone</h2>
+                <Select value={selectedModel} onValueChange={handleModelChange}>
+                  <SelectTrigger
+                    className="w-full text-body"
+                    style={{
+                      height: '56px',
+                      borderRadius: '8px',
+                      border: '1px solid #E0E0E0',
+                      backgroundColor: '#F9F9F9',
+                      padding: '0 16px',
+                      fontSize: '16px',
+                      color: selectedModel ? '#333333' : '#999999',
+                    }}
+                  >
+                    <SelectValue placeholder="Choose your model to see a preview" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MODEL_OPTIONS.map((model) => (
+                      <SelectItem key={model.id} value={model.id}>
+                        {model.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Feature bullets */}
+              <div className="flex flex-col" style={{ gap: '12px' }}>
+                <p className="text-body text-surface-foreground">🥊 5-ft drop tested — Shock-absorbing protection</p>
+                <p className="text-body text-surface-foreground">🌿 100% biodegradable — Bamboo fibre &amp; bioplastic, zero BPA</p>
+                <p className="text-body text-surface-foreground">📶 Wireless charging compatible</p>
+                <p className="text-body text-surface-foreground">🎨 UV printed, matte finish — Vivid color that won't scratch off</p>
+              </div>
+
+              {/* CTA button */}
               <div id="case-order-summary-desktop">
-                <CaseOrderSummary sunSign={chartData?.sun?.sign || 'Gemini'} modelLabel={modelData?.label} total={total} onCheckout={handleCheckout} />
+                <button
+                  onClick={handleCheckout}
+                  className="btn-base btn-primary w-full justify-center"
+                  style={{ borderRadius: '40px', height: '56px', fontSize: '16px' }}
+                >
+                  Add to Order — ${total}
+                </button>
               </div>
 
-              {/* Eco Materials */}
-              <div>
-                <img src={caseMockup5} alt="Eco-friendly phone case material" className="w-full object-cover" style={{ borderRadius: 2, aspectRatio: '1/1' }} loading="lazy" />
-                <div className="mt-4">
-                  <p className="text-subtitle text-surface-muted tracking-widest mb-2">ECO-FRIENDLY MATERIALS</p>
-                  <h3 className="text-a2 text-surface-foreground mb-4">Good for You. Good for the Planet.</h3>
-                  <p className="text-body text-surface-muted">
-                    Made from biodegradable plant-based materials with a premium matte finish. Slim profile with full-edge protection. Designed to protect your phone and the planet.
-                  </p>
-                  <button onClick={scrollToOrder} className="link-a5 font-body text-surface-foreground mt-4">
-                    Continue to checkout
-                  </button>
+              {/* Trust badges */}
+              <div className="flex flex-col" style={{ gap: '16px' }}>
+                <div className="flex items-start gap-3">
+                  <span style={{ fontSize: '24px' }}>🔄</span>
+                  <div>
+                    <p className="text-a5 text-surface-foreground">30-day quality guarantee</p>
+                    <p className="text-body-sm text-surface-muted" style={{ marginTop: '2px' }}>Damaged or defective? We'll replace or refund.</p>
+                  </div>
                 </div>
-              </div>
-
-              {/* The Perfect Gift */}
-              <div>
-                <img src={womanHolding} alt="Happy customer" className="w-full object-cover" style={{ borderRadius: 2, aspectRatio: '40/29' }} loading="lazy" />
-                <div className="mt-4">
-                  <p className="text-subtitle text-surface-muted tracking-widest mb-2">THE PERFECT GIFT</p>
-                  <h3 className="text-a2 text-surface-foreground mb-4">Impossible to Duplicate. Impossible to Forget.</h3>
-                  <p className="text-body text-surface-muted">
-                    A phone case as unique as their birth chart. Created from their exact cosmic blueprint — no two are ever alike.
-                  </p>
-                  <button onClick={scrollToOrder} className="link-a5 font-body text-surface-foreground mt-4">
-                    Continue to checkout
-                  </button>
+                <div className="flex items-start gap-3">
+                  <span style={{ fontSize: '24px' }}>📦</span>
+                  <div>
+                    <p className="text-a5 text-surface-foreground">Ships in 2-3 business days</p>
+                    <p className="text-body-sm text-surface-muted" style={{ marginTop: '2px' }}>Order by 5pm EST for same-day processing.</p>
+                  </div>
                 </div>
               </div>
 
