@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import demoImage from '@/assets/gallery/demo-cosmic-collision.webp';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import { ProductCustomization } from '@/components/Purchase/ProductCustomization';
 import { useImagePreloader } from '@/hooks/useImagePreloader';
