@@ -326,7 +326,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
             </div>
 
             {/* Right — scrollable content */}
-            <div className="flex-1" style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
+            <div className="flex-1" style={{ display: 'flex', flexDirection: 'column' }}>
               {/* Headline + description */}
               <div>
                 <h1 className="text-a1-special text-surface-foreground" style={{ marginBottom: '16px' }}>
