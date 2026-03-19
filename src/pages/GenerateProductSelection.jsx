@@ -82,7 +82,7 @@ function ProductCard({ product, selected, onSelect }) {
       </div>
 
       {/* Labels */}
-      <div className="flex flex-col w-full" style={{ gap: '4px', padding: '18px 0 24px' }}>
+      <div className="flex flex-col w-full" style={{ gap: '4px', padding: '18px 0 16px' }}>
         <p className="text-subtitle" style={{ color: '#000000' }}>
           {product.title}
         </p>
@@ -288,7 +288,7 @@ export default function GenerateProductSelection() {
         </div>
 
         {/* Continue button */}
-        <div className="px-4" style={{ marginTop: '24px' }}>
+        <div className="px-4" style={{ marginTop: '16px' }}>
           <PrimaryButton
             disabled={isDisabled}
             onClick={handleContinue}
