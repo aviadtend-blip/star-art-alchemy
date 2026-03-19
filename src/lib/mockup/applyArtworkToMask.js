@@ -250,39 +250,23 @@ function paintArtworkWithOrientedStrips(targetData, greenMask, sampler, bw, bh, 
   const coreMinS = minS + coreStartBin * axisStep;
   const coreMaxS = minS + coreEndBin * axisStep;
   const coreSpan = Math.max(axisStep, coreMaxS - coreMinS);
-  const panelWidth = Math.max(0.01, 1 - fit.panelInsetU * 2);
-  const panelHeight = Math.max(0.01, 1 - fit.panelInsetVStart - fit.panelInsetVEnd);
-  const crop = getCoverCrop(sampler.artAspect, (averageCoreWidth * panelWidth) / (coreSpan * panelHeight));
-  const sourceData = new Uint8ClampedArray(targetData);
-  const fillColor = computePhoneCaseFillColor(sourceData, greenMask, bw, bh);
-  const usableCropUScale = Math.max(0.01, 1 - fit.cropInsetU * 2);
-  const usableCropVScale = Math.max(0.01, 1 - fit.cropInsetVStart - fit.cropInsetVEnd);
+  const crop = getCoverCrop(sampler.artAspect, averageCoreWidth / coreSpan);
 
   forEachGreenPixel(greenMask, bw, (x, y, index) => {
     const dx = x - frame.cx;
     const dy = y - frame.cy;
     const s = dx * frame.axisX + dy * frame.axisY;
     const t = dx * frame.normalX + dy * frame.normalY;
-    const rawV = clamp((s - coreMinS) / coreSpan, 0, 1);
+    const v = clamp((s - coreMinS) / coreSpan, 0, 1);
     const bin = projectToBin(s, minS, axisSpan, binCount);
     const stripMinT = minTByBin[bin];
     const stripMaxT = maxTByBin[bin];
     const stripSpan = stripMaxT - stripMinT;
-    const rawU = stripSpan > MIN_STRIP_SPAN
+    const u = stripSpan > MIN_STRIP_SPAN
       ? clamp((t - stripMinT) / stripSpan, 0, 1)
       : 0.5;
 
-    if (!isInsidePhoneCasePanel(rawU, rawV, fit)) {
-      paintCaseSurface(targetData, index * 4, sourceData, greenMask, bw, bh, x, y, fillColor);
-      return;
-    }
-
-    const panelU = clamp((rawU - fit.panelInsetU) / panelWidth, 0, 1);
-    const panelV = clamp((rawV - fit.panelInsetVStart) / panelHeight, 0, 1);
-    const cropU = fit.cropInsetU + panelU * usableCropUScale;
-    const cropV = fit.cropInsetVStart + panelV * usableCropVScale;
-
-    paintSample(targetData, index * 4, sampler, crop.offU + cropU * crop.cropU, crop.offV + cropV * crop.cropV);
+    paintSample(targetData, index * 4, sampler, crop.offU + u * crop.cropU, crop.offV + v * crop.cropV);
   });
 
   return true;
