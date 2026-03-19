@@ -1,4 +1,5 @@
 import ProductCard from '@/components/Explanation/ProductCard';
+import CTARoomMockup from '@/components/Explanation/CTARoomMockup';
 
 /**
  * "Make It Yours" section with three product offering cards.
@@ -27,7 +28,12 @@ export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, art
 
         {/* Framed Print */}
         <ProductCard
-          image={artworkSrc}
+          imageSlot={
+            <>
+              <CTARoomMockup artworkSrc={artworkSrc} className="w-full h-full" />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/80" />
+            </>
+          }
           title={'Frame it. Hang it.\nTreasure it forever'}
           description="Gallery-quality printing. Solid wood frames. Ready to hang. Built to last 100 years."
           primaryButton={{ label: 'See Sizes ($97 – $179)', onClick: onGetFramed }}
