@@ -11,6 +11,28 @@ import ReviewsList from '@/components/ui/ReviewsList';
 import { PHONE_CASE_MODELS, PHONE_CASE_MODEL_MAP } from '@/lib/phoneCaseSizes';
 import useCompositedMockups from '@/hooks/useCompositedMockups';
 
+import review1 from '@/assets/gallery/reviews/review-1.webp';
+import review2 from '@/assets/gallery/reviews/review-2.webp';
+import review3 from '@/assets/gallery/reviews/review-3.webp';
+import review4 from '@/assets/gallery/reviews/review-4.webp';
+import review5 from '@/assets/gallery/reviews/review-5.webp';
+import review6 from '@/assets/gallery/reviews/review-6.webp';
+import review7 from '@/assets/gallery/reviews/review-7.webp';
+import review8 from '@/assets/gallery/reviews/review-8.webp';
+import review9 from '@/assets/gallery/reviews/review-9.webp';
+
+const PHONE_CASE_REVIEWS = [
+  { img: review1, quote: '"got this for my mom\'s birthday and she literally cried when she saw it. best gift ive ever given her"', name: 'JORDAN M, VERIFIED BUYER' },
+  { img: review2, quote: '"I was skeptical at first but the quality is amazing. The print is super crisp and the case feels solid."', name: 'ALEX L, VERIFIED BUYER' },
+  { img: review3, quote: '"ordered this last minute for valentines day and it came in time!! my partner hasn\'t taken the case off since"', name: 'RILEY R, VERIFIED BUYER' },
+  { img: review4, quote: '"ok i dont usually leave reviews but this was too cool not to. i get compliments on my phone case all the time now"', name: 'MORGAN K, VERIFIED BUYER' },
+  { img: review5, quote: '"Bought one for myself and now I\'ve ordered three more as gifts. Everyone keeps asking where I got my case!"', name: 'TAYLOR W, VERIFIED BUYER' },
+  { img: review6, quote: '"my sister is super into astrology so i got her this for christmas and she says its her favorite phone case ever"', name: 'CASEY D, VERIFIED BUYER' },
+  { img: review7, quote: '"The case fits perfectly and feels really protective. Not what I expected at this price point honestly."', name: 'QUINN H, VERIFIED BUYER' },
+  { img: review8, quote: '"i love pulling my phone out now lol its so unique, nothing like any case youll find at amazon or wherever"', name: 'AVERY P, VERIFIED BUYER' },
+  { img: review9, quote: '"Got matching cases for me and my best friend with our birth charts and we\'re both obsessed. Such a cool concept."', name: 'SAM B, VERIFIED BUYER' },
+];
+
 // Phone case mockups with transparent alpha cutout (no green screen)
 import caseMockup1 from '@/assets/mockups/phone-case-alpha/mockup-1.png';
 import caseMockup2 from '@/assets/mockups/phone-case-alpha/mockup-2.png';
@@ -423,7 +445,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
         </div>
 
         <div style={{ marginTop: '42px' }}>
-          <ReviewsList theme="light" gap={5} py={5} className="px-4 pb-24" />
+          <ReviewsList theme="light" gap={5} py={5} className="px-4 pb-24" reviews={PHONE_CASE_REVIEWS} />
         </div>
 
         {/* Floating CTA — slides down when inline CTA is visible */}
@@ -544,7 +566,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
               </div>
 
               <div style={{ marginTop: '42px' }}>
-                <ReviewsList theme="light" gap={6} py={6} />
+                <ReviewsList theme="light" gap={6} py={6} reviews={PHONE_CASE_REVIEWS} />
               </div>
             </div>
           </div>
