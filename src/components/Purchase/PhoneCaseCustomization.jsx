@@ -333,7 +333,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
                   Built to Last, Designed to Decompose
                 </h1>
                 <p className="text-body text-surface-muted">
-                  Your Cosmic Collage is printed directly onto a slim, matte-finish case made from bamboo fibre and biodegradable bioplastic. It's tough enough to survive a 5-foot drop, scratch-resistant, and slim enough to forget it's there — until someone asks about it (and they will).
+                  A premium eco case wrapped in your one-of-a-kind birth chart art. No two are alike — because there's no one quite like you. Slim enough to forget it's there, until someone asks about it (and they will).
                 </p>
               </div>
 
