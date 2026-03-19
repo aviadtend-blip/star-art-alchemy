@@ -275,12 +275,93 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
       <div className="md:hidden">
         <CaseGallery displayImages={CASE_IMAGES} activeThumb={activeThumb} setEmblaApi={setEmblaApi} handleThumbSelect={handleThumbSelect} />
 
-        <div className="pt-6 pb-4 px-4">
-          <ModelSelector selectedModel={selectedModel} onModelChange={handleModelChange} modelCarouselRef={modelCarouselRef} />
-        </div>
+        <div className="px-4" style={{ paddingTop: '24px' }}>
+          {/* Headline + description */}
+          <div>
+            <h1 className="text-a1-special text-surface-foreground" style={{ marginBottom: '16px' }}>
+              Built to Last, Designed to Decompose
+            </h1>
+            <p className="text-body text-surface-muted">
+              A premium eco case wrapped in your one-of-a-kind birth chart art. No two are alike — because there's no one quite like you. Slim enough to forget it's there, until someone asks about it (and they will).
+            </p>
+          </div>
 
-        <div id="case-order-summary-mobile" className="px-4" style={{ paddingBottom: '32px', marginTop: '23px' }}>
-          <CaseOrderSummary sunSign={chartData?.sun?.sign || 'Gemini'} modelLabel={modelData?.label} total={total} onCheckout={handleCheckout} />
+          {/* Model selector dropdown */}
+          <div style={{ marginTop: '20px' }}>
+            <h3 className="text-a3 text-surface-foreground" style={{ marginBottom: '12px' }}>Select Your Phone</h3>
+            <Select value={selectedModel} onValueChange={handleModelChange}>
+              <SelectTrigger
+                className="w-full text-a4 [&>span]:flex-1 [&>span]:overflow-visible [&>span]:line-clamp-none gap-6"
+                style={{
+                  display: 'flex',
+                  height: '74px',
+                  borderRadius: '2px',
+                  border: '1px solid #E0E0E0',
+                  backgroundColor: '#FFFFFF',
+                  padding: '15px 20px',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  color: selectedModel ? '#333333' : '#999999',
+                }}
+              >
+                <SelectValue placeholder="Choose your model to see a preview">
+                  {selectedModel && modelData && (
+                    <span style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', alignSelf: 'stretch', width: '100%' }}>
+                      <span className="text-a4" style={{ color: '#333333' }}>{modelData.label}</span>
+                      <span className="text-a4 font-bold" style={{ color: '#333333' }}>${modelData.price}</span>
+                    </span>
+                  )}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {MODEL_OPTIONS.map((model) => (
+                  <SelectItem key={model.id} value={model.id}>
+                    <span className="flex items-center justify-between w-full">
+                      <span>{model.label}</span>
+                      <span className="font-bold ml-4">${model.price}</span>
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Feature bullets */}
+          <div className="flex flex-col" style={{ gap: '12px', marginTop: '20px' }}>
+            <p className="text-body text-surface-foreground">🥊 5-ft drop tested — Shock-absorbing protection</p>
+            <p className="text-body text-surface-foreground">🌿 100% biodegradable — Bamboo fibre &amp; bioplastic, zero BPA</p>
+            <p className="text-body text-surface-foreground">📶 Compatible with wireless charging (not MagSafe)</p>
+            <p className="text-body text-surface-foreground">🎨 UV printed, matte finish — Vivid color that won't scratch off</p>
+          </div>
+
+          {/* CTA button */}
+          <div id="case-order-summary-mobile" style={{ marginTop: '32px' }}>
+            <button
+              onClick={handleCheckout}
+              className="btn-base btn-primary w-full justify-center"
+              style={{ borderRadius: '40px', height: '52px', fontSize: '14px' }}
+            >
+              Add to Order — ${total}
+            </button>
+          </div>
+
+          {/* Trust badges */}
+          <div className="flex flex-col" style={{ gap: '16px', marginTop: '16px' }}>
+            <div className="flex items-start gap-3">
+              <span style={{ fontSize: '24px' }}>🔄</span>
+              <div>
+                <p className="text-a5 text-surface-foreground">30-day money-back guarantee.</p>
+                <p className="text-body-sm text-surface-muted" style={{ marginTop: '2px' }}>Love it or your money back. No questions asked.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span style={{ fontSize: '24px' }}>📦</span>
+              <div>
+                <p className="text-a5 text-surface-foreground">Ships in 2-3 business days</p>
+                <p className="text-body-sm text-surface-muted" style={{ marginTop: '2px' }}>Order by 5pm EST for same-day processing.</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Mobile — Eco Materials + Gift */}
@@ -313,7 +394,9 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
           </div>
         </div>
 
-        <ReviewsList theme="light" gap={5} py={5} className="px-4 pb-16" />
+        <div style={{ marginTop: '42px' }}>
+          <ReviewsList theme="light" gap={5} py={5} className="px-4 pb-16" />
+        </div>
       </div>
 
       {/* Desktop layout */}
