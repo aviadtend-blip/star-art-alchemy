@@ -77,6 +77,7 @@ export default function PhoneCaseMockup({ artworkSrc, className = '' }) {
           const bw = maxX - minX + 1;
           const bh = maxY - minY + 1;
           const maskData = ctx.getImageData(minX, minY, bw, bh);
+          const originalSnapshot = new Uint8ClampedArray(maskData.data);
           const greenMask = new Uint8Array(bw * bh);
           const sourceKey = 'phone-case-mockup';
 
@@ -98,6 +99,7 @@ export default function PhoneCaseMockup({ artworkSrc, className = '' }) {
             sourceKey,
           });
 
+          featherMaskEdges(maskData, originalSnapshot, greenMask, bw, bh, 3);
           ctx.putImageData(maskData, minX, minY);
         }
 
