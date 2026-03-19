@@ -288,7 +288,7 @@ export default function GenerateProductSelection() {
         </div>
 
         {/* Continue button */}
-        <div className="px-4" style={{ marginTop: '48px' }}>
+        <div className="px-4" style={{ marginTop: '24px' }}>
           <PrimaryButton
             disabled={isDisabled}
             onClick={handleContinue}
