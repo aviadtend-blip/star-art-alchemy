@@ -5,6 +5,7 @@ import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import StepProgressBar from '@/components/ui/StepProgressBar';
+import PrimaryButton from '@/components/ui/PrimaryButton';
 import phoneCaseImg from '@/assets/product-selection/phone-case.webp';
 import canvasImg from '@/assets/product-selection/stretched-canvas.webp';
 
@@ -82,27 +83,10 @@ function ProductCard({ product, selected, onSelect }) {
 
       {/* Labels */}
       <div className="flex flex-col w-full" style={{ gap: '4px', paddingTop: '18px' }}>
-        <p
-          style={{
-            fontSize: '12px',
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            lineHeight: '1.13',
-            letterSpacing: '-0.36px',
-            color: '#000000',
-          }}
-        >
+        <p className="text-subtitle" style={{ color: '#000000' }}>
           {product.title}
         </p>
-        <p
-          style={{
-            fontSize: '14px',
-            fontWeight: 500,
-            lineHeight: '1.13',
-            letterSpacing: '-0.42px',
-            color: 'rgba(114, 114, 114, 0.7)',
-          }}
-        >
+        <p className="text-body" style={{ color: 'rgba(114, 114, 114, 0.7)' }}>
           {product.description}
         </p>
       </div>
@@ -180,28 +164,10 @@ export default function GenerateProductSelection() {
       <main className="flex-1 flex flex-col items-center px-4 pt-12 pb-12 md:pt-16 md:pb-16 md:justify-center">
         {/* Header */}
         <div className="flex flex-col items-center text-center" style={{ maxWidth: '317px', marginBottom: '32px' }}>
-          <h1
-            className="font-display w-full"
-            style={{
-              fontSize: '24px',
-              fontWeight: 500,
-              lineHeight: '1.2',
-              letterSpacing: '-0.48px',
-              color: '#1E1E1E',
-            }}
-          >
+          <h1 className="text-a1-special w-full" style={{ color: '#1E1E1E' }}>
             Two Ways to Treasure Your Art
           </h1>
-          <p
-            className="w-full"
-            style={{
-              fontSize: '16px',
-              lineHeight: '22px',
-              letterSpacing: '-0.32px',
-              color: 'rgba(114, 114, 114, 0.7)',
-              marginTop: '10px',
-            }}
-          >
+          <p className="text-body w-full" style={{ color: 'rgba(114, 114, 114, 0.7)', marginTop: '10px' }}>
             Choose How to Display Your Artwork
           </p>
         </div>
@@ -222,28 +188,13 @@ export default function GenerateProductSelection() {
 
         {/* Continue button */}
         <div style={{ marginTop: '48px' }}>
-          <button
-            type="button"
+          <PrimaryButton
             disabled={isDisabled}
             onClick={handleContinue}
-            className="transition-colors"
-            style={{
-              height: '48px',
-              width: '330px',
-              maxWidth: '100%',
-              borderRadius: '40px',
-              fontSize: '13px',
-              fontWeight: 500,
-              lineHeight: '1.13',
-              letterSpacing: '-0.26px',
-              cursor: isDisabled ? 'not-allowed' : 'pointer',
-              border: isDisabled ? '1px solid #B3B3B3' : '1px solid #2396A3',
-              backgroundColor: isDisabled ? '#D9D9D9' : '#FFBF00',
-              color: isDisabled ? '#B3B3B3' : '#333333',
-            }}
+            style={{ width: '330px', maxWidth: '100%' }}
           >
             Continue
-          </button>
+          </PrimaryButton>
         </div>
       </main>
 
