@@ -731,6 +731,10 @@ export function ChartExplanation({
             />
           </div>
 
+          <div className="px-4">
+            <MoreThanArtSection />
+          </div>
+
           {/* Reviews — dark */}
           <ReviewsList theme="dark" gap={5} py={5} className="px-4 pt-12 pb-12" />
         </div>
