@@ -65,13 +65,13 @@ export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, art
 
       {/* Cards — horizontal snap scroll on mobile, 3-col on desktop */}
       <div
-        className="flex items-stretch gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory scrollbar-hide"
+        className="flex items-stretch gap-3 overflow-x-auto md:overflow-visible snap-x snap-mandatory scrollbar-hide px-4 md:px-0"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {cards.map((card) => (
           <div
             key={card.key}
-            className="flex-shrink-0 w-[85vw] md:w-auto md:flex-1 snap-start min-w-0"
+            className="flex-shrink-0 w-[80vw] md:w-auto md:flex-1 snap-start min-w-0"
           >
             <ProductCard
               imageSlot={card.imageSlot}
