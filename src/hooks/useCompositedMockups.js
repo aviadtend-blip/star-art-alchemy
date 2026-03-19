@@ -143,13 +143,13 @@ function compositeSingleMockup(mockupSrc, artworkSampler, mode = 'default', artw
   }).catch(() => mockupSrc);
 }
 
-async function compositeAll(mockupSrcs, artworkSampler, signal, mode = 'default') {
+async function compositeAll(mockupSrcs, artworkSampler, signal, mode = 'default', artworkImg = null) {
   const results = [];
   for (let i = 0; i < mockupSrcs.length; i += PARALLEL_BATCH) {
     if (signal?.aborted) return results;
     const batch = mockupSrcs.slice(i, i + PARALLEL_BATCH);
     const batchResults = await Promise.all(
-      batch.map(src => compositeSingleMockup(src, artworkSampler, mode))
+      batch.map(src => compositeSingleMockup(src, artworkSampler, mode, artworkImg))
     );
     results.push(...batchResults);
     await new Promise(r => setTimeout(r, 0));
