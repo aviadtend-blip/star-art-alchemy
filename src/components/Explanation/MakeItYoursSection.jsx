@@ -23,7 +23,7 @@ export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, art
       title: 'Carry Your Stars Everywhere',
       description: 'Your birth chart art, wrapped around a premium eco case',
       badge: 'Most popular',
-      primaryButton: { label: 'Choose Your Phone ($57)', onClick: () => {} },
+      primaryButton: { label: 'Choose Your Phone ($57)', onClick: () => navigate('/generate/phone-case') },
       trustLine: '↩️ 30-day quality guarantee · 🔒 Secure checkout',
       showProcessingBar: true,
     },
