@@ -9,6 +9,7 @@ import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carouse
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import ReviewsList from '@/components/ui/ReviewsList';
 import { PHONE_CASE_MODELS, PHONE_CASE_MODEL_MAP } from '@/lib/phoneCaseSizes';
+import useCompositedMockups from '@/hooks/useCompositedMockups';
 
 // Phone case carousel images (static — no chroma key compositing needed for gallery)
 import caseMockup1 from '@/assets/mockups/phone-case/mockup-1.webp';
@@ -209,6 +210,10 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
   const modelData = PHONE_CASE_MODEL_MAP[selectedModel];
   const total = modelData?.price || 57;
 
+  // Composite artwork onto phone case mockups
+  const { composited: compositedImages, loading: compositingLoading } = useCompositedMockups(CASE_IMAGES, artworkImage);
+  const displayImages = compositedImages.length ? compositedImages : CASE_IMAGES;
+
   const [emblaApi, setEmblaApi] = useState(null);
 
   useEffect(() => {
@@ -273,7 +278,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
 
       {/* Mobile layout */}
       <div className="md:hidden">
-        <CaseGallery displayImages={CASE_IMAGES} activeThumb={activeThumb} setEmblaApi={setEmblaApi} handleThumbSelect={handleThumbSelect} />
+        <CaseGallery displayImages={displayImages} activeThumb={activeThumb} setEmblaApi={setEmblaApi} handleThumbSelect={handleThumbSelect} />
 
         <div className="px-4" style={{ paddingTop: '24px' }}>
           {/* Headline + description */}
@@ -402,7 +407,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
           <div className="flex gap-12 items-start">
             {/* Left — gallery (sticky) */}
             <div className="w-1/2 flex-shrink-0 sticky top-8">
-              <CaseGallery displayImages={CASE_IMAGES} activeThumb={activeThumb} setEmblaApi={setEmblaApi} handleThumbSelect={handleThumbSelect} />
+              <CaseGallery displayImages={displayImages} activeThumb={activeThumb} setEmblaApi={setEmblaApi} handleThumbSelect={handleThumbSelect} />
             </div>
 
             {/* Right — scrollable content */}
