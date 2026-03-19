@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { findGreenBounds, isGreenPixel } from '../lib/mockup/chromaKey';
+import { findGreenBounds, isGreenPixel, findGreenQuadCorners, bilinearInverse } from '../lib/mockup/chromaKey';
 
 const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
 const MAX_CANVAS_DIM = 800;
