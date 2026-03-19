@@ -25,7 +25,7 @@ export default function MoreThanArtSection() {
     <section className="w-full py-12 md:py-16">
       <h2 className="text-a1-special text-white text-center mb-10">More Than Art</h2>
 
-      <div className="flex flex-col md:flex-row gap-6 md:gap-5">
+      <div className="flex flex-col md:flex-row gap-8 md:gap-5">
         {ITEMS.map((item) => (
           <div key={item.title} className="flex-1 flex flex-col">
             <div className="w-full overflow-hidden" style={{ aspectRatio: '3 / 2', borderRadius: 2 }}>
