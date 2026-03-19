@@ -210,6 +210,10 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
   const modelData = PHONE_CASE_MODEL_MAP[selectedModel];
   const total = modelData?.price || 57;
 
+  // Composite artwork onto phone case mockups
+  const { composited: compositedImages, loading: compositingLoading } = useCompositedMockups(CASE_IMAGES, artworkImage);
+  const displayImages = compositedImages.length ? compositedImages : CASE_IMAGES;
+
   const [emblaApi, setEmblaApi] = useState(null);
 
   useEffect(() => {
