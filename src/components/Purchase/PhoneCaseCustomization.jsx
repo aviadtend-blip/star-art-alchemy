@@ -204,7 +204,9 @@ function CaseOrderSummary({ sunSign, modelLabel, total, onCheckout }) {
 export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, onBack, formData, onEditBirthData }) {
   const [selectedModel, setSelectedModel] = useState('');
   const [activeThumb, setActiveThumb] = useState(0);
+  const [showModelWarning, setShowModelWarning] = useState(false);
   const modelCarouselRef = useRef(null);
+  const modelSelectorRef = useRef(null);
   const isFirstScroll = useRef(true);
 
   const modelData = PHONE_CASE_MODEL_MAP[selectedModel];
