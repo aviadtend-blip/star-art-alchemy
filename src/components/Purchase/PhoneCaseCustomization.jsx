@@ -300,7 +300,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
           </div>
 
           {/* Model selector dropdown */}
-          <div style={{ marginTop: '20px' }}>
+          <div ref={modelSelectorRef} style={{ marginTop: '20px' }}>
             <h3 className="text-a3 text-surface-foreground" style={{ marginBottom: '12px' }}>Select Your Phone</h3>
             <Select value={selectedModel} onValueChange={handleModelChange}>
               <SelectTrigger
@@ -309,7 +309,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
                   display: 'flex',
                   height: '74px',
                   borderRadius: '2px',
-                  border: '1px solid #E0E0E0',
+                  border: showModelWarning ? '1px solid #E57373' : '1px solid #E0E0E0',
                   backgroundColor: '#FFFFFF',
                   padding: '15px 20px',
                   justifyContent: 'space-between',
@@ -334,6 +334,11 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
                 ))}
               </SelectContent>
             </Select>
+            {showModelWarning && (
+              <p className="text-body-sm" style={{ color: '#E57373', marginTop: '8px' }}>
+                Please select a phone model to continue
+              </p>
+            )}
           </div>
 
           {/* Feature bullets */}
