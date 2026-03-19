@@ -94,12 +94,20 @@ function ProductCard({ product, selected, onSelect }) {
   );
 }
 
+const CARD_W = 304;
+const CARD_GAP = 16;
+
 export default function GenerateProductSelection() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { chartData, formData, handleFormSubmit, handleEditBirthData } = useGenerator();
   const [selectedId, setSelectedId] = useState(null);
   const autoSubmitted = useRef(false);
+
+  // Carousel refs
+  const scrollRef = useRef(null);
+  const cardRefs = useRef([]);
+  const isProgrammaticScroll = useRef(false);
 
   // If arrived with query params (from landing), start chart calculation
   useEffect(() => {
@@ -144,26 +152,84 @@ export default function GenerateProductSelection() {
     };
   })();
 
+  // Detect which card is centered after scroll
+  const detectCenter = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const center = el.scrollLeft + el.clientWidth / 2;
+    let closest = 0;
+    let minDist = Infinity;
+
+    cardRefs.current.forEach((card, i) => {
+      if (!card) return;
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const dist = Math.abs(center - cardCenter);
+      if (dist < minDist) {
+        minDist = dist;
+        closest = i;
+      }
+    });
+
+    // Auto-select the centered product
+    if (closest < PRODUCTS.length) {
+      setSelectedId(PRODUCTS[closest].id);
+    }
+  }, []);
+
+  // Scroll to a card index (centers it)
+  const scrollToIndex = useCallback((idx) => {
+    const card = cardRefs.current[idx];
+    const el = scrollRef.current;
+    if (!card || !el) return;
+    const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+    const scrollTarget = cardCenter - el.clientWidth / 2;
+    isProgrammaticScroll.current = true;
+    el.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+    setTimeout(() => { isProgrammaticScroll.current = false; }, 500);
+  }, []);
+
+  // Scroll end detection — only update from manual scrolls
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    let timeout;
+    const onScroll = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        if (!isProgrammaticScroll.current) {
+          detectCenter();
+        }
+      }, 100);
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      clearTimeout(timeout);
+    };
+  }, [detectCenter]);
+
   const handleContinue = () => {
     if (!selectedId) return;
-
-    // Store the selected product format in session
     sessionStorage.setItem('celestial_product_format', selectedId);
-
-    // Navigate to style selection, passing the product format
     navigate('/generate/style');
   };
 
+  const handleCardSelect = (index) => {
+    setSelectedId(PRODUCTS[index].id);
+    scrollToIndex(index);
+  };
+
   const isDisabled = !selectedId;
+  const sidePad = `calc(50% - ${CARD_W / 2}px)`;
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#FFFFFF' }}>
       <Header variant="dark" />
       <StepProgressBar currentStep={1} />
 
-      <main className="flex-1 flex flex-col items-center px-4 pt-12 pb-12 md:pt-16 md:pb-16 md:justify-center">
+      <main className="flex-1 flex flex-col items-center pt-12 pb-12 md:pt-16 md:pb-16 md:justify-center">
         {/* Header */}
-        <div className="flex flex-col items-center text-center" style={{ maxWidth: '317px', marginBottom: '32px' }}>
+        <div className="flex flex-col items-center text-center px-4" style={{ maxWidth: '317px', marginBottom: '32px' }}>
           <h1 className="text-a1-special w-full" style={{ color: '#1E1E1E' }}>
             Two Ways to Treasure Your Art
           </h1>
@@ -172,29 +238,57 @@ export default function GenerateProductSelection() {
           </p>
         </div>
 
-        {/* Product cards — bleed right on mobile, side-by-side on desktop */}
-        <div
-          className="w-full overflow-x-auto pb-4 md:overflow-x-visible md:pb-0 scrollbar-hide snap-x snap-mandatory"
-          style={{ WebkitOverflowScrolling: 'touch' }}
-        >
+        {/* Product cards — center-snap carousel on mobile, side-by-side on desktop */}
+        <div className="w-full md:flex md:justify-center md:px-4">
+          {/* Mobile: snap carousel */}
           <div
-            className="flex w-max gap-4 pl-4 md:w-auto md:justify-center md:px-0 md:mx-auto"
-            style={{ paddingRight: '24px' }}
+            className="w-full flex justify-center relative md:hidden"
+            style={{ overflow: 'clip' }}
           >
+            <div
+              ref={scrollRef}
+              className="flex items-start overflow-x-auto overflow-y-hidden scrollbar-hide"
+              style={{
+                scrollSnapType: 'x mandatory',
+                gap: `${CARD_GAP}px`,
+                WebkitOverflowScrolling: 'touch',
+                paddingLeft: sidePad,
+                paddingRight: sidePad,
+                paddingBottom: 8,
+              }}
+            >
+              {PRODUCTS.map((product, i) => (
+                <div
+                  key={product.id}
+                  ref={(el) => (cardRefs.current[i] = el)}
+                  className="shrink-0"
+                  style={{ scrollSnapAlign: 'center' }}
+                >
+                  <ProductCard
+                    product={product}
+                    selected={selectedId === product.id}
+                    onSelect={() => handleCardSelect(i)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop: side-by-side */}
+          <div className="hidden md:flex gap-4 justify-center">
             {PRODUCTS.map((product) => (
-              <div key={product.id} className="snap-start">
-                <ProductCard
-                  product={product}
-                  selected={selectedId === product.id}
-                  onSelect={() => setSelectedId(product.id)}
-                />
-              </div>
+              <ProductCard
+                key={product.id}
+                product={product}
+                selected={selectedId === product.id}
+                onSelect={() => setSelectedId(product.id)}
+              />
             ))}
           </div>
         </div>
 
         {/* Continue button */}
-        <div style={{ marginTop: '48px' }}>
+        <div className="px-4" style={{ marginTop: '48px' }}>
           <PrimaryButton
             disabled={isDisabled}
             onClick={handleContinue}
