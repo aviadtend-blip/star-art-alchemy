@@ -121,9 +121,9 @@ export function GeneratorProvider({ children }) {
       chart.gender = data.gender || null;
       setChartData(chart);
 
-      // Only navigate if we're not already on the style page
-      if (window.location.pathname !== '/generate/style') {
-        navigate('/generate/style');
+      // Navigate to product selection instead of directly to style
+      if (window.location.pathname !== '/generate/product' && window.location.pathname !== '/generate/style') {
+        navigate('/generate/product');
       }
     } catch (err) {
       console.error('❌ Chart calculation error:', err);

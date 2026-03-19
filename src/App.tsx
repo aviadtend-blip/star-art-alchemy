@@ -91,6 +91,7 @@ const App = () => {
                 {/* Generator flow + policy pages — all lazy loaded */}
                 <Route element={<Suspense fallback={<LazyFallback />}><Outlet /></Suspense>}>
                   <Route path="/generate" element={<GenerateEntry />} />
+                  <Route path="/generate/product" element={<GenerateProductSelection />} />
                   <Route path="/generate/style" element={<GenerateStyle />} />
                   <Route path="/generate/loading" element={<GenerateLoading />} />
                   <Route path="/generate/preview" element={<GeneratePreview />} />
