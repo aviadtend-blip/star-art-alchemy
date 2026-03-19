@@ -204,7 +204,9 @@ function CaseOrderSummary({ sunSign, modelLabel, total, onCheckout }) {
 export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, onBack, formData, onEditBirthData }) {
   const [selectedModel, setSelectedModel] = useState('');
   const [activeThumb, setActiveThumb] = useState(0);
+  const [showModelWarning, setShowModelWarning] = useState(false);
   const modelCarouselRef = useRef(null);
+  const modelSelectorRef = useRef(null);
   const isFirstScroll = useRef(true);
 
   const modelData = PHONE_CASE_MODEL_MAP[selectedModel];
@@ -236,6 +238,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
 
   const handleModelChange = useCallback((modelId) => {
     setSelectedModel(modelId);
+    setShowModelWarning(false);
   }, []);
 
   useEffect(() => {
@@ -260,6 +263,11 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
   };
 
   const handleCheckout = () => {
+    if (!selectedModel) {
+      setShowModelWarning(true);
+      modelSelectorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
     onCheckout({
       size: selectedModel,
       sizeLabel: modelData?.label,
@@ -292,7 +300,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
           </div>
 
           {/* Model selector dropdown */}
-          <div style={{ marginTop: '20px' }}>
+          <div ref={modelSelectorRef} style={{ marginTop: '20px' }}>
             <h3 className="text-a3 text-surface-foreground" style={{ marginBottom: '12px' }}>Select Your Phone</h3>
             <Select value={selectedModel} onValueChange={handleModelChange}>
               <SelectTrigger
@@ -301,7 +309,7 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
                   display: 'flex',
                   height: '74px',
                   borderRadius: '2px',
-                  border: '1px solid #E0E0E0',
+                  border: showModelWarning ? '1px solid #E57373' : '1px solid #E0E0E0',
                   backgroundColor: '#FFFFFF',
                   padding: '15px 20px',
                   justifyContent: 'space-between',
@@ -326,6 +334,11 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
                 ))}
               </SelectContent>
             </Select>
+            {showModelWarning && (
+              <p className="text-body-sm" style={{ color: '#E57373', marginTop: '8px' }}>
+                Please select a phone model to continue
+              </p>
+            )}
           </div>
 
           {/* Feature bullets */}
@@ -397,7 +410,24 @@ export function PhoneCaseCustomization({ chartData, artworkImage, onCheckout, on
         </div>
 
         <div style={{ marginTop: '42px' }}>
-          <ReviewsList theme="light" gap={5} py={5} className="px-4 pb-16" />
+          <ReviewsList theme="light" gap={5} py={5} className="px-4 pb-24" />
+        </div>
+
+        {/* Floating CTA */}
+        <div
+          className="fixed bottom-0 left-0 right-0 z-40 md:hidden"
+          style={{
+            background: 'linear-gradient(to top, #FFFFFF 80%, rgba(255,255,255,0))',
+            padding: '12px 16px 16px',
+          }}
+        >
+          <button
+            onClick={handleCheckout}
+            className="btn-base btn-primary w-full justify-center"
+            style={{ borderRadius: '40px', height: '52px', fontSize: '14px' }}
+          >
+            {selectedModel && modelData ? `Add to Order — $${total}` : 'Add to Order'}
+          </button>
         </div>
       </div>
 
