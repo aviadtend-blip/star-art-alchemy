@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { findGreenBounds, isGreenPixel, findGreenQuadCorners, bilinearInverse } from '@/lib/mockup/chromaKey';
+import { findGreenBounds, isGreenPixel } from '@/lib/mockup/chromaKey';
 import phoneCaseMockup from '@/assets/mockups/phone-case-mockup.webp';
 
 const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
