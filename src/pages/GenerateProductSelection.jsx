@@ -230,9 +230,9 @@ export default function GenerateProductSelection() {
       <main className="flex-1 flex flex-col items-center pt-12 pb-12 md:pt-16 md:pb-16 md:justify-center">
         {/* Header */}
         <div className="flex flex-col items-center text-center px-4" style={{ maxWidth: '317px', marginBottom: '32px' }}>
-          <h1 className="text-a1-special w-full" style={{ color: '#1E1E1E' }}>
+          <h2 className="text-a2 w-full" style={{ color: '#1E1E1E', fontWeight: 400 }}>
             Two Ways to Treasure Your Art
-          </h1>
+          </h2>
           <p className="text-body w-full" style={{ color: 'rgba(114, 114, 114, 0.7)', marginTop: '10px' }}>
             Choose How to Display Your Artwork
           </p>
