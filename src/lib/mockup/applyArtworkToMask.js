@@ -1,4 +1,4 @@
-import { bilinearInverse, findGreenQuadCorners } from './chromaKey';
+import { bilinearInverse, findGreenQuadCorners, sampleNearbyColor } from './chromaKey';
 
 const DEFAULT_ARTWORK_MAX_DIM = 800;
 const MIN_AXIS_SPAN = 24;
@@ -6,30 +6,57 @@ const MIN_STRIP_SPAN = 6;
 const MIN_STRIP_BINS = 96;
 const MAX_STRIP_BINS = 512;
 const STRIP_SMOOTHING_RADIUS = 2;
+const DEFAULT_PHONE_CASE_FILL = [240, 238, 232];
 const DEFAULT_PHONE_CASE_FIT = {
   coreWidthRatio: 0.58,
-  uInset: 0.04,
-  vInsetStart: 0.05,
-  vInsetEnd: 0.05,
+  cropInsetU: 0.015,
+  cropInsetVStart: 0.015,
+  cropInsetVEnd: 0.015,
+  panelInsetU: 0.08,
+  panelInsetVStart: 0.075,
+  panelInsetVEnd: 0.085,
+  panelCornerRadius: 0.16,
 };
 const PHONE_CASE_SOURCE_FITS = {
   'mockup-1': {
     coreWidthRatio: 0.62,
-    uInset: 0.035,
-    vInsetStart: 0.06,
-    vInsetEnd: 0.05,
+    cropInsetU: 0.01,
+    cropInsetVStart: 0.015,
+    cropInsetVEnd: 0.015,
+    panelInsetU: 0.075,
+    panelInsetVStart: 0.075,
+    panelInsetVEnd: 0.08,
+    panelCornerRadius: 0.15,
   },
   'mockup-2': {
     coreWidthRatio: 0.55,
-    uInset: 0.075,
-    vInsetStart: 0.1,
-    vInsetEnd: 0.08,
+    cropInsetU: 0.02,
+    cropInsetVStart: 0.02,
+    cropInsetVEnd: 0.02,
+    panelInsetU: 0.12,
+    panelInsetVStart: 0.11,
+    panelInsetVEnd: 0.11,
+    panelCornerRadius: 0.18,
   },
   'mockup-3': {
     coreWidthRatio: 0.6,
-    uInset: 0.05,
-    vInsetStart: 0.06,
-    vInsetEnd: 0.04,
+    cropInsetU: 0.015,
+    cropInsetVStart: 0.015,
+    cropInsetVEnd: 0.015,
+    panelInsetU: 0.085,
+    panelInsetVStart: 0.07,
+    panelInsetVEnd: 0.08,
+    panelCornerRadius: 0.16,
+  },
+  'phone-case-mockup': {
+    coreWidthRatio: 0.6,
+    cropInsetU: 0.015,
+    cropInsetVStart: 0.015,
+    cropInsetVEnd: 0.015,
+    panelInsetU: 0.08,
+    panelInsetVStart: 0.08,
+    panelInsetVEnd: 0.08,
+    panelCornerRadius: 0.16,
   },
 };
 
@@ -192,6 +219,220 @@ function paintArtworkWithOrientedStrips(targetData, greenMask, sampler, bw, bh, 
     coreEndBin = endBin;
   }
 
+  let coreTotalWidth = 0;
+  let coreWidthSamples = 0;
+  for (let i = coreStartBin; i <= coreEndBin; i++) {
+    if (widthByBin[i] > 0) {
+      coreTotalWidth += widthByBin[i];
+      coreWidthSamples += 1;
+    }
+  }
+
+  const averageWidth = totalWidth / widthSamples;
+  const averageCoreWidth = coreWidthSamples ? coreTotalWidth / coreWidthSamples : averageWidth;
+  const axisStep = binCount > 1 ? axisSpan / (binCount - 1) : axisSpan;
+  const coreMinS = minS + coreStartBin * axisStep;
+  const coreMaxS = minS + coreEndBin * axisStep;
+  const coreSpan = Math.max(axisStep, coreMaxS - coreMinS);
+  const panelWidth = Math.max(0.01, 1 - fit.panelInsetU * 2);
+  const panelHeight = Math.max(0.01, 1 - fit.panelInsetVStart - fit.panelInsetVEnd);
+  const crop = getCoverCrop(sampler.artAspect, (averageCoreWidth * panelWidth) / (coreSpan * panelHeight));
+  const fillColor = computePhoneCaseFillColor(targetData, greenMask, bw, bh);
+  const usableCropUScale = Math.max(0.01, 1 - fit.cropInsetU * 2);
+  const usableCropVScale = Math.max(0.01, 1 - fit.cropInsetVStart - fit.cropInsetVEnd);
+
+  forEachGreenPixel(greenMask, bw, (x, y, index) => {
+    const dx = x - frame.cx;
+    const dy = y - frame.cy;
+    const s = dx * frame.axisX + dy * frame.axisY;
+    const t = dx * frame.normalX + dy * frame.normalY;
+    const rawV = clamp((s - coreMinS) / coreSpan, 0, 1);
+    const bin = projectToBin(s, minS, axisSpan, binCount);
+    const stripMinT = minTByBin[bin];
+    const stripMaxT = maxTByBin[bin];
+    const stripSpan = stripMaxT - stripMinT;
+    const rawU = stripSpan > MIN_STRIP_SPAN
+      ? clamp((t - stripMinT) / stripSpan, 0, 1)
+      : 0.5;
+
+    if (!isInsidePhoneCasePanel(rawU, rawV, fit)) {
+      paintCaseSurface(targetData, index * 4, targetData, greenMask, bw, bh, x, y, fillColor);
+      return;
+    }
+
+    const panelU = clamp((rawU - fit.panelInsetU) / panelWidth, 0, 1);
+    const panelV = clamp((rawV - fit.panelInsetVStart) / panelHeight, 0, 1);
+    const cropU = fit.cropInsetU + panelU * usableCropUScale;
+    const cropV = fit.cropInsetVStart + panelV * usableCropVScale;
+
+    paintSample(targetData, index * 4, sampler, crop.offU + cropU * crop.cropU, crop.offV + cropV * crop.cropV);
+  });
+
+  return true;
+}
+
+function getPhoneCaseFit(sourceKey) {
+  if (!sourceKey) return DEFAULT_PHONE_CASE_FIT;
+
+  const normalizedKey = sourceKey.toLowerCase();
+  return PHONE_CASE_SOURCE_FITS[normalizedKey] ?? DEFAULT_PHONE_CASE_FIT;
+}
+
+function isInsidePhoneCasePanel(u, v, fit) {
+  const left = fit.panelInsetU;
+  const right = 1 - fit.panelInsetU;
+  const top = fit.panelInsetVStart;
+  const bottom = 1 - fit.panelInsetVEnd;
+
+  if (u < left || u > right || v < top || v > bottom) {
+    return false;
+  }
+
+  const panelWidth = right - left;
+  const panelHeight = bottom - top;
+  const radius = Math.min(panelWidth, panelHeight) * fit.panelCornerRadius;
+  if (radius <= 0) return true;
+
+  const innerLeft = left + radius;
+  const innerRight = right - radius;
+  const innerTop = top + radius;
+  const innerBottom = bottom - radius;
+
+  if ((u >= innerLeft && u <= innerRight) || (v >= innerTop && v <= innerBottom)) {
+    return true;
+  }
+
+  const cornerX = u < innerLeft ? innerLeft : innerRight;
+  const cornerY = v < innerTop ? innerTop : innerBottom;
+  const dx = u - cornerX;
+  const dy = v - cornerY;
+  return dx * dx + dy * dy <= radius * radius;
+}
+
+function computePhoneCaseFillColor(targetData, greenMask, bw, bh) {
+  let red = 0;
+  let green = 0;
+  let blue = 0;
+  let samples = 0;
+
+  forEachGreenPixel(greenMask, bw, (x, y) => {
+    if (!isMaskBoundaryPixel(greenMask, bw, bh, x, y)) return;
+    const [r, g, b] = sampleNearbyColor(targetData, bw, bh, x, y);
+    red += r;
+    green += g;
+    blue += b;
+    samples += 1;
+  });
+
+  if (!samples) return DEFAULT_PHONE_CASE_FILL;
+
+  return [
+    Math.round(red / samples),
+    Math.round(green / samples),
+    Math.round(blue / samples),
+  ];
+}
+
+function paintCaseSurface(targetData, targetOffset, imageData, greenMask, bw, bh, x, y, fallbackFill) {
+  if (isMaskBoundaryPixel(greenMask, bw, bh, x, y)) {
+    const [r, g, b] = sampleNearbyColor(imageData, bw, bh, x, y);
+    targetData[targetOffset] = r;
+    targetData[targetOffset + 1] = g;
+    targetData[targetOffset + 2] = b;
+  } else {
+    targetData[targetOffset] = fallbackFill[0];
+    targetData[targetOffset + 1] = fallbackFill[1];
+    targetData[targetOffset + 2] = fallbackFill[2];
+  }
+
+  targetData[targetOffset + 3] = 255;
+}
+
+function isMaskBoundaryPixel(greenMask, bw, bh, x, y) {
+  const neighbors = [
+    [x - 1, y],
+    [x + 1, y],
+    [x, y - 1],
+    [x, y + 1],
+  ];
+
+  for (const [nx, ny] of neighbors) {
+    if (nx < 0 || nx >= bw || ny < 0 || ny >= bh) return true;
+    if (!greenMask[ny * bw + nx]) return true;
+  }
+
+  return false;
+}
+
+function getPrincipalFrame(greenMask, bw, bh) {
+  let count = 0;
+  let sumX = 0;
+  let sumY = 0;
+
+  forEachGreenPixel(greenMask, bw, (x, y) => {
+    count += 1;
+    sumX += x;
+    sumY += y;
+  });
+
+  if (!count) return null;
+
+  const cx = sumX / count;
+  const cy = sumY / count;
+  let xx = 0;
+  let xy = 0;
+  let yy = 0;
+
+  forEachGreenPixel(greenMask, bw, (x, y) => {
+    const dx = x - cx;
+    const dy = y - cy;
+    xx += dx * dx;
+    xy += dx * dy;
+    yy += dy * dy;
+  });
+
+  xx /= count;
+  xy /= count;
+  yy /= count;
+
+  const trace = xx + yy;
+  const det = xx * yy - xy * xy;
+  const term = Math.sqrt(Math.max(0, (trace * trace) / 4 - det));
+  const lambda = trace / 2 + term;
+
+  let axisX;
+  let axisY;
+
+  if (Math.abs(xy) > 1e-6) {
+    axisX = lambda - yy;
+    axisY = xy;
+  } else if (xx >= yy) {
+    axisX = 1;
+    axisY = 0;
+  } else {
+    axisX = 0;
+    axisY = 1;
+  }
+
+  const axisMagnitude = Math.hypot(axisX, axisY) || 1;
+  axisX /= axisMagnitude;
+  axisY /= axisMagnitude;
+
+  if (axisY < 0) {
+    axisX *= -1;
+    axisY *= -1;
+  }
+
+  let normalX = axisY;
+  let normalY = -axisX;
+
+  if (normalX < 0) {
+    normalX *= -1;
+    normalY *= -1;
+  }
+
+  return { cx, cy, axisX, axisY, normalX, normalY };
+}
   let coreTotalWidth = 0;
   let coreWidthSamples = 0;
   for (let i = coreStartBin; i <= coreEndBin; i++) {
