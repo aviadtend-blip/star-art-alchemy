@@ -198,8 +198,8 @@ export default function useCompositedMockups(mockupSrcs, artworkSrc, options = {
       }
       if (controller.signal.aborted) return;
 
-      const artworkSampler = createArtworkSampler(artworkImg);
-      const results = await compositeAll(mockupSrcs, artworkSampler, controller.signal, mode);
+      const artworkSampler = mode === 'phone-case' ? null : createArtworkSampler(artworkImg);
+      const results = await compositeAll(mockupSrcs, artworkSampler, controller.signal, mode, artworkImg);
       if (!controller.signal.aborted) {
         setComposited(results.length ? results : mockupSrcs);
         setLoading(false);
