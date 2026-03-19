@@ -73,7 +73,6 @@ function compositeSingleMockup(mockupSrc, artworkSampler, mode = 'default', artw
   if (mode === 'phone-case') {
     const mockupKey = extractMockupKey(mockupSrc);
     if (!hasCompositableRegion(mockupKey)) {
-      // Non-compositable mockup (detail shot) — return as-is
       compositeCache.set(cacheKey, mockupSrc);
       return Promise.resolve(mockupSrc);
     }
