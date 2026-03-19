@@ -172,16 +172,23 @@ export default function GenerateProductSelection() {
           </p>
         </div>
 
-        {/* Product cards — horizontal scroll on mobile, side-by-side on desktop */}
-        <div className="w-full overflow-x-auto pb-4 md:overflow-x-visible md:pb-0 scrollbar-hide">
-          <div className="flex w-max gap-4 px-4 md:w-auto md:justify-center md:px-0">
+        {/* Product cards — bleed right on mobile, side-by-side on desktop */}
+        <div
+          className="w-full overflow-x-auto pb-4 md:overflow-x-visible md:pb-0 scrollbar-hide snap-x snap-mandatory"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
+          <div
+            className="flex w-max gap-4 pl-4 md:w-auto md:justify-center md:px-0 md:mx-auto"
+            style={{ paddingRight: '24px' }}
+          >
             {PRODUCTS.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                selected={selectedId === product.id}
-                onSelect={() => setSelectedId(product.id)}
-              />
+              <div key={product.id} className="snap-start">
+                <ProductCard
+                  product={product}
+                  selected={selectedId === product.id}
+                  onSelect={() => setSelectedId(product.id)}
+                />
+              </div>
             ))}
           </div>
         </div>
