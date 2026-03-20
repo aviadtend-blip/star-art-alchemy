@@ -52,11 +52,11 @@ export default function ProductCard({
 
         {/* CTA buttons */}
         <div className="flex flex-col items-center gap-2.5 w-full">
-          <button onClick={primaryButton.onClick} className="btn-base btn-primary w-full">
+          <button onClick={primaryButton.onClick} disabled={primaryButton.disabled} className="btn-base btn-primary w-full disabled:opacity-50 disabled:pointer-events-none">
             {primaryButton.label}
           </button>
           {secondaryButton && (
-            <button onClick={secondaryButton.onClick} className="btn-base btn-dark-outline w-full">
+            <button onClick={secondaryButton.onClick} disabled={secondaryButton.disabled} className="btn-base btn-dark-outline w-full disabled:opacity-50 disabled:pointer-events-none">
               {secondaryButton.label}
             </button>
           )}
