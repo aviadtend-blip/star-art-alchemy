@@ -212,6 +212,7 @@ export default function EmailCaptureModal({
         risingSign,
         artworkId: resolvedArtworkId,
         sessionId,
+        artworkAnalysis,
       }).catch((error) => {
         console.error('[EmailCaptureModal] Story gallery generation failed:', error?.message || error);
         return { sunCropUrl: '', moonCropUrl: '', risingCropUrl: '' };
