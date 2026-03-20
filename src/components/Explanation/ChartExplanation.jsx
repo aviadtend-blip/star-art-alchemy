@@ -259,6 +259,8 @@ export function ChartExplanation({
   isReimagining,
   variationsExhausted,
   funnelMode,
+  onDigitalCheckout,
+  checkoutLoading,
 }) {
   // Use AI analysis if available, otherwise fall back to static rule-based explanations
   const explanation = artworkAnalysis || generateChartExplanation(chartData);
@@ -618,6 +620,8 @@ export function ChartExplanation({
             onDownloadPreview={() => setShowEmailModal(true)}
             artworkSrc={selectedImage}
             funnelMode={funnelMode}
+            onDigitalCheckout={onDigitalCheckout}
+            checkoutLoading={checkoutLoading}
           />
           <MoreThanArtSection />
           {funnelMode !== 'digital' && <ReviewsList theme="dark" gap={6} py={6} className="pt-8 pb-[60px] w-full" />}
@@ -731,6 +735,8 @@ export function ChartExplanation({
               onDownloadPreview={() => setShowEmailModal(true)}
               artworkSrc={selectedImage}
               funnelMode={funnelMode}
+              onDigitalCheckout={onDigitalCheckout}
+              checkoutLoading={checkoutLoading}
             />
           </div>
 
