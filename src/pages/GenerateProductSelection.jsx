@@ -135,7 +135,7 @@ export default function GenerateProductSelection() {
         userPhotoUrl: searchParams.get('userPhotoUrl') || null,
       });
     }
-    // No redirect — allow direct access for preview/testing
+    // Allow direct access without data for preview/testing
   }, [searchParams, chartData, handleFormSubmit]);
 
   // Build display formData from query params while chart loads
