@@ -229,7 +229,7 @@ export default function GenerateProductSelection() {
 
       <main className="flex-1 flex flex-col items-center pt-12 pb-12 md:pt-16 md:pb-16 md:justify-center">
         {/* Header */}
-        <div className="flex flex-col items-center text-center px-4" style={{ maxWidth: '317px', marginBottom: '32px' }}>
+        <div className="flex flex-col items-center text-center px-4 max-w-[250px] md:max-w-[317px]" style={{ marginBottom: '32px' }}>
           <h2 className="text-a2 w-full" style={{ color: '#1E1E1E', fontWeight: 400 }}>
             Two Ways to Treasure Your Art
           </h2>
