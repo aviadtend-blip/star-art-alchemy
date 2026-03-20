@@ -123,7 +123,8 @@ const digitalHeroMarqueeImages = [
 /* ─── Component ─── */
 
 export default function LandingPage() {
-  const { handleFormSubmit, isCalculatingChart, error } = useGenerator();
+  const { handleFormSubmit, isCalculatingChart, error, funnelMode } = useGenerator();
+  const activeMarqueeImages = funnelMode === 'digital' ? digitalHeroMarqueeImages : heroMarqueeImages;
 
   // Shared form state — passed to all BirthDataFormCard instances
   const [formData, setFormData] = useState({
