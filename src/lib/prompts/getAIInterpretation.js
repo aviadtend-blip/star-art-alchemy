@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+import { invokeProjectFunction } from '@/lib/api/invokeProjectFunction';
 
 /**
  * Calls the AI interpretation edge function to generate a poetic,
