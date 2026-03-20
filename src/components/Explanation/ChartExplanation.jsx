@@ -617,6 +617,7 @@ export function ChartExplanation({
             onGetFramed={onGetFramed}
             onDownloadPreview={() => setShowEmailModal(true)}
             artworkSrc={selectedImage}
+            funnelMode={funnelMode}
           />
           <MoreThanArtSection />
           <ReviewsList theme="dark" gap={6} py={6} className="pt-8 pb-[60px] w-full" />
