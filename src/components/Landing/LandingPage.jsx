@@ -111,6 +111,15 @@ const heroMarqueeImages = [
   { src: heroCustomer6, tags: [{ emoji: "☀️", label: "Scorpio" }, { emoji: "🌙", label: "Leo" }, { emoji: "⬆️", label: "Gemini" }] },
 ];
 
+const digitalHeroMarqueeImages = [
+  { src: digitalHero1, tags: [{ emoji: "☀️", label: "Cancer" }, { emoji: "🌙", label: "Sagittarius" }, { emoji: "⬆️", label: "Aquarius" }] },
+  { src: heroCustomer2, tags: [{ emoji: "☀️", label: "Taurus" }, { emoji: "🌙", label: "Pisces" }, { emoji: "⬆️", label: "Sagittarius" }] },
+  { src: digitalHero2, tags: [{ emoji: "☀️", label: "Capricorn" }, { emoji: "🌙", label: "Aries" }, { emoji: "⬆️", label: "Virgo" }] },
+  { src: digitalHero3, tags: [{ emoji: "☀️", label: "Leo" }, { emoji: "🌙", label: "Gemini" }, { emoji: "⬆️", label: "Scorpio" }] },
+  { src: heroCustomer5, tags: [{ emoji: "☀️", label: "Aries" }, { emoji: "🌙", label: "Scorpio" }, { emoji: "⬆️", label: "Capricorn" }] },
+  { src: digitalHero4, tags: [{ emoji: "☀️", label: "Pisces" }, { emoji: "🌙", label: "Libra" }, { emoji: "⬆️", label: "Taurus" }] },
+];
+
 /* ─── Component ─── */
 
 export default function LandingPage() {
