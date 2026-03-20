@@ -340,22 +340,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══════════════════ CTA BREAK ═══════════════════ */}
-      <section className="py-[60px] px-4 bg-white text-surface-foreground">
-        <div className="max-w-lg mx-auto text-center flex flex-col items-center gap-5">
-          <h2 className="text-a2 text-surface-foreground leading-snug">
-            Ready to turn your birth data into some awesome wall art?
-          </h2>
-          <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-8 h-12 w-full md:w-auto rounded-full text-a4 hover:opacity-90 transition-all shadow-lg">
-            Generate your free preview
-          </button>
-          <p className="text-body text-surface-muted">Free preview in 60 seconds.</p>
-        </div>
-      </section>
-
-      {/* ═══════════════════ EVERY SYMBOL HAS MEANING (Interactive) ═══════════════════ */}
-      <InteractiveHotspots onScrollToForm={scrollToForm} />
-
       {/* ═══════════════════ SIMPLE STEPS ═══════════════════ */}
       {(() => {
         const allSteps = [
@@ -397,6 +381,22 @@ export default function LandingPage() {
       </section>
         );
       })()}
+
+      {/* ═══════════════════ CTA BREAK ═══════════════════ */}
+      <section className="py-[60px] px-4 bg-white text-surface-foreground">
+        <div className="max-w-lg mx-auto text-center flex flex-col items-center gap-5">
+          <h2 className="text-a2 text-surface-foreground leading-snug">
+            Ready to turn your birth data into some awesome wall art?
+          </h2>
+          <button onClick={scrollToForm} className="bg-surface-foreground text-surface px-8 h-12 w-full md:w-auto rounded-full text-a4 hover:opacity-90 transition-all shadow-lg">
+            Generate your free preview
+          </button>
+          <p className="text-body text-surface-muted">Free preview in 60 seconds.</p>
+        </div>
+      </section>
+
+      {/* ═══════════════════ EVERY SYMBOL HAS MEANING (Interactive) ═══════════════════ */}
+      <InteractiveHotspots onScrollToForm={scrollToForm} />
 
       {/* ═══════════════════ GIFT + MATERIALS TILES ═══════════════════ */}
       {funnelMode !== 'digital' && (
