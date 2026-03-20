@@ -84,6 +84,7 @@ export function GeneratorProvider({ children }) {
   const [artworkId, setArtworkId] = useState(cached.artworkId || null);
   const [userPhotoUrl, setUserPhotoUrl] = useState(cached.userPhotoUrl || null);
   const [isPortraitEdition, setIsPortraitEdition] = useState(cached.isPortraitEdition || false);
+  const [funnelMode, setFunnelMode] = useState(cached.funnelMode || 'default');
   const isGeneratingRef = useRef(false);
   const isCalculatingChartRef = useRef(false);
 
