@@ -39,6 +39,10 @@ import heroCustomer3 from "@/assets/hero/customer-3.webp";
 import heroCustomer4 from "@/assets/hero/customer-4.webp";
 import heroCustomer5 from "@/assets/hero/customer-5.webp";
 import heroCustomer6 from "@/assets/hero/customer-6.webp";
+import digitalHero1 from "@/assets/digital-hero/phone-wallpaper-01.webp";
+import digitalHero2 from "@/assets/digital-hero/phone-wallpaper-02.webp";
+import digitalHero3 from "@/assets/digital-hero/phone-wallpaper-03.webp";
+import digitalHero4 from "@/assets/digital-hero/phone-wallpaper-04.webp";
 import swipeIcon from "@/assets/swipe-icon.svg";
 
 import ProgressBar from "@/components/ui/ProgressBar";
