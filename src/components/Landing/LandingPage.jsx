@@ -395,6 +395,7 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ GIFT + MATERIALS TILES ═══════════════════ */}
+      {funnelMode !== 'digital' && (
       <section className="py-[85px] bg-surface">
         <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* The Perfect Gift */}
@@ -432,6 +433,7 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* ═══════════════════ CUSTOMER GALLERY ═══════════════════ */}
       <section className="bg-white text-surface-foreground overflow-hidden py-10 md:py-16">
