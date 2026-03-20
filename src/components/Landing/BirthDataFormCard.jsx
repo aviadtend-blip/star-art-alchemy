@@ -525,7 +525,7 @@ export default function BirthDataFormCard({
             </div>
 
             {addBirthTime && (
-              <div className="mt-4">
+              <div className="mt-2">
                 <div className="hidden lg:block">
                   <div className="flex items-end gap-4">
                     <div className="flex-1 min-w-0">{timeInputsDesktop}</div>
