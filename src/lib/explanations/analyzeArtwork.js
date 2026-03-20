@@ -47,24 +47,28 @@ export async function analyzeArtwork(imageUrl, chartData) {
           artworkElement: analysis.sun.artworkElement || fallback.elements[0].artworkElement,
           explanation: analysis.sun.explanation,
           aiPosition: normalizePosition(analysis.sun.position),
+          focusBox: normalizeFocusBox(analysis.sun.focusBox),
         },
         {
           ...fallback.elements[1],
           artworkElement: analysis.moon.artworkElement || fallback.elements[1].artworkElement,
           explanation: analysis.moon.explanation,
           aiPosition: normalizePosition(analysis.moon.position),
+          focusBox: normalizeFocusBox(analysis.moon.focusBox),
         },
         {
           ...fallback.elements[2],
           artworkElement: analysis.rising.artworkElement || fallback.elements[2].artworkElement,
           explanation: analysis.rising.explanation,
           aiPosition: normalizePosition(analysis.rising.position),
+          focusBox: normalizeFocusBox(analysis.rising.focusBox),
         },
         {
           ...fallback.elements[3],
           artworkElement: analysis.element.artworkElement || fallback.elements[3].artworkElement,
           explanation: analysis.element.explanation,
           aiPosition: normalizePosition(analysis.element.position),
+          focusBox: normalizeFocusBox(analysis.element.focusBox),
         },
       ],
     };
