@@ -41,7 +41,7 @@ function ProductCard({ product, selected, onSelect }) {
         flexShrink: 0,
         borderRadius: '2px',
         backgroundColor: '#FFFFFF',
-        boxShadow: selected ? '0 0 0 2px #FFFFFF, 0 0 0 4px #2396A3' : 'none',
+        border: selected ? '2px solid #2396A3' : '2px solid transparent',
       }}
     >
       {/* Image area */}
