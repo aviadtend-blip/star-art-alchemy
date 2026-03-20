@@ -84,13 +84,14 @@ export function GeneratorProvider({ children }) {
   const [artworkId, setArtworkId] = useState(cached.artworkId || null);
   const [userPhotoUrl, setUserPhotoUrl] = useState(cached.userPhotoUrl || null);
   const [isPortraitEdition, setIsPortraitEdition] = useState(cached.isPortraitEdition || false);
+  const [funnelMode, setFunnelMode] = useState(cached.funnelMode || 'default');
   const isGeneratingRef = useRef(false);
   const isCalculatingChartRef = useRef(false);
 
   // Persist critical state to sessionStorage
   useEffect(() => {
-    saveSession({ chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition, generationComplete });
-  }, [chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition, generationComplete]);
+    saveSession({ chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition, generationComplete, funnelMode });
+  }, [chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition, generationComplete, funnelMode]);
 
   const handleFormSubmit = useCallback(async (data) => {
     if (isCalculatingChartRef.current) return;
@@ -121,8 +122,12 @@ export function GeneratorProvider({ children }) {
       chart.gender = data.gender || null;
       setChartData(chart);
 
-      // Navigate to product selection instead of directly to style
-      if (window.location.pathname !== '/generate/product' && window.location.pathname !== '/generate/style') {
+      // Navigate based on funnel mode
+      if (funnelMode === 'digital') {
+        if (window.location.pathname !== '/d/style') {
+          navigate('/d/style');
+        }
+      } else if (window.location.pathname !== '/generate/product' && window.location.pathname !== '/generate/style') {
         navigate('/generate/product');
       }
     } catch (err) {
@@ -140,7 +145,7 @@ export function GeneratorProvider({ children }) {
       isCalculatingChartRef.current = false;
       setIsCalculatingChart(false);
     }
-  }, [navigate]);
+  }, [navigate, funnelMode]);
 
   const handleStyleSelect = useCallback(async (styleId) => {
     // Prevent double-click race condition
@@ -151,7 +156,7 @@ export function GeneratorProvider({ children }) {
     setSelectedStyle(style);
     setArtworkAnalysis(null);
     setArtworkId(null);
-    navigate('/generate/loading');
+    navigate(funnelMode === 'digital' ? '/d/loading' : '/generate/loading');
 
     try {
       setGenerationProgress('Building your personalized artwork prompt...');
@@ -237,9 +242,9 @@ export function GeneratorProvider({ children }) {
       console.error('❌ Generation error:', err);
       setError(err.message);
       isGeneratingRef.current = false;
-      navigate('/generate/style');
+      navigate(funnelMode === 'digital' ? '/d/style' : '/generate/style');
     }
-  }, [chartData, formData, navigate, isPortraitEdition, userPhotoUrl]);
+  }, [chartData, formData, navigate, isPortraitEdition, userPhotoUrl, funnelMode]);
 
   const handleRetry = useCallback(() => {
     setError(null);
@@ -261,8 +266,8 @@ export function GeneratorProvider({ children }) {
   const handleBackToStyle = useCallback(() => {
     setError(null);
     isGeneratingRef.current = false;
-    navigate('/generate/style');
-  }, [navigate]);
+    navigate(funnelMode === 'digital' ? '/d/style' : '/generate/style');
+  }, [navigate, funnelMode]);
 
   const handleGetFramed = useCallback(() => {
     navigate('/generate/size');
@@ -405,6 +410,7 @@ export function GeneratorProvider({ children }) {
     isCalculatingChart,
     artworkAnalysis, generationComplete, artworkId,
     userPhotoUrl, isPortraitEdition,
+    funnelMode, setFunnelMode,
     setFormData, setChartData, setError, setGeneratedImage, setArtworkAnalysis,
     setGenerationComplete, setArtworkId,
     handleFormSubmit, handleStyleSelect, handleRetry,

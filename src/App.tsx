@@ -40,6 +40,12 @@ const GeneratePhoneCase = lazyWithRetry(() => import("./pages/GeneratePhoneCase"
 const GeneratePhoneStyle = lazyWithRetry(() => import("./pages/GeneratePhoneStyle"));
 const OrderConfirmationPage = lazyWithRetry(() => import("./pages/OrderConfirmation"));
 
+// Digital funnel pages
+const DigitalIndex = lazyWithRetry(() => import("./pages/Digital/DigitalIndex"));
+const DigitalStyle = lazyWithRetry(() => import("./pages/Digital/DigitalStyle"));
+const DigitalLoading = lazyWithRetry(() => import("./pages/Digital/DigitalLoading"));
+const DigitalPreview = lazyWithRetry(() => import("./pages/Digital/DigitalPreview"));
+
 // Policy pages — rarely visited, lazy-load to reduce initial bundle
 const ShippingPolicy = lazyWithRetry(() => import("./pages/ShippingPolicy"));
 const PrivacyPolicy = lazyWithRetry(() => import("./pages/PrivacyPolicy"));
@@ -100,6 +106,13 @@ const App = () => {
                   <Route path="/generate/phone-case" element={<GeneratePhoneCase />} />
                   <Route path="/generate/phone-style" element={<GeneratePhoneStyle />} />
                   <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+
+                  {/* Digital-first funnel */}
+                  <Route path="/d" element={<DigitalIndex />} />
+                  <Route path="/d/style" element={<DigitalStyle />} />
+                  <Route path="/d/loading" element={<DigitalLoading />} />
+                  <Route path="/d/preview" element={<DigitalPreview />} />
+
                   <Route path="/shipping" element={<ShippingPolicy />} />
                   <Route path="/privacy" element={<PrivacyPolicy />} />
                   <Route path="/terms" element={<TermsConditions />} />

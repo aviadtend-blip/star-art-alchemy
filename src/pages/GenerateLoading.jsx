@@ -8,7 +8,8 @@ import { GENERATE_LOADING_IMAGES, GENERATE_PREVIEW_IMAGES } from '@/data/imageMa
 export default function GenerateLoading() {
   const navigate = useNavigate();
   const ctx = useGenerator();
-
+  const isDigital = ctx.funnelMode === 'digital';
+  const previewPath = isDigital ? '/d/preview' : '/generate/preview';
   // Loading screen asset (gif) — high priority
   useImagePreloader(GENERATE_LOADING_IMAGES);
   // Preload all mockup / preview images while AI is generating — user has ~20s of wait time
@@ -19,14 +20,14 @@ export default function GenerateLoading() {
     // If generation already completed (e.g. back-navigation), skip to preview
     if (ctx.generatedImage && ctx.generationComplete) {
       ctx.setGenerationComplete(false);
-      navigate('/generate/preview');
+      navigate(previewPath);
     }
   }, [ctx.chartData, ctx.generatedImage, ctx.generationComplete, navigate]);
 
   const handleNavigateToPreview = useCallback(() => {
     ctx.setGenerationComplete(false);
-    navigate('/generate/preview');
-  }, [ctx, navigate]);
+    navigate(previewPath);
+  }, [ctx, navigate, previewPath]);
 
   if (!ctx.chartData) return null;
 
