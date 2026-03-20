@@ -82,10 +82,8 @@ const BirthDataFormJsx = ({ onSubmit }) => {
     setCityQuery(prediction.description);
     setLoadingSuggestions(true);
     try {
-      const { data, error } = await supabase.functions.invoke("google-places-detail", {
-        body: { place_id: prediction.place_id },
-      });
-      if (!error && data) {
+      const data = await invokeProjectFunction("google-places-detail", { place_id: prediction.place_id });
+      if (data) {
         setFormData((prev) => ({
           ...prev,
           city: data.city || prediction.description,
