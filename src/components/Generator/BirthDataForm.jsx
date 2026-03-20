@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeProjectFunction } from "@/lib/api/invokeProjectFunction";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, Upload, X, Loader2 } from "lucide-react";
 
@@ -64,10 +64,8 @@ const BirthDataFormJsx = ({ onSubmit }) => {
     debounceRef.current = setTimeout(async () => {
       setLoadingSuggestions(true);
       try {
-        const { data, error } = await supabase.functions.invoke("google-places-autocomplete", {
-          body: { input: cityQuery },
-        });
-        if (!error && data?.predictions) {
+        const data = await invokeProjectFunction("google-places-autocomplete", { input: cityQuery });
+        if (data?.predictions) {
           setSuggestions(data.predictions);
           setShowSuggestions(true);
         }
@@ -84,10 +82,8 @@ const BirthDataFormJsx = ({ onSubmit }) => {
     setCityQuery(prediction.description);
     setLoadingSuggestions(true);
     try {
-      const { data, error } = await supabase.functions.invoke("google-places-detail", {
-        body: { place_id: prediction.place_id },
-      });
-      if (!error && data) {
+      const data = await invokeProjectFunction("google-places-detail", { place_id: prediction.place_id });
+      if (data) {
         setFormData((prev) => ({
           ...prev,
           city: data.city || prediction.description,

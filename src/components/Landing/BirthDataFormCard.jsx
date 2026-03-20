@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeProjectFunction } from "@/lib/api/invokeProjectFunction";
 import PopularTag from "@/components/ui/PopularTag";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { DateWheelPicker } from "@/components/ui/date-wheel-picker";
@@ -105,8 +105,8 @@ export default function BirthDataFormCard({
     debounceRef.current = setTimeout(async () => {
       setLoadingSuggestions(true);
       try {
-        const { data, error } = await supabase.functions.invoke("google-places-autocomplete", { body: { input: cityQuery } });
-        if (!error && data?.predictions) { setSuggestions(data.predictions); setShowSuggestions(true); }
+        const data = await invokeProjectFunction("google-places-autocomplete", { input: cityQuery });
+        if (data?.predictions) { setSuggestions(data.predictions); setShowSuggestions(true); }
       } catch (e) { console.error("[BirthDataFormCard] Autocomplete error:", e); }
       finally { setLoadingSuggestions(false); }
     }, 300);
@@ -118,8 +118,8 @@ export default function BirthDataFormCard({
     setCityQuery(prediction.description);
     setLoadingSuggestions(true);
     try {
-      const { data, error } = await supabase.functions.invoke("google-places-detail", { body: { place_id: prediction.place_id } });
-      if (!error && data) {
+      const data = await invokeProjectFunction("google-places-detail", { place_id: prediction.place_id });
+      if (data) {
         setFormData((prev) => ({ ...prev, birthCity: data.city || prediction.description, birthCountry: data.nation || prev.birthCountry, lat: data.lat, lng: data.lng }));
         skipAutocompleteRef.current = true;
         setCityQuery(data.formatted_address || prediction.description);
