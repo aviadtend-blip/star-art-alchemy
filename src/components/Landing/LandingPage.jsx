@@ -172,7 +172,7 @@ export default function LandingPage() {
         </div>
         <div className="absolute inset-0 pointer-events-auto">
           <div className="flex items-start justify-center h-full pt-[48px]">
-            <ImageMarquee images={heroMarqueeImages} duration={28} onInteraction={() => setHasScrolledCarousel(true)} />
+            <ImageMarquee images={activeMarqueeImages} duration={28} onInteraction={() => setHasScrolledCarousel(true)} />
           </div>
         </div>
         <div className="relative z-10 flex flex-col justify-end min-h-[700px] px-4 py-[15px] pointer-events-none" style={{ marginTop: '-40px' }}>
