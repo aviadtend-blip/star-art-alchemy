@@ -286,8 +286,30 @@ export default function GenerateProductSelection() {
           </div>
         </div>
 
+        {/* Navigation dots — mobile only */}
+        <div className="flex justify-center gap-2 md:hidden" style={{ margin: '8px 0' }}>
+          {PRODUCTS.map((product, i) => (
+            <button
+              key={product.id}
+              type="button"
+              aria-label={`Go to ${product.title}`}
+              onClick={() => handleCardSelect(i)}
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: selectedId === product.id ? '#2396A3' : '#D9D9D9',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                transition: 'background-color 0.2s ease-out',
+              }}
+            />
+          ))}
+        </div>
+
         {/* Continue button */}
-        <div className="px-4" style={{ marginTop: '16px' }}>
+        <div className="px-4" style={{ marginTop: '8px' }}>
           <PrimaryButton
             onClick={handleContinue}
             style={{ width: '330px', maxWidth: '100%' }}
