@@ -143,7 +143,7 @@ export default function StyleSelection({
     setTimeout(() => setLightbox(null), 250);
   }, []);
 
-  const lightboxImages = lightbox ? STYLE_GALLERY[lightbox.styleId] || [] : [];
+  const lightboxImages = lightbox ? (_styleGallery[lightbox.styleId] || []) : [];
 
 
   const handleShowMore = () => {
