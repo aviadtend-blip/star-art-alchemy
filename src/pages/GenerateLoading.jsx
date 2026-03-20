@@ -26,8 +26,8 @@ export default function GenerateLoading() {
 
   const handleNavigateToPreview = useCallback(() => {
     ctx.setGenerationComplete(false);
-    navigate('/generate/preview');
-  }, [ctx, navigate]);
+    navigate(previewPath);
+  }, [ctx, navigate, previewPath]);
 
   if (!ctx.chartData) return null;
 
