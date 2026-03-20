@@ -30,11 +30,8 @@ export default async function getAIInterpretation(chartData, isPortraitEdition =
   ].filter(Boolean).join(' ').trim();
 
   try {
-    const { data, error } = await supabase.functions.invoke('ai-interpret', {
-      body: { chartData, isPortraitEdition, gender },
-    });
+    const data = await invokeProjectFunction('ai-interpret', { chartData, isPortraitEdition, gender });
 
-    if (error) throw error;
     if (!data?.narrative) throw new Error('Empty AI response');
 
     console.log('🧠 AI narrative interpretation received');
