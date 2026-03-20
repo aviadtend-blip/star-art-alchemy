@@ -112,5 +112,8 @@ export const PHONE_ART_STYLES = [
  * Get a style by its ID
  */
 export function getStyleById(id) {
-  return ART_STYLES.find((s) => s.id === id) ?? ADDITIONAL_STYLES.find((s) => s.id === id) ?? ART_STYLES[0];
+  return ART_STYLES.find((s) => s.id === id)
+    ?? ADDITIONAL_STYLES.find((s) => s.id === id)
+    ?? PHONE_ART_STYLES.find((s) => s.id === id)
+    ?? ART_STYLES[0];
 }
