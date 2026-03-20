@@ -79,6 +79,18 @@ function storagePathFromUrl(publicUrl: string): string {
   return publicUrl.split("/").pop() || "";
 }
 
+function extractHotspots(artworkAnalysis: any): any[] | null {
+  if (!artworkAnalysis) return null;
+  const elements = artworkAnalysis.elements || artworkAnalysis.hotspots || [];
+  if (!Array.isArray(elements) || elements.length === 0) return null;
+  const emojiMap: Record<string, string> = { sun: "☀️", moon: "🌙", rising: "⬆️", element: "🔥" };
+  return elements.slice(0, 4).map((el: any) => ({
+    title: el.title || el.label || "",
+    explanation: el.explanation || el.description || el.copy || "",
+    emoji: el.emoji || emojiMap[el.key?.toLowerCase?.()] || "✨",
+  }));
+}
+
 /* ------------------------------------------------------------------ */
 /*  Digital fulfillment path                                           */
 /* ------------------------------------------------------------------ */
@@ -139,17 +151,25 @@ async function handleDigitalFulfillment(
     permanentUrl = orderRow.generated_image_url || "";
   }
 
-  // Also look up artworks for apiframe_task_id
+  // Also look up artworks for apiframe_task_id and artwork_analysis
+  let artworkAnalysis: any = null;
   const { data: artworkRow } = await supabase
     .from("artworks")
-    .select("id, artwork_url, apiframe_task_id")
+    .select("id, artwork_url, apiframe_task_id, artwork_analysis")
     .eq("session_id", celestialOrderId)
     .maybeSingle();
 
   if (artworkRow) {
     artworkId = artworkRow.id;
     apiframeTaskId = artworkRow.apiframe_task_id || "";
+    artworkAnalysis = artworkRow.artwork_analysis;
     if (!permanentUrl) permanentUrl = artworkRow.artwork_url || "";
+  }
+
+  // Also check orders table for artwork_analysis if not found on artworks
+  if (!artworkAnalysis && orderRow) {
+    const { data: orderFull } = await supabase.from("orders").select("artwork_analysis").eq("id", celestialOrderId).maybeSingle();
+    if (orderFull) artworkAnalysis = orderFull.artwork_analysis;
   }
 
   if (!permanentUrl) {
@@ -225,6 +245,7 @@ async function handleDigitalFulfillment(
   }
 
   // Step 3 — Delivery email via Klaviyo
+  const customerName = order.customer?.first_name || "";
   if (klaviyoKey && signedUrl) {
     const deliveryProps: Record<string, any> = {
       download_url: signedUrl,
@@ -232,7 +253,13 @@ async function handleDigitalFulfillment(
       artwork_url: permanentUrl || artworkUrl,
       order_number: shopifyOrderNumber,
       expiry_days: 30,
+      sun_sign: sunSign,
+      moon_sign: moonSign,
+      rising_sign: risingSign,
+      customer_name: customerName,
     };
+    const hotspots = extractHotspots(artworkAnalysis);
+    if (hotspots) deliveryProps.hotspots = hotspots;
     if (fallbackResolution) deliveryProps.fallback_resolution = true;
     await sendKlaviyoEvent(klaviyoKey, "Digital File Ready", customerEmail, deliveryProps);
   }
