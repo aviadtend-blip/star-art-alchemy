@@ -620,7 +620,7 @@ export function ChartExplanation({
             funnelMode={funnelMode}
           />
           <MoreThanArtSection />
-          <ReviewsList theme="dark" gap={6} py={6} className="pt-8 pb-[60px] w-full" />
+          {funnelMode !== 'digital' && <ReviewsList theme="dark" gap={6} py={6} className="pt-8 pb-[60px] w-full" />}
         </div>
         <div className="hidden md:block" style={{ height: 60 }} />
 
