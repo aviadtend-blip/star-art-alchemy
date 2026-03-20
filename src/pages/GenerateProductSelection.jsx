@@ -101,7 +101,7 @@ export default function GenerateProductSelection() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { chartData, formData, handleFormSubmit, handleEditBirthData } = useGenerator();
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedId, setSelectedId] = useState(PRODUCTS[0].id);
   const autoSubmitted = useRef(false);
 
   // Carousel refs
