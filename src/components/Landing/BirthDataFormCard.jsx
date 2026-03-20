@@ -18,11 +18,14 @@ export default function BirthDataFormCard({
   isSubmitting = false,
   submitError = null,
 }) {
+  const { funnelMode } = useGenerator();
+  const isDigital = funnelMode === 'digital';
   const [showTimeStep, setShowTimeStep] = useState(false);
   const [birthHour, setBirthHour] = useState("12");
   const [birthMinute, setBirthMinute] = useState("00");
   const [birthAmPm, setBirthAmPm] = useState("AM");
-  const [dontKnowTime, setDontKnowTime] = useState(false);
+  const [dontKnowTime, setDontKnowTime] = useState(isDigital); // default to "don't know" in digital funnel
+  const [addBirthTime, setAddBirthTime] = useState(false); // toggle for digital funnel
   const [locationError, setLocationError] = useState(false);
 
   // Photo step state
