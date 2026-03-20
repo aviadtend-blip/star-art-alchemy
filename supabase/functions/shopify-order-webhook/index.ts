@@ -151,17 +151,25 @@ async function handleDigitalFulfillment(
     permanentUrl = orderRow.generated_image_url || "";
   }
 
-  // Also look up artworks for apiframe_task_id
+  // Also look up artworks for apiframe_task_id and artwork_analysis
+  let artworkAnalysis: any = null;
   const { data: artworkRow } = await supabase
     .from("artworks")
-    .select("id, artwork_url, apiframe_task_id")
+    .select("id, artwork_url, apiframe_task_id, artwork_analysis")
     .eq("session_id", celestialOrderId)
     .maybeSingle();
 
   if (artworkRow) {
     artworkId = artworkRow.id;
     apiframeTaskId = artworkRow.apiframe_task_id || "";
+    artworkAnalysis = artworkRow.artwork_analysis;
     if (!permanentUrl) permanentUrl = artworkRow.artwork_url || "";
+  }
+
+  // Also check orders table for artwork_analysis if not found on artworks
+  if (!artworkAnalysis && orderRow) {
+    const { data: orderFull } = await supabase.from("orders").select("artwork_analysis").eq("id", celestialOrderId).maybeSingle();
+    if (orderFull) artworkAnalysis = orderFull.artwork_analysis;
   }
 
   if (!permanentUrl) {
