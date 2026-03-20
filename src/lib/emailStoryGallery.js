@@ -15,7 +15,8 @@
 import { supabase } from '@/integrations/supabase/client';
 import { getStoryCropCenter } from '@/lib/emailStoryHotspots';
 
-const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
+const _pid = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+const PROXY_URL = _pid ? `https://${_pid}.supabase.co/functions/v1/proxy-image` : `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
 
 // 4:3 crop — horizontal close-up
 // The crop width is 40% of the image width; height = width * (3/4)

@@ -12,7 +12,9 @@ const INPUT_CLASS = "w-full bg-transparent border-0 border-b border-white/20 rou
 
 function buildProxyImageUrl(url) {
   if (!url) return '';
-  return `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image?url=${encodeURIComponent(url)}`;
+  const pid = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+  const base = pid ? `https://${pid}.supabase.co/functions/v1/proxy-image` : `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
+  return `${base}?url=${encodeURIComponent(url)}`;
 }
 
 function summarizeStoryLog(story) {

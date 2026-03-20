@@ -2,7 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { findGreenBounds, isGreenPixel, sampleNearbyColor } from '@/lib/mockup/chromaKey';
 import ctaRoomMockup from '@/assets/mockups/cta-room-mockup.webp';
 
-const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
+const _pid = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+const PROXY_URL = _pid ? `https://${_pid}.supabase.co/functions/v1/proxy-image` : `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
 
 function loadImage(src) {
   return new Promise((resolve, reject) => {

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { findGreenBounds, isGreenPixel, sampleNearbyColor } from '../../lib/mockup/chromaKey';
 
-const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
+const _pid = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+const PROXY_URL = _pid ? `https://${_pid}.supabase.co/functions/v1/proxy-image` : `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
 
 /**
  * Composites the user's generated artwork onto a room mockup image
