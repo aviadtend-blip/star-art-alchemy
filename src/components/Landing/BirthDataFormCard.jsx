@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useGenerator } from "@/contexts/GeneratorContext";
 import { invokeProjectFunction } from "@/lib/api/invokeProjectFunction";
 import PopularTag from "@/components/ui/PopularTag";
 import PrimaryButton from "@/components/ui/PrimaryButton";
@@ -17,11 +18,14 @@ export default function BirthDataFormCard({
   isSubmitting = false,
   submitError = null,
 }) {
+  const { funnelMode } = useGenerator();
+  const isDigital = funnelMode === 'digital';
   const [showTimeStep, setShowTimeStep] = useState(false);
   const [birthHour, setBirthHour] = useState("12");
   const [birthMinute, setBirthMinute] = useState("00");
   const [birthAmPm, setBirthAmPm] = useState("AM");
-  const [dontKnowTime, setDontKnowTime] = useState(false);
+  const [dontKnowTime, setDontKnowTime] = useState(isDigital); // default to "don't know" in digital funnel
+  const [addBirthTime, setAddBirthTime] = useState(false); // toggle for digital funnel
   const [locationError, setLocationError] = useState(false);
 
   // Photo step state
@@ -151,7 +155,8 @@ export default function BirthDataFormCard({
     setGenderError(false);
     let hour = 12;
     let minute = 0;
-    if (!dontKnowTime) {
+    const skipTime = isDigital ? !addBirthTime : dontKnowTime;
+    if (!skipTime) {
       hour = Number(birthHour);
       minute = Number(birthMinute);
       if (birthAmPm === "PM" && hour !== 12) hour += 12;
@@ -500,6 +505,52 @@ export default function BirthDataFormCard({
       </div>
     );
 
+    if (isDigital) {
+      // Digital funnel: gender first, then "Add birth time" toggle
+      return (
+        <div className="flex flex-col" style={{ gap }}>
+          {genderToggle}
+
+          {/* Add birth time toggle */}
+          <div style={{ marginTop: '8px' }}>
+            <div className="flex items-center justify-between">
+              <label className="text-a5 text-foreground">Add birth time</label>
+              <button
+                type="button"
+                onClick={() => { setAddBirthTime(!addBirthTime); if (!addBirthTime) setDontKnowTime(false); else setDontKnowTime(true); }}
+                className={`relative w-11 h-6 rounded-full transition-colors ${addBirthTime ? 'bg-primary' : 'bg-white/20'}`}
+              >
+                <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${addBirthTime ? 'translate-x-5' : 'translate-x-0'}`} />
+              </button>
+            </div>
+
+            {addBirthTime && (
+              <div className="mt-4">
+                <div className="hidden lg:block">
+                  <div className="flex items-end gap-4">
+                    <div className="flex-1 min-w-0">{timeInputsDesktop}</div>
+                  </div>
+                </div>
+                <div className="lg:hidden">
+                  {timeInputMobile}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="flex gap-3" style={{ marginTop: '24px' }}>
+            <button type="button" onClick={() => setShowTimeStep(false)} className="h-12 px-6 rounded-full border border-white/30 text-foreground text-a5 font-body transition hover:bg-white/10">
+              Back
+            </button>
+            <PrimaryButton onClick={handleStep1bSubmit} className="flex-1" disabled={isSubmitting}>
+              {isSubmitting ? 'Generating…' : 'Continue'}
+            </PrimaryButton>
+          </div>
+        </div>
+      );
+    }
+
+    // Default funnel: time first, checkbox, then gender
     return (
       <div className="flex flex-col" style={{ gap }}>
         <div>
