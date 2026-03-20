@@ -356,29 +356,31 @@ export default function LandingPage() {
       {/* ═══════════════════ EVERY SYMBOL HAS MEANING (Interactive) ═══════════════════ */}
       <InteractiveHotspots onScrollToForm={scrollToForm} />
 
-      {/* ═══════════════════ 4 SIMPLE STEPS ═══════════════════ */}
+      {/* ═══════════════════ SIMPLE STEPS ═══════════════════ */}
+      {(() => {
+        const allSteps = [
+          { n: "1", title: "Enter your birth data", desc: "Provide your birth date, time, and location. We calculate your complete natal chart." },
+          { n: "2", title: "Choose your style", desc: "Pick from multiple artistic styles — each transforms your chart into a different visual experience." },
+          { n: "3", title: "We create your artwork", desc: "Your unique artwork is crafted from your zodiac symbols and cosmic blueprint." },
+          { n: "4", title: "Get it printed & shipped", desc: "Love it? Choose your canvas size. We'll print and ship your museum-quality canvas to your door." },
+        ];
+        const steps = funnelMode === 'digital' ? allSteps.slice(0, 3) : allSteps;
+        const colCount = steps.length;
+        return (
       <section className="py-[85px] overflow-x-clip" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="mx-auto px-4" style={{ maxWidth: 880 }}>
           <h2 className="text-a2 text-center text-surface-foreground mb-10 md:whitespace-nowrap">
-            Your custom artwork in 4 simple steps
+            Your custom artwork in {colCount} simple steps
           </h2>
         </div>
 
-        {/* Horizontal scroll on mobile, grid on desktop */}
         <div className="overflow-x-auto md:overflow-visible -mx-4 md:mx-0 snap-x snap-mandatory md:snap-none" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-          <div className="relative flex gap-6 md:px-0 md:grid md:grid-cols-4 md:gap-10 w-max md:w-full md:mx-auto" style={{ maxWidth: 880 }}>
-            {/* Connecting line through circles — mobile: from center of 1st to center of 4th circle */}
-            {/* Connecting line: center of 1st circle (124px) to center of 4th circle (796px) = 672px wide */}
-            <div className="md:hidden absolute top-6 h-px bg-surface-border" style={{ left: 124, width: 672 }} />
+          <div className={`relative flex gap-6 md:px-0 md:grid md:gap-10 w-max md:w-full md:mx-auto`} style={{ maxWidth: 880, gridTemplateColumns: `repeat(${colCount}, minmax(0, 1fr))` }}>
+            <div className="md:hidden absolute top-6 h-px bg-surface-border" style={{ left: 124, width: colCount === 3 ? 446 : 672 }} />
             <div className="hidden md:block absolute top-7 left-[12.5%] right-[12.5%] h-px bg-surface-border" />
 
             <div aria-hidden="true" className="w-6 min-w-6 flex-shrink-0 snap-center md:hidden" />
-            {[
-              { n: "1", title: "Enter your birth data", desc: "Provide your birth date, time, and location. We calculate your complete natal chart." },
-              { n: "2", title: "Choose your style", desc: "Pick from multiple artistic styles — each transforms your chart into a different visual experience." },
-              { n: "3", title: "We create your artwork", desc: "Your unique artwork is crafted from your zodiac symbols and cosmic blueprint." },
-              { n: "4", title: "Get it printed & shipped", desc: "Love it? Choose your canvas size. We'll print and ship your museum-quality canvas to your door." },
-            ].map((s) => (
+            {steps.map((s) => (
               <div key={s.n} className="flex flex-col items-center text-center flex-shrink-0 snap-center w-[200px] md:w-auto relative z-10">
                 <div className="w-12 h-12 md:w-14 md:h-14 border border-surface-border bg-white rounded-full flex items-center justify-center text-xl md:text-2xl text-surface-foreground flex-shrink-0 font-display font-medium">
                   {s.n}
@@ -393,6 +395,8 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+        );
+      })()}
 
       {/* ═══════════════════ GIFT + MATERIALS TILES ═══════════════════ */}
       {funnelMode !== 'digital' && (
