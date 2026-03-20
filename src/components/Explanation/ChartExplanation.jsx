@@ -735,6 +735,8 @@ export function ChartExplanation({
               onDownloadPreview={() => setShowEmailModal(true)}
               artworkSrc={selectedImage}
               funnelMode={funnelMode}
+              onDigitalCheckout={onDigitalCheckout}
+              checkoutLoading={checkoutLoading}
             />
           </div>
 

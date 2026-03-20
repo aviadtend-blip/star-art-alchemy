@@ -51,8 +51,16 @@ export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, art
       ),
       title: 'Own the Original File',
       description: 'Print-ready resolution for any size, any surface, forever yours',
-      primaryButton: { label: 'Download High Resolution ($19)', onClick: onDownloadPreview },
-      secondaryButton: { label: 'Download Standard Resolution ($9)', onClick: onDownloadPreview },
+      primaryButton: {
+        label: checkoutLoading === 'high_resolution' ? 'Redirecting…' : 'Download High Resolution ($19)',
+        onClick: onDigitalCheckout ? () => onDigitalCheckout('high_resolution') : onDownloadPreview,
+        disabled: !!checkoutLoading,
+      },
+      secondaryButton: {
+        label: checkoutLoading === 'standard' ? 'Redirecting…' : 'Download Standard Resolution ($9)',
+        onClick: onDigitalCheckout ? () => onDigitalCheckout('standard') : onDownloadPreview,
+        disabled: !!checkoutLoading,
+      },
       trustLine: '🔒 Instant delivery to your inbox',
       showProcessingBar: false,
     },

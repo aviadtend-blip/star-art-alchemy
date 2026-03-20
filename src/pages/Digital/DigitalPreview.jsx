@@ -145,7 +145,7 @@ export default function DigitalPreview() {
       <ChartExplanation
         chartData={displayChart}
         selectedImage={displayImage}
-        onGetFramed={handleDigitalPurchase}
+        onGetFramed={() => handleDigitalCheckout('high_resolution')}
         formData={formData}
         onEditBirthData={handleEditBirthData || (() => navigate('/'))}
         onBackToStyle={handleBackToStyle || (() => navigate('/d/style'))}
@@ -156,6 +156,8 @@ export default function DigitalPreview() {
         funnelMode="digital"
         digitalPrice={DIGITAL_PRODUCT.price}
         onCanvasUpsell={handleCanvasUpsell}
+        onDigitalCheckout={handleDigitalCheckout}
+        checkoutLoading={checkoutLoading}
       />
 
       {isReimagining && (
