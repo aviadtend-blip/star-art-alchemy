@@ -117,7 +117,7 @@ export default function DigitalPreview() {
       toast({ title: 'Checkout failed', description: err.message || 'Please try again.', variant: 'destructive' });
       setCheckoutLoading(null);
     }
-  }, [checkoutLoading, selectedStyle, generatedImage, displayChart]);
+  }, [checkoutLoading, selectedStyle, generatedImage, displayChart, formData, artworkAnalysis]);
 
   // Canvas upsell — go to existing size page
   const handleCanvasUpsell = useCallback(() => {
