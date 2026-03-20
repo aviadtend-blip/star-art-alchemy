@@ -87,7 +87,7 @@ Output ONLY the scene description. Nothing else.`;
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
           messages: [{ role: "user", content: prompt }],
-          max_tokens: 400,
+          max_tokens: 150,
         }),
       }
     );
