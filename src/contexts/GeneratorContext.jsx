@@ -156,7 +156,7 @@ export function GeneratorProvider({ children }) {
     setSelectedStyle(style);
     setArtworkAnalysis(null);
     setArtworkId(null);
-    navigate('/generate/loading');
+    navigate(funnelMode === 'digital' ? '/d/loading' : '/generate/loading');
 
     try {
       setGenerationProgress('Building your personalized artwork prompt...');
