@@ -730,6 +730,7 @@ export function ChartExplanation({
               onGetFramed={onGetFramed}
               onDownloadPreview={() => setShowEmailModal(true)}
               artworkSrc={selectedImage}
+              funnelMode={funnelMode}
             />
           </div>
 
