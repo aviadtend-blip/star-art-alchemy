@@ -155,7 +155,8 @@ export default function BirthDataFormCard({
     setGenderError(false);
     let hour = 12;
     let minute = 0;
-    if (!dontKnowTime) {
+    const skipTime = isDigital ? !addBirthTime : dontKnowTime;
+    if (!skipTime) {
       hour = Number(birthHour);
       minute = Number(birthMinute);
       if (birthAmPm === "PM" && hour !== 12) hour += 12;
