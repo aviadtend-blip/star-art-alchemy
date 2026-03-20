@@ -245,6 +245,7 @@ async function handleDigitalFulfillment(
   }
 
   // Step 3 — Delivery email via Klaviyo
+  const customerName = order.customer?.first_name || "";
   if (klaviyoKey && signedUrl) {
     const deliveryProps: Record<string, any> = {
       download_url: signedUrl,
@@ -252,7 +253,13 @@ async function handleDigitalFulfillment(
       artwork_url: permanentUrl || artworkUrl,
       order_number: shopifyOrderNumber,
       expiry_days: 30,
+      sun_sign: sunSign,
+      moon_sign: moonSign,
+      rising_sign: risingSign,
+      customer_name: customerName,
     };
+    const hotspots = extractHotspots(artworkAnalysis);
+    if (hotspots) deliveryProps.hotspots = hotspots;
     if (fallbackResolution) deliveryProps.fallback_resolution = true;
     await sendKlaviyoEvent(klaviyoKey, "Digital File Ready", customerEmail, deliveryProps);
   }
