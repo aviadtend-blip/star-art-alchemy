@@ -47,24 +47,28 @@ export async function analyzeArtwork(imageUrl, chartData) {
           artworkElement: analysis.sun.artworkElement || fallback.elements[0].artworkElement,
           explanation: analysis.sun.explanation,
           aiPosition: normalizePosition(analysis.sun.position),
+          focusBox: normalizeFocusBox(analysis.sun.focusBox),
         },
         {
           ...fallback.elements[1],
           artworkElement: analysis.moon.artworkElement || fallback.elements[1].artworkElement,
           explanation: analysis.moon.explanation,
           aiPosition: normalizePosition(analysis.moon.position),
+          focusBox: normalizeFocusBox(analysis.moon.focusBox),
         },
         {
           ...fallback.elements[2],
           artworkElement: analysis.rising.artworkElement || fallback.elements[2].artworkElement,
           explanation: analysis.rising.explanation,
           aiPosition: normalizePosition(analysis.rising.position),
+          focusBox: normalizeFocusBox(analysis.rising.focusBox),
         },
         {
           ...fallback.elements[3],
           artworkElement: analysis.element.artworkElement || fallback.elements[3].artworkElement,
           explanation: analysis.element.explanation,
           aiPosition: normalizePosition(analysis.element.position),
+          focusBox: normalizeFocusBox(analysis.element.focusBox),
         },
       ],
     };
@@ -83,4 +87,20 @@ function normalizePosition(pos) {
   const top = Math.max(5, Math.min(95, pos.top));
   const left = Math.max(5, Math.min(95, pos.left));
   return { top: `${top}%`, left: `${left}%` };
+}
+
+/**
+ * Normalize a focusBox from the AI response into { top, left, bottom, right } as 0-1 fractions.
+ * Returns null if invalid.
+ */
+function normalizeFocusBox(box) {
+  if (!box || typeof box.top !== 'number' || typeof box.left !== 'number' ||
+      typeof box.bottom !== 'number' || typeof box.right !== 'number') return null;
+  const t = Math.max(0, Math.min(100, box.top)) / 100;
+  const l = Math.max(0, Math.min(100, box.left)) / 100;
+  const b = Math.max(0, Math.min(100, box.bottom)) / 100;
+  const r = Math.max(0, Math.min(100, box.right)) / 100;
+  if (b <= t || r <= l) return null;
+  if ((r - l) < 0.05 || (b - t) < 0.05) return null; // too small to be meaningful
+  return { top: t, left: l, bottom: b, right: r };
 }
