@@ -40,6 +40,12 @@ const GeneratePhoneCase = lazyWithRetry(() => import("./pages/GeneratePhoneCase"
 const GeneratePhoneStyle = lazyWithRetry(() => import("./pages/GeneratePhoneStyle"));
 const OrderConfirmationPage = lazyWithRetry(() => import("./pages/OrderConfirmation"));
 
+// Digital funnel pages
+const DigitalIndex = lazyWithRetry(() => import("./pages/Digital/DigitalIndex"));
+const DigitalStyle = lazyWithRetry(() => import("./pages/Digital/DigitalStyle"));
+const DigitalLoading = lazyWithRetry(() => import("./pages/Digital/DigitalLoading"));
+const DigitalPreview = lazyWithRetry(() => import("./pages/Digital/DigitalPreview"));
+
 // Policy pages — rarely visited, lazy-load to reduce initial bundle
 const ShippingPolicy = lazyWithRetry(() => import("./pages/ShippingPolicy"));
 const PrivacyPolicy = lazyWithRetry(() => import("./pages/PrivacyPolicy"));
