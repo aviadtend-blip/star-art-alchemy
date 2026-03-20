@@ -162,8 +162,11 @@ export type Database = {
           chart_data: Json
           created_at: string
           customer_email: string
+          digital_download_url: string | null
+          fulfilled_at: string | null
           fulfillment_error: string | null
           fulfillment_status: string | null
+          fulfillment_type: string | null
           generated_image_url: string
           id: string
           insert_card_url: string | null
@@ -179,8 +182,11 @@ export type Database = {
           chart_data?: Json
           created_at?: string
           customer_email: string
+          digital_download_url?: string | null
+          fulfilled_at?: string | null
           fulfillment_error?: string | null
           fulfillment_status?: string | null
+          fulfillment_type?: string | null
           generated_image_url: string
           id?: string
           insert_card_url?: string | null
@@ -196,8 +202,11 @@ export type Database = {
           chart_data?: Json
           created_at?: string
           customer_email?: string
+          digital_download_url?: string | null
+          fulfilled_at?: string | null
           fulfillment_error?: string | null
           fulfillment_status?: string | null
+          fulfillment_type?: string | null
           generated_image_url?: string
           id?: string
           insert_card_url?: string | null
