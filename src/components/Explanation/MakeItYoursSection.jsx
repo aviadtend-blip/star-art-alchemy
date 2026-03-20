@@ -9,7 +9,7 @@ import PhoneScreenMockup from '@/components/Explanation/PhoneScreenMockup';
  * Mobile: horizontal snap carousel. Desktop: 3-column grid.
  * @param {{ onGetFramed: () => void; onDownloadPreview: () => void; artworkSrc: string }} props
  */
-export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, artworkSrc }) {
+export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, artworkSrc, funnelMode }) {
   const navigate = useNavigate();
   const cards = [
     {
@@ -56,7 +56,15 @@ export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, art
       trustLine: '🔒 Instant delivery to your inbox',
       showProcessingBar: false,
     },
-  ];
+  ].filter((card) => {
+    if (funnelMode === 'digital' && card.key === 'phone-case') return false;
+    return true;
+  });
+
+  // In digital funnel, put digital-file card first
+  if (funnelMode === 'digital') {
+    cards.sort((a, b) => (a.key === 'digital-file' ? -1 : b.key === 'digital-file' ? 1 : 0));
+  }
 
   return (
     <section className="flex flex-col items-stretch w-full">
