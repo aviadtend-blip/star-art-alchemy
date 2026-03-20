@@ -501,7 +501,7 @@ export default function BirthDataFormCard({
           ))}
         </div>
         {genderError && <p className="text-body text-red-400 mt-2">Please select an option</p>}
-        <p className="text-xs text-muted-foreground mt-3 text-center">Your information is private and never shared.</p>
+        <p className="text-xs text-muted-foreground mt-3 text-center" style={{ marginBottom: isDigital ? '24px' : undefined }}>Your information is private and never shared.</p>
       </div>
     );
 
@@ -525,7 +525,7 @@ export default function BirthDataFormCard({
             </div>
 
             {addBirthTime && (
-              <div className="mt-4">
+              <div className="mt-2">
                 <div className="hidden lg:block">
                   <div className="flex items-end gap-4">
                     <div className="flex-1 min-w-0">{timeInputsDesktop}</div>
