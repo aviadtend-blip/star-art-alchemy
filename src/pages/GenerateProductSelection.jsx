@@ -101,7 +101,7 @@ export default function GenerateProductSelection() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { chartData, formData, handleFormSubmit, handleEditBirthData } = useGenerator();
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedId, setSelectedId] = useState(PRODUCTS[0].id);
   const autoSubmitted = useRef(false);
 
   // Carousel refs
@@ -219,7 +219,7 @@ export default function GenerateProductSelection() {
     scrollToIndex(index);
   };
 
-  const isDisabled = !selectedId;
+  const selectedProduct = PRODUCTS.find(p => p.id === selectedId);
   const sidePad = `calc(50% - ${CARD_W / 2}px)`;
 
   return (
@@ -290,11 +290,15 @@ export default function GenerateProductSelection() {
         {/* Continue button */}
         <div className="px-4" style={{ marginTop: '16px' }}>
           <PrimaryButton
-            disabled={isDisabled}
             onClick={handleContinue}
             style={{ width: '330px', maxWidth: '100%' }}
           >
-            Continue
+            <span className="md:hidden">
+              Continue with {selectedProduct?.title || 'Phone case'}
+            </span>
+            <span className="hidden md:inline">
+              Continue
+            </span>
           </PrimaryButton>
         </div>
       </main>
