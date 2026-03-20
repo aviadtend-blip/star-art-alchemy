@@ -50,3 +50,6 @@ verify_jwt = false
 
 [functions.google-places-autocomplete]
 verify_jwt = false
+
+[functions.create-digital-checkout]
+verify_jwt = false
