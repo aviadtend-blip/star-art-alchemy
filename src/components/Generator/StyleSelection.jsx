@@ -126,11 +126,9 @@ export default function StyleSelection({
     const dominantElement = chartData?.dominant_element;
     let autoId = _primaryStyles[0].id;
     if (dominantElement === 'Water' || dominantElement === 'Earth') {
-      autoId = 'folk-oracle';
+      autoId = _primaryStyles.find(s => s.id.includes('folk'))?.id || _primaryStyles[1]?.id || autoId;
     } else if (dominantElement === 'Air') {
-      autoId = 'cosmic-fable';
-    } else {
-      autoId = 'prism-storm';
+      autoId = _primaryStyles.find(s => s.id.includes('fable') || s.id.includes('pale'))?.id || _primaryStyles[2]?.id || autoId;
     }
     onSelect(autoId);
   };
