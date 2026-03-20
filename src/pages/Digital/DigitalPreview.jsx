@@ -44,6 +44,7 @@ export default function DigitalPreview() {
   const [isReimagining, setIsReimagining] = useState(false);
   const [reimagineMessage, setReimagineMessage] = useState('');
   const [variationsExhausted, setVariationsExhausted] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(null); // 'standard' | 'high_resolution' | null
 
   // Ensure digital mode
   useEffect(() => {
