@@ -122,8 +122,12 @@ export function GeneratorProvider({ children }) {
       chart.gender = data.gender || null;
       setChartData(chart);
 
-      // Navigate to product selection instead of directly to style
-      if (window.location.pathname !== '/generate/product' && window.location.pathname !== '/generate/style') {
+      // Navigate based on funnel mode
+      if (funnelMode === 'digital') {
+        if (window.location.pathname !== '/d/style') {
+          navigate('/d/style');
+        }
+      } else if (window.location.pathname !== '/generate/product' && window.location.pathname !== '/generate/style') {
         navigate('/generate/product');
       }
     } catch (err) {
