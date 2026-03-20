@@ -324,7 +324,7 @@ export default function GenerateProductSelection() {
         </div>
       </main>
 
-      <BirthDataBar formData={displayFormData} onEditBirthData={handleEditBirthData} />
+      <BirthDataBar formData={displayFormData} onEdit={handleEditBirthData} />
       <Footer />
     </div>
   );
