@@ -258,6 +258,7 @@ export function ChartExplanation({
   onReimagine,
   isReimagining,
   variationsExhausted,
+  funnelMode,
 }) {
   // Use AI analysis if available, otherwise fall back to static rule-based explanations
   const explanation = artworkAnalysis || generateChartExplanation(chartData);
