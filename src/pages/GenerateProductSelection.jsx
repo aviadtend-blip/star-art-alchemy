@@ -15,7 +15,7 @@ const PRODUCTS = [
     image: phoneCaseImg,
     imageAlt: 'Eco-friendly phone case',
     title: 'Phone case',
-    description: 'Starting $57',
+    description: '$57, Galaxy and iPhone models only',
     badge: 'New',
     imageStyle: { objectFit: 'contain', objectPosition: 'center', padding: '24px 0' },
   },
