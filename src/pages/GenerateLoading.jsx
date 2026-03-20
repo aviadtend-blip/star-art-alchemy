@@ -20,7 +20,7 @@ export default function GenerateLoading() {
     // If generation already completed (e.g. back-navigation), skip to preview
     if (ctx.generatedImage && ctx.generationComplete) {
       ctx.setGenerationComplete(false);
-      navigate('/generate/preview');
+      navigate(previewPath);
     }
   }, [ctx.chartData, ctx.generatedImage, ctx.generationComplete, navigate]);
 
