@@ -395,6 +395,7 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ GIFT + MATERIALS TILES ═══════════════════ */}
+      {funnelMode !== 'digital' && (
       <section className="py-[85px] bg-surface">
         <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* The Perfect Gift */}
@@ -432,8 +433,10 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* ═══════════════════ CUSTOMER GALLERY ═══════════════════ */}
+      {funnelMode !== 'digital' && (
       <section className="bg-white text-surface-foreground overflow-hidden py-10 md:py-16">
         <div className="max-w-7xl mx-auto px-4 md:px-4">
           <p className="text-subtitle text-surface-muted text-center mb-2 tracking-widest">
@@ -448,6 +451,7 @@ export default function LandingPage() {
           />
         </div>
       </section>
+      )}
 
       {/* ═══════════════════ BIRTH DATA FORM + TESTIMONIALS ═══════════════════ */}
       <section className="py-24 md:py-32 pb-12 md:pb-16 relative overflow-hidden" id="birth-form">
@@ -488,7 +492,7 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ FAQ ═══════════════════ */}
-      <FAQSection items={faqs} />
+      {funnelMode !== 'digital' && <FAQSection items={faqs} />}
 
       {/* ═══════════════════ FOOTER ═══════════════════ */}
       <Footer onScrollToForm={scrollToForm} />
