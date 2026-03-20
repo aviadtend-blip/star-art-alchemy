@@ -208,7 +208,7 @@ export default function LandingPage() {
       <section className="hidden lg:block relative min-h-[740px] overflow-hidden">
         <div className="absolute inset-0">
           <div className="flex items-start justify-center h-full pt-[60px]">
-            <ImageMarquee images={heroMarqueeImages} duration={35} />
+            <ImageMarquee images={activeMarqueeImages} duration={35} />
           </div>
         </div>
         <div className="relative z-20 flex flex-col justify-end min-h-[740px] pb-0 px-6">
