@@ -410,6 +410,7 @@ export function GeneratorProvider({ children }) {
     isCalculatingChart,
     artworkAnalysis, generationComplete, artworkId,
     userPhotoUrl, isPortraitEdition,
+    funnelMode, setFunnelMode,
     setFormData, setChartData, setError, setGeneratedImage, setArtworkAnalysis,
     setGenerationComplete, setArtworkId,
     handleFormSubmit, handleStyleSelect, handleRetry,
