@@ -98,6 +98,7 @@ const App = () => {
                   <Route path="/generate/preview" element={<GeneratePreview />} />
                   <Route path="/generate/size" element={<GenerateSize />} />
                   <Route path="/generate/phone-case" element={<GeneratePhoneCase />} />
+                  <Route path="/generate/phone-style" element={<GeneratePhoneStyle />} />
                   <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
                   <Route path="/shipping" element={<ShippingPolicy />} />
                   <Route path="/privacy" element={<PrivacyPolicy />} />
