@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useGenerator } from "@/contexts/GeneratorContext";
 import { invokeProjectFunction } from "@/lib/api/invokeProjectFunction";
 import PopularTag from "@/components/ui/PopularTag";
 import PrimaryButton from "@/components/ui/PrimaryButton";
