@@ -478,7 +478,7 @@ export default function BirthDataFormCard({
     );
 
     const genderToggle = (
-      <div style={{ marginTop: '32px' }}>
+      <div style={{ marginTop: isDigital ? '24px' : '32px' }}>
         <label className="block text-subtitle tracking-[3px] mb-4" style={{ color: '#FFFFFF' }}>YOUR DOMINANT ENERGY</label>
         <div className="flex rounded-full overflow-hidden border border-white/20">
           {[
