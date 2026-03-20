@@ -3,7 +3,8 @@ import { findGreenBounds, isGreenPixel } from '../lib/mockup/chromaKey';
 import { applyArtworkToMask, createArtworkSampler, featherMaskEdges } from '../lib/mockup/applyArtworkToMask';
 import { compositeAlpha, extractMockupKey, hasCompositableRegion } from '../lib/mockup/alphaComposite';
 
-const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
+const _pid = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+const PROXY_URL = _pid ? `https://${_pid}.supabase.co/functions/v1/proxy-image` : `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
 const MAX_CANVAS_DIM = 800;
 const PARALLEL_BATCH = 3;
 const COMPOSITE_ALGORITHM_VERSION = '2026-03-19-alpha-channel-v2';

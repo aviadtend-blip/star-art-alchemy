@@ -5,7 +5,8 @@ import mockup12x18_6 from "@/assets/mockups/12x18/mockup-6.webp";
 import mockup16x24_6 from "@/assets/mockups/16x24/mockup-6.webp";
 import mockup20x30_6 from "@/assets/mockups/20x30/mockup-6.webp";
 
-const PROXY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
+const _pid = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+const PROXY_URL = _pid ? `https://${_pid}.supabase.co/functions/v1/proxy-image` : `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-image`;
 const EMAIL_MOCKUP_SPECS = [
   { key: "small", src: mockup12x18_6 },
   { key: "medium", src: mockup16x24_6 },
