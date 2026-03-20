@@ -39,6 +39,10 @@ import heroCustomer3 from "@/assets/hero/customer-3.webp";
 import heroCustomer4 from "@/assets/hero/customer-4.webp";
 import heroCustomer5 from "@/assets/hero/customer-5.webp";
 import heroCustomer6 from "@/assets/hero/customer-6.webp";
+import digitalHero1 from "@/assets/digital-hero/phone-wallpaper-01.webp";
+import digitalHero2 from "@/assets/digital-hero/phone-wallpaper-02.webp";
+import digitalHero3 from "@/assets/digital-hero/phone-wallpaper-03.webp";
+import digitalHero4 from "@/assets/digital-hero/phone-wallpaper-04.webp";
 import swipeIcon from "@/assets/swipe-icon.svg";
 
 import ProgressBar from "@/components/ui/ProgressBar";
@@ -107,10 +111,20 @@ const heroMarqueeImages = [
   { src: heroCustomer6, tags: [{ emoji: "☀️", label: "Scorpio" }, { emoji: "🌙", label: "Leo" }, { emoji: "⬆️", label: "Gemini" }] },
 ];
 
+const digitalHeroMarqueeImages = [
+  { src: digitalHero1, tags: [{ emoji: "☀️", label: "Cancer" }, { emoji: "🌙", label: "Sagittarius" }, { emoji: "⬆️", label: "Aquarius" }] },
+  { src: heroCustomer2, tags: [{ emoji: "☀️", label: "Taurus" }, { emoji: "🌙", label: "Pisces" }, { emoji: "⬆️", label: "Sagittarius" }] },
+  { src: digitalHero2, tags: [{ emoji: "☀️", label: "Capricorn" }, { emoji: "🌙", label: "Aries" }, { emoji: "⬆️", label: "Virgo" }] },
+  { src: digitalHero3, tags: [{ emoji: "☀️", label: "Leo" }, { emoji: "🌙", label: "Gemini" }, { emoji: "⬆️", label: "Scorpio" }] },
+  { src: heroCustomer5, tags: [{ emoji: "☀️", label: "Aries" }, { emoji: "🌙", label: "Scorpio" }, { emoji: "⬆️", label: "Capricorn" }] },
+  { src: digitalHero4, tags: [{ emoji: "☀️", label: "Pisces" }, { emoji: "🌙", label: "Libra" }, { emoji: "⬆️", label: "Taurus" }] },
+];
+
 /* ─── Component ─── */
 
 export default function LandingPage() {
-  const { handleFormSubmit, isCalculatingChart, error } = useGenerator();
+  const { handleFormSubmit, isCalculatingChart, error, funnelMode } = useGenerator();
+  const activeMarqueeImages = funnelMode === 'digital' ? digitalHeroMarqueeImages : heroMarqueeImages;
 
   // Shared form state — passed to all BirthDataFormCard instances
   const [formData, setFormData] = useState({
@@ -158,7 +172,7 @@ export default function LandingPage() {
         </div>
         <div className="absolute inset-0 pointer-events-auto">
           <div className="flex items-start justify-center h-full pt-[48px]">
-            <ImageMarquee images={heroMarqueeImages} duration={28} onInteraction={() => setHasScrolledCarousel(true)} />
+            <ImageMarquee images={activeMarqueeImages} duration={28} onInteraction={() => setHasScrolledCarousel(true)} />
           </div>
         </div>
         <div className="relative z-10 flex flex-col justify-end min-h-[700px] px-4 py-[15px] pointer-events-none" style={{ marginTop: '-40px' }}>
@@ -194,7 +208,7 @@ export default function LandingPage() {
       <section className="hidden lg:block relative min-h-[740px] overflow-hidden">
         <div className="absolute inset-0">
           <div className="flex items-start justify-center h-full pt-[60px]">
-            <ImageMarquee images={heroMarqueeImages} duration={35} />
+            <ImageMarquee images={activeMarqueeImages} duration={35} />
           </div>
         </div>
         <div className="relative z-20 flex flex-col justify-end min-h-[740px] pb-0 px-6">
