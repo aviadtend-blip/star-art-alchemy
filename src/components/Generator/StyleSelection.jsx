@@ -187,8 +187,8 @@ export default function StyleSelection({
           activeIndex={activeIndex}
           onActiveChange={setActiveIndex}
           onZoom={openLightbox}
-          onShowMore={handleShowMore}
-          showingAll={showAll}
+          onShowMore={hasShowMore ? handleShowMore : undefined}
+          showingAll={showAll || !hasShowMore}
         />
 
         {/* Title + subtitle with arrows — crossfade */}
