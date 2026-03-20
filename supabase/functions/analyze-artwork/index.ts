@@ -67,22 +67,26 @@ Write JSON (no markdown, no backticks):
   "sun": {
     "artworkElement": "A short name (3-6 words, Title Case) for the specific visual element this hotspot points to.",
     "explanation": "2 sentences max, under 300 characters. Explain how this person's Sun in ${sunSign} influenced this part of the artwork — what subject, object, or scene element was chosen because of it, and what personality trait it reflects. See WRITING RULES.",
-    "position": { "top": <0-100>, "left": <0-100> }
+    "position": { "top": <0-100>, "left": <0-100> },
+    "focusBox": { "top": <0-100>, "left": <0-100>, "bottom": <0-100>, "right": <0-100> }
   },
   "moon": {
     "artworkElement": "A short name (3-6 words, Title Case) for the moon-influenced visual element.",
     "explanation": "2 sentences max, under 300 characters. Explain how this person's Moon in ${moonSign} influenced this part of the artwork — what mood, texture, or atmospheric element was chosen because of it, and what emotional pattern it reflects. See WRITING RULES.",
-    "position": { "top": <0-100>, "left": <0-100> }
+    "position": { "top": <0-100>, "left": <0-100> },
+    "focusBox": { "top": <0-100>, "left": <0-100>, "bottom": <0-100>, "right": <0-100> }
   },
   "rising": {
     "artworkElement": "A short name (3-6 words, Title Case) for the composition/framing element.",
     "explanation": "2 sentences max, under 300 characters. Explain how this person's ${rising} Rising influenced the overall composition and framing of the artwork — why the scene is arranged the way it is, and what first-impression trait it reflects. See WRITING RULES.",
-    "position": { "top": <0-100>, "left": <0-100> }
+    "position": { "top": <0-100>, "left": <0-100> },
+    "focusBox": { "top": <0-100>, "left": <0-100>, "bottom": <0-100>, "right": <0-100> }
   },
   "element": {
     "artworkElement": "A short name (3-6 words, Title Case) for the element-influenced visual aspect.",
     "explanation": "2 sentences max, under 300 characters. Explain how this person's dominant ${dominantElement} element influenced the feel and weight of the artwork — what visual density, movement, or stillness was chosen because of it, and what it says about them. See WRITING RULES.",
-    "position": { "top": <0-100>, "left": <0-100> }
+    "position": { "top": <0-100>, "left": <0-100> },
+    "focusBox": { "top": <0-100>, "left": <0-100>, "bottom": <0-100>, "right": <0-100> }
   }
 }
 
@@ -110,9 +114,19 @@ STYLE RULES:
 - Never use: represent, symbolize, vibrant, intricate, tapestry, journey, essence, energy, manifest, celestial, cosmic
 
 POSITION RULES:
-- Position = approximate center of each element as percentage (0=top/left, 100=bottom/right)
+- position = approximate center of each element as percentage (0=top/left, 100=bottom/right)
 - Keep at least 15 percentage points apart vertically
-- Output ONLY valid JSON, no preamble`;
+- Output ONLY valid JSON, no preamble
+
+FOCUSBOX RULES:
+- focusBox = tight bounding rectangle around the ENTIRE visual region described by this hotspot
+- Values are percentages (0=top/left edge, 100=bottom/right edge)
+- top < bottom, left < right
+- The box should tightly frame just the described element — not the whole image
+- For sun/moon: frame the specific subject/object (typically 15-40% of image width)
+- For rising: frame the broader composition region being described (typically 30-60% of image width)
+- For element: frame the atmospheric/textural region (typically 25-50% of image width)
+- Be precise — a too-large box defeats the purpose`;
 
 
     const response = await fetch(
