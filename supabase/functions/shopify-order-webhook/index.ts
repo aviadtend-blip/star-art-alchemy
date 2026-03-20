@@ -79,6 +79,18 @@ function storagePathFromUrl(publicUrl: string): string {
   return publicUrl.split("/").pop() || "";
 }
 
+function extractHotspots(artworkAnalysis: any): any[] | null {
+  if (!artworkAnalysis) return null;
+  const elements = artworkAnalysis.elements || artworkAnalysis.hotspots || [];
+  if (!Array.isArray(elements) || elements.length === 0) return null;
+  const emojiMap: Record<string, string> = { sun: "☀️", moon: "🌙", rising: "⬆️", element: "🔥" };
+  return elements.slice(0, 4).map((el: any) => ({
+    title: el.title || el.label || "",
+    explanation: el.explanation || el.description || el.copy || "",
+    emoji: el.emoji || emojiMap[el.key?.toLowerCase?.()] || "✨",
+  }));
+}
+
 /* ------------------------------------------------------------------ */
 /*  Digital fulfillment path                                           */
 /* ------------------------------------------------------------------ */
