@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeProjectFunction } from "@/lib/api/invokeProjectFunction";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, Upload, X, Loader2 } from "lucide-react";
 

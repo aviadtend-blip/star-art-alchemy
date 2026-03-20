@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeProjectFunction } from "@/lib/api/invokeProjectFunction";
 import PopularTag from "@/components/ui/PopularTag";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { DateWheelPicker } from "@/components/ui/date-wheel-picker";
