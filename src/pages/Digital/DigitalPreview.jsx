@@ -63,12 +63,38 @@ export default function DigitalPreview() {
     }
   }, [isDemo, demoAnalysis]);
 
-  // Digital purchase handler (placeholder — will wire to Shopify checkout)
-  const handleDigitalPurchase = useCallback(() => {
-    // TODO: call create-shopify-checkout with digital variant ID
-    console.log('Digital purchase initiated', DIGITAL_PRODUCT);
-    navigate('/generate/size'); // fallback for now
-  }, [navigate]);
+  // Digital checkout handler
+  const handleDigitalCheckout = useCallback(async (resolution) => {
+    if (checkoutLoading) return;
+    setCheckoutLoading(resolution);
+
+    try {
+      const styleId = selectedStyle?.id || '';
+      const customerEmail = sessionStorage.getItem('celestial_captured_email') || '';
+      const artworkImageUrl = generatedImage || '';
+      const celestialOrderId = sessionStorage.getItem('celestial_order_id') || '';
+      const dtId = sessionStorage.getItem('affiliate_dt_id') || '';
+
+      const data = await invokeProjectFunction('create-digital-checkout', {
+        resolution,
+        styleId,
+        customerEmail,
+        chartData: displayChart,
+        artworkImageUrl,
+        celestialOrderId: celestialOrderId || undefined,
+        dtId: dtId || undefined,
+      });
+
+      if (data?.error) throw new Error(data.error);
+      if (!data?.url) throw new Error('No checkout URL returned');
+
+      window.location.href = data.url;
+    } catch (err) {
+      console.error('❌ Digital checkout error:', err);
+      toast({ title: 'Checkout failed', description: err.message || 'Please try again.', variant: 'destructive' });
+      setCheckoutLoading(null);
+    }
+  }, [checkoutLoading, selectedStyle, generatedImage, displayChart]);
 
   // Canvas upsell — go to existing size page
   const handleCanvasUpsell = useCallback(() => {
