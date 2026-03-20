@@ -1,6 +1,6 @@
 // Natal chart calculator — calls the backend edge function
 
-import { supabase } from "@/integrations/supabase/client";
+import { invokeProjectFunction } from "@/lib/api/invokeProjectFunction";
 
 /**
  * Calculates a natal chart from birth data using the Free Astrology API
@@ -30,42 +30,7 @@ export async function calculateNatalChart(birthData) {
 
     if (import.meta.env.DEV) console.log("[chartCalculator] Calling natal chart API with:", payload);
 
-    // Race the API call against a 30-second timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
-
-    let data, error;
-    try {
-      const result = await supabase.functions.invoke("calculate-natal-chart", {
-        body: payload,
-      });
-      data = result.data;
-      error = result.error;
-    } catch (err) {
-      clearTimeout(timeoutId);
-      if (err.name === 'AbortError') {
-        throw new Error("Chart calculation timed out. Please check your connection and try again.");
-      }
-      throw err;
-    } finally {
-      clearTimeout(timeoutId);
-    }
-
-    if (error) {
-      console.error("[chartCalculator] Edge function error:", error);
-
-      let edgeMessage = error.message || "Failed to calculate natal chart. Please try again.";
-      try {
-        if (typeof error.context?.json === "function") {
-          const body = await error.context.json();
-          if (body?.error) edgeMessage = body.error;
-        }
-      } catch {
-        // ignore parse failures
-      }
-
-      throw new Error(edgeMessage);
-    }
+    const data = await invokeProjectFunction("calculate-natal-chart", payload);
 
     if (data?.error) {
       throw new Error(data.error);
