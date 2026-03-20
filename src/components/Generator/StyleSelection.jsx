@@ -304,7 +304,7 @@ export default function StyleSelection({
               images={lightboxImages.map((src, i) => ({
                 id: `${lightbox.styleId}-${i}`,
                 src,
-                alt: `${STYLE_LABELS[lightbox.styleId]?.title || 'Style'} example ${i + 1}`,
+                alt: `${_styleLabels[lightbox.styleId]?.title || 'Style'} example ${i + 1}`,
               }))}
             />
           </div>
