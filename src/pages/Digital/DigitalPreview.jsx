@@ -6,6 +6,8 @@ import { analyzeArtwork } from '@/lib/explanations/analyzeArtwork';
 import { getNextVariation } from '@/lib/api/replicateClient';
 import { clearCompositeCache } from '@/hooks/useCompositedMockups';
 import { DIGITAL_PRODUCT } from '@/lib/digitalProduct';
+import { invokeProjectFunction } from '@/lib/api/invokeProjectFunction';
+import { toast } from '@/hooks/use-toast';
 
 import taurusExample from '@/assets/gallery/taurus-example.jpg';
 import demoImage from '@/assets/gallery/demo-cosmic-collision.webp';
