@@ -10,43 +10,38 @@ import Footer from '@/components/Layout/Footer';
 
 import StyleCarousel from '@/components/Generator/StyleCarousel';
 
-// Prism Storm images
+// Canvas style images (default)
 import prismThumb from '@/assets/gallery/styles/prism-storm-thumb.webp';
 import prism2 from '@/assets/gallery/styles/prism-storm-2.webp';
 import prism3 from '@/assets/gallery/styles/prism-storm-3.webp';
 import prism4 from '@/assets/gallery/styles/prism-storm-4.webp';
 
-// Folk Oracle images
 import folkThumb from '@/assets/gallery/styles/folk-oracle-thumb.webp';
 import folk2 from '@/assets/gallery/styles/folk-oracle-2.webp';
 import folk3 from '@/assets/gallery/styles/folk-oracle-3.webp';
 import folk4 from '@/assets/gallery/styles/folk-oracle-4.webp';
 
-// Cosmic Fable images
 import fableThumb from '@/assets/gallery/styles/cosmic-fable-thumb.webp';
 import fable2 from '@/assets/gallery/styles/cosmic-fable-2.webp';
 import fable3 from '@/assets/gallery/styles/cosmic-fable-3.webp';
 import fable4 from '@/assets/gallery/styles/cosmic-fable-4.webp';
 
-// Paper Carnival images
 import paperThumb from '@/assets/gallery/styles/paper-carnival-thumb.webp';
 import paper2 from '@/assets/gallery/styles/paper-carnival-2.webp';
 import paper3 from '@/assets/gallery/styles/paper-carnival-3.webp';
 import paper4 from '@/assets/gallery/styles/paper-carnival-4.webp';
 
-// Red Eclipse images
 import redThumb from '@/assets/gallery/styles/red-eclipse-thumb.webp';
 import red2 from '@/assets/gallery/styles/red-eclipse-2.webp';
 import red3 from '@/assets/gallery/styles/red-eclipse-3.webp';
 import red4 from '@/assets/gallery/styles/red-eclipse-4.webp';
 
-// Cosmic Collision images
 import collisionThumb from '@/assets/gallery/styles/cosmic-collision-thumb.webp';
 import collision2 from '@/assets/gallery/styles/cosmic-collision-2.webp';
 import collision3 from '@/assets/gallery/styles/cosmic-collision-3.webp';
 import collision4 from '@/assets/gallery/styles/cosmic-collision-4.webp';
 
-const STYLE_IMAGES = {
+const DEFAULT_STYLE_IMAGES = {
   'prism-storm': prismThumb,
   'folk-oracle': folkThumb,
   'cosmic-fable': fableThumb,
@@ -55,7 +50,7 @@ const STYLE_IMAGES = {
   'cosmic-collision': collisionThumb,
 };
 
-const STYLE_GALLERY = {
+const DEFAULT_STYLE_GALLERY = {
   'prism-storm': [prismThumb, prism2, prism3, prism4],
   'folk-oracle': [folkThumb, folk2, folk3, folk4],
   'cosmic-fable': [fableThumb, fable2, fable3, fable4],
@@ -64,7 +59,7 @@ const STYLE_GALLERY = {
   'cosmic-collision': [collisionThumb, collision2, collision3, collision4],
 };
 
-const STYLE_LABELS = {
+const DEFAULT_STYLE_LABELS = {
   'prism-storm': { title: 'PRISM STORM', sub: 'Abstract expressionist cosmos' },
   'folk-oracle': { title: 'FOLK ORACLE', sub: 'Dark folklore, rich warmth' },
   'cosmic-fable': { title: 'COSMIC FABLE', sub: 'Retro cosmic storytelling' },
@@ -73,26 +68,40 @@ const STYLE_LABELS = {
   'cosmic-collision': { title: 'COSMIC COLLISION', sub: 'Explosive mixed-media surrealism' },
 };
 
-const toCarouselShape = (s) => ({
+const toCarouselShape = (s, styleImages, styleLabels) => ({
   id: s.id,
-  name: STYLE_LABELS[s.id]?.title || s.name,
-  subtitle: STYLE_LABELS[s.id]?.sub || '',
-  imageSrc: STYLE_IMAGES[s.id],
+  name: styleLabels[s.id]?.title || s.name,
+  subtitle: styleLabels[s.id]?.sub || '',
+  imageSrc: styleImages[s.id],
   mostPopular: !!s.popular,
 });
 
-const baseStyles = ART_STYLES.map(toCarouselShape);
-const additionalStyles = ADDITIONAL_STYLES.map(toCarouselShape);
-const allStyles = [...baseStyles, ...additionalStyles];
+export default function StyleSelection({
+  onSelect, onBack, chartData, formData, onEditBirthData, isLoading = false, isPortraitEdition = false,
+  // New props for reusability — defaults to canvas styles
+  primaryStyles,        // array of style objects (replaces ART_STYLES)
+  additionalStyles,     // array of style objects (replaces ADDITIONAL_STYLES), null = no "show more"
+  styleImages,          // { [id]: thumbSrc }
+  styleGallery,         // { [id]: [src, src, src, src] }
+  styleLabels,          // { [id]: { title, sub } }
+}) {
+  const _styleImages = styleImages || DEFAULT_STYLE_IMAGES;
+  const _styleGallery = styleGallery || DEFAULT_STYLE_GALLERY;
+  const _styleLabels = styleLabels || DEFAULT_STYLE_LABELS;
+  const _primaryStyles = primaryStyles || ART_STYLES;
+  const _additionalStyles = additionalStyles !== undefined ? additionalStyles : ADDITIONAL_STYLES;
 
-export default function StyleSelection({ onSelect, onBack, chartData, formData, onEditBirthData, isLoading = false, isPortraitEdition = false }) {
+  const baseStyles = _primaryStyles.map(s => toCarouselShape(s, _styleImages, _styleLabels));
+  const extraStyles = _additionalStyles ? _additionalStyles.map(s => toCarouselShape(s, _styleImages, _styleLabels)) : [];
+  const allStylesCombined = [...baseStyles, ...extraStyles];
   const [showAll, setShowAll] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightbox, setLightbox] = useState(null);
   const [lightboxVisible, setLightboxVisible] = useState(false);
   const [prevLabel, setPrevLabel] = useState(null); // for crossfade
 
-  const carouselStyles = showAll ? allStyles : baseStyles;
+  const hasShowMore = _additionalStyles && _additionalStyles.length > 0;
+  const carouselStyles = (showAll || !hasShowMore) ? allStylesCombined : baseStyles;
   const currentStyle = carouselStyles[activeIndex];
   const selectedStyleId = currentStyle?.id;
 
@@ -115,13 +124,11 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
       return;
     }
     const dominantElement = chartData?.dominant_element;
-    let autoId = ART_STYLES[0].id;
+    let autoId = _primaryStyles[0].id;
     if (dominantElement === 'Water' || dominantElement === 'Earth') {
-      autoId = 'folk-oracle';
+      autoId = _primaryStyles.find(s => s.id.includes('folk'))?.id || _primaryStyles[1]?.id || autoId;
     } else if (dominantElement === 'Air') {
-      autoId = 'cosmic-fable';
-    } else {
-      autoId = 'prism-storm';
+      autoId = _primaryStyles.find(s => s.id.includes('fable') || s.id.includes('pale'))?.id || _primaryStyles[2]?.id || autoId;
     }
     onSelect(autoId);
   };
@@ -136,7 +143,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
     setTimeout(() => setLightbox(null), 250);
   }, []);
 
-  const lightboxImages = lightbox ? STYLE_GALLERY[lightbox.styleId] || [] : [];
+  const lightboxImages = lightbox ? (_styleGallery[lightbox.styleId] || []) : [];
 
 
   const handleShowMore = () => {
@@ -180,8 +187,8 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
           activeIndex={activeIndex}
           onActiveChange={setActiveIndex}
           onZoom={openLightbox}
-          onShowMore={handleShowMore}
-          showingAll={showAll}
+          onShowMore={hasShowMore ? handleShowMore : undefined}
+          showingAll={showAll || !hasShowMore}
         />
 
         {/* Title + subtitle with arrows — crossfade */}
@@ -284,7 +291,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
         >
           {/* Fixed top header */}
           <div className="shrink-0 px-6 pt-6 pb-4 z-10 text-center" onClick={(e) => e.stopPropagation()}>
-            <p className="font-display text-subtitle text-white/50">{STYLE_LABELS[lightbox.styleId]?.title}</p>
+            <p className="font-display text-subtitle text-white/50">{_styleLabels[lightbox.styleId]?.title}</p>
             <h2 className="font-display text-a2 text-white mt-1">Additional examples</h2>
           </div>
 
@@ -297,7 +304,7 @@ export default function StyleSelection({ onSelect, onBack, chartData, formData, 
               images={lightboxImages.map((src, i) => ({
                 id: `${lightbox.styleId}-${i}`,
                 src,
-                alt: `${STYLE_LABELS[lightbox.styleId]?.title || 'Style'} example ${i + 1}`,
+                alt: `${_styleLabels[lightbox.styleId]?.title || 'Style'} example ${i + 1}`,
               }))}
             />
           </div>

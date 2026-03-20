@@ -210,7 +210,7 @@ export default function GenerateProductSelection() {
   const handleContinue = () => {
     if (!selectedId) return;
     sessionStorage.setItem('celestial_product_format', selectedId);
-    navigate('/generate/style');
+    navigate(selectedId === 'phone-case' ? '/generate/phone-style' : '/generate/style');
   };
 
   const handleCardSelect = (index) => {

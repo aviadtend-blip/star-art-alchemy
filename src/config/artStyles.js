@@ -55,9 +55,65 @@ export const ADDITIONAL_STYLES = [
   },
 ];
 
+// Phone case exclusive styles
+export const PHONE_ART_STYLES = [
+  {
+    id: 'block-print',
+    name: 'Block Print',
+    description: 'Heavy ink, raw edges — bold graphic marks with tactile energy.',
+    sref: '2663806998',
+    preview: '🖨️',
+    accentColor: 'from-gray-700 to-gray-900',
+  },
+  {
+    id: 'folk-oracle-phone',
+    name: 'Folk Oracle',
+    description: 'Dark folklore with rich warmth — mystical scenes rendered in earthy, intimate tones.',
+    sref: '560113199',
+    preview: '🦌',
+    accentColor: 'from-amber-400 to-orange-500',
+    popular: true,
+  },
+  {
+    id: 'pale-studio',
+    name: 'Pale Studio',
+    description: 'Loose paint, quiet space — atmospheric scenes with minimal, painterly marks.',
+    sref: '3000561154',
+    preview: '🎨',
+    accentColor: 'from-slate-300 to-blue-300',
+  },
+  {
+    id: 'paper-carnival-phone',
+    name: 'Paper Carnival',
+    description: 'Bright naive wonder with playful folk-art energy and joyful color.',
+    sref: '1457152461',
+    preview: '🎪',
+    accentColor: 'from-yellow-400 to-orange-400',
+  },
+  {
+    id: 'red-eclipse-phone',
+    name: 'Red Eclipse',
+    description: 'Bold ink and crimson fire — dramatic woodcut-style cosmic illustration.',
+    sref: '6815708',
+    preview: '🔴',
+    accentColor: 'from-red-500 to-red-700',
+  },
+  {
+    id: 'riso-bloom',
+    name: 'Riso Bloom',
+    description: 'Grainy retro layers — risograph-inspired color with playful compositions.',
+    sref: '269425912',
+    preview: '🌸',
+    accentColor: 'from-pink-400 to-yellow-400',
+  },
+];
+
 /**
  * Get a style by its ID
  */
 export function getStyleById(id) {
-  return ART_STYLES.find((s) => s.id === id) ?? ADDITIONAL_STYLES.find((s) => s.id === id) ?? ART_STYLES[0];
+  return ART_STYLES.find((s) => s.id === id)
+    ?? ADDITIONAL_STYLES.find((s) => s.id === id)
+    ?? PHONE_ART_STYLES.find((s) => s.id === id)
+    ?? ART_STYLES[0];
 }
