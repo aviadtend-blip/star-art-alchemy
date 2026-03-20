@@ -219,7 +219,7 @@ export default function GenerateProductSelection() {
     scrollToIndex(index);
   };
 
-  const isDisabled = !selectedId;
+  const selectedProduct = PRODUCTS.find(p => p.id === selectedId);
   const sidePad = `calc(50% - ${CARD_W / 2}px)`;
 
   return (
