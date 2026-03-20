@@ -1,5 +1,5 @@
 import giftImg from '@/assets/gallery/more-than-art-gift.webp';
-import storyImg from '@/assets/gallery/more-than-art-story.webp';
+import storyImg from '@/assets/story-phone-wallpaper.webp';
 import blueprintImg from '@/assets/gallery/more-than-art-blueprint.webp';
 
 const ITEMS = [
