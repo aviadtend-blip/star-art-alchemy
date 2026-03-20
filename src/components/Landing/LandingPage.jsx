@@ -492,7 +492,7 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ FAQ ═══════════════════ */}
-      <FAQSection items={faqs} />
+      {funnelMode !== 'digital' && <FAQSection items={faqs} />}
 
       {/* ═══════════════════ FOOTER ═══════════════════ */}
       <Footer onScrollToForm={scrollToForm} />
