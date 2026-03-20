@@ -105,8 +105,8 @@ export default function BirthDataFormCard({
     debounceRef.current = setTimeout(async () => {
       setLoadingSuggestions(true);
       try {
-        const { data, error } = await supabase.functions.invoke("google-places-autocomplete", { body: { input: cityQuery } });
-        if (!error && data?.predictions) { setSuggestions(data.predictions); setShowSuggestions(true); }
+        const data = await invokeProjectFunction("google-places-autocomplete", { input: cityQuery });
+        if (data?.predictions) { setSuggestions(data.predictions); setShowSuggestions(true); }
       } catch (e) { console.error("[BirthDataFormCard] Autocomplete error:", e); }
       finally { setLoadingSuggestions(false); }
     }, 300);
