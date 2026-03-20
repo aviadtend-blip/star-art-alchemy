@@ -9,7 +9,7 @@ import PhoneScreenMockup from '@/components/Explanation/PhoneScreenMockup';
  * Mobile: horizontal snap carousel. Desktop: 3-column grid.
  * @param {{ onGetFramed: () => void; onDownloadPreview: () => void; artworkSrc: string }} props
  */
-export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, artworkSrc }) {
+export default function MakeItYoursSection({ onGetFramed, onDownloadPreview, artworkSrc, funnelMode }) {
   const navigate = useNavigate();
   const cards = [
     {
