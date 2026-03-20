@@ -620,6 +620,8 @@ export function ChartExplanation({
             onDownloadPreview={() => setShowEmailModal(true)}
             artworkSrc={selectedImage}
             funnelMode={funnelMode}
+            onDigitalCheckout={onDigitalCheckout}
+            checkoutLoading={checkoutLoading}
           />
           <MoreThanArtSection />
           {funnelMode !== 'digital' && <ReviewsList theme="dark" gap={6} py={6} className="pt-8 pb-[60px] w-full" />}
