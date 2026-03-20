@@ -145,7 +145,7 @@ export function GeneratorProvider({ children }) {
       isCalculatingChartRef.current = false;
       setIsCalculatingChart(false);
     }
-  }, [navigate]);
+  }, [navigate, funnelMode]);
 
   const handleStyleSelect = useCallback(async (styleId) => {
     // Prevent double-click race condition
