@@ -243,7 +243,7 @@ export default function GenerateProductSelection() {
           {/* Mobile: snap carousel */}
           <div
             className="w-full flex justify-center relative md:hidden"
-            style={{ overflow: 'clip', padding: '4px 0' }}
+            style={{ overflowX: 'clip', overflowY: 'visible' }}
           >
             <div
               ref={scrollRef}
