@@ -124,7 +124,7 @@ export default function StyleSelection({
       return;
     }
     const dominantElement = chartData?.dominant_element;
-    let autoId = ART_STYLES[0].id;
+    let autoId = _primaryStyles[0].id;
     if (dominantElement === 'Water' || dominantElement === 'Earth') {
       autoId = 'folk-oracle';
     } else if (dominantElement === 'Air') {
