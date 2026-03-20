@@ -100,7 +100,8 @@ export default function StyleSelection({
   const [lightboxVisible, setLightboxVisible] = useState(false);
   const [prevLabel, setPrevLabel] = useState(null); // for crossfade
 
-  const carouselStyles = showAll ? allStyles : baseStyles;
+  const hasShowMore = _additionalStyles && _additionalStyles.length > 0;
+  const carouselStyles = (showAll || !hasShowMore) ? allStylesCombined : baseStyles;
   const currentStyle = carouselStyles[activeIndex];
   const selectedStyleId = currentStyle?.id;
 
