@@ -46,7 +46,13 @@ serve(async (req) => {
       ? `\n\nThe artwork must weave together multiple visual elements that represent this person's chart. Include one figure from the following list as ONE element of the composition — not the dominant focal point: ${suggestedSubjects.join(', ')}. This figure should occupy no more than a third of the visual weight. The rest of the composition should be filled with symbolic objects, textures, environments, and atmospheric details drawn from the chart's aspects, element balance, and planetary tensions. Think of it as a rich collage where the figure lives AMONG the other symbols, not above them. Do NOT create a portrait centered on the figure — create a world that contains the figure.`
       : '';
 
-    const prompt = `You are a mythic scene painter. Given a birth chart, write ONE paragraph of 4 sentences (60-80 words total) describing a scene for artwork generation.${subjectDirective}
+    const prompt = `You are a mythic scene painter. Given a birth chart, write ONE scene description in exactly 30-40 words. Three elements only:
+
+1. The SUBJECT (from suggestedSubjects list) — who they are and what they're doing
+2. The ENVIRONMENT — where they are (must reflect Moon sign)
+3. ONE dominant texture or material — sets the mood (must reflect Rising sign)
+
+No filler, no adjective stacking. Every word must describe something visible.${subjectDirective}
 
 Chart's Big Three:
 - Sun sign: ${sanitizeForPrompt(chartData.sun?.sign)}${isPortraitEdition ? ' — IMPORTANT: the subject MUST be a human figure (a person) whose appearance, clothing, posture or adornments channel the sign. No creatures, no animals, no abstract forms as the main subject — a human face must be clearly visible and central in the composition.' : ''}${gender && gender !== 'prefer_not_to_say' ? ` The central figure should be ${sanitizeForPrompt(gender)}.` : ''}
@@ -59,12 +65,6 @@ Additional chart features to weave in:
 - Key aspects: ${highPriorityAspects || 'none notable'}
 - Dignity issues: ${dignityText}
 
-Write exactly 4 sentences following this structure:
-Sentence 1: Describe the overall environment, atmosphere, and landscape of the scene — driven by the dominant element and modality. This sets the world the artwork lives in.
-Sentence 2: Describe 2-3 symbolic objects, textures, or natural elements scattered through the scene that represent the chart's key aspects and tensions. Be concrete — name materials, surfaces, and forms.
-Sentence 3: Place the suggested figure naturally within this environment as one element among many — partially obscured, mid-action, or integrated into the surroundings rather than posed front-and-center.
-Sentence 4: Describe one vivid visual detail that captures the person's most unique chart feature — a lighting effect, a crack in a surface, a color shift, something that couldn't belong to anyone else's artwork.
-
 RULES:
 - Every visual choice must trace back to a specific chart placement — no generic fantasy
 - Use concrete materials, textures, and forms — not abstract concepts
@@ -72,7 +72,7 @@ RULES:
 - Do NOT use astrology jargon in the output
 - Forbidden words: energy, essence, vibrant, intricate, dynamic, balance, harmony, journey, tapestry, represent, symbolize, ethereal, celestial
 
-Output ONLY the scene paragraph. Nothing else.`;
+Output ONLY the scene description. Nothing else.`;
 
     console.log("[DEBUG] gender:", chartData.gender, "| suggestedSubjects:", JSON.stringify(suggestedSubjects), "| prompt preview:", prompt.substring(0, 200));
 
