@@ -4,9 +4,11 @@
  * Uses submit + poll pattern for real-time progress tracking
  */
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
+const FUNCTIONS_URL = projectId
+  ? `https://${projectId}.supabase.co/functions/v1`
+  : `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
 const GENERATION_CACHE_KEY = 'celestial_generation_cache';
 
 /**
