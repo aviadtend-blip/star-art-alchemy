@@ -8,7 +8,8 @@ import { GENERATE_LOADING_IMAGES, GENERATE_PREVIEW_IMAGES } from '@/data/imageMa
 export default function GenerateLoading() {
   const navigate = useNavigate();
   const ctx = useGenerator();
-
+  const isDigital = ctx.funnelMode === 'digital';
+  const previewPath = isDigital ? '/d/preview' : '/generate/preview';
   // Loading screen asset (gif) — high priority
   useImagePreloader(GENERATE_LOADING_IMAGES);
   // Preload all mockup / preview images while AI is generating — user has ~20s of wait time
