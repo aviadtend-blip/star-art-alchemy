@@ -739,7 +739,7 @@ export function ChartExplanation({
           </div>
 
           {/* Reviews — dark */}
-          <ReviewsList theme="dark" gap={5} py={5} className="px-4 pt-12 pb-12" />
+          {funnelMode !== 'digital' && <ReviewsList theme="dark" gap={5} py={5} className="px-4 pt-12 pb-12" />}
         </div>
        </div>
 
