@@ -242,9 +242,9 @@ export function GeneratorProvider({ children }) {
       console.error('❌ Generation error:', err);
       setError(err.message);
       isGeneratingRef.current = false;
-      navigate('/generate/style');
+      navigate(funnelMode === 'digital' ? '/d/style' : '/generate/style');
     }
-  }, [chartData, formData, navigate, isPortraitEdition, userPhotoUrl]);
+  }, [chartData, formData, navigate, isPortraitEdition, userPhotoUrl, funnelMode]);
 
   const handleRetry = useCallback(() => {
     setError(null);
