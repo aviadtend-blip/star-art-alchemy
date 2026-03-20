@@ -74,8 +74,29 @@ export default function DigitalPreview() {
       const styleId = selectedStyle?.id || '';
       const customerEmail = sessionStorage.getItem('celestial_captured_email') || '';
       const artworkImageUrl = generatedImage || '';
-      const celestialOrderId = sessionStorage.getItem('celestial_order_id') || '';
       const dtId = sessionStorage.getItem('affiliate_dt_id') || '';
+
+      // Persist order data (same pattern as canvas funnel) — non-blocking
+      let celestialOrderId = sessionStorage.getItem('celestial_order_id') || '';
+      try {
+        const customerName = formData?.name || sessionStorage.getItem('celestial_captured_first_name') || '';
+        const saveData = await invokeProjectFunction('save-order-data', {
+          customerName,
+          customerEmail,
+          chartData: displayChart,
+          artworkAnalysis: artworkAnalysis || null,
+          generatedImageUrl: artworkImageUrl,
+          subjectExplanation: artworkAnalysis?.subjectExplanation || null,
+        });
+        if (saveData?.orderId) {
+          celestialOrderId = saveData.orderId;
+          sessionStorage.setItem('celestial_order_id', celestialOrderId);
+        }
+      } catch (saveErr) {
+        console.warn('⚠️ save-order-data failed (non-blocking):', saveErr);
+      }
+
+      sessionStorage.setItem('funnel_type', 'digital');
 
       const data = await invokeProjectFunction('create-digital-checkout', {
         resolution,
@@ -96,7 +117,7 @@ export default function DigitalPreview() {
       toast({ title: 'Checkout failed', description: err.message || 'Please try again.', variant: 'destructive' });
       setCheckoutLoading(null);
     }
-  }, [checkoutLoading, selectedStyle, generatedImage, displayChart]);
+  }, [checkoutLoading, selectedStyle, generatedImage, displayChart, formData, artworkAnalysis]);
 
   // Canvas upsell — go to existing size page
   const handleCanvasUpsell = useCallback(() => {
