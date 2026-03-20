@@ -266,8 +266,8 @@ export function GeneratorProvider({ children }) {
   const handleBackToStyle = useCallback(() => {
     setError(null);
     isGeneratingRef.current = false;
-    navigate('/generate/style');
-  }, [navigate]);
+    navigate(funnelMode === 'digital' ? '/d/style' : '/generate/style');
+  }, [navigate, funnelMode]);
 
   const handleGetFramed = useCallback(() => {
     navigate('/generate/size');
