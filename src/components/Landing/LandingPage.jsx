@@ -383,7 +383,7 @@ export default function LandingPage() {
       })()}
 
       {/* ═══════════════════ CTA BREAK ═══════════════════ */}
-      <section className="py-[60px] px-4 bg-white text-surface-foreground">
+      <section className="pt-[32px] pb-[60px] px-4 bg-white text-surface-foreground">
         <div className="max-w-lg mx-auto text-center flex flex-col items-center gap-5">
           <h2 className="text-a2 text-surface-foreground leading-snug">
             Ready to turn your birth data into some awesome wall art?
