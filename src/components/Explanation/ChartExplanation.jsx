@@ -783,13 +783,16 @@ export function ChartExplanation({
               </button>
             )}
             {onBackToStyle && (
-              <button
-                onClick={onBackToStyle}
-                className="btn-base btn-dark btn-gradient-glow flex-shrink-0 gap-2.5 whitespace-nowrap px-6"
-                style={{ width: 'auto' }}
-              >
-                <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
-              </button>
+              <div className="btn-gradient-glow-wrap">
+                <div className="glow-aura" />
+                <button
+                  onClick={onBackToStyle}
+                  className="btn-base btn-dark flex-shrink-0 gap-2.5 whitespace-nowrap px-6"
+                  style={{ width: 'auto' }}
+                >
+                  <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
+                </button>
+              </div>
             )}
           </div>
           {/* Scroll indicator */}
