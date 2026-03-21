@@ -633,18 +633,18 @@ export function ChartExplanation({
                 ))}
               </div>
 
-              {/* Action buttons — side by side */}
+              {/* Action buttons — hug content */}
               <div className="flex flex-wrap gap-4 w-full">
-                <button onClick={() => navigateToLanding('/')} className="btn-base btn-dark flex-1 gap-2.5">
+                <button onClick={() => navigateToLanding('/')} className="btn-base btn-dark gap-2.5 px-6" style={{ width: 'auto', flex: 'none' }}>
                   <UserPlus size={16} className="flex-shrink-0" /> Create One for a Friend
                 </button>
                 {onReimagine && (
-                  <button onClick={onReimagine} disabled={isReimagining} className="btn-base btn-dark flex-1 gap-2.5">
+                  <button onClick={onReimagine} disabled={isReimagining} className="btn-base btn-dark gap-2.5 px-6" style={{ width: 'auto', flex: 'none' }}>
                     {isReimagining ? <><RefreshCw size={16} className="animate-spin flex-shrink-0" /> Loading...</> : variationsExhausted ? <><RefreshCw size={16} className="flex-shrink-0" /> Generate New</> : <><RefreshCw size={16} className="flex-shrink-0" /> Reimagine</>}
                   </button>
                 )}
                 {onBackToStyle && (
-                  <button onClick={onBackToStyle} className="btn-base btn-dark flex-1 gap-2.5">
+                  <button onClick={onBackToStyle} className="btn-base btn-dark gap-2.5 px-6" style={{ width: 'auto', flex: 'none' }}>
                     <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
                   </button>
                 )}
