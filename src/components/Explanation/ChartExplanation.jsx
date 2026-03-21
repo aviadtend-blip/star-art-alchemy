@@ -635,14 +635,17 @@ export function ChartExplanation({
 
               {/* Action buttons — side by side */}
               <div className="flex flex-wrap gap-4 w-full">
-                {onBackToStyle && (
-                  <button onClick={onBackToStyle} className="btn-base btn-dark flex-1 gap-2.5">
-                    <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
-                  </button>
-                )}
+                <button onClick={() => navigateToLanding('/')} className="btn-base btn-dark flex-1 gap-2.5">
+                  <UserPlus size={16} className="flex-shrink-0" /> Create One for a Friend
+                </button>
                 {onReimagine && (
                   <button onClick={onReimagine} disabled={isReimagining} className="btn-base btn-dark flex-1 gap-2.5">
                     {isReimagining ? <><RefreshCw size={16} className="animate-spin flex-shrink-0" /> Loading...</> : variationsExhausted ? <><RefreshCw size={16} className="flex-shrink-0" /> Generate New</> : <><RefreshCw size={16} className="flex-shrink-0" /> Reimagine</>}
+                  </button>
+                )}
+                {onBackToStyle && (
+                  <button onClick={onBackToStyle} className="btn-base btn-dark flex-1 gap-2.5">
+                    <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
                   </button>
                 )}
               </div>
