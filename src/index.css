@@ -293,7 +293,7 @@
   inset: 0;
   border-radius: 48px;
   background: conic-gradient(from 0deg, #FE6781, #FFBF00, #6EC1E4, #FE6781);
-  filter: blur(6px);
+  filter: blur(10px);
   opacity: 0.5;
   animation: glow-hue-rotate 4s linear infinite;
   pointer-events: none;
