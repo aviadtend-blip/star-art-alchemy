@@ -39,7 +39,7 @@ export default function DigitalPreview() {
     chartData, generatedImage, formData,
     handleEditBirthData, handleBackToStyle,
     artworkAnalysis, setArtworkAnalysis, setGeneratedImage, handleStyleSelect,
-    selectedStyle, setFunnelMode,
+    selectedStyle, setFunnelMode, generationPrompt,
   } = useGenerator();
 
   const [demoAnalysis, setDemoAnalysis] = useState(null);
