@@ -681,7 +681,7 @@ export function ChartExplanation({
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, ease: 'easeOut' }}
-                className="px-6 mx-auto flex flex-col items-center pt-6"
+                className="px-6 mx-auto flex flex-col items-center"
               >
                 {/* Hotspot toggle */}
                 <div className="flex items-center justify-center gap-2.5 flex-1" style={{ padding: '10px 21px' }}>
