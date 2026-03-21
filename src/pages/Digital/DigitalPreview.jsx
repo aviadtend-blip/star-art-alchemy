@@ -142,7 +142,7 @@ export default function DigitalPreview() {
       img.onerror = reject;
       img.src = next.imageUrl;
     });
-    const analysisPromise = analyzeArtwork(next.imageUrl, chartData).catch(() => null);
+    const analysisPromise = analyzeArtwork(next.imageUrl, chartData, generationPrompt).catch(() => null);
 
     Promise.all([imgPromise, analysisPromise])
       .then(([, analysisResult]) => {
