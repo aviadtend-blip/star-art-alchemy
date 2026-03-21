@@ -751,34 +751,64 @@ export function ChartExplanation({
           </AnimatePresence>
 
           {/* Action buttons — horizontally scrollable on mobile */}
-          <div className="flex gap-3 px-5 pt-7 pb-10 overflow-x-auto scrollbar-hide">
-            <button
-              onClick={() => navigateToLanding('/')}
-              className="btn-base btn-dark flex-shrink-0 gap-2.5 whitespace-nowrap px-6"
-              style={{ width: 'auto' }}
-            >
-              <UserPlus size={16} className="flex-shrink-0" /> Create One for a Friend
-            </button>
-            {onReimagine && (
-              <button
-                onClick={onReimagine}
-                disabled={isReimagining}
-                className="btn-base btn-dark flex-shrink-0 gap-2.5 whitespace-nowrap px-6"
-                style={{ width: 'auto' }}
-              >
-                {isReimagining ? <><RefreshCw size={16} className="animate-spin flex-shrink-0" /> Loading...</> : variationsExhausted ? <><RefreshCw size={16} className="flex-shrink-0" /> Generate New</> : <><RefreshCw size={16} className="flex-shrink-0" /> Reimagine</>}
-              </button>
-            )}
-            {onBackToStyle && (
-              <button
-                onClick={onBackToStyle}
-                className="btn-base btn-dark flex-shrink-0 gap-2.5 whitespace-nowrap px-6"
-                style={{ width: 'auto' }}
-              >
-                <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
-              </button>
-            )}
-          </div>
+          {(() => {
+            const actionScrollRef = React.createRef();
+            const [scrollProgress, setScrollProgress] = React.useState(0);
+            return (
+              <>
+                <div
+                  ref={actionScrollRef}
+                  className="flex gap-3 px-5 pt-7 pb-4 overflow-x-auto scrollbar-hide"
+                  onScroll={(e) => {
+                    const el = e.currentTarget;
+                    const max = el.scrollWidth - el.clientWidth;
+                    setScrollProgress(max > 0 ? el.scrollLeft / max : 0);
+                  }}
+                >
+                  <button
+                    onClick={() => navigateToLanding('/')}
+                    className="btn-base btn-dark flex-shrink-0 gap-2.5 whitespace-nowrap px-6"
+                    style={{ width: 'auto' }}
+                  >
+                    <UserPlus size={16} className="flex-shrink-0" /> Create One for a Friend
+                  </button>
+                  {onReimagine && (
+                    <button
+                      onClick={onReimagine}
+                      disabled={isReimagining}
+                      className="btn-base btn-dark flex-shrink-0 gap-2.5 whitespace-nowrap px-6"
+                      style={{ width: 'auto' }}
+                    >
+                      {isReimagining ? <><RefreshCw size={16} className="animate-spin flex-shrink-0" /> Loading...</> : variationsExhausted ? <><RefreshCw size={16} className="flex-shrink-0" /> Generate New</> : <><RefreshCw size={16} className="flex-shrink-0" /> Reimagine</>}
+                    </button>
+                  )}
+                  {onBackToStyle && (
+                    <button
+                      onClick={onBackToStyle}
+                      className="btn-base btn-dark flex-shrink-0 gap-2.5 whitespace-nowrap px-6"
+                      style={{ width: 'auto' }}
+                    >
+                      <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
+                    </button>
+                  )}
+                </div>
+                {/* Scroll indicator bar */}
+                <div className="flex justify-center pb-8">
+                  <div className="relative rounded-full overflow-hidden" style={{ width: 48, height: 3, backgroundColor: 'rgba(255,255,255,0.15)' }}>
+                    <div
+                      className="absolute top-0 left-0 h-full rounded-full"
+                      style={{
+                        width: '40%',
+                        backgroundColor: 'rgba(255,255,255,0.5)',
+                        transform: `translateX(${scrollProgress * 150}%)`,
+                        transition: 'transform 0.1s ease-out',
+                      }}
+                    />
+                  </div>
+                </div>
+              </>
+            );
+          })()}
 
           {/* Make It Yours — three product cards */}
           <div className="pr-0">
