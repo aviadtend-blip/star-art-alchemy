@@ -11,7 +11,7 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
 
   try {
-    const { imageUrl, chartData } = await req.json();
+    const { imageUrl, chartData, generationPrompt } = await req.json();
 
     if (!imageUrl || !chartData) {
       return new Response(
