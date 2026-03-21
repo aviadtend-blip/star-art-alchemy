@@ -646,9 +646,12 @@ export function ChartExplanation({
                   </button>
                 )}
                 {onBackToStyle && (
-                  <button onClick={onBackToStyle} className="btn-base btn-dark btn-gradient-glow gap-2.5 px-6" style={{ width: 'auto', flex: 'none' }}>
-                    <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
-                  </button>
+                  <div className="btn-gradient-glow-wrap" style={{ flex: 'none' }}>
+                    <div className="glow-aura" />
+                    <button onClick={onBackToStyle} className="btn-base btn-dark gap-2.5 px-6" style={{ width: 'auto', flex: 'none' }}>
+                      <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
+                    </button>
+                  </div>
                 )}
               </div>
 
@@ -755,7 +758,7 @@ export function ChartExplanation({
           {/* Action buttons — horizontally scrollable on mobile */}
           <div
             ref={actionScrollRef}
-            className="flex gap-3 px-5 pt-7 pb-4 overflow-x-auto scrollbar-hide"
+            className="flex gap-3 px-5 pt-7 pb-4 overflow-x-auto overflow-y-visible scrollbar-hide"
             onScroll={(e) => {
               const el = e.currentTarget;
               const max = el.scrollWidth - el.clientWidth;
@@ -780,13 +783,16 @@ export function ChartExplanation({
               </button>
             )}
             {onBackToStyle && (
-              <button
-                onClick={onBackToStyle}
-                className="btn-base btn-dark btn-gradient-glow flex-shrink-0 gap-2.5 whitespace-nowrap px-6"
-                style={{ width: 'auto' }}
-              >
-                <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
-              </button>
+              <div className="btn-gradient-glow-wrap">
+                <div className="glow-aura" />
+                <button
+                  onClick={onBackToStyle}
+                  className="btn-base btn-dark flex-shrink-0 gap-2.5 whitespace-nowrap px-6"
+                  style={{ width: 'auto' }}
+                >
+                  <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
+                </button>
+              </div>
             )}
           </div>
           {/* Scroll indicator */}

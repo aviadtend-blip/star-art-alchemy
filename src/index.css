@@ -283,24 +283,25 @@
   border: none;
 }
 
-/* Gradient glow effect for accent buttons */
-.btn-gradient-glow {
+/* Gradient glow wrapper — place around a button */
+.btn-gradient-glow-wrap {
   position: relative;
-  isolation: isolate;
-  background-color: #2c2c2c !important;
+  flex-shrink: 0;
 }
-.btn-gradient-glow::before {
-  content: '';
+.btn-gradient-glow-wrap > .glow-aura {
   position: absolute;
   inset: -8px -12px;
-  z-index: -1;
   border-radius: 48px;
   background: conic-gradient(from 0deg, #FE6781, #FFBF00, #6EC1E4, #FE6781);
   filter: blur(16px);
-  opacity: 0.55;
-  animation: gradient-glow-rotate 4s linear infinite;
+  opacity: 0.5;
+  animation: glow-hue-rotate 4s linear infinite;
+  pointer-events: none;
 }
-@keyframes gradient-glow-rotate {
+.btn-gradient-glow-wrap > button {
+  position: relative;
+}
+@keyframes glow-hue-rotate {
   0%   { filter: blur(16px) hue-rotate(0deg); }
   100% { filter: blur(16px) hue-rotate(360deg); }
 }
