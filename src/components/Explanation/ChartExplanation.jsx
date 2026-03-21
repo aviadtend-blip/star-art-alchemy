@@ -270,11 +270,14 @@ export function ChartExplanation({
   const [showHotspots, setShowHotspots] = useState(true);
   const [mobileRevealed, setMobileRevealed] = useState(false);
   const mobileRevealRef = useRef(null);
+  const containerScrollWrapperRef = useRef(null);
+  const mobileArtworkRef = useRef(null);
   const artworkRef = useRef(null);
   const rightContentRef = useRef(null);
   const rightInnerRef = useRef(null);
   const [rightPadding, setRightPadding] = useState(0);
   const [artworkTopOffset, setArtworkTopOffset] = useState(0);
+  const [mobileRevealMarginTop, setMobileRevealMarginTop] = useState(12);
 
   const staticPositions = getStaticPositions(chartData);
 
@@ -414,6 +417,38 @@ export function ChartExplanation({
     };
   }, [mobileRevealed]);
 
+  useEffect(() => {
+    const updateMobileRevealMarginTop = () => {
+      if (window.innerWidth >= 768) return;
+
+      const wrapperEl = containerScrollWrapperRef.current;
+      const artworkEl = mobileArtworkRef.current;
+      if (!wrapperEl || !artworkEl) return;
+
+      const wrapperRect = wrapperEl.getBoundingClientRect();
+      const artworkRect = artworkEl.getBoundingClientRect();
+      const desiredGap = 12;
+      const extraSpaceBelowArtwork = Math.max(0, wrapperRect.bottom - artworkRect.bottom);
+
+      setMobileRevealMarginTop(desiredGap - extraSpaceBelowArtwork);
+    };
+
+    const artworkImage = mobileArtworkRef.current?.querySelector('img');
+    if (artworkImage && !artworkImage.complete) {
+      artworkImage.addEventListener('load', updateMobileRevealMarginTop, { once: true });
+    }
+
+    const rafId = requestAnimationFrame(updateMobileRevealMarginTop);
+    window.addEventListener('resize', updateMobileRevealMarginTop);
+    window.visualViewport?.addEventListener('resize', updateMobileRevealMarginTop);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', updateMobileRevealMarginTop);
+      window.visualViewport?.removeEventListener('resize', updateMobileRevealMarginTop);
+    };
+  }, [selectedImage, mobileRevealed]);
+
   return (
     <div className="min-h-screen flex flex-col" style={{ background: 'radial-gradient(20% 40% at -3% -8%, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0.00) 100%), radial-gradient(18% 35% at 103% -6%, rgba(255, 255, 255, 0.20) 0%, rgba(0, 0, 0, 0.00) 100%), #191919' }}>
       {/* Header + Progress bar — floating on desktop */}
@@ -438,7 +473,7 @@ export function ChartExplanation({
         </div>
 
         {/* ===== Title + scroll-animated artwork intro (all viewports) ===== */}
-        <div>
+        <div ref={containerScrollWrapperRef}>
           <ContainerScroll
             titleComponent={
               <div className="flex flex-col items-center text-center">
@@ -453,7 +488,7 @@ export function ChartExplanation({
             }
             onSettled={() => setMobileRevealed(true)}
           >
-            <div className="relative h-full w-full overflow-visible">
+            <div ref={mobileArtworkRef} className="relative h-full w-full overflow-visible">
               <img
                 src={selectedImage}
                 alt={`Birth chart artwork for ${chartData?.sun?.sign || ''} Sun`}
@@ -635,7 +670,7 @@ export function ChartExplanation({
           ref={mobileRevealRef}
           className="md:hidden"
           style={{
-            marginTop: -160,
+            marginTop: mobileRevealMarginTop,
             background: 'radial-gradient(30% 50% at -8% -5%, rgba(255, 255, 255, 0.12) 0%, rgba(0, 0, 0, 0.00) 100%), radial-gradient(28% 45% at 108% -3%, rgba(255, 255, 255, 0.20) 0%, rgba(0, 0, 0, 0.00) 100%), #191919',
           }}
         >
