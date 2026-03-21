@@ -627,7 +627,7 @@ export function ChartExplanation({
                         <p className="text-a4 text-white">
                           {h.artworkElement}
                         </p>
-                        <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7', marginTop: 4 }}>
+                        <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7' }}>
                           {h.explanation}
                         </p>
                       </div>
