@@ -295,6 +295,7 @@ export function ChartExplanation({
   const scrollContainerRef = useRef(null);
   const desktopCardRefs = useRef([]);
   const cardRefs = useRef([]);
+  const [mobileSnapActive, setMobileSnapActive] = useState(false);
 
   // Initialize active hotspot to first one
   useEffect(() => {
