@@ -78,13 +78,26 @@ export default function CTARoomMockup({ artworkSrc, className = '' }) {
           const bh = maxY - minY + 1;
           const artW = artworkImg.naturalWidth;
           const artH = artworkImg.naturalHeight;
+          // Center-crop artwork to 3:4 before compositing (print aspect ratio)
+          const targetRatio = 3 / 4;
+          const artRatio = artW / artH;
+          let srcX = 0, srcY = 0, srcW = artW, srcH = artH;
+          if (artRatio < targetRatio) {
+            // Artwork is taller than 3:4 — crop top/bottom
+            srcH = artW / targetRatio;
+            srcY = (artH - srcH) / 2;
+          } else if (artRatio > targetRatio) {
+            // Artwork is wider than 3:4 — crop sides
+            srcW = artH * targetRatio;
+            srcX = (artW - srcW) / 2;
+          }
           const pad = 3;
-          const scale = Math.max((bw + pad * 2) / artW, (bh + pad * 2) / artH);
-          const dw = artW * scale;
-          const dh = artH * scale;
+          const scale = Math.max((bw + pad * 2) / srcW, (bh + pad * 2) / srcH);
+          const dw = srcW * scale;
+          const dh = srcH * scale;
           const dx = minX - pad + (bw + pad * 2 - dw) / 2;
           const dy = minY - pad + (bh + pad * 2 - dh) / 2;
-          ctx.drawImage(artworkImg, dx, dy, dw, dh);
+          ctx.drawImage(artworkImg, srcX, srcY, srcW, srcH, dx, dy, dw, dh);
 
           const compData = ctx.getImageData(minX, minY, bw, bh);
           for (let i = 0; i < compData.data.length; i += 4) {
