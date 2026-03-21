@@ -24,8 +24,11 @@ export async function analyzeArtwork(imageUrl, chartData, generationPrompt = nul
   }
 
   try {
+    const body = { imageUrl, chartData };
+    if (generationPrompt) body.generationPrompt = generationPrompt;
+
     const { data, error } = await supabase.functions.invoke('analyze-artwork', {
-      body: { imageUrl, chartData },
+      body,
     });
 
     if (error) throw error;
