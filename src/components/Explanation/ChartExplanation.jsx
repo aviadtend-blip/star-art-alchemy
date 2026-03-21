@@ -417,6 +417,38 @@ export function ChartExplanation({
     };
   }, [mobileRevealed]);
 
+  useEffect(() => {
+    const updateMobileRevealMarginTop = () => {
+      if (window.innerWidth >= 768) return;
+
+      const wrapperEl = containerScrollWrapperRef.current;
+      const artworkEl = mobileArtworkRef.current;
+      if (!wrapperEl || !artworkEl) return;
+
+      const wrapperRect = wrapperEl.getBoundingClientRect();
+      const artworkRect = artworkEl.getBoundingClientRect();
+      const desiredGap = 12;
+      const extraSpaceBelowArtwork = Math.max(0, wrapperRect.bottom - artworkRect.bottom);
+
+      setMobileRevealMarginTop(desiredGap - extraSpaceBelowArtwork);
+    };
+
+    const artworkImage = mobileArtworkRef.current?.querySelector('img');
+    if (artworkImage && !artworkImage.complete) {
+      artworkImage.addEventListener('load', updateMobileRevealMarginTop, { once: true });
+    }
+
+    const rafId = requestAnimationFrame(updateMobileRevealMarginTop);
+    window.addEventListener('resize', updateMobileRevealMarginTop);
+    window.visualViewport?.addEventListener('resize', updateMobileRevealMarginTop);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', updateMobileRevealMarginTop);
+      window.visualViewport?.removeEventListener('resize', updateMobileRevealMarginTop);
+    };
+  }, [selectedImage, mobileRevealed]);
+
   return (
     <div className="min-h-screen flex flex-col" style={{ background: 'radial-gradient(20% 40% at -3% -8%, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0.00) 100%), radial-gradient(18% 35% at 103% -6%, rgba(255, 255, 255, 0.20) 0%, rgba(0, 0, 0, 0.00) 100%), #191919' }}>
       {/* Header + Progress bar — floating on desktop */}
