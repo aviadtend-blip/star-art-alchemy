@@ -16,7 +16,7 @@ const APIFRAME_FETCH_URL = "https://api.apiframe.ai/fetch";
 const DEFAULT_PERSONALIZATION = "jv7b3wn";
 // Default sref fallback
 const DEFAULT_SREF = "3498857616";
-const MJ_PARAMS = "--ar 3:4";
+const MJ_PARAMS = "--ar 2:3";
 
 // Submit imagine task with retry and exponential backoff
 async function submitImagineWithRetry(
