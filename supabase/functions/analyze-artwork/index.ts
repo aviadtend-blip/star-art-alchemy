@@ -56,9 +56,13 @@ serve(async (req) => {
       )
     );
 
+    const creativeBriefSection = generationPrompt
+      ? `\n\nCREATIVE BRIEF (the original instructions used to generate this artwork):\n"""\n${String(generationPrompt).substring(0, 800)}\n"""\nUse this brief as your primary guide for connecting visual elements to chart placements. Every element in the artwork was placed there deliberately based on this brief. Your hotspot descriptions should explain WHY those creative choices were made — trace each visual back to the specific chart placement that inspired it.`
+      : '';
+
     const prompt = `You created this birth chart artwork. Study the image and write grounded, conversational hotspot notes that explain how each astrological placement shaped what you created.
 
-The person's chart: Sun in ${sunSign} (House ${chartData.sun?.house || '?'}), Moon in ${moonSign} (House ${chartData.moon?.house || '?'}), ${rising} Rising, dominant ${dominantElement} (${Object.entries(elementBalance).map(([k,v]) => `${k}: ${v}`).join(", ")}).
+The person's chart: Sun in ${sunSign} (House ${chartData.sun?.house || '?'}), Moon in ${moonSign} (House ${chartData.moon?.house || '?'}), ${rising} Rising, dominant ${dominantElement} (${Object.entries(elementBalance).map(([k,v]) => `${k}: ${v}`).join(", ")}).${creativeBriefSection}
 
 Write JSON (no markdown, no backticks):
 
