@@ -98,7 +98,7 @@ WRITING RULES FOR "explanation" FIELDS:
 - Each explanation must answer: "How did this astrological placement shape what's in the artwork?"
 - Write in second person ("You...") — talk about the person's traits and connect them to the artwork choices.
 - Conversational and grounded. The reader should feel like they could explain this to a friend looking at the artwork on their wall.
-- Focus on SUBJECTS, OBJECTS, COMPOSITION, TEXTURES, and MOOD — the things that were influenced by the chart.
+- Focus on SUBJECTS, OBJECTS, COMPOSITION, TEXTURES, and MOOD — the things that were influenced by the chart.${generationPrompt ? '\n- Use the creative brief above to make PRECISE connections. Don\'t guess — the brief tells you exactly which chart placement inspired which visual element.' : ''}
 - NEVER mention colors or color palette. The colors are determined by the selected art style, not the chart.
 - NEVER mention the art style, medium, or artistic technique (e.g. "watercolor", "oil painting", "collage style"). The style is the user's choice, not astrologically driven.
 - No mystical fluff. No "the cosmos," no "your journey," no "celestial," no "cosmic blueprint." Speak plainly.
