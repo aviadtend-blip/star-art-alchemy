@@ -270,11 +270,14 @@ export function ChartExplanation({
   const [showHotspots, setShowHotspots] = useState(true);
   const [mobileRevealed, setMobileRevealed] = useState(false);
   const mobileRevealRef = useRef(null);
+  const containerScrollWrapperRef = useRef(null);
+  const mobileArtworkRef = useRef(null);
   const artworkRef = useRef(null);
   const rightContentRef = useRef(null);
   const rightInnerRef = useRef(null);
   const [rightPadding, setRightPadding] = useState(0);
   const [artworkTopOffset, setArtworkTopOffset] = useState(0);
+  const [mobileRevealMarginTop, setMobileRevealMarginTop] = useState(12);
 
   const staticPositions = getStaticPositions(chartData);
 
