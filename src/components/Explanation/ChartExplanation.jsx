@@ -8,7 +8,8 @@ import StepProgressBar from '@/components/ui/StepProgressBar';
 import BirthDataBar from '@/components/ui/BirthDataBar';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
-import { ChevronLeft, ChevronRight, ArrowLeftRight, RefreshCw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowLeftRight, RefreshCw, UserPlus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Switch as M3Switch } from '@/components/ui/material-design-3-switch';
 import galaxyBg from '@/assets/galaxy-bg.jpg';
 import CTARoomMockup from '@/components/Explanation/CTARoomMockup';
@@ -264,6 +265,7 @@ export function ChartExplanation({
 }) {
   // Use AI analysis if available, otherwise fall back to static rule-based explanations
   const explanation = artworkAnalysis || generateChartExplanation(chartData);
+  const navigateToLanding = useNavigate();
   const subjectExplanation = explanation.subjectExplanation || 'A one-of-a-kind artwork, uniquely crafted from your celestial blueprint.';
   const [activeHotspot, setActiveHotspot] = useState(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
@@ -633,14 +635,17 @@ export function ChartExplanation({
 
               {/* Action buttons — side by side */}
               <div className="flex flex-wrap gap-4 w-full">
-                {onBackToStyle && (
-                  <button onClick={onBackToStyle} className="btn-base btn-dark flex-1 gap-2.5">
-                    <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
-                  </button>
-                )}
+                <button onClick={() => navigateToLanding('/')} className="btn-base btn-dark flex-1 gap-2.5">
+                  <UserPlus size={16} className="flex-shrink-0" /> Create One for a Friend
+                </button>
                 {onReimagine && (
                   <button onClick={onReimagine} disabled={isReimagining} className="btn-base btn-dark flex-1 gap-2.5">
                     {isReimagining ? <><RefreshCw size={16} className="animate-spin flex-shrink-0" /> Loading...</> : variationsExhausted ? <><RefreshCw size={16} className="flex-shrink-0" /> Generate New</> : <><RefreshCw size={16} className="flex-shrink-0" /> Reimagine</>}
+                  </button>
+                )}
+                {onBackToStyle && (
+                  <button onClick={onBackToStyle} className="btn-base btn-dark flex-1 gap-2.5">
+                    <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
                   </button>
                 )}
               </div>
@@ -745,23 +750,29 @@ export function ChartExplanation({
             )}
           </AnimatePresence>
 
-          {/* Action buttons — side by side */}
-          <div className="flex gap-3 px-5 pt-7 pb-10">
-            {onBackToStyle && (
-              <button
-                onClick={onBackToStyle}
-                className="btn-base btn-dark flex-1 gap-2.5"
-              >
-                <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
-              </button>
-            )}
+          {/* Action buttons — horizontally scrollable on mobile */}
+          <div className="flex gap-3 px-5 pt-7 pb-10 overflow-x-auto scrollbar-hide">
+            <button
+              onClick={() => navigateToLanding('/')}
+              className="btn-base btn-dark flex-shrink-0 gap-2.5 whitespace-nowrap"
+            >
+              <UserPlus size={16} className="flex-shrink-0" /> Create One for a Friend
+            </button>
             {onReimagine && (
               <button
                 onClick={onReimagine}
                 disabled={isReimagining}
-                className="btn-base btn-dark flex-1 gap-2.5"
+                className="btn-base btn-dark flex-shrink-0 gap-2.5 whitespace-nowrap"
               >
                 {isReimagining ? <><RefreshCw size={16} className="animate-spin flex-shrink-0" /> Loading...</> : variationsExhausted ? <><RefreshCw size={16} className="flex-shrink-0" /> Generate New</> : <><RefreshCw size={16} className="flex-shrink-0" /> Reimagine</>}
+              </button>
+            )}
+            {onBackToStyle && (
+              <button
+                onClick={onBackToStyle}
+                className="btn-base btn-dark flex-shrink-0 gap-2.5 whitespace-nowrap"
+              >
+                <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
               </button>
             )}
           </div>
