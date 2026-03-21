@@ -701,14 +701,15 @@ export function ChartExplanation({
             {/* Horizontal scroll explanation cards — dark, bleeds to screen edges */}
             <div
               ref={scrollContainerRef}
-              className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2"
+              className={`flex overflow-x-auto scrollbar-hide pb-2 ${mobileSnapActive ? 'snap-x snap-mandatory' : ''}`}
               style={{ gap: '16px', marginRight: -24, width: 'calc(100% + 24px)' }}
+              onTouchStart={() => { if (!mobileSnapActive) setMobileSnapActive(true); }}
             >
               {hotspots.map((h, i) => (
                 <div
                   key={h.id}
                   ref={(el) => (cardRefs.current[i] = el)}
-                  className="flex-shrink-0 snap-start flex"
+                  className={`flex-shrink-0 flex ${mobileSnapActive ? 'snap-center' : ''}`}
                   style={{ width: 280 }}
                 >
                   <div className="flex-1 min-w-0">
