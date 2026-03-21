@@ -473,7 +473,7 @@ export function ChartExplanation({
         </div>
 
         {/* ===== Title + scroll-animated artwork intro (all viewports) ===== */}
-        <div>
+        <div ref={containerScrollWrapperRef}>
           <ContainerScroll
             titleComponent={
               <div className="flex flex-col items-center text-center">
@@ -488,7 +488,7 @@ export function ChartExplanation({
             }
             onSettled={() => setMobileRevealed(true)}
           >
-            <div className="relative h-full w-full overflow-visible">
+            <div ref={mobileArtworkRef} className="relative h-full w-full overflow-visible">
               <img
                 src={selectedImage}
                 alt={`Birth chart artwork for ${chartData?.sun?.sign || ''} Sun`}
