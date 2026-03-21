@@ -791,7 +791,7 @@ export function ChartExplanation({
           </div>
           {/* Scroll indicator */}
           <div className="flex justify-center pb-8">
-            <div className="relative rounded-full overflow-hidden" style={{ width: 48, height: 3, backgroundColor: 'rgba(255,255,255,0.15)' }}>
+            <div className="relative rounded-full overflow-hidden" style={{ width: 80, height: 3, backgroundColor: 'rgba(255,255,255,0.15)' }}>
               <div
                 className="absolute top-0 left-0 h-full rounded-full"
                 style={{
