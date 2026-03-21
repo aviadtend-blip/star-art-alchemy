@@ -87,10 +87,10 @@ export default function PhoneScreenMockup({ artworkSrc, className = '' }) {
             }
           }
 
-          // Draw artwork scaled to contain (show full image, no cropping)
+          // Draw artwork scaled to cover green area
           const artW = artworkImg.naturalWidth;
           const artH = artworkImg.naturalHeight;
-          const scale = Math.min(bw / artW, bh / artH);
+          const scale = Math.max(bw / artW, bh / artH);
           const dw = artW * scale;
           const dh = artH * scale;
           const dx = (bw - dw) / 2;
@@ -100,9 +100,6 @@ export default function PhoneScreenMockup({ artworkSrc, className = '' }) {
           artCanvas.width = bw;
           artCanvas.height = bh;
           const artCtx = artCanvas.getContext('2d');
-          // Fill with black first (letterbox for phone wallpaper)
-          artCtx.fillStyle = '#000000';
-          artCtx.fillRect(0, 0, bw, bh);
           artCtx.drawImage(artworkImg, dx, dy, dw, dh);
           const artData = artCtx.getImageData(0, 0, bw, bh);
 
