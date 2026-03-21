@@ -646,9 +646,12 @@ export function ChartExplanation({
                   </button>
                 )}
                 {onBackToStyle && (
-                  <button onClick={onBackToStyle} className="btn-base btn-dark btn-gradient-glow gap-2.5 px-6" style={{ width: 'auto', flex: 'none' }}>
-                    <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
-                  </button>
+                  <div className="btn-gradient-glow-wrap" style={{ flex: 'none' }}>
+                    <div className="glow-aura" />
+                    <button onClick={onBackToStyle} className="btn-base btn-dark gap-2.5 px-6" style={{ width: 'auto', flex: 'none' }}>
+                      <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
+                    </button>
+                  </div>
                 )}
               </div>
 
