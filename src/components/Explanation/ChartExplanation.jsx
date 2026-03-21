@@ -758,7 +758,7 @@ export function ChartExplanation({
           {/* Action buttons — horizontally scrollable on mobile */}
           <div
             ref={actionScrollRef}
-            className="flex gap-3 px-5 pt-7 pb-4 overflow-x-auto scrollbar-hide"
+            className="flex gap-3 px-5 pt-7 pb-4 overflow-x-auto overflow-y-visible scrollbar-hide"
             onScroll={(e) => {
               const el = e.currentTarget;
               const max = el.scrollWidth - el.clientWidth;
