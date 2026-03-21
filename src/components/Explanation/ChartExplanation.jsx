@@ -636,7 +636,6 @@ export function ChartExplanation({
           className="md:hidden"
           style={{
             marginTop: -48,
-          style={{
             background: 'radial-gradient(30% 50% at -8% -5%, rgba(255, 255, 255, 0.12) 0%, rgba(0, 0, 0, 0.00) 100%), radial-gradient(28% 45% at 108% -3%, rgba(255, 255, 255, 0.20) 0%, rgba(0, 0, 0, 0.00) 100%), #191919',
           }}
         >
