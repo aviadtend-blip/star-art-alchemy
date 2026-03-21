@@ -85,6 +85,7 @@ export function GeneratorProvider({ children }) {
   const [userPhotoUrl, setUserPhotoUrl] = useState(cached.userPhotoUrl || null);
   const [isPortraitEdition, setIsPortraitEdition] = useState(cached.isPortraitEdition || false);
   const [funnelMode, setFunnelMode] = useState(cached.funnelMode || 'default');
+  const [generationPrompt, setGenerationPrompt] = useState(cached.generationPrompt || null);
   const isGeneratingRef = useRef(false);
   const isCalculatingChartRef = useRef(false);
 
