@@ -47,7 +47,7 @@ serve(async (req) => {
 
     const imagineBody: Record<string, unknown> = {
       prompt: mjPrompt,
-      aspect_ratio: "3:4",
+      aspect_ratio: "2:3",
       process_mode: "fast",
     };
     if (sref) imagineBody.sref = sref;
