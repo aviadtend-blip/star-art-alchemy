@@ -155,7 +155,7 @@ export default function DigitalPreview() {
         }, remaining);
       })
       .catch(() => setIsReimagining(false));
-  }, [isDemo, isReimagining, chartData, setArtworkAnalysis, setGeneratedImage]);
+  }, [isDemo, isReimagining, chartData, setArtworkAnalysis, setGeneratedImage, generationPrompt]);
 
   const handleGenerateNew = useCallback(() => {
     if (!selectedStyle) return;
