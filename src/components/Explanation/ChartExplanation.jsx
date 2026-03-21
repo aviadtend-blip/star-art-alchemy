@@ -280,6 +280,8 @@ export function ChartExplanation({
   const [rightPadding, setRightPadding] = useState(0);
   const [artworkTopOffset, setArtworkTopOffset] = useState(0);
   const [mobileRevealMarginTop, setMobileRevealMarginTop] = useState(12);
+  const actionScrollRef = useRef(null);
+  const [actionScrollProgress, setActionScrollProgress] = useState(0);
 
   const staticPositions = getStaticPositions(chartData);
 
