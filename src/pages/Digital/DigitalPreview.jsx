@@ -61,7 +61,7 @@ export default function DigitalPreview() {
   // Demo analysis
   useEffect(() => {
     if (isDemo && !demoAnalysis) {
-      analyzeArtwork(DEMO_IMAGE_PUBLIC_URL, DEMO_CHART).then(setDemoAnalysis).catch(console.error);
+      analyzeArtwork(DEMO_IMAGE_PUBLIC_URL, DEMO_CHART, null).then(setDemoAnalysis).catch(console.error);
     }
   }, [isDemo, demoAnalysis]);
 
