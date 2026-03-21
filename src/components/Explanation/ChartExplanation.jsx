@@ -280,6 +280,8 @@ export function ChartExplanation({
   const [rightPadding, setRightPadding] = useState(0);
   const [artworkTopOffset, setArtworkTopOffset] = useState(0);
   const [mobileRevealMarginTop, setMobileRevealMarginTop] = useState(12);
+  const actionScrollRef = useRef(null);
+  const [actionScrollProgress, setActionScrollProgress] = useState(0);
 
   const staticPositions = getStaticPositions(chartData);
 
@@ -751,7 +753,15 @@ export function ChartExplanation({
           </AnimatePresence>
 
           {/* Action buttons — horizontally scrollable on mobile */}
-          <div className="flex gap-3 px-5 pt-7 pb-10 overflow-x-auto scrollbar-hide">
+          <div
+            ref={actionScrollRef}
+            className="flex gap-3 px-5 pt-7 pb-4 overflow-x-auto scrollbar-hide"
+            onScroll={(e) => {
+              const el = e.currentTarget;
+              const max = el.scrollWidth - el.clientWidth;
+              setActionScrollProgress(max > 0 ? el.scrollLeft / max : 0);
+            }}
+          >
             <button
               onClick={() => navigateToLanding('/')}
               className="btn-base btn-dark flex-shrink-0 gap-2.5 whitespace-nowrap px-6"
@@ -778,6 +788,20 @@ export function ChartExplanation({
                 <ArrowLeftRight size={16} className="flex-shrink-0" /> Try a Different Style
               </button>
             )}
+          </div>
+          {/* Scroll indicator */}
+          <div className="flex justify-center pb-8">
+            <div className="relative rounded-full overflow-hidden" style={{ width: 48, height: 3, backgroundColor: 'rgba(255,255,255,0.15)' }}>
+              <div
+                className="absolute top-0 left-0 h-full rounded-full"
+                style={{
+                  width: '40%',
+                  backgroundColor: 'rgba(255,255,255,0.5)',
+                  transform: `translateX(${actionScrollProgress * 150}%)`,
+                  transition: 'transform 0.1s ease-out',
+                }}
+              />
+            </div>
           </div>
 
           {/* Make It Yours — three product cards */}
