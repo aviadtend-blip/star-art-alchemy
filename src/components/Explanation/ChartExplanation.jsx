@@ -612,7 +612,7 @@ export function ChartExplanation({
                     className="w-full"
                     style={{ borderBottom: i < hotspots.length - 1 ? '1px solid #3f3f3f' : 'none', paddingBottom: i < hotspots.length - 1 ? 20 : 0 }}
                   >
-                      <div className="flex flex-col gap-2">
+                      <div className="flex flex-col" style={{ gap: 8 }}>
                         <div className="flex items-center gap-3">
                           <span
                             className="flex items-center justify-center font-body flex-shrink-0"
@@ -627,7 +627,7 @@ export function ChartExplanation({
                         <p className="text-a4 text-white">
                           {h.artworkElement}
                         </p>
-                        <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7', marginTop: 4 }}>
+                        <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7' }}>
                           {h.explanation}
                         </p>
                       </div>
@@ -723,7 +723,7 @@ export function ChartExplanation({
                   style={{ width: 280 }}
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col" style={{ gap: 8 }}>
                       <div className="flex items-center gap-3">
                         <span
                           className="flex items-center justify-center font-body flex-shrink-0"
@@ -738,7 +738,7 @@ export function ChartExplanation({
                       <p className="text-a4 text-white">
                         {h.artworkElement}
                       </p>
-                      <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7', marginTop: 4 }}>
+                      <p className="text-body font-body leading-relaxed" style={{ color: '#c7c7c7' }}>
                         {h.explanation}
                       </p>
                     </div>
