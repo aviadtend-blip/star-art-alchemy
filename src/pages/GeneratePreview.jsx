@@ -66,7 +66,7 @@ export default function GeneratePreview() {
     chartData, generatedImage, formData,
     handleGetFramed, handleEditBirthData, handleBackToStyle,
     artworkAnalysis, setArtworkAnalysis, setGeneratedImage, handleStyleSelect,
-    selectedStyle,
+    selectedStyle, generationPrompt,
   } = useGenerator();
 
   const [demoAnalysis, setDemoAnalysis] = useState(null);
