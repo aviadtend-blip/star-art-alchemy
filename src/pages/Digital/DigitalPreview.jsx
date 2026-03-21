@@ -39,7 +39,7 @@ export default function DigitalPreview() {
     chartData, generatedImage, formData,
     handleEditBirthData, handleBackToStyle,
     artworkAnalysis, setArtworkAnalysis, setGeneratedImage, handleStyleSelect,
-    selectedStyle, setFunnelMode,
+    selectedStyle, setFunnelMode, generationPrompt,
   } = useGenerator();
 
   const [demoAnalysis, setDemoAnalysis] = useState(null);
@@ -61,7 +61,7 @@ export default function DigitalPreview() {
   // Demo analysis
   useEffect(() => {
     if (isDemo && !demoAnalysis) {
-      analyzeArtwork(DEMO_IMAGE_PUBLIC_URL, DEMO_CHART).then(setDemoAnalysis).catch(console.error);
+      analyzeArtwork(DEMO_IMAGE_PUBLIC_URL, DEMO_CHART, null).then(setDemoAnalysis).catch(console.error);
     }
   }, [isDemo, demoAnalysis]);
 
@@ -142,7 +142,7 @@ export default function DigitalPreview() {
       img.onerror = reject;
       img.src = next.imageUrl;
     });
-    const analysisPromise = analyzeArtwork(next.imageUrl, chartData).catch(() => null);
+    const analysisPromise = analyzeArtwork(next.imageUrl, chartData, generationPrompt).catch(() => null);
 
     Promise.all([imgPromise, analysisPromise])
       .then(([, analysisResult]) => {
@@ -155,7 +155,7 @@ export default function DigitalPreview() {
         }, remaining);
       })
       .catch(() => setIsReimagining(false));
-  }, [isDemo, isReimagining, chartData, setArtworkAnalysis, setGeneratedImage]);
+  }, [isDemo, isReimagining, chartData, setArtworkAnalysis, setGeneratedImage, generationPrompt]);
 
   const handleGenerateNew = useCallback(() => {
     if (!selectedStyle) return;

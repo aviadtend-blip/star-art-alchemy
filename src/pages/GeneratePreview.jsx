@@ -66,7 +66,7 @@ export default function GeneratePreview() {
     chartData, generatedImage, formData,
     handleGetFramed, handleEditBirthData, handleBackToStyle,
     artworkAnalysis, setArtworkAnalysis, setGeneratedImage, handleStyleSelect,
-    selectedStyle,
+    selectedStyle, generationPrompt,
   } = useGenerator();
 
   const [demoAnalysis, setDemoAnalysis] = useState(null);
@@ -88,7 +88,7 @@ export default function GeneratePreview() {
   // Run AI analysis for demo mode
   useEffect(() => {
     if (isDemo && !demoAnalysis) {
-      analyzeArtwork(DEMO_IMAGE_PUBLIC_URL, DEMO_CHART).then(setDemoAnalysis).catch(console.error);
+      analyzeArtwork(DEMO_IMAGE_PUBLIC_URL, DEMO_CHART, null).then(setDemoAnalysis).catch(console.error);
     }
   }, [isDemo, demoAnalysis]);
 
@@ -134,7 +134,7 @@ export default function GeneratePreview() {
       img.onerror = reject;
       img.src = next.imageUrl;
     });
-    const analysisPromise = analyzeArtwork(next.imageUrl, chartData).catch(() => null);
+    const analysisPromise = analyzeArtwork(next.imageUrl, chartData, generationPrompt).catch(() => null);
 
     Promise.all([imgPromise, analysisPromise])
       .then(([, analysisResult]) => {
@@ -152,7 +152,7 @@ export default function GeneratePreview() {
       .catch(() => {
         setIsReimagining(false);
       });
-  }, [isDemo, isReimagining, chartData, setArtworkAnalysis, setGeneratedImage]);
+  }, [isDemo, isReimagining, chartData, setArtworkAnalysis, setGeneratedImage, generationPrompt]);
 
   const handleGenerateNew = useCallback(() => {
     if (!selectedStyle) return;

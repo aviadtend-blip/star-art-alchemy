@@ -11,7 +11,7 @@ import { generateChartExplanation } from './generateExplanation';
  * @param {object} chartData - The natal chart data
  * @returns {Promise<object>} Explanation object matching generateChartExplanation shape
  */
-export async function analyzeArtwork(imageUrl, chartData) {
+export async function analyzeArtwork(imageUrl, chartData, generationPrompt = null) {
   // Always prepare the static fallback
   const fallback = generateChartExplanation(chartData);
   const fallbackWithSource = {
@@ -24,8 +24,11 @@ export async function analyzeArtwork(imageUrl, chartData) {
   }
 
   try {
+    const body = { imageUrl, chartData };
+    if (generationPrompt) body.generationPrompt = generationPrompt;
+
     const { data, error } = await supabase.functions.invoke('analyze-artwork', {
-      body: { imageUrl, chartData },
+      body,
     });
 
     if (error) throw error;

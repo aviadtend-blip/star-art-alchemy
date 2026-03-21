@@ -85,13 +85,14 @@ export function GeneratorProvider({ children }) {
   const [userPhotoUrl, setUserPhotoUrl] = useState(cached.userPhotoUrl || null);
   const [isPortraitEdition, setIsPortraitEdition] = useState(cached.isPortraitEdition || false);
   const [funnelMode, setFunnelMode] = useState(cached.funnelMode || 'default');
+  const [generationPrompt, setGenerationPrompt] = useState(cached.generationPrompt || null);
   const isGeneratingRef = useRef(false);
   const isCalculatingChartRef = useRef(false);
 
   // Persist critical state to sessionStorage
   useEffect(() => {
-    saveSession({ chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition, generationComplete, funnelMode });
-  }, [chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition, generationComplete, funnelMode]);
+    saveSession({ chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition, generationComplete, funnelMode, generationPrompt });
+  }, [chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition, generationComplete, funnelMode, generationPrompt]);
 
   const handleFormSubmit = useCallback(async (data) => {
     if (isCalculatingChartRef.current) return;
@@ -161,6 +162,7 @@ export function GeneratorProvider({ children }) {
     try {
       setGenerationProgress('Building your personalized artwork prompt...');
       const prompt = await buildConcretePrompt(chartData, style, isPortraitEdition, formData?.gender || null);
+      setGenerationPrompt(prompt);
 
       setGenerationProgress('Submitting your artwork...');
       const result = await generateImage(
@@ -193,7 +195,7 @@ export function GeneratorProvider({ children }) {
       // Run artwork analysis in parallel (don't block navigation)
       setGenerationProgress('Preparing your artist notes...');
       const [analysisResult] = await Promise.allSettled([
-        analyzeArtwork(result.imageUrl, chartData),
+        analyzeArtwork(result.imageUrl, chartData, prompt),
       ]);
 
       // Store analysis if it succeeded (fallback is built into analyzeArtwork)
@@ -410,7 +412,7 @@ export function GeneratorProvider({ children }) {
     isCalculatingChart,
     artworkAnalysis, generationComplete, artworkId,
     userPhotoUrl, isPortraitEdition,
-    funnelMode, setFunnelMode,
+    funnelMode, setFunnelMode, generationPrompt,
     setFormData, setChartData, setError, setGeneratedImage, setArtworkAnalysis,
     setGenerationComplete, setArtworkId,
     handleFormSubmit, handleStyleSelect, handleRetry,
