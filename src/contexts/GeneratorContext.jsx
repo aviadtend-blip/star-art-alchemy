@@ -91,8 +91,8 @@ export function GeneratorProvider({ children }) {
 
   // Persist critical state to sessionStorage
   useEffect(() => {
-    saveSession({ chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition, generationComplete, funnelMode });
-  }, [chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition, generationComplete, funnelMode]);
+    saveSession({ chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition, generationComplete, funnelMode, generationPrompt });
+  }, [chartData, formData, selectedStyle, generatedImage, orderDetails, artworkAnalysis, artworkId, userPhotoUrl, isPortraitEdition, generationComplete, funnelMode, generationPrompt]);
 
   const handleFormSubmit = useCallback(async (data) => {
     if (isCalculatingChartRef.current) return;
