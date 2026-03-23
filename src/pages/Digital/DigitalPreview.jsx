@@ -76,6 +76,7 @@ export default function DigitalPreview() {
   // Digital checkout handler
   const handleDigitalCheckout = useCallback(async (resolution) => {
     if (checkoutLoading) return;
+    trackEvent('digital_download', { funnel_step: 'digital_checkout', style_id: selectedStyle?.id || '', resolution });
     setCheckoutLoading(resolution);
 
     try {
