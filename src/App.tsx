@@ -81,6 +81,7 @@ const LazyFallback = () => (
 
 const App = () => {
   useEffect(() => {
+    initGA4();
     captureAffiliateDtId();
   }, []);
 
