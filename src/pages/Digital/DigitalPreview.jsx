@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { trackViewArtwork } from '@/lib/analytics';
+import { trackViewArtwork, trackEvent } from '@/lib/analytics';
 import { useNavigate } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import { ChartExplanation } from '@/components/Explanation/ChartExplanation';
@@ -76,6 +76,7 @@ export default function DigitalPreview() {
   // Digital checkout handler
   const handleDigitalCheckout = useCallback(async (resolution) => {
     if (checkoutLoading) return;
+    trackEvent('digital_download', { funnel_step: 'digital_checkout', style_id: selectedStyle?.id || '', resolution });
     setCheckoutLoading(resolution);
 
     try {
@@ -129,8 +130,9 @@ export default function DigitalPreview() {
 
   // Canvas upsell — go to existing size page
   const handleCanvasUpsell = useCallback(() => {
+    trackEvent('canvas_upsell_click', { funnel_step: 'upsell', style_id: selectedStyle?.id || '' });
     navigate('/generate/size');
-  }, [navigate]);
+  }, [navigate, selectedStyle]);
 
   // Reimagine
   const handleReimagine = useCallback(() => {
