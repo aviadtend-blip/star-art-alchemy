@@ -93,6 +93,13 @@ export default function GeneratePreview() {
     }
   }, [isDemo, demoAnalysis]);
 
+  // Track artwork view once
+  useEffect(() => {
+    if (!isDemo && generatedImage && selectedStyle?.id) {
+      trackViewArtwork(selectedStyle.id);
+    }
+  }, [isDemo, generatedImage, selectedStyle?.id]);
+
   // Background-preload all mockup composites when artwork is available
   useEffect(() => {
     if (!generatedImage || isDemo) return;
