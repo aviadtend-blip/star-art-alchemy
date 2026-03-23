@@ -130,8 +130,9 @@ export default function DigitalPreview() {
 
   // Canvas upsell — go to existing size page
   const handleCanvasUpsell = useCallback(() => {
+    trackEvent('canvas_upsell_click', { funnel_step: 'upsell', style_id: selectedStyle?.id || '' });
     navigate('/generate/size');
-  }, [navigate]);
+  }, [navigate, selectedStyle]);
 
   // Reimagine
   const handleReimagine = useCallback(() => {
