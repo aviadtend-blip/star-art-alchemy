@@ -7,6 +7,7 @@ import { getStyleById } from '@/config/artStyles';
 import { supabase } from '@/integrations/supabase/client';
 import { analyzeArtwork } from '@/lib/explanations/analyzeArtwork';
 import { trackCheckoutStarted } from '@/lib/klaviyo';
+import { trackGenerateArtwork, trackBeginCheckout } from '@/lib/analytics';
 
 const GeneratorContext = createContext(null);
 
