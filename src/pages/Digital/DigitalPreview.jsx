@@ -107,7 +107,7 @@ export default function DigitalPreview() {
 
       sessionStorage.setItem('funnel_type', 'digital');
 
-      const data = await invokeProjectFunction('create-digital-checkout', {
+      const data = await invokeProjectFunction('create-woocommerce-digital-checkout', {
         resolution,
         styleId,
         customerEmail,
