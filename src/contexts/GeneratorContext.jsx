@@ -372,6 +372,9 @@ export function GeneratorProvider({ children }) {
       const affiliateDtId = sessionStorage.getItem('affiliate_dt_id');
       if (affiliateDtId) checkoutBody.affiliate_dt_id = affiliateDtId;
 
+      // Fire GA4 event before checkout
+      trackBeginCheckout(enrichedDetails.size || '16x24', enrichedDetails.price || 119);
+
       const { data, error: fnError } = await supabase.functions.invoke('create-shopify-checkout', {
         body: checkoutBody,
       });
