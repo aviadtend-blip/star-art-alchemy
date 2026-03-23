@@ -66,6 +66,13 @@ export default function DigitalPreview() {
     }
   }, [isDemo, demoAnalysis]);
 
+  // Track artwork view once
+  useEffect(() => {
+    if (!isDemo && generatedImage && selectedStyle?.id) {
+      trackViewArtwork(selectedStyle.id);
+    }
+  }, [isDemo, generatedImage, selectedStyle?.id]);
+
   // Digital checkout handler
   const handleDigitalCheckout = useCallback(async (resolution) => {
     if (checkoutLoading) return;
