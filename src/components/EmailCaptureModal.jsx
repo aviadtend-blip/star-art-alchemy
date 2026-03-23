@@ -266,6 +266,11 @@ export default function EmailCaptureModal({
       sessionStorage.setItem('celestial_captured_first_name', firstName.trim());
 
       setStatus('success');
+      // Fire GA4 email capture event
+      try {
+        const genState = JSON.parse(sessionStorage.getItem('celestial_generator_state') || '{}');
+        trackEmailCapture(genState.selectedStyle?.id || '');
+      } catch { /* ignore */ }
 
       setTimeout(() => {
         onClose();
