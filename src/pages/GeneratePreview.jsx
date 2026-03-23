@@ -167,7 +167,10 @@ export default function GeneratePreview() {
       <ChartExplanation
         chartData={displayChart}
         selectedImage={displayImage}
-        onGetFramed={handleGetFramed || (() => navigate('/generate/size'))}
+        onGetFramed={() => {
+          if (selectedStyle?.id) trackBeginCustomization(selectedStyle.id);
+          (handleGetFramed || (() => navigate('/generate/size')))();
+        }}
         formData={formData}
         onEditBirthData={handleEditBirthData || (() => navigate('/'))}
         onBackToStyle={handleBackToStyle || (() => navigate('/generate/style'))}
