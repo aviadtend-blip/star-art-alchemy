@@ -35,12 +35,14 @@ serve(async (req) => {
     const WC_CONSUMER_KEY = Deno.env.get("WC_CONSUMER_KEY")!;
     const WC_CONSUMER_SECRET = Deno.env.get("WC_CONSUMER_SECRET")!;
 
+    const billingEmail = customerEmail?.trim() || "guest@celestialartworks.com";
+
     const orderPayload = {
       payment_method: "stripe",
       payment_method_title: "Credit Card (Stripe)",
       set_paid: false,
       status: "pending",
-      billing: { email: customerEmail },
+      billing: { email: billingEmail },
       line_items: [
         { product_id: PRODUCT_ID, variation_id: variationId, quantity: 1 },
       ],

@@ -43,6 +43,7 @@ serve(async (req) => {
     const WC_CONSUMER_KEY = Deno.env.get("WC_CONSUMER_KEY")!;
     const WC_CONSUMER_SECRET = Deno.env.get("WC_CONSUMER_SECRET")!;
 
+    const billingEmail = customerEmail?.trim() || "guest@celestialartworks.com";
     const nameParts = (customerName || "").split(" ");
     const firstName = nameParts[0] || "";
     const lastName = nameParts.slice(1).join(" ") || "";
@@ -53,7 +54,7 @@ serve(async (req) => {
       set_paid: false,
       status: "pending",
       billing: {
-        email: customerEmail,
+        email: billingEmail,
         first_name: firstName,
         last_name: lastName,
       },
