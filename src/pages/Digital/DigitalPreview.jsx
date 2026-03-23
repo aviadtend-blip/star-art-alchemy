@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
+import { trackViewArtwork } from '@/lib/analytics';
 import { useNavigate } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import { ChartExplanation } from '@/components/Explanation/ChartExplanation';
@@ -64,6 +65,13 @@ export default function DigitalPreview() {
       analyzeArtwork(DEMO_IMAGE_PUBLIC_URL, DEMO_CHART, null).then(setDemoAnalysis).catch(console.error);
     }
   }, [isDemo, demoAnalysis]);
+
+  // Track artwork view once
+  useEffect(() => {
+    if (!isDemo && generatedImage && selectedStyle?.id) {
+      trackViewArtwork(selectedStyle.id);
+    }
+  }, [isDemo, generatedImage, selectedStyle?.id]);
 
   // Digital checkout handler
   const handleDigitalCheckout = useCallback(async (resolution) => {

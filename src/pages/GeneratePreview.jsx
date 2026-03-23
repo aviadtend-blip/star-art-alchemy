@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
+import { trackViewArtwork, trackBeginCustomization } from '@/lib/analytics';
 import { useNavigate } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import { ChartExplanation } from '@/components/Explanation/ChartExplanation';
@@ -92,6 +93,13 @@ export default function GeneratePreview() {
     }
   }, [isDemo, demoAnalysis]);
 
+  // Track artwork view once
+  useEffect(() => {
+    if (!isDemo && generatedImage && selectedStyle?.id) {
+      trackViewArtwork(selectedStyle.id);
+    }
+  }, [isDemo, generatedImage, selectedStyle?.id]);
+
   // Background-preload all mockup composites when artwork is available
   useEffect(() => {
     if (!generatedImage || isDemo) return;
@@ -166,7 +174,10 @@ export default function GeneratePreview() {
       <ChartExplanation
         chartData={displayChart}
         selectedImage={displayImage}
-        onGetFramed={handleGetFramed || (() => navigate('/generate/size'))}
+        onGetFramed={() => {
+          if (selectedStyle?.id) trackBeginCustomization(selectedStyle.id);
+          (handleGetFramed || (() => navigate('/generate/size')))();
+        }}
         formData={formData}
         onEditBirthData={handleEditBirthData || (() => navigate('/'))}
         onBackToStyle={handleBackToStyle || (() => navigate('/generate/style'))}
