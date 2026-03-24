@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { trackPurchase, trackEvent } from "@/lib/analytics";
+import { trackMetaPurchase } from "@/lib/meta-pixel";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 
