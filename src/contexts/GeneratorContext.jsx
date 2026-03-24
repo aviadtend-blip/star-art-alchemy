@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { analyzeArtwork } from '@/lib/explanations/analyzeArtwork';
 import { trackCheckoutStarted } from '@/lib/klaviyo';
 import { trackGenerateArtwork, trackBeginCheckout } from '@/lib/analytics';
+import { trackMetaGenerateArtwork, trackMetaBeginCheckout } from '@/lib/meta-pixel';
 
 const GeneratorContext = createContext(null);
 
