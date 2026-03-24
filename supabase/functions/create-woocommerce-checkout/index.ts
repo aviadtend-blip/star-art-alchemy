@@ -7,6 +7,10 @@ const corsHeaders = {
 };
 
 const VARIATION_MAP: Record<string, number> = {
+  "12x18": 12,
+  "16x24": 13,
+  "20x30": 14,
+  // legacy aliases
   "12x16": 12,
   "18x24": 13,
   "24x32": 14,
@@ -29,12 +33,19 @@ serve(async (req) => {
       celestialOrderId,
       dtId,
       styleId,
+      orderDetails,
+      affiliate_dt_id,
     } = await req.json();
 
-    const variationId = VARIATION_MAP[variantSize];
+    const resolvedSize =
+      variantSize ||
+      orderDetails?.size ||
+      orderDetails?.sizeLabel?.toLowerCase().replace(/["×\s]/g, "").replace("x", "x");
+
+    const variationId = VARIATION_MAP[resolvedSize];
     if (!variationId) {
       return new Response(
-        JSON.stringify({ error: `Invalid variantSize: ${variantSize}` }),
+        JSON.stringify({ error: `Invalid variantSize: ${resolvedSize}` }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -43,10 +54,13 @@ serve(async (req) => {
     const WC_CONSUMER_KEY = Deno.env.get("WC_CONSUMER_KEY")!;
     const WC_CONSUMER_SECRET = Deno.env.get("WC_CONSUMER_SECRET")!;
 
-    const billingEmail = customerEmail?.trim() || "guest@celestialartworks.com";
-    const nameParts = (customerName || "").split(" ");
+    const resolvedCustomerEmail = customerEmail || orderDetails?.email || "";
+    const billingEmail = resolvedCustomerEmail?.trim() || "guest@celestialartworks.com";
+    const resolvedCustomerName = customerName || orderDetails?.firstName || "";
+    const nameParts = (resolvedCustomerName || "").split(" ");
     const firstName = nameParts[0] || "";
     const lastName = nameParts.slice(1).join(" ") || "";
+    const affiliateId = dtId || affiliate_dt_id || "";
 
     const orderPayload = {
       payment_method: "stripe",
@@ -65,11 +79,13 @@ serve(async (req) => {
         { key: "_celestial_order_id", value: celestialOrderId || "" },
         { key: "_funnel_type", value: "canvas" },
         { key: "_artwork_url", value: artworkImageUrl || "" },
-        { key: "_style_id", value: styleId || "" },
+        { key: "_style_id", value: styleId || orderDetails?.styleId || "" },
+        { key: "_canvas_size", value: resolvedSize },
+        { key: "_size_label", value: orderDetails?.sizeLabel || "" },
         { key: "_sun_sign", value: chartData?.sun?.sign || "" },
         { key: "_moon_sign", value: chartData?.moon?.sign || "" },
         { key: "_rising_sign", value: chartData?.rising || "" },
-        { key: "_dt_id", value: dtId || "" },
+        { key: "_dt_id", value: affiliateId },
       ],
     };
 
