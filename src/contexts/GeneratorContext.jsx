@@ -362,17 +362,19 @@ export function GeneratorProvider({ children }) {
       const celestialOrderId = saveData.orderId;
       sessionStorage.setItem('celestial_order_id', celestialOrderId);
 
-      // Step 2: Create Shopify checkout
+      // Step 2: Create WooCommerce checkout
       const checkoutBody = {
         orderDetails: enrichedDetails,
         chartData,
         artworkImageUrl: generatedImage,
         customerName,
+        customerEmail,
         artworkId,
         celestialOrderId,
+        styleId: selectedStyle?.id || '',
       };
       const affiliateDtId = sessionStorage.getItem('affiliate_dt_id');
-      if (affiliateDtId) checkoutBody.affiliate_dt_id = affiliateDtId;
+      if (affiliateDtId) checkoutBody.dtId = affiliateDtId;
 
       // Fire GA4 event before checkout
       trackBeginCheckout(enrichedDetails.size || '16x24', enrichedDetails.price || 119);
