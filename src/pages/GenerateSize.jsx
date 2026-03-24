@@ -14,7 +14,7 @@ export default function GenerateSize() {
   const [searchParams] = useSearchParams();
   const {
     chartData, generatedImage, formData, artworkId,
-    handleCheckout, handleTestCheckout, handleBackToPreview, handleEditBirthData,
+    handleCheckout, handleBackToPreview, handleEditBirthData,
     isCheckingOut,
     setChartData,
     setFormData,
