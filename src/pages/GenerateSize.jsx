@@ -14,7 +14,7 @@ export default function GenerateSize() {
   const [searchParams] = useSearchParams();
   const {
     chartData, generatedImage, formData, artworkId,
-    handleCheckout, handleTestCheckout, handleBackToPreview, handleEditBirthData,
+    handleCheckout, handleBackToPreview, handleEditBirthData,
     isCheckingOut,
     setChartData,
     setFormData,
@@ -191,23 +191,6 @@ export default function GenerateSize() {
         onEditBirthData={handleEditBirthData || (() => navigate('/'))}
       />
 
-      {import.meta.env.DEV && (
-        <button
-          onClick={() => {
-            const sizeData = CANVAS_SIZE_MAP['16x24'];
-            handleTestCheckout({
-              size: sizeData.id,
-              sizeLabel: sizeData.label,
-              frame: 'canvas',
-              frameName: 'Canvas Print',
-              total: sizeData.price,
-            });
-          }}
-          className="fixed bottom-4 right-4 z-50 bg-green-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg hover:bg-green-700 transition-colors"
-        >
-          🧪 Skip to Confirmation
-        </button>
-      )}
 
       {isCheckingOut && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
