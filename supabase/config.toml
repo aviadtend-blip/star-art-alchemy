@@ -60,5 +60,8 @@ verify_jwt = false
 [functions.create-woocommerce-digital-checkout]
 verify_jwt = false
 
+[functions.notify-digital-delivery]
+verify_jwt = false
+
 [functions.woocommerce-order-webhook]
 verify_jwt = false

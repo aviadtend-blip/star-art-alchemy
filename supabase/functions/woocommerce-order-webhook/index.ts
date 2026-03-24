@@ -394,6 +394,17 @@ async function processOrder(order: any) {
       await handleDigitalFulfillment(order, celestialOrderId, {
         resolution, styleId, sunSign, moonSign, risingSign, artworkUrl,
       });
+
+      // Fire Klaviyo delivery events via notify-digital-delivery
+      EdgeRuntime.waitUntil(
+        fetch(`${supabaseUrl}/functions/v1/notify-digital-delivery`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${serviceKey}` },
+          body: JSON.stringify({ celestialOrderId }),
+        })
+          .then(r => r.text().then(t => console.log("wc-webhook: notify-digital-delivery", r.status, t.substring(0, 200))))
+          .catch(e => console.error("wc-webhook: notify-digital-delivery error", e.message))
+      );
     } else {
       await handleCanvasFulfillment(order, celestialOrderId, {
         sunSign, moonSign, risingSign, artworkUrl,
