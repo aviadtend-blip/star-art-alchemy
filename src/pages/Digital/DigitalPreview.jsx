@@ -99,6 +99,7 @@ export default function DigitalPreview() {
           artworkAnalysis: artworkAnalysis || null,
           generatedImageUrl: artworkImageUrl,
           subjectExplanation: artworkAnalysis?.subjectExplanation || null,
+          fulfillmentType: 'digital',
         });
         if (saveData?.orderId) {
           celestialOrderId = saveData.orderId;
