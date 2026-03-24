@@ -109,6 +109,7 @@ const App = () => {
                   <Route path="/generate/phone-case" element={<GeneratePhoneCase />} />
                   <Route path="/generate/phone-style" element={<GeneratePhoneStyle />} />
                   <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+                  <Route path="/confirmation" element={<Confirmation />} />
 
                   {/* Digital-first funnel */}
                   <Route path="/d" element={<DigitalIndex />} />
