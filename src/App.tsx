@@ -40,6 +40,7 @@ const GenerateSize = lazyWithRetry(() => import("./pages/GenerateSize"));
 const GeneratePhoneCase = lazyWithRetry(() => import("./pages/GeneratePhoneCase"));
 const GeneratePhoneStyle = lazyWithRetry(() => import("./pages/GeneratePhoneStyle"));
 const OrderConfirmationPage = lazyWithRetry(() => import("./pages/OrderConfirmation"));
+const Confirmation = lazyWithRetry(() => import("./pages/Confirmation"));
 
 // Digital funnel pages
 const DigitalIndex = lazyWithRetry(() => import("./pages/Digital/DigitalIndex"));
@@ -108,6 +109,7 @@ const App = () => {
                   <Route path="/generate/phone-case" element={<GeneratePhoneCase />} />
                   <Route path="/generate/phone-style" element={<GeneratePhoneStyle />} />
                   <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+                  <Route path="/confirmation" element={<Confirmation />} />
 
                   {/* Digital-first funnel */}
                   <Route path="/d" element={<DigitalIndex />} />
