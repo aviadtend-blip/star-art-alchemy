@@ -161,6 +161,7 @@ export function GeneratorProvider({ children }) {
     // Fire GA4 event before generation starts
     const dtId = sessionStorage.getItem('affiliate_dt_id') || undefined;
     trackGenerateArtwork(styleId, dtId || 'direct');
+    trackMetaGenerateArtwork(styleId);
     setArtworkAnalysis(null);
     setArtworkId(null);
     navigate(funnelMode === 'digital' ? '/d/loading' : '/generate/loading');
