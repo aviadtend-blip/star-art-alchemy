@@ -417,7 +417,7 @@ export function GeneratorProvider({ children }) {
     setGenerationComplete, setArtworkId,
     handleFormSubmit, handleStyleSelect, handleRetry,
     handleEditBirthData, handleBackToStyle, handleGetFramed,
-    handleBackToPreview, handleCheckout, handleTestCheckout,
+    handleBackToPreview, handleCheckout,
   };
 
   return (
