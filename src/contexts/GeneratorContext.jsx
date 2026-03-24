@@ -405,7 +405,7 @@ export function GeneratorProvider({ children }) {
       setError(err.message);
       setIsCheckingOut(false);
     }
-  }, [chartData, formData, generatedImage, artworkAnalysis, artworkId]);
+  }, [chartData, formData, generatedImage, artworkAnalysis, artworkId, selectedStyle]);
 
 
   const value = {
