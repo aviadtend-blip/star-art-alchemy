@@ -40,7 +40,7 @@ const GeneratePreview = lazyWithRetry(() => import("./pages/GeneratePreview"));
 const GenerateSize = lazyWithRetry(() => import("./pages/GenerateSize"));
 const GeneratePhoneCase = lazyWithRetry(() => import("./pages/GeneratePhoneCase"));
 const GeneratePhoneStyle = lazyWithRetry(() => import("./pages/GeneratePhoneStyle"));
-const OrderConfirmationPage = lazyWithRetry(() => import("./pages/OrderConfirmation"));
+
 const Confirmation = lazyWithRetry(() => import("./pages/Confirmation"));
 
 // Digital funnel pages
