@@ -38,15 +38,15 @@ serve(async (req) => {
     const billingEmail = customerEmail?.trim() || "guest@celestialartworks.com";
 
     const metaData = [
-      { key: "_celestial_order_id", value: String(celestialOrderId || "") },
-      { key: "_funnel_type", value: "digital" },
-      { key: "_artwork_url", value: String(artworkImageUrl || "") },
-      { key: "_style_id", value: String(styleId || "") },
-      { key: "_resolution", value: String(resolution || "") },
-      { key: "_sun_sign", value: String(chartData?.sun?.sign || "") },
-      { key: "_moon_sign", value: String(chartData?.moon?.sign || "") },
-      { key: "_rising_sign", value: String(chartData?.rising || "") },
-      { key: "_dt_id", value: String(dtId || "") },
+      { key: "celestial_order_id", value: String(celestialOrderId || "") },
+      { key: "funnel_type", value: "digital" },
+      { key: "artwork_url", value: String(artworkImageUrl || "") },
+      { key: "style_id", value: String(styleId || "") },
+      { key: "resolution", value: String(resolution || "") },
+      { key: "sun_sign", value: String(chartData?.sun?.sign || "") },
+      { key: "moon_sign", value: String(chartData?.moon?.sign || "") },
+      { key: "rising_sign", value: String(chartData?.rising || "") },
+      { key: "dt_id", value: String(dtId || "") },
     ];
 
     const orderPayload = {
