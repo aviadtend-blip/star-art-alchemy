@@ -65,3 +65,6 @@ verify_jwt = false
 
 [functions.woocommerce-order-webhook]
 verify_jwt = false
+
+[functions.get-order-confirmation]
+verify_jwt = false

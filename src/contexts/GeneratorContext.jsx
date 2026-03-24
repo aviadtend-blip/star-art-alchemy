@@ -405,17 +405,6 @@ export function GeneratorProvider({ children }) {
     }
   }, [chartData, formData, generatedImage, artworkAnalysis, artworkId]);
 
-  const handleTestCheckout = useCallback((details) => {
-    setOrderDetails({
-      ...details,
-      orderNumber: '#CA-TEST-' + Math.floor(Math.random() * 90000 + 10000),
-      date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-      firstName: formData?.name || 'Test',
-      paymentLast4: '4242',
-      shippingAddress: 'Test User, 123 Main Street, San Francisco, CA 94102',
-    });
-    navigate('/order-confirmation');
-  }, [formData, navigate]);
 
   const value = {
     chartData, formData, selectedStyle, generatedImage,
@@ -428,7 +417,7 @@ export function GeneratorProvider({ children }) {
     setGenerationComplete, setArtworkId,
     handleFormSubmit, handleStyleSelect, handleRetry,
     handleEditBirthData, handleBackToStyle, handleGetFramed,
-    handleBackToPreview, handleCheckout, handleTestCheckout,
+    handleBackToPreview, handleCheckout,
   };
 
   return (
