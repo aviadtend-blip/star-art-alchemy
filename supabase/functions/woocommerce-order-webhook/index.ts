@@ -396,16 +396,76 @@ async function processOrder(order: any) {
         resolution, styleId, sunSign, moonSign, risingSign, artworkUrl,
       });
 
-      // Fire Klaviyo delivery events via notify-digital-delivery
-      EdgeRuntime.waitUntil(
-        fetch(`${supabaseUrl}/functions/v1/notify-digital-delivery`, {
+      // Fire Klaviyo events directly via Client API
+      const customerName = `${order.billing?.first_name || ""} ${order.billing?.last_name || ""}`.trim();
+      const klaviyoUrl = "https://a.klaviyo.com/client/events/?company_id=XEPXRf";
+      const klaviyoHeaders = { "Content-Type": "application/json", Accept: "application/json", revision: "2024-10-15" };
+
+      // Event 1: Digital Purchase Confirmed
+      try {
+        const res1 = await fetch(klaviyoUrl, {
           method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${serviceKey}` },
-          body: JSON.stringify({ celestialOrderId }),
-        })
-          .then(r => r.text().then(t => console.log("wc-webhook: notify-digital-delivery", r.status, t.substring(0, 200))))
-          .catch(e => console.error("wc-webhook: notify-digital-delivery error", e.message))
-      );
+          headers: klaviyoHeaders,
+          body: JSON.stringify({
+            data: {
+              type: "event",
+              attributes: {
+                profile: { data: { type: "profile", attributes: { email: customerEmail } } },
+                metric: { data: { type: "metric", attributes: { name: "Digital Purchase Confirmed" } } },
+                properties: {
+                  customer_name: customerName,
+                  order_number: wcOrderNumber,
+                  artwork_url: artworkUrl,
+                  resolution,
+                  sun_sign: sunSign,
+                  moon_sign: moonSign,
+                  rising_sign: risingSign,
+                },
+                time: new Date().toISOString(),
+                unique_id: `digital-purchase-confirmed-${order.id}-${Date.now()}`,
+              },
+            },
+          }),
+        });
+        const body1 = await res1.text();
+        console.log(`wc-webhook: Klaviyo Digital Purchase Confirmed ${res1.status} ${body1.substring(0, 200)}`);
+      } catch (e: any) {
+        console.error("wc-webhook: Klaviyo Digital Purchase Confirmed error:", e.message);
+      }
+
+      // Event 2: Digital File Ready
+      try {
+        const res2 = await fetch(klaviyoUrl, {
+          method: "POST",
+          headers: klaviyoHeaders,
+          body: JSON.stringify({
+            data: {
+              type: "event",
+              attributes: {
+                profile: { data: { type: "profile", attributes: { email: customerEmail } } },
+                metric: { data: { type: "metric", attributes: { name: "Digital File Ready" } } },
+                properties: {
+                  customer_name: customerName,
+                  order_number: wcOrderNumber,
+                  artwork_url: artworkUrl,
+                  download_url: artworkUrl,
+                  resolution: resolution === "high_resolution" ? "High Resolution" : "Standard",
+                  sun_sign: sunSign,
+                  moon_sign: moonSign,
+                  rising_sign: risingSign,
+                  expiry_days: 30,
+                },
+                time: new Date().toISOString(),
+                unique_id: `digital-file-ready-${order.id}-${Date.now()}`,
+              },
+            },
+          }),
+        });
+        const body2 = await res2.text();
+        console.log(`wc-webhook: Klaviyo Digital File Ready ${res2.status} ${body2.substring(0, 200)}`);
+      } catch (e: any) {
+        console.error("wc-webhook: Klaviyo Digital File Ready error:", e.message);
+      }
     } else {
       await handleCanvasFulfillment(order, celestialOrderId, {
         sunSign, moonSign, risingSign, artworkUrl,
