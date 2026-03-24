@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, ComponentType } from "react";
 import { initGA4 } from "@/lib/analytics";
+import { initMetaPixel } from "@/lib/meta-pixel";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
