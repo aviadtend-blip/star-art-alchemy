@@ -21,6 +21,7 @@ serve(async (req) => {
       subjectExplanation,
       customerEmail,
       customerName,
+      fulfillmentType,
     } = body;
 
     console.log("[save-order-data] Received fields:", {
@@ -53,15 +54,18 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
+    const insertPayload: Record<string, any> = {
+      customer_email: resolvedEmail,
+      chart_data: enrichedChartData,
+      artwork_analysis: artworkAnalysis || null,
+      generated_image_url: generatedImageUrl,
+      subject_explanation: subjectExplanation || null,
+    };
+    if (fulfillmentType) insertPayload.fulfillment_type = fulfillmentType;
+
     const { data, error } = await supabase
       .from("orders")
-      .insert({
-        customer_email: resolvedEmail,
-        chart_data: enrichedChartData,
-        artwork_analysis: artworkAnalysis || null,
-        generated_image_url: generatedImageUrl,
-        subject_explanation: subjectExplanation || null,
-      })
+      .insert(insertPayload)
       .select("id")
       .single();
 
