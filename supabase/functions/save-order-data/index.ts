@@ -21,6 +21,7 @@ serve(async (req) => {
       subjectExplanation,
       customerEmail,
       customerName,
+      fulfillmentType,
     } = body;
 
     console.log("[save-order-data] Received fields:", {
