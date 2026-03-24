@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { trackViewArtwork, trackEvent } from '@/lib/analytics';
+import { trackMetaViewArtwork, trackMetaDigitalDownload, trackMetaCanvasUpsellClick } from '@/lib/meta-pixel';
 import { useNavigate } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import { ChartExplanation } from '@/components/Explanation/ChartExplanation';
