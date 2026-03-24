@@ -62,6 +62,19 @@ serve(async (req) => {
     const lastName = nameParts.slice(1).join(" ") || "";
     const affiliateId = dtId || affiliate_dt_id || "";
 
+    const metaData = [
+      { key: "_celestial_order_id", value: String(celestialOrderId || "") },
+      { key: "_funnel_type", value: "canvas" },
+      { key: "_artwork_url", value: String(artworkImageUrl || "") },
+      { key: "_style_id", value: String(styleId || orderDetails?.styleId || "") },
+      { key: "_canvas_size", value: String(resolvedSize) },
+      { key: "_size_label", value: String(orderDetails?.sizeLabel || "") },
+      { key: "_sun_sign", value: String(chartData?.sun?.sign || "") },
+      { key: "_moon_sign", value: String(chartData?.moon?.sign || "") },
+      { key: "_rising_sign", value: String(chartData?.rising || "") },
+      { key: "_dt_id", value: String(affiliateId) },
+    ];
+
     const orderPayload = {
       payment_method: "stripe",
       payment_method_title: "Credit Card (Stripe)",
@@ -75,19 +88,10 @@ serve(async (req) => {
       line_items: [
         { product_id: PRODUCT_ID, variation_id: variationId, quantity: 1 },
       ],
-      meta_data: [
-        { key: "_celestial_order_id", value: celestialOrderId || "" },
-        { key: "_funnel_type", value: "canvas" },
-        { key: "_artwork_url", value: artworkImageUrl || "" },
-        { key: "_style_id", value: styleId || orderDetails?.styleId || "" },
-        { key: "_canvas_size", value: resolvedSize },
-        { key: "_size_label", value: orderDetails?.sizeLabel || "" },
-        { key: "_sun_sign", value: chartData?.sun?.sign || "" },
-        { key: "_moon_sign", value: chartData?.moon?.sign || "" },
-        { key: "_rising_sign", value: chartData?.rising || "" },
-        { key: "_dt_id", value: affiliateId },
-      ],
+      meta_data: metaData,
     };
+
+    console.log("[create-woocommerce-checkout] Full payload:", JSON.stringify(orderPayload, null, 2));
 
     const basicAuth = btoa(`${WC_CONSUMER_KEY}:${WC_CONSUMER_SECRET}`);
 

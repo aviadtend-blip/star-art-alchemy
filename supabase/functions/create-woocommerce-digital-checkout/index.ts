@@ -37,6 +37,18 @@ serve(async (req) => {
 
     const billingEmail = customerEmail?.trim() || "guest@celestialartworks.com";
 
+    const metaData = [
+      { key: "_celestial_order_id", value: String(celestialOrderId || "") },
+      { key: "_funnel_type", value: "digital" },
+      { key: "_artwork_url", value: String(artworkImageUrl || "") },
+      { key: "_style_id", value: String(styleId || "") },
+      { key: "_resolution", value: String(resolution || "") },
+      { key: "_sun_sign", value: String(chartData?.sun?.sign || "") },
+      { key: "_moon_sign", value: String(chartData?.moon?.sign || "") },
+      { key: "_rising_sign", value: String(chartData?.rising || "") },
+      { key: "_dt_id", value: String(dtId || "") },
+    ];
+
     const orderPayload = {
       payment_method: "stripe",
       payment_method_title: "Credit Card (Stripe)",
@@ -46,18 +58,10 @@ serve(async (req) => {
       line_items: [
         { product_id: PRODUCT_ID, variation_id: variationId, quantity: 1 },
       ],
-      meta_data: [
-        { key: "_celestial_order_id", value: celestialOrderId || "" },
-        { key: "_funnel_type", value: "digital" },
-        { key: "_artwork_url", value: artworkImageUrl || "" },
-        { key: "_style_id", value: styleId || "" },
-        { key: "_resolution", value: resolution || "" },
-        { key: "_sun_sign", value: chartData?.sun?.sign || "" },
-        { key: "_moon_sign", value: chartData?.moon?.sign || "" },
-        { key: "_rising_sign", value: chartData?.rising || "" },
-        { key: "_dt_id", value: dtId || "" },
-      ],
+      meta_data: metaData,
     };
+
+    console.log("[create-woocommerce-digital-checkout] Full payload:", JSON.stringify(orderPayload, null, 2));
 
     const basicAuth = btoa(`${WC_CONSUMER_KEY}:${WC_CONSUMER_SECRET}`);
 
