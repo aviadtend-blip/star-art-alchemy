@@ -40,6 +40,8 @@ const Confirmation = () => {
       trackPurchase(orderId, value, items);
     }
 
+    trackMetaPurchase(value, "USD", orderId);
+
     sessionStorage.setItem(guardKey, "true");
   }, [orderId, total, isDigital]);
 

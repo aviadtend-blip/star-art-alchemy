@@ -98,6 +98,7 @@ export default function GeneratePreview() {
   useEffect(() => {
     if (!isDemo && generatedImage && selectedStyle?.id) {
       trackViewArtwork(selectedStyle.id);
+      trackMetaViewArtwork(selectedStyle.id);
     }
   }, [isDemo, generatedImage, selectedStyle?.id]);
 

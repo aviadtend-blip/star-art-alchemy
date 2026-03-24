@@ -376,6 +376,7 @@ export function GeneratorProvider({ children }) {
 
       // Fire GA4 event before checkout
       trackBeginCheckout(enrichedDetails.size || '16x24', enrichedDetails.price || 119);
+      trackMetaBeginCheckout(enrichedDetails.price || 119);
 
       const { data, error: fnError } = await supabase.functions.invoke('create-woocommerce-checkout', {
         body: checkoutBody,

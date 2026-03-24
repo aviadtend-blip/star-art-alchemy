@@ -271,6 +271,7 @@ export default function EmailCaptureModal({
       try {
         const genState = JSON.parse(sessionStorage.getItem('celestial_generator_state') || '{}');
         trackEmailCapture(genState.selectedStyle?.id || '');
+        trackMetaEmailCapture(genState.selectedStyle?.id || '');
       } catch { /* ignore */ }
 
       setTimeout(() => {
