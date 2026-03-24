@@ -182,7 +182,7 @@ export default function DigitalPreview() {
       <ChartExplanation
         chartData={displayChart}
         selectedImage={displayImage}
-        onGetFramed={() => handleDigitalCheckout('high_resolution')}
+        onGetFramed={handleCanvasUpsell}
         formData={formData}
         onEditBirthData={handleEditBirthData || (() => navigate('/'))}
         onBackToStyle={handleBackToStyle || (() => navigate('/d/style'))}
