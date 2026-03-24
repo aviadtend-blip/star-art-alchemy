@@ -357,17 +357,18 @@ async function processOrder(order: any) {
     }
 
     const metaData = order.meta_data || [];
-    const celestialOrderId = getMeta(metaData, "_celestial_order_id");
-    const funnelType = getMeta(metaData, "_funnel_type");
-    const artworkUrl = getMeta(metaData, "_artwork_url");
-    const styleId = getMeta(metaData, "_style_id");
-    const sunSign = getMeta(metaData, "_sun_sign");
-    const moonSign = getMeta(metaData, "_moon_sign");
-    const risingSign = getMeta(metaData, "_rising_sign");
-    const resolution = getMeta(metaData, "_resolution");
+    console.log("wc-webhook: full order meta_data:", JSON.stringify(metaData));
+    const celestialOrderId = getMeta(metaData, "celestial_order_id") || getMeta(metaData, "_celestial_order_id");
+    const funnelType = getMeta(metaData, "funnel_type") || getMeta(metaData, "_funnel_type");
+    const artworkUrl = getMeta(metaData, "artwork_url") || getMeta(metaData, "_artwork_url");
+    const styleId = getMeta(metaData, "style_id") || getMeta(metaData, "_style_id");
+    const sunSign = getMeta(metaData, "sun_sign") || getMeta(metaData, "_sun_sign");
+    const moonSign = getMeta(metaData, "moon_sign") || getMeta(metaData, "_moon_sign");
+    const risingSign = getMeta(metaData, "rising_sign") || getMeta(metaData, "_rising_sign");
+    const resolution = getMeta(metaData, "resolution") || getMeta(metaData, "_resolution");
 
     if (!celestialOrderId) {
-      console.warn(`wc-webhook: no _celestial_order_id on order ${order.id}, skipping`);
+      console.warn(`wc-webhook: no celestial_order_id on order ${order.id}, skipping`);
       return;
     }
 
