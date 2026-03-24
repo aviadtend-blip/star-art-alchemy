@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { trackViewArtwork, trackEvent } from '@/lib/analytics';
+import { trackMetaViewArtwork, trackMetaDigitalDownload, trackMetaCanvasUpsellClick } from '@/lib/meta-pixel';
 import { useNavigate } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import { ChartExplanation } from '@/components/Explanation/ChartExplanation';
@@ -70,6 +71,7 @@ export default function DigitalPreview() {
   useEffect(() => {
     if (!isDemo && generatedImage && selectedStyle?.id) {
       trackViewArtwork(selectedStyle.id);
+      trackMetaViewArtwork(selectedStyle.id);
     }
   }, [isDemo, generatedImage, selectedStyle?.id]);
 
@@ -77,6 +79,7 @@ export default function DigitalPreview() {
   const handleDigitalCheckout = useCallback(async (resolution) => {
     if (checkoutLoading) return;
     trackEvent('digital_download', { funnel_step: 'digital_checkout', style_id: selectedStyle?.id || '', resolution });
+    trackMetaDigitalDownload(selectedStyle?.id || '');
     setCheckoutLoading(resolution);
 
     try {
@@ -131,6 +134,7 @@ export default function DigitalPreview() {
   // Canvas upsell — go to existing size page
   const handleCanvasUpsell = useCallback(() => {
     trackEvent('canvas_upsell_click', { funnel_step: 'upsell', style_id: selectedStyle?.id || '' });
+    trackMetaCanvasUpsellClick(selectedStyle?.id || '');
     navigate('/generate/size');
   }, [navigate, selectedStyle]);
 

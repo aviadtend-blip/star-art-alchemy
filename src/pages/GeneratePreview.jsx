@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { trackViewArtwork, trackBeginCustomization } from '@/lib/analytics';
+import { trackMetaViewArtwork } from '@/lib/meta-pixel';
 import { useNavigate } from 'react-router-dom';
 import { useGenerator } from '@/contexts/GeneratorContext';
 import { ChartExplanation } from '@/components/Explanation/ChartExplanation';
@@ -97,6 +98,7 @@ export default function GeneratePreview() {
   useEffect(() => {
     if (!isDemo && generatedImage && selectedStyle?.id) {
       trackViewArtwork(selectedStyle.id);
+      trackMetaViewArtwork(selectedStyle.id);
     }
   }, [isDemo, generatedImage, selectedStyle?.id]);
 

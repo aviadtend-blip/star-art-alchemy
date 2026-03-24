@@ -8,6 +8,7 @@ import { createEmailStoryGallery } from '@/lib/emailStoryGallery';
 import { buildEmailStoryContent } from '@/lib/emailStoryContent';
 import PrimaryButton from '@/components/ui/PrimaryButton';
 import { trackEmailCapture } from '@/lib/analytics';
+import { trackMetaEmailCapture } from '@/lib/meta-pixel';
 
 const INPUT_CLASS = "w-full bg-transparent border-0 border-b border-white/20 rounded-none px-0 py-3 text-lg text-left text-foreground placeholder:text-[#B1B1B1] focus:border-primary focus:ring-0 transition outline-none";
 
@@ -270,6 +271,7 @@ export default function EmailCaptureModal({
       try {
         const genState = JSON.parse(sessionStorage.getItem('celestial_generator_state') || '{}');
         trackEmailCapture(genState.selectedStyle?.id || '');
+        trackMetaEmailCapture(genState.selectedStyle?.id || '');
       } catch { /* ignore */ }
 
       setTimeout(() => {

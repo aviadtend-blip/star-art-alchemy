@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { analyzeArtwork } from '@/lib/explanations/analyzeArtwork';
 import { trackCheckoutStarted } from '@/lib/klaviyo';
 import { trackGenerateArtwork, trackBeginCheckout } from '@/lib/analytics';
+import { trackMetaGenerateArtwork, trackMetaBeginCheckout } from '@/lib/meta-pixel';
 
 const GeneratorContext = createContext(null);
 
@@ -160,6 +161,7 @@ export function GeneratorProvider({ children }) {
     // Fire GA4 event before generation starts
     const dtId = sessionStorage.getItem('affiliate_dt_id') || undefined;
     trackGenerateArtwork(styleId, dtId || 'direct');
+    trackMetaGenerateArtwork(styleId);
     setArtworkAnalysis(null);
     setArtworkId(null);
     navigate(funnelMode === 'digital' ? '/d/loading' : '/generate/loading');
@@ -374,6 +376,7 @@ export function GeneratorProvider({ children }) {
 
       // Fire GA4 event before checkout
       trackBeginCheckout(enrichedDetails.size || '16x24', enrichedDetails.price || 119);
+      trackMetaBeginCheckout(enrichedDetails.price || 119);
 
       const { data, error: fnError } = await supabase.functions.invoke('create-woocommerce-checkout', {
         body: checkoutBody,
