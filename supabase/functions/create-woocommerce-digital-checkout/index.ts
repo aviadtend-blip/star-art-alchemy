@@ -61,6 +61,7 @@ serve(async (req) => {
       meta_data: metaData,
     };
 
+    console.log("[create-woocommerce-digital-checkout] celestialOrderId:", celestialOrderId);
     console.log("[create-woocommerce-digital-checkout] Full payload:", JSON.stringify(orderPayload, null, 2));
 
     const basicAuth = btoa(`${WC_CONSUMER_KEY}:${WC_CONSUMER_SECRET}`);

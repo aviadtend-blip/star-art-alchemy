@@ -368,7 +368,7 @@ async function processOrder(order: any) {
     const resolution = getMeta(metaData, "resolution") || getMeta(metaData, "_resolution");
 
     if (!celestialOrderId) {
-      console.warn(`wc-webhook: no _celestial_order_id on order ${order.id}, skipping`);
+      console.warn(`wc-webhook: no celestial_order_id on order ${order.id}, skipping`);
       return;
     }
 
