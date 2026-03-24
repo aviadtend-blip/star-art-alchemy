@@ -256,7 +256,7 @@ const Confirmation = () => {
         )}
         {displayEmail && (
           <p className="text-body-sm mt-2" style={{ color: "#888" }}>
-            A confirmation email has been sent to {displayEmail}.
+            A confirmation email has been sent to your email.
           </p>
         )}
       </section>
