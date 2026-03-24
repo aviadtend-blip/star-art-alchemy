@@ -16,8 +16,6 @@ const VARIATION_MAP: Record<string, number> = {
   "24x32": 14,
 };
 
-const PRODUCT_ID = 11;
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -26,15 +24,8 @@ serve(async (req) => {
   try {
     const {
       variantSize,
-      customerEmail,
-      customerName,
-      artworkImageUrl,
-      chartData,
       celestialOrderId,
-      dtId,
-      styleId,
       orderDetails,
-      affiliate_dt_id,
     } = await req.json();
 
     const resolvedSize =
@@ -51,78 +42,17 @@ serve(async (req) => {
     }
 
     const WC_STORE_URL = Deno.env.get("WC_STORE_URL")!;
-    const WC_CONSUMER_KEY = Deno.env.get("WC_CONSUMER_KEY")!;
-    const WC_CONSUMER_SECRET = Deno.env.get("WC_CONSUMER_SECRET")!;
 
-    const resolvedCustomerEmail = customerEmail || orderDetails?.email || "";
-    const billingEmail = resolvedCustomerEmail?.trim() || "guest@celestialartworks.com";
-    const resolvedCustomerName = customerName || orderDetails?.firstName || "";
-    const nameParts = (resolvedCustomerName || "").split(" ");
-    const firstName = nameParts[0] || "";
-    const lastName = nameParts.slice(1).join(" ") || "";
-    const affiliateId = dtId || affiliate_dt_id || "";
+    // Build add-to-cart URL that lands on the full checkout page
+    // (collects shipping address, contact info, and payment)
+    // Metadata is already persisted in the orders table via save-order-data
+    // and will be linked back via the woocommerce-order-webhook using _celestial_order_id
+    const checkoutUrl = `${WC_STORE_URL}/?add-to-cart=${variationId}&quantity=1`;
 
-    const metaData = [
-      { key: "_celestial_order_id", value: String(celestialOrderId || "") },
-      { key: "_funnel_type", value: "canvas" },
-      { key: "_artwork_url", value: String(artworkImageUrl || "") },
-      { key: "_style_id", value: String(styleId || orderDetails?.styleId || "") },
-      { key: "_canvas_size", value: String(resolvedSize) },
-      { key: "_size_label", value: String(orderDetails?.sizeLabel || "") },
-      { key: "_sun_sign", value: String(chartData?.sun?.sign || "") },
-      { key: "_moon_sign", value: String(chartData?.moon?.sign || "") },
-      { key: "_rising_sign", value: String(chartData?.rising || "") },
-      { key: "_dt_id", value: String(affiliateId) },
-    ];
-
-    const orderPayload = {
-      payment_method: "stripe",
-      payment_method_title: "Credit Card (Stripe)",
-      set_paid: false,
-      status: "pending",
-      billing: {
-        email: billingEmail,
-        first_name: firstName,
-        last_name: lastName,
-      },
-      line_items: [
-        { product_id: PRODUCT_ID, variation_id: variationId, quantity: 1 },
-      ],
-      meta_data: metaData,
-    };
-
-    console.log("[create-woocommerce-checkout] Full payload:", JSON.stringify(orderPayload, null, 2));
-
-    const basicAuth = btoa(`${WC_CONSUMER_KEY}:${WC_CONSUMER_SECRET}`);
-
-    const wcResponse = await fetch(
-      `${WC_STORE_URL}/wp-json/wc/v3/orders`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Basic ${basicAuth}`,
-        },
-        body: JSON.stringify(orderPayload),
-      }
-    );
-
-    if (!wcResponse.ok) {
-      const errText = await wcResponse.text();
-      throw new Error(`WooCommerce API error (${wcResponse.status}): ${errText}`);
-    }
-
-    const wcData = await wcResponse.json();
-    const orderId = wcData.id;
-
-    let checkoutPaymentUrl = wcData.checkout_payment_url;
-    if (!checkoutPaymentUrl) {
-      const orderKey = wcData.order_key;
-      checkoutPaymentUrl = `${WC_STORE_URL}/checkout/order-pay/${orderId}/?pay_for_order=true&key=${orderKey}`;
-    }
+    console.log("[create-woocommerce-checkout] Redirecting to cart checkout:", checkoutUrl, "celestialOrderId:", celestialOrderId);
 
     return new Response(
-      JSON.stringify({ url: checkoutPaymentUrl, orderId }),
+      JSON.stringify({ url: checkoutUrl }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
