@@ -68,6 +68,30 @@ async function sendKlaviyoEvent(apiKey: string, metricName: string, email: strin
   }
 }
 
+async function subscribeToKlaviyo(email: string): Promise<void> {
+  try {
+    const res = await fetch("https://a.klaviyo.com/client/subscriptions/?company_id=XEPXRf", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json", revision: "2024-10-15" },
+      body: JSON.stringify({
+        data: {
+          type: "subscription",
+          attributes: {
+            custom_source: "Checkout",
+            profile: { data: { type: "profile", attributes: { email } } },
+            email_marketing: { consent: "SUBSCRIBED", custom_method_detail: "Purchase at checkout" },
+          },
+          relationships: { list: { data: { type: "list", id: "UGDZis" } } },
+        },
+      }),
+    });
+    const body = await res.text();
+    console.log(`wc-webhook: Klaviyo subscribe ${res.status} ${body.substring(0, 200)}`);
+  } catch (e: any) {
+    console.error("wc-webhook: Klaviyo subscribe error (non-fatal):", e.message);
+  }
+}
+
 const PRODIGI_SKU: Record<string, string> = {
   "CA-12x16": "GLOBAL-CFP-12X18",
   "CA-18x24": "GLOBAL-CFP-16X24",
