@@ -103,8 +103,8 @@ async function fulfillOrder(order: any, supabase: any, prodigiKey: string, prodi
     || "Your";
   console.log(`[fulfill-order] Resolved customer name: "${resolvedName}"`);
 
-  const insertCardUrl = await generateInsertCard(celestialOrder, resolvedName);
-  console.log(`[fulfill-order] Insert card: ${insertCardUrl}`);
+  const insertCardUrl = await resolveInsertCard(celestialOrder, resolvedName, supabase);
+  console.log(`[fulfill-order] Insert card URL for Prodigi flyer: ${insertCardUrl}`);
 
   const prodigiResult = await submitToProdigi({
     shopifyOrderNumber, customerName: resolvedName, customerEmail,
@@ -132,7 +132,7 @@ async function fulfillOrder(order: any, supabase: any, prodigiKey: string, prodi
     console.warn(`[fulfill-order] ⚠️ ${msg}`);
   }
 
-  return { success: true, prodigiOrderId, prodigiOutcome, sku };
+  return { success: true, prodigiOrderId, prodigiOutcome, sku, insertCardUrl };
 }
 
 /**
@@ -172,6 +172,28 @@ function transformArtworkAnalysis(analysis: any, chartData: any): any {
   // Unknown format — return empty sections
   console.warn(`[fulfill-order] Unknown artwork_analysis format: ${JSON.stringify(analysis).substring(0, 200)}`);
   return { sun: {}, moon: {}, rising: {}, element: {} };
+}
+
+async function resolveInsertCard(celestialOrder: any, resolvedName: string, supabase: any): Promise<string> {
+  // Reuse existing insert card on retries
+  if (celestialOrder.insert_card_url) {
+    console.log(`[fulfill-order] REUSING existing insert_card_url: ${celestialOrder.insert_card_url}`);
+    return celestialOrder.insert_card_url;
+  }
+  console.log(`[fulfill-order] No existing insert_card_url — generating new insert card`);
+  const url = await generateInsertCard(celestialOrder, resolvedName);
+
+  // Persist to orders row for future retries
+  const { error: updateErr } = await supabase
+    .from("orders")
+    .update({ insert_card_url: url })
+    .eq("id", celestialOrder.id);
+  if (updateErr) {
+    console.warn(`[fulfill-order] ⚠️ Failed to persist insert_card_url to orders row: ${updateErr.message}`);
+  } else {
+    console.log(`[fulfill-order] Persisted insert_card_url to orders row`);
+  }
+  return url;
 }
 
 async function generateInsertCard(celestialOrder: any, resolvedName: string): Promise<string> {
@@ -313,7 +335,7 @@ async function submitToProdigi(args: any) {
     ...(args.insertCardUrl ? { branding: { flyer: { url: args.insertCardUrl } } } : {}),
   };
 
-  console.log(`[submitToProdigi] ${base}/orders | SKU=${args.sku} | ref=${args.shopifyOrderNumber} | hasFlyer=${!!args.insertCardUrl}`);
+  console.log(`[submitToProdigi] ${base}/orders | SKU=${args.sku} | ref=${args.shopifyOrderNumber} | hasFlyer=${!!args.insertCardUrl} | flyerUrl=${args.insertCardUrl ?? "none"}`);
 
   const resp = await fetch(`${base}/orders`, {
     method: "POST",
