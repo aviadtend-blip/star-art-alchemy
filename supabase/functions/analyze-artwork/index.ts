@@ -50,7 +50,6 @@ serve(async (req) => {
     const elementBalance = chartData.element_balance || {};
     const dominantElement = sanitize(getDominantElement(elementBalance));
 
-    // Use promptUsed or generationPrompt (backward compat)
     const usedPrompt = promptUsed || generationPrompt || null;
 
     const candidateContext = usedPrompt
@@ -61,9 +60,16 @@ serve(async (req) => {
 
     const prompt = `You are analyzing a birth chart artwork. Respond in ONE JSON block covering three logical phases.
 
-PHASE 1 — OBSERVE: Look at the image. Identify 3-6 distinct visible regions or elements. For each, give a short literal label (2-4 words describing what you SEE, not what it means). Include concrete visible evidence.
+PHASE 1 — OBSERVE: Look at the image carefully. Identify 3-6 distinct visible regions, objects, figures, or elements. For each, give a concrete literal label naming what you SEE.
 
-PHASE 2 — MAP: For Sun, Moon, Rising, and Element, try to connect each to one observed region. If support is weak, set regionId to null. Include a confidence score (0.0-1.0). NULL IS BETTER THAN A FORCED MATCH.
+LABEL RULES:
+- Labels must name a CONCRETE VISIBLE THING: an object, creature, body part, structure, or physical region.
+- GOOD labels: "White Dove", "Horned Bull", "Stacked Books", "Stone Archway", "Crescent Moon Shape", "Lower Waterline", "Clasped Hands", "Halo Disk", "Left Bookshelves", "Curving Staircase", "Scattered Flower Petals", "Outer Rock Border", "Upper Left Glow"
+- BAD labels (NEVER use these patterns): "The Central Focus", "The Emotional Atmosphere", "The Composition & Framing", "The Overall Feel & Weight", "Primary Element", "Secondary Detail"
+- If you cannot name a concrete object, name a physical region: "Upper Left Glow", "Lower Reflection", "Outer Rock Border", "Center Waterline", "Background Fog Layer"
+- 2-6 words each. No articles ("The") at the start.
+
+PHASE 2 — MAP: For Sun, Moon, Rising, and Element, try to connect each to one observed region. If support is weak, set regionId to null. NULL IS BETTER THAN A FORCED MATCH.
 
 PHASE 3 — WRITE: For each mapped slot, write a short grounded explanation (2 sentences, max 300 chars). The explanation MUST mention the exact placement (e.g. "Scorpio Sun" or "Sun in Scorpio").
 
@@ -72,12 +78,12 @@ Chart: Sun in ${sunSign} (House ${chartData.sun?.house || '?'}), Moon in ${moonS
 Return ONLY valid JSON:
 
 {
-  "subjectExplanation": "1-2 sentences, MAX 30 words. Name the main visible subject and connect it to their ${sunSign} Sun / ${moonSign} Moon / ${rising} Rising. Describe what you SEE.",
+  "subjectExplanation": "1-2 sentences, 28-40 words. Describe the main visible subject, figure, creature, or scene in plain concrete language. Then connect it to their ${sunSign} Sun, ${moonSign} Moon, or ${rising} Rising. Must reference what you actually SEE in the image.",
 
   "observedRegions": [
     {
       "id": "r1",
-      "literalLabel": "2-4 word literal description of what is visible (e.g. 'Large Horned Animal', 'Scattered Flower Petals', 'Crescent Shape Upper Left')",
+      "literalLabel": "Concrete object or physical region name, 2-6 words (e.g. 'Horned Bull', 'Lower Waterline', 'Stone Archway')",
       "visibleEvidence": "Concrete proof: shape, outline, texture, size, placement (min 15 chars)",
       "position": { "top": <0-100>, "left": <0-100> },
       "focusBox": { "top": <0-100>, "left": <0-100>, "bottom": <0-100>, "right": <0-100> },
@@ -88,25 +94,25 @@ Return ONLY valid JSON:
   "chartMappings": {
     "sun": {
       "regionId": "r1 or null",
-      "artworkElement": "2-6 word literal name, or null",
+      "artworkElement": "Concrete visible name from the region label, 2-6 words. Or null.",
       "explanation": "2 sentences, max 300 chars. MUST contain '${sunSign} Sun' or 'Sun in ${sunSign}'. Written in second person. Or null.",
       "confidence": 0.0-1.0
     },
     "moon": {
       "regionId": "r2 or null",
-      "artworkElement": "2-6 word literal name, or null",
+      "artworkElement": "Concrete visible name, or null",
       "explanation": "MUST contain '${moonSign} Moon' or 'Moon in ${moonSign}'. Or null.",
       "confidence": 0.0-1.0
     },
     "rising": {
       "regionId": "r3 or null",
-      "artworkElement": "2-6 word literal name, or null",
+      "artworkElement": "Concrete visible name, or null",
       "explanation": "MUST contain '${rising} Rising' or 'Rising in ${rising}'. Or null.",
       "confidence": 0.0-1.0
     },
     "element": {
       "regionId": "r4 or null",
-      "artworkElement": "2-6 word literal name, or null",
+      "artworkElement": "Concrete visible name, or null",
       "explanation": "MUST contain '${dominantElement} dominant' or 'dominant ${dominantElement}' or '${dominantElement} element'. Or null.",
       "confidence": 0.0-1.0
     }
@@ -114,14 +120,15 @@ Return ONLY valid JSON:
 }
 
 RULES:
-- literalLabel must describe what is LITERALLY visible. 2-4 words. No metaphors.
+- subjectExplanation is REQUIRED. It must describe a specific visible subject/scene. It must NOT be generic.
+- literalLabel must name a concrete visible thing or physical region. NEVER abstract concepts.
 - BANNED TITLE NOUNS: guardian, messenger, sentinel, watcher, sorceress, mechanism, beacon, oracle, harbinger, vessel, tapestry, gateway, portal, emissary
 - BANNED EXPLANATION WORDS: represent, symbolize, vibrant, intricate, tapestry, journey, essence, energy, manifest, celestial, cosmic, mystical, ethereal, sacred, divine
 - Each explanation must mention the EXACT correct placement (sign + placement type). Wrong sign = instant rejection.
 - NEVER mention colors, color palette, art style, medium, or technique.
 - Write like a smart friend, not a horoscope. Plain and grounded.
 - confidence: 0.9+ = obvious match, 0.7-0.9 = good match, 0.5-0.7 = weak, below 0.5 = use null instead.
-- If you can only find 3 regions, return 3. Do NOT pad.
+- If you can only find 3 regions, return 3. Do NOT pad with abstract filler regions.
 - Each slot's regionId must reference an observedRegion id, or be null.
 - Multiple slots MAY map to the same region if truly justified, but prefer different regions.
 
@@ -149,7 +156,7 @@ OUTPUT ONLY VALID JSON. No preamble, no commentary, no markdown fencing.`;
               ],
             },
           ],
-          max_tokens: 1800,
+          max_tokens: 2000,
         }),
       }
     );
@@ -215,13 +222,15 @@ OUTPUT ONLY VALID JSON. No preamble, no commentary, no markdown fencing.`;
           confidence: slot.confidence,
         };
       } else {
+        // Pass through partial data (title/position) even when explanation failed
         analysis[key] = {
-          artworkElement: null,
+          artworkElement: slot?.artworkElement || null,
           explanation: null,
-          visibleEvidence: null,
-          position: null,
+          visibleEvidence: slot?.visibleEvidence || null,
+          position: slot?.position || null,
           focusBox: null,
           mapped: false,
+          confidence: slot?.confidence || 0,
         };
       }
     }

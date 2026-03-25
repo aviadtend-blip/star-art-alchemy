@@ -1,6 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { generateChartExplanation } from './generateExplanation';
-import { sanitizeAiHotspotAnalysis, getDominantElement } from './hotspotAnalysis';
+import { sanitizeAiHotspotAnalysis, getDominantElement, isAbstractLabel } from './hotspotAnalysis';
 
 /**
  * Analyzes the actual generated artwork image using AI vision,
@@ -49,31 +49,26 @@ export async function analyzeArtwork(imageUrl, chartData, options = {}) {
 
     console.log('🎨 AI artwork analysis received');
 
-    // Build chart context for client-side sanitization (double-check server output)
-    const safeChart = chartData || {};
-    const sunSign = safeChart?.sun?.sign || 'Unknown';
-    const moonSign = safeChart?.moon?.sign || 'Unknown';
-    const rising = typeof safeChart?.rising === 'string'
-      ? safeChart.rising
-      : safeChart?.rising?.sign || 'Unknown';
-    const elementBalance = safeChart?.element_balance || safeChart?.elements || {};
-    const dominantElement = getDominantElement(elementBalance);
-
-    const chartContext = { sunSign, moonSign, rising, dominantElement };
-
-    // The server already sanitized, but we also run client-side validation
-    // to handle any edge cases. We reconstruct from the analysis shape.
-    // The server returns: analysis.sun, analysis.moon, etc. with mapped flag.
-
-    // Build elements array — merge AI results with fallback per-slot
+    // Build elements array with per-field merge
     const placements = ['sun', 'moon', 'rising', 'element'];
     const elements = placements.map((key, i) => {
       const aiResult = analysis[key];
       const fallbackEl = fallback.elements[i];
       const isMapped = aiResult?.mapped && aiResult?.explanation && aiResult?.artworkElement;
 
+      // Per-field merge: title, position, and explanation are independent
+      // AI title survives even if AI explanation fails
+      const aiTitleValid = aiResult?.artworkElement
+        && !isAbstractLabel(aiResult.artworkElement);
+
+      const useAiTitle = isMapped
+        ? true
+        : aiTitleValid; // Keep concrete AI title even on explanation fallback
+
+      const useAiPosition = aiResult?.position != null;
+
       if (isMapped) {
-        // AI confidently matched — use AI data
+        // Fully mapped — use AI data
         return {
           ...fallbackEl,
           artworkElement: aiResult.artworkElement,
@@ -84,18 +79,24 @@ export async function analyzeArtwork(imageUrl, chartData, options = {}) {
           confidence: aiResult.confidence,
         };
       } else {
-        // Not mapped — use chart-based fallback
+        // Partial or full fallback — merge per field
         return {
           ...fallbackEl,
-          source: 'fallback',
+          artworkElement: useAiTitle ? aiResult.artworkElement : fallbackEl.artworkElement,
+          explanation: fallbackEl.explanation, // always use fallback explanation
+          aiPosition: useAiPosition ? normalizePosition(aiResult.position) : null,
+          source: useAiTitle ? 'partial' : 'fallback',
         };
       }
     });
 
+    // Use AI subjectExplanation if valid, otherwise fallback
+    const subjectExplanation = analysis.subjectExplanation || null;
+
     return {
       analyzedImageUrl: imageUrl,
       overview: fallback.overview,
-      subjectExplanation: analysis.subjectExplanation || null,
+      subjectExplanation,
       elements,
       _observedRegions: analysis.observedRegions || null,
     };

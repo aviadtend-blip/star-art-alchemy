@@ -16,6 +16,18 @@ const BANNED_WORDS = [
   'transcendent', 'enigmatic', 'arcane', 'celestial blueprint',
 ];
 
+const ABSTRACT_LABEL_PATTERNS = [
+  /^the\s+(central|emotional|overall|primary|secondary)\s/i,
+  /\b(atmosphere|composition|framing|feel\s*&?\s*weight|overall feel)\b/i,
+  /^(central focus|secondary detail|framing details|overall surface)$/i,
+];
+
+const SUBJECT_BANNED_WORDS = [
+  'cosmic', 'celestial', 'mystical', 'ethereal', 'sacred', 'divine',
+  'between worlds', 'subconscious', 'guardian', 'transcendent',
+  'enigmatic', 'arcane', 'blueprint',
+];
+
 const PLACEMENT_KEYS = ['sun', 'moon', 'rising', 'element'];
 
 /**
@@ -47,12 +59,23 @@ function hasBannedLanguage(text) {
 }
 
 /**
- * Check if a label is literal and 2-4 words.
+ * Check if a label is abstract (should be rejected as a hotspot title).
+ */
+export function isAbstractLabel(label) {
+  if (!label) return true;
+  return ABSTRACT_LABEL_PATTERNS.some(p => p.test(label.trim()));
+}
+
+/**
+ * Check if a label is literal and 2-6 words.
  */
 function isLiteralLabel(label) {
   if (!label || typeof label !== 'string') return false;
   const words = label.trim().split(/\s+/);
-  return words.length >= 2 && words.length <= 6 && !hasBannedNoun(label);
+  if (words.length < 2 || words.length > 6) return false;
+  if (hasBannedNoun(label)) return false;
+  if (isAbstractLabel(label)) return false;
+  return true;
 }
 
 /**
@@ -98,7 +121,6 @@ function normalizeFocusBox(box) {
 
 /**
  * Check if a slot explanation mentions the correct placement.
- * e.g., for sun slot with sign "Scorpio", must contain "Scorpio Sun" or "Sun in Scorpio".
  */
 function mentionsCorrectPlacement(explanation, slotKey, chartContext) {
   if (!explanation || typeof explanation !== 'string') return false;
@@ -182,6 +204,26 @@ function positionDistance(posA, posB) {
 }
 
 /**
+ * Validate subjectExplanation: concrete, 15-50 words, no mystical language.
+ */
+export function validateSubjectExplanation(text) {
+  if (!text || typeof text !== 'string') return null;
+  const trimmed = text.trim();
+  if (trimmed.length < 20) return null;
+
+  const lower = trimmed.toLowerCase();
+  if (SUBJECT_BANNED_WORDS.some(w => lower.includes(w))) return null;
+
+  const sentences = trimmed.split(/[.!?]+/).filter(s => s.trim().length > 0);
+  if (sentences.length > 3) return null;
+
+  const words = trimmed.split(/\s+/);
+  if (words.length < 15 || words.length > 50) return null;
+
+  return trimmed;
+}
+
+/**
  * Sanitize and validate a raw AI analysis response.
  *
  * @param {object} rawAnalysis - The raw AI JSON response
@@ -189,7 +231,7 @@ function positionDistance(posA, posB) {
  * @returns {object} Sanitized analysis with validated slots
  */
 export function sanitizeAiHotspotAnalysis(rawAnalysis, chartContext) {
-  if (!rawAnalysis) return { observedRegions: [], slots: {} };
+  if (!rawAnalysis) return { subjectExplanation: null, observedRegions: [], slots: {} };
 
   // 1. Validate observed regions
   let regions = Array.isArray(rawAnalysis.observedRegions) ? rawAnalysis.observedRegions : [];
@@ -239,23 +281,15 @@ export function sanitizeAiHotspotAnalysis(rawAnalysis, chartContext) {
     const explanation = raw.explanation;
     const confidence = typeof raw.confidence === 'number' ? raw.confidence : 0.5;
 
-    // Reject if explanation has banned language
-    if (hasBannedLanguage(explanation)) {
-      slots[key] = { mapped: false };
-      continue;
-    }
+    // Validate title independently
+    const aiTitle = raw.artworkElement || region.literalLabel;
+    const titleValid = aiTitle && !isAbstractLabel(aiTitle) && !hasBannedNoun(aiTitle);
 
-    // Reject if explanation mentions wrong placement
-    if (mentionsWrongPlacement(explanation, key, chartContext)) {
-      slots[key] = { mapped: false };
-      continue;
-    }
-
-    // Reject if explanation doesn't mention correct placement
-    if (!mentionsCorrectPlacement(explanation, key, chartContext)) {
-      slots[key] = { mapped: false };
-      continue;
-    }
+    // Validate explanation
+    const explanationValid = explanation
+      && !hasBannedLanguage(explanation)
+      && !mentionsWrongPlacement(explanation, key, chartContext)
+      && mentionsCorrectPlacement(explanation, key, chartContext);
 
     // Check for duplicate region usage — keep strongest
     if (usedRegions[raw.regionId]) {
@@ -265,7 +299,10 @@ export function sanitizeAiHotspotAnalysis(rawAnalysis, chartContext) {
         slots[existing.key] = { mapped: false };
         usedRegions[raw.regionId] = { key, confidence };
       } else {
-        slots[key] = { mapped: false };
+        slots[key] = {
+          mapped: false,
+          artworkElement: titleValid ? aiTitle : undefined,
+        };
         continue;
       }
     } else {
@@ -278,16 +315,30 @@ export function sanitizeAiHotspotAnalysis(rawAnalysis, chartContext) {
       cleanExplanation = cleanExplanation.substring(0, 297).replace(/\s+\S*$/, '') + '…';
     }
 
-    slots[key] = {
-      mapped: true,
-      regionId: raw.regionId,
-      artworkElement: raw.artworkElement || region.literalLabel,
-      explanation: cleanExplanation,
-      position: region.position,
-      confidence,
-      visibleEvidence: region.visibleEvidence,
-      regionType: region.regionType || null,
-    };
+    if (explanationValid) {
+      slots[key] = {
+        mapped: true,
+        regionId: raw.regionId,
+        artworkElement: titleValid ? aiTitle : region.literalLabel,
+        explanation: cleanExplanation,
+        position: region.position,
+        confidence,
+        visibleEvidence: region.visibleEvidence,
+        regionType: region.regionType || null,
+      };
+    } else {
+      // Explanation failed but preserve title + position for partial merge
+      slots[key] = {
+        mapped: false,
+        regionId: raw.regionId,
+        artworkElement: titleValid ? aiTitle : undefined,
+        explanation: null,
+        position: region.position,
+        confidence,
+        visibleEvidence: region.visibleEvidence,
+        regionType: region.regionType || null,
+      };
+    }
   }
 
   // 3. Proximity check — if two mapped hotspots are within 10% distance, null the weaker
@@ -310,7 +361,7 @@ export function sanitizeAiHotspotAnalysis(rawAnalysis, chartContext) {
   }
 
   return {
-    subjectExplanation: rawAnalysis.subjectExplanation || null,
+    subjectExplanation: validateSubjectExplanation(rawAnalysis.subjectExplanation),
     observedRegions: regions,
     slots,
   };
