@@ -63,11 +63,13 @@ serve(async (req) => {
 PHASE 1 — OBSERVE: Look at the image carefully. Identify 3-6 distinct visible regions, objects, figures, or elements. For each, give a concrete literal label naming what you SEE.
 
 LABEL RULES:
-- Labels must name a CONCRETE VISIBLE THING: an object, creature, body part, structure, or physical region.
-- GOOD labels: "White Dove", "Horned Bull", "Stacked Books", "Stone Archway", "Crescent Moon Shape", "Lower Waterline", "Clasped Hands", "Halo Disk", "Left Bookshelves", "Curving Staircase", "Scattered Flower Petals", "Outer Rock Border", "Upper Left Glow"
-- BAD labels (NEVER use these patterns): "The Central Focus", "The Emotional Atmosphere", "The Composition & Framing", "The Overall Feel & Weight", "Primary Element", "Secondary Detail"
-- If you cannot name a concrete object, name a physical region: "Upper Left Glow", "Lower Reflection", "Outer Rock Border", "Center Waterline", "Background Fog Layer"
-- 2-6 words each. No articles ("The") at the start.
+- Labels must name a CONCRETE VISIBLE THING you can point at in the image.
+- Use 1-4 words. No articles ("The") at the start. Apostrophes are OK.
+- PREFER specific object nouns: figure, person, face, hand, bird, dove, moon, orb, halo, books, staircase, archway, doorway, horn, muzzle, reeds, branches, waterline, reflection, shoreline, wing, mountain, flower, clock face, tower, window, bull, eye, crown, skull, serpent, veil, column, bridge, gate, roots, waves, flame
+- GOOD labels: "White Dove", "Bull's Horns", "Writing Hand", "Clock Face", "Stone Archway", "Crescent Moon", "Lower Waterline", "Clasped Hands", "Halo Disk", "Left Bookshelves", "Curving Staircase", "Scattered Petals", "Moon Disk", "Right Reeds", "Lower Reflection"
+- If you cannot name a specific object, use a PHYSICAL REGION label combining a direction + visible feature: "Upper Moon Disk", "Lower Water Reflection", "Right Reed Cluster", "Left Book Stack", "Center Archway", "Upper Halo Ring", "Lower Stone Path"
+- BANNED labels (NEVER use): "Central Figure", "Secondary Shape", "Outer Edge", "Lower Texture", "Main Subject", "Secondary Detail", "Framing Details", "Overall Surface", "Central Focus", "Emotional Atmosphere", "Composition & Framing", "Overall Feel & Weight", "Primary Element"
+- These banned labels are GENERIC CATEGORY NAMES. You must name the ACTUAL THING you see, not its category.
 
 PHASE 2 — MAP: For Sun, Moon, Rising, and Element, try to connect each to one observed region. If support is weak, set regionId to null. NULL IS BETTER THAN A FORCED MATCH.
 

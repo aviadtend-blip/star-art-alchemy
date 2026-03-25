@@ -3,11 +3,12 @@
  * is unavailable or returns null mappings.
  *
  * KEY DESIGN PRINCIPLE:
- * - artworkElement uses concrete spatial labels:
- *     Sun → "Central Figure"
- *     Moon → "Secondary Shape"
- *     Rising → "Outer Edge"
- *     Element → "Lower Texture"
+ * - artworkElement uses PHYSICAL SPATIAL last-resort labels (never semantic categories):
+ *     Sun → "Upper Focal Area"
+ *     Moon → "Secondary Focal Area"
+ *     Rising → "Outer Border"
+ *     Element → "Lower Reflection"
+ * - These should ONLY appear when no concrete observed-region label exists.
  * - explanation text describes the PERSON first, not the artwork
  * - No claims about specific visual motifs, creatures, colors, or symbols
  * - No cheesy / mystical wording
@@ -35,25 +36,25 @@ export function generateChartExplanation(chartData) {
     elements: [
       {
         chartElement: `Sun in ${sunSign}, House ${safeChart?.sun?.house ?? '—'}`,
-        artworkElement: 'Central Figure',
+        artworkElement: 'Upper Focal Area',
         icon: '☀️',
         explanation: getSunFallback(sunSign),
       },
       {
         chartElement: `Moon in ${moonSign}, House ${safeChart?.moon?.house ?? '—'}`,
-        artworkElement: 'Secondary Shape',
+        artworkElement: 'Secondary Focal Area',
         icon: '🌙',
         explanation: getMoonFallback(moonSign),
       },
       {
         chartElement: `${risingSign} Rising`,
-        artworkElement: 'Outer Edge',
+        artworkElement: 'Outer Border',
         icon: '⬆️',
         explanation: getRisingFallback(risingSign),
       },
       {
         chartElement: `${dominantElement} Dominant`,
-        artworkElement: 'Lower Texture',
+        artworkElement: 'Lower Ground',
         icon: getElementIcon(dominantElement),
         explanation: getElementFallback(dominantElement, elementBalance),
       }
@@ -70,20 +71,20 @@ function getElementIcon(element) {
 
 function getSunFallback(sign) {
   const notes = {
-    'Aries': `You lead with instinct — your Aries Sun means you act before most people have finished thinking. That forward drive shaped the central figure in this piece.`,
-    'Taurus': `You trust what you can touch and build things that last. Your Taurus Sun grounds the central figure with that same steady, deliberate quality.`,
-    'Gemini': `Your mind runs on parallel tracks, curious about everything. Your Gemini Sun brings a layered, restless quality to the central figure.`,
-    'Cancer': `You feel first and think later, and you remember everything. Your Cancer Sun wraps the central figure in something warm and protective.`,
-    'Leo': `You hold attention naturally — not by demanding it, but by earning it. Your Leo Sun drives the central figure in this piece.`,
-    'Virgo': `You notice what others miss. Your Virgo Sun brings quiet precision to the central figure.`,
-    'Libra': `You seek balance instinctively — in decisions, relationships, aesthetics. Your Libra Sun shapes the central figure toward harmony.`,
-    'Scorpio': `You don't do surface-level anything. Your Scorpio Sun pulls the central figure toward depth and intensity.`,
-    'Sagittarius': `You need room to roam, in ideas and geography alike. Your Sagittarius Sun pushes the central figure toward openness.`,
-    'Capricorn': `You play the long game and you're usually right to. Your Capricorn Sun builds the central figure upward, structured and deliberate.`,
-    'Aquarius': `You think differently and you know it. Your Aquarius Sun breaks the expected pattern at the central figure.`,
-    'Pisces': `You live between worlds, absorbing everything. Your Pisces Sun softens the central figure into something fluid.`,
+    'Aries': `You lead with instinct — your Aries Sun means you act before most people have finished thinking. That forward drive shaped the upper focal area in this piece.`,
+    'Taurus': `You trust what you can touch and build things that last. Your Taurus Sun grounds the upper focal area with that same steady, deliberate quality.`,
+    'Gemini': `Your mind runs on parallel tracks, curious about everything. Your Gemini Sun brings a layered, restless quality to the upper focal area.`,
+    'Cancer': `You feel first and think later, and you remember everything. Your Cancer Sun wraps the upper focal area in something warm and protective.`,
+    'Leo': `You hold attention naturally — not by demanding it, but by earning it. Your Leo Sun drives the upper focal area in this piece.`,
+    'Virgo': `You notice what others miss. Your Virgo Sun brings quiet precision to the upper focal area.`,
+    'Libra': `You seek balance instinctively — in decisions, relationships, aesthetics. Your Libra Sun shapes the upper focal area toward harmony.`,
+    'Scorpio': `You don't do surface-level anything. Your Scorpio Sun pulls the upper focal area toward depth and intensity.`,
+    'Sagittarius': `You need room to roam, in ideas and geography alike. Your Sagittarius Sun pushes the upper focal area toward openness.`,
+    'Capricorn': `You play the long game and you're usually right to. Your Capricorn Sun builds the upper focal area upward, structured and deliberate.`,
+    'Aquarius': `You think differently and you know it. Your Aquarius Sun breaks the expected pattern at the upper focal area.`,
+    'Pisces': `You live between worlds, absorbing everything. Your Pisces Sun softens the upper focal area into something fluid.`,
   };
-  return notes[sign] || `Your ${sign} Sun shaped the central figure of this piece.`;
+  return notes[sign] || `Your ${sign} Sun shaped the upper focal area of this piece.`;
 }
 
 function getMoonFallback(sign) {
@@ -106,20 +107,20 @@ function getMoonFallback(sign) {
 
 function getRisingFallback(sign) {
   const notes = {
-    'Aries': `People sense your directness before you speak. Your Aries Rising shapes the outer edges of this piece — bold, forward, no preamble.`,
+    'Aries': `People sense your directness before you speak. Your Aries Rising shapes the outer border of this piece — bold, forward, no preamble.`,
     'Taurus': `You come across as grounded and unhurried. Your Taurus Rising gives this piece a substantial, inviting edge from the first glance.`,
-    'Gemini': `You seem lighter and more playful than your chart might suggest. Your Gemini Rising keeps the outer edges here moving.`,
-    'Cancer': `People sense softness and protectiveness in you immediately. Your Cancer Rising wraps the outer edges of this piece in something sheltering.`,
+    'Gemini': `You seem lighter and more playful than your chart might suggest. Your Gemini Rising keeps the outer border here moving.`,
+    'Cancer': `People sense softness and protectiveness in you immediately. Your Cancer Rising wraps the outer border of this piece in something sheltering.`,
     'Leo': `You walk into a room and the room notices. Your Leo Rising gives this piece a confident, generous edge.`,
     'Virgo': `You present as thoughtful and precise. Your Virgo Rising brings intentional, detailed edges to this piece.`,
-    'Libra': `You make everything look effortless. Your Libra Rising gives this piece an elegantly balanced outer edge.`,
+    'Libra': `You make everything look effortless. Your Libra Rising gives this piece an elegantly balanced outer border.`,
     'Scorpio': `People sense your intensity before you say a word. Your Scorpio Rising gives this piece depth at the edges — layers that reveal themselves slowly.`,
-    'Sagittarius': `You seem open, like you're always headed somewhere. Your Sagittarius Rising pulls the outer edges outward, expansive.`,
+    'Sagittarius': `You seem open, like you're always headed somewhere. Your Sagittarius Rising pulls the outer border outward, expansive.`,
     'Capricorn': `You project competence and quiet authority. Your Capricorn Rising gives this piece angular, upward-building structure at the edges.`,
-    'Aquarius': `You don't present like anyone else. Your Aquarius Rising breaks conventional framing — the outer edges here follow their own rules.`,
-    'Pisces': `You seem a little otherworldly — present but not entirely here. Your Pisces Rising dissolves the outer edges of this piece.`,
+    'Aquarius': `You don't present like anyone else. Your Aquarius Rising breaks conventional framing — the outer border here follows its own rules.`,
+    'Pisces': `You seem a little otherworldly — present but not entirely here. Your Pisces Rising dissolves the outer border of this piece.`,
   };
-  return notes[sign] || `Your ${sign} Rising shaped the outer edges of this piece.`;
+  return notes[sign] || `Your ${sign} Rising shaped the outer border of this piece.`;
 }
 
 function getElementFallback(element, elementBalance) {
