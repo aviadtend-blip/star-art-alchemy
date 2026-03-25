@@ -14,6 +14,17 @@ async function verifyWooCommerceHmac(secret: string, rawBody: string, signatureH
 }
 
 /* ------------------------------------------------------------------ */
+/*  Constants                                                          */
+/* ------------------------------------------------------------------ */
+
+/** WooCommerce variation ID → canonical canvas size */
+const VARIATION_TO_SIZE: Record<number, string> = {
+  12: "12x18",
+  13: "16x24",
+  14: "20x30",
+};
+
+/* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
 
@@ -109,11 +120,45 @@ async function subscribeToKlaviyo(email: string): Promise<void> {
   }
 }
 
-const PRODIGI_SKU: Record<string, string> = {
-  "CA-12x16": "GLOBAL-CFP-12X18",
-  "CA-18x24": "GLOBAL-CFP-16X24",
-  "CA-24x32": "GLOBAL-CFP-20X30",
-};
+/* ------------------------------------------------------------------ */
+/*  Resolve canonical canvas size from WC line items                   */
+/* ------------------------------------------------------------------ */
+
+function resolveCanvasSize(order: any): string {
+  const lineItem = order.line_items?.[0];
+  if (!lineItem) return "16x24"; // default
+
+  // Tier 1: variation_id → canonical size
+  const variationId = lineItem.variation_id;
+  if (variationId && VARIATION_TO_SIZE[variationId]) {
+    console.log(`wc-webhook: size from variation_id ${variationId} → ${VARIATION_TO_SIZE[variationId]}`);
+    return VARIATION_TO_SIZE[variationId];
+  }
+
+  // Tier 2: order meta canvas_size
+  const metaData = order.meta_data || [];
+  const metaSize = getMeta(metaData, "canvas_size") || getMeta(metaData, "_canvas_size");
+  if (metaSize) {
+    const normalized = metaSize.toLowerCase().replace(/[^0-9x]/g, "");
+    const SIZE_ALIASES: Record<string, string> = { "12x16": "12x18", "18x24": "16x24", "24x32": "20x30" };
+    const canonical = SIZE_ALIASES[normalized] || normalized;
+    if (["12x18", "16x24", "20x30"].includes(canonical)) {
+      console.log(`wc-webhook: size from meta "${metaSize}" → ${canonical}`);
+      return canonical;
+    }
+  }
+
+  // Tier 3: SKU parsing
+  const sku = (lineItem.sku || "").toLowerCase();
+  const sizeMatch = sku.match(/(12x18|16x24|20x30)/i);
+  if (sizeMatch) {
+    console.log(`wc-webhook: size from SKU "${sku}" → ${sizeMatch[1]}`);
+    return sizeMatch[1].toLowerCase();
+  }
+
+  console.warn(`wc-webhook: could not resolve size, defaulting to 16x24. variation_id=${variationId}, sku=${sku}`);
+  return "16x24";
+}
 
 /* ------------------------------------------------------------------ */
 /*  Digital fulfillment                                                */
@@ -269,6 +314,7 @@ async function handleDigitalFulfillment(
   // Step 4 — Update database
   const updatePayload: Record<string, any> = {
     fulfilled_at: new Date().toISOString(),
+    fulfillment_status: "submitted",
     fulfillment_type: "digital",
   };
   if (signedUrl) updatePayload.digital_download_url = signedUrl;
@@ -277,12 +323,12 @@ async function handleDigitalFulfillment(
   if (updateErr) {
     console.error("wc-webhook: orders update error:", updateErr.message);
   } else {
-    console.log(`wc-webhook: digital order ${celestialOrderId} fulfilled`);
+    console.log(`wc-webhook: ✅ digital order ${celestialOrderId} fulfilled`);
   }
 }
 
 /* ------------------------------------------------------------------ */
-/*  Canvas fulfillment                                                 */
+/*  Canvas fulfillment — delegates to fulfill-order                    */
 /* ------------------------------------------------------------------ */
 
 async function handleCanvasFulfillment(
@@ -292,96 +338,79 @@ async function handleCanvasFulfillment(
 ) {
   const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-  const prodigiKey = Deno.env.get("PRODIGI_API_KEY") ?? "";
-  const prodigiSandbox = Deno.env.get("PRODIGI_SANDBOX") ?? "false";
   const supabase = createClient(supabaseUrl, serviceKey);
 
   const customerName = `${order.billing?.first_name || ""} ${order.billing?.last_name || ""}`.trim() || order.billing?.email || "Customer";
+  const customerEmail = order.billing?.email || "";
+  const wcOrderId = String(order.id ?? "");
   const wcOrderNumber = String(order.number ?? "");
   const shipping = order.shipping || {};
 
-  // Look up order row
-  let artworkImageUrl = meta.artworkUrl;
-  let insertCardUrl = "";
+  // Resolve canonical canvas size from WC line item
+  const canvasSize = resolveCanvasSize(order);
+  console.log(`wc-webhook: canvas fulfillment | celestialId=${celestialOrderId} | wcOrder=${wcOrderNumber} | size=${canvasSize}`);
 
-  if (celestialOrderId) {
-    const { data: orderRow } = await supabase
-      .from("orders")
-      .select("generated_image_url, insert_card_url")
-      .eq("id", celestialOrderId)
-      .maybeSingle();
+  // Update the canvas_size on the order row before calling fulfill-order
+  await supabase.from("orders").update({
+    canvas_size: canvasSize,
+    fulfillment_status: "submitting",
+  }).eq("id", celestialOrderId);
 
-    if (orderRow) {
-      if (orderRow.generated_image_url) artworkImageUrl = orderRow.generated_image_url;
-      insertCardUrl = orderRow.insert_card_url || "";
-    }
-  }
-
-  // Map SKU
-  const lineItemSku = order.line_items?.[0]?.sku || "";
-  const prodigiSku = PRODIGI_SKU[lineItemSku] || "GLOBAL-CFP-16X24";
-
-  // Build Prodigi order
-  const prodigiBaseUrl = prodigiSandbox === "true"
-    ? "https://api.sandbox.prodigi.com/v4.0/Orders"
-    : "https://api.prodigi.com/v4.0/Orders";
-
-  const recipient: any = {
-    name: customerName,
-    address: {
-      line1: shipping.address_1 || "",
-      postalOrZipCode: shipping.postcode || "",
-      townOrCity: shipping.city || "",
-      stateOrCounty: shipping.state || "",
-      countryCode: shipping.country || "",
+  // Delegate to fulfill-order edge function which handles:
+  //   - insert card generation
+  //   - Prodigi SKU resolution
+  //   - Prodigi submission
+  //   - fulfillment_status updates
+  const fulfillPayload = {
+    celestialOrderId,
+    shopifyOrderId: wcOrderId,
+    shopifyOrderNumber: wcOrderNumber,
+    customerName,
+    customerEmail,
+    shippingAddress: {
+      address1: shipping.address_1 || "",
+      address2: shipping.address_2 || "",
+      city: shipping.city || "",
+      province: shipping.state || "",
+      zip: shipping.postcode || "",
+      country_code: shipping.country || "",
     },
-  };
-  if (shipping.address_2) recipient.address.line2 = shipping.address_2;
-
-  const prodigiPayload: any = {
-    merchantReference: `CA-${wcOrderNumber}`,
-    shippingMethod: "Standard",
-    recipient,
-    items: [{
-      merchantReference: `ITEM-${wcOrderNumber}`,
-      sku: prodigiSku,
-      copies: 1,
-      sizing: "fillPrintArea",
-      assets: [{ printArea: "default", url: artworkImageUrl }],
+    lineItems: [{
+      sku: "",
+      variant_title: canvasSize,
+      properties: [
+        { name: "canvas_size", value: canvasSize },
+      ],
     }],
   };
 
-  if (insertCardUrl) {
-    prodigiPayload.branding = {
-      inserts: [{ url: insertCardUrl, type: "postcard" }],
-    };
-  }
+  console.log(`wc-webhook: calling fulfill-order for ${celestialOrderId}`);
 
   try {
-    const prodigiRes = await fetch(prodigiBaseUrl, {
+    const fulfillRes = await fetch(`${supabaseUrl}/functions/v1/fulfill-order`, {
       method: "POST",
-      headers: { "X-API-Key": prodigiKey, "Content-Type": "application/json" },
-      body: JSON.stringify(prodigiPayload),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${serviceKey}`,
+      },
+      body: JSON.stringify(fulfillPayload),
     });
-    const prodigiData = await prodigiRes.json();
-    console.log(`wc-webhook: Prodigi ${prodigiRes.status}`, JSON.stringify(prodigiData).substring(0, 200));
 
-    if (celestialOrderId) {
-      const updatePayload: Record<string, any> = {
-        fulfilled_at: new Date().toISOString(),
-        fulfillment_type: "canvas",
-        prodigi_sku: prodigiSku,
-      };
-      if (prodigiData.order?.id) updatePayload.prodigi_order_id = prodigiData.order.id;
+    const fulfillText = await fulfillRes.text();
+    console.log(`wc-webhook: fulfill-order response ${fulfillRes.status}: ${fulfillText.substring(0, 300)}`);
 
-      await supabase.from("orders").update(updatePayload).eq("id", celestialOrderId);
-      console.log(`wc-webhook: canvas order ${celestialOrderId} fulfilled`);
+    if (!fulfillRes.ok) {
+      throw new Error(`fulfill-order returned ${fulfillRes.status}: ${fulfillText.substring(0, 200)}`);
     }
+
+    const fulfillData = JSON.parse(fulfillText);
+    console.log(`wc-webhook: ✅ canvas order ${celestialOrderId} → Prodigi ${fulfillData.prodigiOrderId || "unknown"}`);
   } catch (e: any) {
-    console.error("wc-webhook: Prodigi submission error:", e.message);
-    if (celestialOrderId) {
-      await supabase.from("orders").update({ fulfillment_error: e.message }).eq("id", celestialOrderId);
-    }
+    console.error(`wc-webhook: ❌ canvas fulfillment failed for ${celestialOrderId}:`, e.message);
+    await supabase.from("orders").update({
+      fulfillment_status: "failed",
+      fulfillment_error: e.message?.substring(0, 500),
+    }).eq("id", celestialOrderId);
   }
 }
 
@@ -392,13 +421,20 @@ async function handleCanvasFulfillment(
 async function processOrder(order: any) {
   try {
     const status = order.status;
+    const wcOrderId = String(order.id ?? "");
+    const wcOrderNumber = String(order.number ?? "");
+
+    console.log(`wc-webhook: RECEIVED | wcOrderId=${wcOrderId} | number=${wcOrderNumber} | status=${status}`);
+
+    // Only process paid/fulfillable statuses
     if (status !== "processing" && status !== "completed") {
-      console.log(`wc-webhook: skipping order ${order.id}, status=${status}`);
+      console.log(`wc-webhook: SKIP | status=${status} is not processing/completed`);
       return;
     }
 
     const metaData = order.meta_data || [];
-    console.log("wc-webhook: full order meta_data:", JSON.stringify(metaData));
+    console.log("wc-webhook: order meta_data keys:", metaData.map((m: any) => m.key).join(", "));
+
     let celestialOrderId = getMeta(metaData, "celestial_order_id") || getMeta(metaData, "_celestial_order_id");
     const funnelType = getMeta(metaData, "funnel_type") || getMeta(metaData, "_funnel_type");
     const artworkUrl = getMeta(metaData, "artwork_url") || getMeta(metaData, "_artwork_url");
@@ -413,7 +449,7 @@ async function processOrder(order: any) {
       const billingEmail = order.billing?.email || "";
       const canvasSize = getMeta(metaData, "canvas_size") || getMeta(metaData, "_canvas_size") || "";
       const customerNameMeta = getMeta(metaData, "customer_name") || "";
-      console.log(`wc-webhook: no celestial_order_id on order ${order.id}, attempting fallback match by email="${billingEmail}" size="${canvasSize}"`);
+      console.log(`wc-webhook: no celestial_order_id on WC order ${wcOrderId}, attempting fallback match | email="${billingEmail}" size="${canvasSize}"`);
 
       if (billingEmail && billingEmail !== "guest@celestialartworks.com") {
         const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
@@ -432,8 +468,7 @@ async function processOrder(order: any) {
           .limit(5);
 
         if (candidates && candidates.length > 0) {
-          // Prefer exact size match, then name match, then most recent
-          let match = candidates[0]; // default: most recent
+          let match = candidates[0];
           if (canvasSize) {
             const sizeMatch = candidates.find((c: any) => c.canvas_size === canvasSize);
             if (sizeMatch) match = sizeMatch;
@@ -445,27 +480,25 @@ async function processOrder(order: any) {
             if (nameMatch) match = nameMatch;
           }
           celestialOrderId = match.id;
-          console.log(`wc-webhook: fallback matched celestialOrderId=${celestialOrderId} (created ${match.created_at})`);
+          console.log(`wc-webhook: FALLBACK MATCH | celestialOrderId=${celestialOrderId} (created ${match.created_at})`);
         } else {
-          console.warn(`wc-webhook: no fallback match found for email="${billingEmail}", skipping order ${order.id}`);
+          console.warn(`wc-webhook: SKIP | no fallback match for email="${billingEmail}" on WC order ${wcOrderId}`);
           return;
         }
       } else {
-        console.warn(`wc-webhook: no celestial_order_id and no usable billing email on order ${order.id}, skipping`);
+        console.warn(`wc-webhook: SKIP | no celestial_order_id and no usable billing email on WC order ${wcOrderId}`);
         return;
       }
     }
 
-    const wcOrderId = String(order.id ?? "");
-    const wcOrderNumber = String(order.number ?? "");
-    const customerEmail = order.billing?.email || "";
+    console.log(`wc-webhook: RESOLVED celestialOrderId=${celestialOrderId} | funnel=${funnelType || "canvas"}`);
 
     // Update orders table with WC order details
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
     const supabase = createClient(supabaseUrl, serviceKey);
 
-    // Duplicate-fulfillment guard: skip if this order was already fulfilled
+    // Duplicate-fulfillment guard
     const { data: existingOrder } = await supabase
       .from("orders")
       .select("fulfillment_status, shopify_order_id")
@@ -473,39 +506,39 @@ async function processOrder(order: any) {
       .maybeSingle();
 
     if (existingOrder?.fulfillment_status === "submitted" || existingOrder?.fulfillment_status === "fulfilled") {
-      console.log(`wc-webhook: order ${celestialOrderId} already fulfilled (status=${existingOrder.fulfillment_status}), skipping`);
+      console.log(`wc-webhook: SKIP DUPLICATE | order ${celestialOrderId} already ${existingOrder.fulfillment_status}`);
       return;
     }
-    // Also skip if a different WC order already claimed this celestial order
-    if (existingOrder?.shopify_order_id && existingOrder.shopify_order_id !== wcOrderId) {
-      console.log(`wc-webhook: order ${celestialOrderId} already linked to WC order ${existingOrder.shopify_order_id}, skipping duplicate`);
+    if (existingOrder?.shopify_order_id && existingOrder.shopify_order_id !== String(order.id)) {
+      console.log(`wc-webhook: SKIP DUPLICATE | order ${celestialOrderId} already linked to WC order ${existingOrder.shopify_order_id}`);
       return;
     }
 
+    const customerEmail = order.billing?.email || "";
     const { error: linkErr } = await supabase.from("orders").update({
-      shopify_order_id: wcOrderId,
+      shopify_order_id: String(order.id),
       shopify_order_number: wcOrderNumber,
       customer_email: customerEmail || undefined,
     }).eq("id", celestialOrderId);
 
     if (linkErr) console.error("wc-webhook: order link error:", linkErr.message);
 
-    console.log(`wc-webhook: processing order ${wcOrderId} (${wcOrderNumber}), funnel=${funnelType}, celestialId=${celestialOrderId}`);
+    console.log(`wc-webhook: PROCESSING | wcOrder=${wcOrderNumber} | funnel=${funnelType || "canvas"} | celestialId=${celestialOrderId}`);
 
-    // Subscribe customer to Klaviyo list before any events
+    // Subscribe customer to Klaviyo
     await subscribeToKlaviyo(customerEmail);
 
     if (funnelType === "digital") {
+      console.log(`wc-webhook: CALLING handleDigitalFulfillment for ${celestialOrderId}`);
       await handleDigitalFulfillment(order, celestialOrderId, {
         resolution, styleId, sunSign, moonSign, risingSign, artworkUrl,
       });
 
-      // Fire Klaviyo events directly via Client API
+      // Fire Klaviyo events via Client API
       const customerName = `${order.billing?.first_name || ""} ${order.billing?.last_name || ""}`.trim();
       const klaviyoUrl = "https://a.klaviyo.com/client/events/?company_id=XEPXRf";
       const klaviyoHeaders = { "Content-Type": "application/json", Accept: "application/json", revision: "2024-10-15" };
 
-      // Event 1: Digital Purchase Confirmed
       try {
         const res1 = await fetch(klaviyoUrl, {
           method: "POST",
@@ -517,13 +550,8 @@ async function processOrder(order: any) {
                 profile: { data: { type: "profile", attributes: { email: customerEmail } } },
                 metric: { data: { type: "metric", attributes: { name: "Digital Purchase Confirmed" } } },
                 properties: {
-                  customer_name: customerName,
-                  order_number: wcOrderNumber,
-                  artwork_url: artworkUrl,
-                  resolution,
-                  sun_sign: sunSign,
-                  moon_sign: moonSign,
-                  rising_sign: risingSign,
+                  customer_name: customerName, order_number: wcOrderNumber, artwork_url: artworkUrl,
+                  resolution, sun_sign: sunSign, moon_sign: moonSign, rising_sign: risingSign,
                 },
                 time: new Date().toISOString(),
                 unique_id: `digital-purchase-confirmed-${order.id}-${Date.now()}`,
@@ -537,7 +565,6 @@ async function processOrder(order: any) {
         console.error("wc-webhook: Klaviyo Digital Purchase Confirmed error:", e.message);
       }
 
-      // Event 2: Digital File Ready
       try {
         const res2 = await fetch(klaviyoUrl, {
           method: "POST",
@@ -549,15 +576,10 @@ async function processOrder(order: any) {
                 profile: { data: { type: "profile", attributes: { email: customerEmail } } },
                 metric: { data: { type: "metric", attributes: { name: "Digital File Ready" } } },
                 properties: {
-                  customer_name: customerName,
-                  order_number: wcOrderNumber,
-                  artwork_url: artworkUrl,
+                  customer_name: customerName, order_number: wcOrderNumber, artwork_url: artworkUrl,
                   download_url: artworkUrl,
                   resolution: resolution === "high_resolution" ? "High Resolution" : "Standard",
-                  sun_sign: sunSign,
-                  moon_sign: moonSign,
-                  rising_sign: risingSign,
-                  expiry_days: 30,
+                  sun_sign: sunSign, moon_sign: moonSign, rising_sign: risingSign, expiry_days: 30,
                 },
                 time: new Date().toISOString(),
                 unique_id: `digital-file-ready-${order.id}-${Date.now()}`,
@@ -571,6 +593,7 @@ async function processOrder(order: any) {
         console.error("wc-webhook: Klaviyo Digital File Ready error:", e.message);
       }
     } else {
+      console.log(`wc-webhook: CALLING handleCanvasFulfillment for ${celestialOrderId}`);
       await handleCanvasFulfillment(order, celestialOrderId, {
         sunSign, moonSign, risingSign, artworkUrl,
       });
@@ -610,6 +633,8 @@ Deno.serve(async (req: Request) => {
   } catch {
     return new Response("Invalid JSON", { status: 400 });
   }
+
+  console.log(`wc-webhook: AUTHENTICATED | topic=${webhookTopic} | orderId=${order.id}`);
 
   // Return 200 immediately, process async
   EdgeRuntime.waitUntil(processOrder(order));
