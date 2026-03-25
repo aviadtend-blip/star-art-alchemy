@@ -415,6 +415,9 @@ async function processOrder(order: any) {
 
     console.log(`wc-webhook: processing order ${wcOrderId} (${wcOrderNumber}), funnel=${funnelType}, celestialId=${celestialOrderId}`);
 
+    // Subscribe customer to Klaviyo list before any events
+    await subscribeToKlaviyo(customerEmail);
+
     if (funnelType === "digital") {
       await handleDigitalFulfillment(order, celestialOrderId, {
         resolution, styleId, sunSign, moonSign, risingSign, artworkUrl,
