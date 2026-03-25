@@ -13,26 +13,78 @@ const PAD_TOP = 110;
 
 // ── Brand fonts ────────────────────────────────────────────────────────────
 // svg2png-wasm (resvg) needs TTF or OTF — NOT woff2.
-// Hosted on public Supabase storage; cached after first fetch.
-const FONT_URLS = [
-  "https://kdfojrmzhpfphvgwgeov.supabase.co/storage/v1/object/public/fonts/Erode-Medium.otf",
-  "https://kdfojrmzhpfphvgwgeov.supabase.co/storage/v1/object/public/fonts/TASAExplorer-Medium.ttf",
-  "https://kdfojrmzhpfphvgwgeov.supabase.co/storage/v1/object/public/fonts/TASAExplorer-SemiBold.ttf",
-  "https://kdfojrmzhpfphvgwgeov.supabase.co/storage/v1/object/public/fonts/TASAExplorer-Bold.ttf",
+// Fallback chain: env override → current project storage → legacy host.
+
+const FONT_FILES = [
+  "Erode-Medium.otf",
+  "TASAExplorer-Medium.ttf",
+  "TASAExplorer-SemiBold.ttf",
+  "TASAExplorer-Bold.ttf",
 ];
 
-let cachedFonts: Uint8Array[] | null = null;
-async function loadFonts(): Promise<Uint8Array[]> {
-  if (cachedFonts) return cachedFonts;
-  const fonts: Uint8Array[] = [];
-  for (const url of FONT_URLS) {
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error(`Font fetch failed: ${url} → ${resp.status}`);
-    fonts.push(new Uint8Array(await resp.arrayBuffer()));
+const LEGACY_FONT_BASE = "https://kdfojrmzhpfphvgwgeov.supabase.co/storage/v1/object/public/fonts";
+
+function buildFontBaseUrls(): string[] {
+  const bases: string[] = [];
+
+  // 1. Explicit env var list (comma-separated)
+  const envList = Deno.env.get("INSERT_CARD_FONT_BASE_URLS");
+  if (envList) {
+    for (const u of envList.split(",").map(s => s.trim()).filter(Boolean)) {
+      bases.push(u.replace(/\/+$/, ""));
+    }
   }
-  cachedFonts = fonts;
-  console.log(`[fonts] Loaded ${fonts.length} brand fonts (${fonts.reduce((a, f) => a + f.byteLength, 0)} bytes)`);
-  return fonts;
+
+  // 2. Single env var override
+  const envSingle = Deno.env.get("INSERT_CARD_FONT_BASE_URL");
+  if (envSingle) {
+    bases.push(envSingle.replace(/\/+$/, ""));
+  }
+
+  // 3. Current project storage (may not have fonts yet)
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  if (supabaseUrl) {
+    bases.push(`${supabaseUrl}/storage/v1/object/public/fonts`);
+  }
+
+  // 4. Legacy host (always last)
+  bases.push(LEGACY_FONT_BASE);
+
+  // Deduplicate preserving order
+  return [...new Set(bases)];
+}
+
+let cachedFonts: Uint8Array[] | null = null;
+let cachedFontBase: string | null = null;
+
+async function loadFonts(): Promise<Uint8Array[]> {
+  if (cachedFonts) {
+    console.log(`[fonts] Using cached fonts from: ${cachedFontBase}`);
+    return cachedFonts;
+  }
+
+  const bases = buildFontBaseUrls();
+  console.log(`[fonts] Font base URL candidates: ${JSON.stringify(bases)}`);
+
+  for (const base of bases) {
+    try {
+      const fonts: Uint8Array[] = [];
+      for (const file of FONT_FILES) {
+        const url = `${base}/${file}`;
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`${url} → ${resp.status}`);
+        fonts.push(new Uint8Array(await resp.arrayBuffer()));
+      }
+      cachedFonts = fonts;
+      cachedFontBase = base;
+      console.log(`[fonts] ✅ Loaded ${fonts.length} fonts from: ${base} (${fonts.reduce((a, f) => a + f.byteLength, 0)} bytes)`);
+      return fonts;
+    } catch (err: any) {
+      console.warn(`[fonts] ⚠️ Failed to load fonts from ${base}: ${err.message}`);
+    }
+  }
+
+  throw new Error(`All font base URLs failed: ${JSON.stringify(bases)}`);
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
