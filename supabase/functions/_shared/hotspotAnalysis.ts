@@ -16,6 +16,18 @@ const BANNED_WORDS = [
   'transcendent', 'enigmatic', 'arcane',
 ];
 
+const ABSTRACT_LABEL_PATTERNS = [
+  /^the\s+(central|emotional|overall|primary|secondary)\s/i,
+  /\b(atmosphere|composition|framing|feel\s*&?\s*weight|overall feel)\b/i,
+  /^(central focus|secondary detail|framing details|overall surface)$/i,
+];
+
+const SUBJECT_BANNED_WORDS = [
+  'cosmic', 'celestial', 'mystical', 'ethereal', 'sacred', 'divine',
+  'between worlds', 'subconscious', 'guardian', 'transcendent',
+  'enigmatic', 'arcane', 'blueprint',
+];
+
 export function getDominantElement(elementBalance: Record<string, number>): string {
   if (!elementBalance || typeof elementBalance !== 'object') return 'Water';
   const entries = Object.entries(elementBalance).filter(([, v]) => Number.isFinite(v));
@@ -35,10 +47,19 @@ function hasBannedLanguage(text: string): boolean {
   return BANNED_WORDS.some(word => lower.includes(word));
 }
 
+function isAbstractLabel(label: string): boolean {
+  if (!label) return true;
+  return ABSTRACT_LABEL_PATTERNS.some(p => p.test(label.trim()));
+}
+
 function isLiteralLabel(label: string): boolean {
   if (!label || typeof label !== 'string') return false;
-  const words = label.trim().split(/\s+/);
-  return words.length >= 2 && words.length <= 6 && !hasBannedNoun(label);
+  const trimmed = label.trim();
+  const words = trimmed.split(/\s+/);
+  if (words.length < 2 || words.length > 6) return false;
+  if (hasBannedNoun(trimmed)) return false;
+  if (isAbstractLabel(trimmed)) return false;
+  return true;
 }
 
 function isValidEvidence(evidence: string): boolean {
@@ -104,13 +125,35 @@ function positionDistance(a: any, b: any): number {
   return Math.sqrt(dT * dT + dL * dL);
 }
 
+/**
+ * Validate subjectExplanation: 28-40 words, concrete, no mystical language.
+ */
+function validateSubjectExplanation(text: string | null | undefined): string | null {
+  if (!text || typeof text !== 'string') return null;
+  const trimmed = text.trim();
+  if (trimmed.length < 20) return null;
+
+  const lower = trimmed.toLowerCase();
+  if (SUBJECT_BANNED_WORDS.some(w => lower.includes(w))) return null;
+
+  // Count sentences — max 2
+  const sentences = trimmed.split(/[.!?]+/).filter(s => s.trim().length > 0);
+  if (sentences.length > 3) return null;
+
+  // Word count: allow 15-50 range (generous)
+  const words = trimmed.split(/\s+/);
+  if (words.length < 15 || words.length > 50) return null;
+
+  return trimmed;
+}
+
 const PLACEMENT_KEYS = ['sun', 'moon', 'rising', 'element'];
 
 export interface SanitizedSlot {
   mapped: boolean;
   regionId?: string;
   artworkElement?: string;
-  explanation?: string;
+  explanation?: string | null;
   position?: { top: string; left: string } | null;
   confidence?: number;
   visibleEvidence?: string;
@@ -118,7 +161,7 @@ export interface SanitizedSlot {
 }
 
 export function sanitizeAiHotspotAnalysis(rawAnalysis: any, chartContext: any) {
-  if (!rawAnalysis) return { observedRegions: [], slots: {} as Record<string, SanitizedSlot> };
+  if (!rawAnalysis) return { subjectExplanation: null, observedRegions: [], slots: {} as Record<string, SanitizedSlot> };
 
   let regions: any[] = Array.isArray(rawAnalysis.observedRegions) ? rawAnalysis.observedRegions : [];
 
@@ -155,17 +198,29 @@ export function sanitizeAiHotspotAnalysis(rawAnalysis: any, chartContext: any) {
     const explanation = raw.explanation;
     const confidence = typeof raw.confidence === 'number' ? raw.confidence : 0.5;
 
-    if (hasBannedLanguage(explanation) || mentionsWrongPlacement(explanation, key, chartContext) || !mentionsCorrectPlacement(explanation, key, chartContext)) {
-      slots[key] = { mapped: false }; continue;
-    }
+    // Validate the title (artworkElement) independently
+    const aiTitle = raw.artworkElement || region.literalLabel;
+    const titleValid = aiTitle && !isAbstractLabel(aiTitle) && !hasBannedNoun(aiTitle);
 
+    // Validate the explanation
+    const explanationValid = explanation
+      && !hasBannedLanguage(explanation)
+      && !mentionsWrongPlacement(explanation, key, chartContext)
+      && mentionsCorrectPlacement(explanation, key, chartContext);
+
+    // Check duplicate region usage — keep strongest
     if (usedRegions[raw.regionId]) {
       const existing = usedRegions[raw.regionId];
       if (confidence > existing.confidence) {
         slots[existing.key] = { mapped: false };
         usedRegions[raw.regionId] = { key, confidence };
       } else {
-        slots[key] = { mapped: false }; continue;
+        // Still preserve title/position for fallback even if we lose the region
+        slots[key] = {
+          mapped: false,
+          artworkElement: titleValid ? aiTitle : undefined,
+        };
+        continue;
       }
     } else {
       usedRegions[raw.regionId] = { key, confidence };
@@ -174,16 +229,30 @@ export function sanitizeAiHotspotAnalysis(rawAnalysis: any, chartContext: any) {
     let clean = explanation;
     if (clean && clean.length > 300) clean = clean.substring(0, 297).replace(/\s+\S*$/, '') + '…';
 
-    slots[key] = {
-      mapped: true,
-      regionId: raw.regionId,
-      artworkElement: raw.artworkElement || region.literalLabel,
-      explanation: clean,
-      position: region.position,
-      confidence,
-      visibleEvidence: region.visibleEvidence,
-      regionType: region.regionType || null,
-    };
+    if (explanationValid) {
+      slots[key] = {
+        mapped: true,
+        regionId: raw.regionId,
+        artworkElement: titleValid ? aiTitle : region.literalLabel,
+        explanation: clean,
+        position: region.position,
+        confidence,
+        visibleEvidence: region.visibleEvidence,
+        regionType: region.regionType || null,
+      };
+    } else {
+      // Explanation failed, but preserve title + position for partial merge
+      slots[key] = {
+        mapped: false,
+        regionId: raw.regionId,
+        artworkElement: titleValid ? aiTitle : undefined,
+        explanation: null,
+        position: region.position,
+        confidence,
+        visibleEvidence: region.visibleEvidence,
+        regionType: region.regionType || null,
+      };
+    }
   }
 
   // Proximity dedup
@@ -201,7 +270,7 @@ export function sanitizeAiHotspotAnalysis(rawAnalysis: any, chartContext: any) {
   }
 
   return {
-    subjectExplanation: rawAnalysis.subjectExplanation || null,
+    subjectExplanation: validateSubjectExplanation(rawAnalysis.subjectExplanation),
     observedRegions: regions,
     slots,
   };
