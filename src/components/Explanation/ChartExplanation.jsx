@@ -266,7 +266,7 @@ export function ChartExplanation({
   // Use AI analysis if available, otherwise fall back to static rule-based explanations
   const explanation = artworkAnalysis || generateChartExplanation(chartData);
   const navigateToLanding = useNavigate();
-  const subjectExplanation = explanation.subjectExplanation || 'A one-of-a-kind artwork, uniquely crafted from your celestial blueprint.';
+  const subjectExplanation = explanation.subjectExplanation || 'A one-of-a-kind artwork, shaped entirely by your birth chart data.';
   const [activeHotspot, setActiveHotspot] = useState(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showHotspots, setShowHotspots] = useState(true);

@@ -202,7 +202,7 @@ export function GeneratorProvider({ children }) {
       // Run artwork analysis in parallel (don't block navigation)
       setGenerationProgress('Preparing your artist notes...');
       const [analysisResult] = await Promise.allSettled([
-        analyzeArtwork(result.imageUrl, chartData, prompt),
+        analyzeArtwork(result.imageUrl, chartData, { promptUsed: prompt, styleId: style.id }),
       ]);
 
       // Store analysis if it succeeded (fallback is built into analyzeArtwork)

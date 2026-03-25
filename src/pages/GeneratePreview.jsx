@@ -90,7 +90,7 @@ export default function GeneratePreview() {
   // Run AI analysis for demo mode
   useEffect(() => {
     if (isDemo && !demoAnalysis) {
-      analyzeArtwork(DEMO_IMAGE_PUBLIC_URL, DEMO_CHART, null).then(setDemoAnalysis).catch(console.error);
+      analyzeArtwork(DEMO_IMAGE_PUBLIC_URL, DEMO_CHART, { styleId: selectedStyle?.id || null }).then(setDemoAnalysis).catch(console.error);
     }
   }, [isDemo, demoAnalysis]);
 
@@ -144,7 +144,7 @@ export default function GeneratePreview() {
       img.onerror = reject;
       img.src = next.imageUrl;
     });
-    const analysisPromise = analyzeArtwork(next.imageUrl, chartData, generationPrompt).catch(() => null);
+    const analysisPromise = analyzeArtwork(next.imageUrl, chartData, { promptUsed: generationPrompt, styleId: selectedStyle?.id || null }).catch(() => null);
 
     Promise.all([imgPromise, analysisPromise])
       .then(([, analysisResult]) => {
