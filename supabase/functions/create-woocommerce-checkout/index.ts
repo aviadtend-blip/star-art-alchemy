@@ -128,7 +128,7 @@ serve(async (req) => {
     const checkoutUrl = url.toString();
 
     console.log(`[create-woocommerce-checkout] celestialOrderId=${celestialOrderId}`);
-    console.log(`[create-woocommerce-checkout] size=${resolvedSize} variationId=${variationId}`);
+    console.log(`[create-woocommerce-checkout] canonical=${canonicalSize} wooSize=${wooSize} variationId=${variationId}`);
     console.log(`[create-woocommerce-checkout] metadata: ${JSON.stringify(metaParams)}`);
     console.log(`[create-woocommerce-checkout] checkout URL: ${checkoutUrl}`);
 
