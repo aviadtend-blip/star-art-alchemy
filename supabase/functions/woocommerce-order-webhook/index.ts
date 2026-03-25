@@ -465,6 +465,23 @@ async function processOrder(order: any) {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
     const supabase = createClient(supabaseUrl, serviceKey);
 
+    // Duplicate-fulfillment guard: skip if this order was already fulfilled
+    const { data: existingOrder } = await supabase
+      .from("orders")
+      .select("fulfillment_status, shopify_order_id")
+      .eq("id", celestialOrderId)
+      .maybeSingle();
+
+    if (existingOrder?.fulfillment_status === "submitted" || existingOrder?.fulfillment_status === "fulfilled") {
+      console.log(`wc-webhook: order ${celestialOrderId} already fulfilled (status=${existingOrder.fulfillment_status}), skipping`);
+      return;
+    }
+    // Also skip if a different WC order already claimed this celestial order
+    if (existingOrder?.shopify_order_id && existingOrder.shopify_order_id !== wcOrderId) {
+      console.log(`wc-webhook: order ${celestialOrderId} already linked to WC order ${existingOrder.shopify_order_id}, skipping duplicate`);
+      return;
+    }
+
     const { error: linkErr } = await supabase.from("orders").update({
       shopify_order_id: wcOrderId,
       shopify_order_number: wcOrderNumber,
@@ -571,8 +588,11 @@ Deno.serve(async (req: Request) => {
   if (req.method !== "POST") return new Response("Method not allowed", { status: 405 });
 
   const rawBody = await req.text();
-  const webhookSecret = Deno.env.get("WC_WEBHOOK_SECRET");
-  if (!webhookSecret) return new Response("Server misconfiguration", { status: 500 });
+  const webhookSecret = Deno.env.get("WC_WEBHOOK_SECRET") || Deno.env.get("WOOCOMMERCE_WEBHOOK_SECRET");
+  if (!webhookSecret) {
+    console.error("wc-webhook: Neither WC_WEBHOOK_SECRET nor WOOCOMMERCE_WEBHOOK_SECRET is set");
+    return new Response("Server misconfiguration", { status: 500 });
+  }
 
   const signatureHeader = req.headers.get("X-WC-Webhook-Signature") ?? "";
   if (!await verifyWooCommerceHmac(webhookSecret, rawBody, signatureHeader)) {
