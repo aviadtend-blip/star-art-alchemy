@@ -57,81 +57,86 @@ serve(async (req) => {
     );
 
     const creativeBriefSection = generationPrompt
-      ? `\n\nCREATIVE BRIEF (the original instructions used to generate this artwork):\n"""\n${String(generationPrompt).substring(0, 800)}\n"""\nUse this brief as your primary guide for connecting visual elements to chart placements. Every element in the artwork was placed there deliberately based on this brief. Your hotspot descriptions should explain WHY those creative choices were made — trace each visual back to the specific chart placement that inspired it.`
+      ? `\n\nCREATIVE BRIEF (the original prompt used to generate this artwork):\n"""\n${String(generationPrompt).substring(0, 800)}\n"""\nThis tells you exactly what was requested. Use it as CANDIDATE context — but you must still verify each element is actually visible in the image. If the brief mentions something you can't see, do NOT include it.`
       : '';
 
-    const prompt = `You created this birth chart artwork. Study the image and write grounded, conversational hotspot notes that explain how each astrological placement shaped what you created.
+    const prompt = `You are analyzing a birth chart artwork. Your job has TWO PHASES in a single response.
+
+PHASE 1 — OBSERVE: Look at the image carefully. Identify 2-4 distinct visual regions or elements that are clearly, unambiguously visible. For each one, give a neutral description and note its approximate position. Do NOT invent elements. If you can only confidently identify 2 regions, return 2. Never pad to 4.
+
+PHASE 2 — MAP: For each of the four chart placements (Sun, Moon, Rising, Element), try to match it to one of your observed regions. If no observed region fits a placement well, set that mapping to null. It is BETTER to return null than to force a bad match.
 
 The person's chart: Sun in ${sunSign} (House ${chartData.sun?.house || '?'}), Moon in ${moonSign} (House ${chartData.moon?.house || '?'}), ${rising} Rising, dominant ${dominantElement} (${Object.entries(elementBalance).map(([k,v]) => `${k}: ${v}`).join(", ")}).${creativeBriefSection}
 
-Write JSON (no markdown, no backticks):
+Respond with ONLY valid JSON (no markdown, no backticks):
 
 {
-  "subjectExplanation": "1-2 sentences, MAX 30 words. Format: 'Your birth chart reveals [key personality insight] — we chose [subject/creature/figure visible in the artwork] as your cosmic guardian because it embodies your [specific chart qualities].' Be specific to their ${sunSign} Sun, ${moonSign} Moon, ${rising} Rising combination. Reference the actual main subject/creature/figure you see in the image.",
-  "sun": {
-    "artworkElement": "A short name (3-6 words, Title Case) for the specific visual element this hotspot points to.",
-    "explanation": "2 sentences max, under 300 characters. Explain how this person's Sun in ${sunSign} influenced this part of the artwork — what subject, object, or scene element was chosen because of it, and what personality trait it reflects. See WRITING RULES.",
-    "position": { "top": <0-100>, "left": <0-100> },
-    "focusBox": { "top": <0-100>, "left": <0-100>, "bottom": <0-100>, "right": <0-100> }
-  },
-  "moon": {
-    "artworkElement": "A short name (3-6 words, Title Case) for the moon-influenced visual element.",
-    "explanation": "2 sentences max, under 300 characters. Explain how this person's Moon in ${moonSign} influenced this part of the artwork — what mood, texture, or atmospheric element was chosen because of it, and what emotional pattern it reflects. See WRITING RULES.",
-    "position": { "top": <0-100>, "left": <0-100> },
-    "focusBox": { "top": <0-100>, "left": <0-100>, "bottom": <0-100>, "right": <0-100> }
-  },
-  "rising": {
-    "artworkElement": "A short name (3-6 words, Title Case) for the composition/framing element.",
-    "explanation": "2 sentences max, under 300 characters. Explain how this person's ${rising} Rising influenced the overall composition and framing of the artwork — why the scene is arranged the way it is, and what first-impression trait it reflects. See WRITING RULES.",
-    "position": { "top": <0-100>, "left": <0-100> },
-    "focusBox": { "top": <0-100>, "left": <0-100>, "bottom": <0-100>, "right": <0-100> }
-  },
-  "element": {
-    "artworkElement": "A short name (3-6 words, Title Case) for the element-influenced visual aspect.",
-    "explanation": "2 sentences max, under 300 characters. Explain how this person's dominant ${dominantElement} element influenced the feel and weight of the artwork — what visual density, movement, or stillness was chosen because of it, and what it says about them. See WRITING RULES.",
-    "position": { "top": <0-100>, "left": <0-100> },
-    "focusBox": { "top": <0-100>, "left": <0-100>, "bottom": <0-100>, "right": <0-100> }
+  "subjectExplanation": "1-2 sentences, MAX 30 words. Describe the main visible subject/figure and briefly connect it to their ${sunSign} Sun / ${moonSign} Moon / ${rising} Rising combination. Reference what you ACTUALLY SEE.",
+
+  "observedRegions": [
+    {
+      "regionId": "r1",
+      "neutralLabel": "Short neutral description of what you see (e.g. 'A cloaked figure facing forward', 'Flowering vines along the left edge', 'A crescent shape in the upper sky')",
+      "visibleEvidence": "What specifically makes this visible — shape, texture, placement (e.g. 'dark silhouette occupying center 40% of image, clear head and shoulder outline')",
+      "position": { "top": <0-100>, "left": <0-100> },
+      "focusBox": { "top": <0-100>, "left": <0-100>, "bottom": <0-100>, "right": <0-100> }
+    }
+  ],
+
+  "chartMappings": {
+    "sun": {
+      "regionId": "r1 or null if no good match",
+      "artworkElement": "3-6 word Title Case name for this element, or null",
+      "explanation": "2 sentences max, under 300 chars. How their Sun in ${sunSign} connects to THIS visible element. Written in second person ('You...'). Or null if no match."
+    },
+    "moon": {
+      "regionId": "r2 or null",
+      "artworkElement": "3-6 word Title Case name, or null",
+      "explanation": "2 sentences max, under 300 chars. How their Moon in ${moonSign} connects to THIS visible element. Or null."
+    },
+    "rising": {
+      "regionId": "r3 or null",
+      "artworkElement": "3-6 word Title Case name, or null",
+      "explanation": "2 sentences max, under 300 chars. How their ${rising} Rising connects to the composition/framing. Or null."
+    },
+    "element": {
+      "regionId": "r4 or null",
+      "artworkElement": "3-6 word Title Case name, or null",
+      "explanation": "2 sentences max, under 300 chars. How their dominant ${dominantElement} element connects to the feel/weight of the artwork. Or null."
+    }
   }
 }
 
-WRITING RULES FOR "explanation" FIELDS:
-- Each explanation must answer: "How did this astrological placement shape what's in the artwork?"
-- Write in second person ("You...") — talk about the person's traits and connect them to the artwork choices.
-- Conversational and grounded. The reader should feel like they could explain this to a friend looking at the artwork on their wall.
-- Focus on SUBJECTS, OBJECTS, COMPOSITION, TEXTURES, and MOOD — the things that were influenced by the chart.${generationPrompt ? '\n- Use the creative brief above to make PRECISE connections. Don\'t guess — the brief tells you exactly which chart placement inspired which visual element.' : ''}
-- NEVER mention colors or color palette. The colors are determined by the selected art style, not the chart.
-- NEVER mention the art style, medium, or artistic technique (e.g. "watercolor", "oil painting", "collage style"). The style is the user's choice, not astrologically driven.
-- No mystical fluff. No "the cosmos," no "your journey," no "celestial," no "cosmic blueprint." Speak plainly.
+PHASE 1 RULES (observedRegions):
+- Return 2-4 regions. NEVER invent elements to reach 4.
+- neutralLabel must describe what is LITERALLY VISIBLE — no interpretation yet.
+- visibleEvidence must cite specific visual proof (shape, outline, texture, contrast).
+- If you cannot write convincing visibleEvidence, do NOT include that region.
+- Positions: approximate center as percentage (0=top/left, 100=bottom/right).
+- focusBox: tight bounding rectangle. top < bottom, left < right.
+
+PHASE 2 RULES (chartMappings):
+- Each mapping's regionId MUST reference an observedRegion, or be null.
+- Multiple mappings MAY reference the same region if appropriate.
+- NULL IS GOOD. A null mapping is vastly better than a forced, unconvincing match.
+- explanation must connect the person's specific chart placement to the VISIBLE element.
+- Write in second person ("You..."). Talk about them, connect to the artwork.
+
+WRITING RULES FOR ALL "explanation" FIELDS:
+- Answer: "How did this astrological placement shape what's in the artwork?"
+- Conversational and grounded. Like a smart friend, not a horoscope.
+- Focus on SUBJECTS, OBJECTS, COMPOSITION, TEXTURES, and MOOD.${generationPrompt ? '\n- The creative brief tells you what was intended — use it to make PRECISE connections, but only for elements you can actually see.' : ''}
+- NEVER mention colors or color palette (colors come from the style, not the chart).
+- NEVER mention art style, medium, or technique (e.g. "watercolor", "collage").
+- No mystical fluff. No "the cosmos," "your journey," "celestial," "cosmic blueprint."
 - Max 2 sentences. Max 300 characters. Keep them tight.
-- Tone: like a smart friend explaining something true about you, not a horoscope.
-- BAD: "The silvered linework reflects the cosmic precision of your Virgo moon, weaving celestial intention into every carefully rendered detail."
-- BAD: "The deep blues and purples of this section capture your water-dominant nature." (Don't reference colors!)
-- BAD: "The dreamy watercolor technique mirrors your Pisces Moon." (Don't reference art style!)
-- GOOD: "You tend to notice the things other people miss — the small inconsistency, the better way to do something. That's your Virgo Moon, and it's why this section is built from fine, precise lines."
+- BANNED WORDS: represent, symbolize, vibrant, intricate, tapestry, journey, essence, energy, manifest, celestial, cosmic
+- BAD: "The silvered linework reflects the cosmic precision of your Virgo moon."
+- BAD: "The deep blues capture your water-dominant nature." (no color references!)
+- GOOD: "You tend to notice what others miss — the small inconsistency, the better way. That's your Virgo Moon, and it's why this section is built from fine, precise lines."
 - GOOD: "Your Scorpio Rising means people sense your intensity before you say a word. That's why the composition leads with this bold, layered foreground."
 
-STYLE RULES:
-- artworkElement MUST name a specific visible element in the artwork (3-6 words, Title Case)
-- subjectExplanation MUST be max 30 words and reference the actual visible subject/creature/figure
-- First person as the artist for subjectExplanation only ("I chose...", "I let...")
-- ONLY describe what's ACTUALLY VISIBLE — don't invent elements
-- Never use: represent, symbolize, vibrant, intricate, tapestry, journey, essence, energy, manifest, celestial, cosmic
-
-POSITION RULES:
-- position = approximate center of each element as percentage (0=top/left, 100=bottom/right)
-- Keep at least 15 percentage points apart vertically
-- Output ONLY valid JSON, no preamble
-
-FOCUSBOX RULES:
-- focusBox = tight bounding rectangle around the ENTIRE visual region described by this hotspot
-- Values are percentages (0=top/left edge, 100=bottom/right edge)
-- top < bottom, left < right
-- The box should tightly frame just the described element — not the whole image
-- For sun/moon: frame the specific subject/object (typically 15-40% of image width)
-- For rising: frame the broader composition region being described (typically 30-60% of image width)
-- For element: frame the atmospheric/textural region (typically 25-50% of image width)
-- Be precise — a too-large box defeats the purpose`;
-
+OUTPUT ONLY VALID JSON. No preamble, no commentary.`;
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
@@ -160,7 +165,7 @@ FOCUSBOX RULES:
               ],
             },
           ],
-          max_tokens: 1200,
+          max_tokens: 1500,
         }),
       }
     );
@@ -197,24 +202,86 @@ FOCUSBOX RULES:
       .replace(/\s*```$/i, "")
       .trim();
 
-    let analysis;
+    let rawAnalysis;
     try {
-      analysis = JSON.parse(cleaned);
+      rawAnalysis = JSON.parse(cleaned);
     } catch (parseErr) {
       console.error("Failed to parse AI response as JSON:", cleaned);
       throw new Error("AI returned invalid JSON");
     }
 
-    // Validate structure
-    const required = ["sun", "moon", "rising", "element"];
-    for (const key of required) {
-      if (!analysis[key]?.explanation || !analysis[key]?.artworkElement) {
-        console.error(`Missing ${key}.explanation or ${key}.artworkElement in response`);
-        throw new Error(`Incomplete analysis: missing ${key}`);
+    // ─── VALIDATE & TRANSFORM ───
+    const regions = rawAnalysis.observedRegions;
+    if (!Array.isArray(regions) || regions.length < 1) {
+      throw new Error("No observed regions returned");
+    }
+
+    // Build a lookup map of observed regions by ID
+    const regionMap: Record<string, any> = {};
+    for (const r of regions) {
+      if (r.regionId) regionMap[r.regionId] = r;
+    }
+
+    const mappings = rawAnalysis.chartMappings || {};
+
+    // Validate each mapping: reject weak evidence, unknown region refs
+    const placements = ["sun", "moon", "rising", "element"] as const;
+    for (const key of placements) {
+      const m = mappings[key];
+      if (!m) {
+        mappings[key] = { regionId: null, artworkElement: null, explanation: null };
+        continue;
+      }
+
+      if (m.regionId && !regionMap[m.regionId]) {
+        console.warn(`[analyze-artwork] ${key} references unknown region ${m.regionId}, nulling`);
+        m.regionId = null;
+        m.artworkElement = null;
+        m.explanation = null;
+      }
+
+      if (m.regionId) {
+        const region = regionMap[m.regionId];
+        if (!region.visibleEvidence || region.visibleEvidence.length < 15) {
+          console.warn(`[analyze-artwork] ${key} region ${m.regionId} has weak evidence, nulling`);
+          m.regionId = null;
+          m.artworkElement = null;
+          m.explanation = null;
+        }
       }
     }
 
-    console.log("[analyze-artwork] Successfully analyzed artwork");
+    // Hard-truncate explanations exceeding 300 chars
+    for (const key of placements) {
+      const text: string = mappings[key]?.explanation;
+      if (text && text.length > 300) {
+        const truncated = text.substring(0, 297).replace(/\s+\S*$/, '');
+        mappings[key].explanation = truncated + '…';
+        console.warn(`[analyze-artwork] Truncated ${key}.explanation from ${text.length} chars`);
+      }
+    }
+
+    // Build final response (backward-compatible shape)
+    const analysis: Record<string, any> = {
+      subjectExplanation: rawAnalysis.subjectExplanation || null,
+      observedRegions: regions,
+    };
+
+    for (const key of placements) {
+      const m = mappings[key];
+      const region = m?.regionId ? regionMap[m.regionId] : null;
+
+      analysis[key] = {
+        artworkElement: m?.artworkElement || null,
+        explanation: m?.explanation || null,
+        visibleEvidence: region?.visibleEvidence || null,
+        position: region?.position || null,
+        focusBox: region?.focusBox || null,
+        mapped: m?.regionId !== null && m?.regionId !== undefined,
+      };
+    }
+
+    console.log(`[analyze-artwork] Success: ${regions.length} regions observed, ${placements.filter(k => analysis[k].mapped).length}/4 mapped`);
 
     return new Response(JSON.stringify({ analysis }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
