@@ -399,7 +399,7 @@ async function processOrder(order: any) {
 
     const metaData = order.meta_data || [];
     console.log("wc-webhook: full order meta_data:", JSON.stringify(metaData));
-    const celestialOrderId = getMeta(metaData, "celestial_order_id") || getMeta(metaData, "_celestial_order_id");
+    let celestialOrderId = getMeta(metaData, "celestial_order_id") || getMeta(metaData, "_celestial_order_id");
     const funnelType = getMeta(metaData, "funnel_type") || getMeta(metaData, "_funnel_type");
     const artworkUrl = getMeta(metaData, "artwork_url") || getMeta(metaData, "_artwork_url");
     const styleId = getMeta(metaData, "style_id") || getMeta(metaData, "_style_id");
@@ -408,9 +408,52 @@ async function processOrder(order: any) {
     const risingSign = getMeta(metaData, "rising_sign") || getMeta(metaData, "_rising_sign");
     const resolution = getMeta(metaData, "resolution") || getMeta(metaData, "_resolution");
 
+    // Fallback: if no celestial_order_id in metadata, try to match by billing email + recent pending order
     if (!celestialOrderId) {
-      console.warn(`wc-webhook: no celestial_order_id on order ${order.id}, skipping`);
-      return;
+      const billingEmail = order.billing?.email || "";
+      const canvasSize = getMeta(metaData, "canvas_size") || getMeta(metaData, "_canvas_size") || "";
+      const customerNameMeta = getMeta(metaData, "customer_name") || "";
+      console.log(`wc-webhook: no celestial_order_id on order ${order.id}, attempting fallback match by email="${billingEmail}" size="${canvasSize}"`);
+
+      if (billingEmail && billingEmail !== "guest@celestialartworks.com") {
+        const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+        const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+        const sb = createClient(supabaseUrl, serviceKey);
+
+        // Find the most recent pending order for this email within the last 24 hours
+        const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const { data: candidates } = await sb
+          .from("orders")
+          .select("id, canvas_size, chart_data, created_at")
+          .eq("customer_email", billingEmail)
+          .is("shopify_order_id", null)
+          .gte("created_at", since)
+          .order("created_at", { ascending: false })
+          .limit(5);
+
+        if (candidates && candidates.length > 0) {
+          // Prefer exact size match, then name match, then most recent
+          let match = candidates[0]; // default: most recent
+          if (canvasSize) {
+            const sizeMatch = candidates.find((c: any) => c.canvas_size === canvasSize);
+            if (sizeMatch) match = sizeMatch;
+          }
+          if (customerNameMeta && candidates.length > 1) {
+            const nameMatch = candidates.find((c: any) =>
+              c.chart_data?.customer_name?.toLowerCase() === customerNameMeta.toLowerCase()
+            );
+            if (nameMatch) match = nameMatch;
+          }
+          celestialOrderId = match.id;
+          console.log(`wc-webhook: fallback matched celestialOrderId=${celestialOrderId} (created ${match.created_at})`);
+        } else {
+          console.warn(`wc-webhook: no fallback match found for email="${billingEmail}", skipping order ${order.id}`);
+          return;
+        }
+      } else {
+        console.warn(`wc-webhook: no celestial_order_id and no usable billing email on order ${order.id}, skipping`);
+        return;
+      }
     }
 
     const wcOrderId = String(order.id ?? "");
