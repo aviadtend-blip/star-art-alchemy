@@ -594,9 +594,13 @@ Deno.serve(async (req: Request) => {
     return new Response("Server misconfiguration", { status: 500 });
   }
 
-  const signatureHeader = req.headers.get("X-WC-Webhook-Signature") ?? "";
+  const signatureHeader = req.headers.get("X-WC-Webhook-Signature") ?? req.headers.get("x-wc-webhook-signature") ?? "";
+  const webhookTopic = req.headers.get("X-WC-Webhook-Topic") ?? req.headers.get("x-wc-webhook-topic") ?? "unknown";
+
   if (!await verifyWooCommerceHmac(webhookSecret, rawBody, signatureHeader)) {
-    console.warn("wc-webhook: Invalid HMAC signature");
+    let parsedOrderId = "unparseable";
+    try { parsedOrderId = JSON.parse(rawBody)?.id ?? "missing"; } catch { /* ignore */ }
+    console.warn(`wc-webhook: HMAC MISMATCH | topic=${webhookTopic} | orderId=${parsedOrderId} | sigPresent=${!!signatureHeader} | secretLen=${webhookSecret.length}`);
     return new Response("Unauthorized", { status: 401 });
   }
 
