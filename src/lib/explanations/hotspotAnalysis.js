@@ -22,6 +22,26 @@ const ABSTRACT_LABEL_PATTERNS = [
   /^(central focus|secondary detail|framing details|overall surface)$/i,
 ];
 
+/**
+ * Generic fallback titles that must never appear as UI-facing hotspot titles.
+ * These are category names, not concrete visible labels.
+ */
+const BANNED_GENERIC_TITLES = [
+  'central figure',
+  'secondary shape',
+  'outer edge',
+  'lower texture',
+  'main subject',
+  'secondary detail',
+  'framing details',
+  'overall surface',
+  'central focus',
+  'emotional atmosphere',
+  'composition & framing',
+  'overall feel & weight',
+  'primary element',
+];
+
 const SUBJECT_BANNED_WORDS = [
   'cosmic', 'celestial', 'mystical', 'ethereal', 'sacred', 'divine',
   'between worlds', 'subconscious', 'guardian', 'transcendent',
@@ -67,14 +87,26 @@ export function isAbstractLabel(label) {
 }
 
 /**
- * Check if a label is literal and 2-6 words.
+ * Check if a title is a banned generic fallback label.
+ */
+export function isBannedGenericTitle(title) {
+  if (!title) return true;
+  return BANNED_GENERIC_TITLES.includes(title.trim().toLowerCase());
+}
+
+/**
+ * Check if a label is literal and 1-6 words.
+ * Allows apostrophes and 1-word labels (e.g. "Dove", "Bull's Horns").
  */
 function isLiteralLabel(label) {
   if (!label || typeof label !== 'string') return false;
-  const words = label.trim().split(/\s+/);
-  if (words.length < 2 || words.length > 6) return false;
-  if (hasBannedNoun(label)) return false;
-  if (isAbstractLabel(label)) return false;
+  const trimmed = label.trim();
+  // Allow apostrophes, letters, spaces, hyphens
+  const words = trimmed.split(/\s+/);
+  if (words.length < 1 || words.length > 6) return false;
+  if (hasBannedNoun(trimmed)) return false;
+  if (isAbstractLabel(trimmed)) return false;
+  if (isBannedGenericTitle(trimmed)) return false;
   return true;
 }
 
@@ -224,6 +256,27 @@ export function validateSubjectExplanation(text) {
 }
 
 /**
+ * Find the nearest unused observed region to a given position.
+ * Returns the region's literalLabel or null.
+ */
+export function findNearestUnusedRegionLabel(regions, usedRegionIds, targetPosition) {
+  if (!regions || !regions.length || !targetPosition) return null;
+  const unused = regions.filter(r => !usedRegionIds.has(r.id) && isLiteralLabel(r.literalLabel));
+  if (!unused.length) return null;
+
+  let bestRegion = null;
+  let bestDist = Infinity;
+  for (const r of unused) {
+    const dist = positionDistance(r.position, targetPosition);
+    if (dist < bestDist) {
+      bestDist = dist;
+      bestRegion = r;
+    }
+  }
+  return bestRegion ? bestRegion.literalLabel : null;
+}
+
+/**
  * Sanitize and validate a raw AI analysis response.
  *
  * @param {object} rawAnalysis - The raw AI JSON response
@@ -281,9 +334,12 @@ export function sanitizeAiHotspotAnalysis(rawAnalysis, chartContext) {
     const explanation = raw.explanation;
     const confidence = typeof raw.confidence === 'number' ? raw.confidence : 0.5;
 
-    // Validate title independently
+    // Validate title independently — reject banned generic titles
     const aiTitle = raw.artworkElement || region.literalLabel;
-    const titleValid = aiTitle && !isAbstractLabel(aiTitle) && !hasBannedNoun(aiTitle);
+    const titleValid = aiTitle
+      && !isAbstractLabel(aiTitle)
+      && !hasBannedNoun(aiTitle)
+      && !isBannedGenericTitle(aiTitle);
 
     // Validate explanation
     const explanationValid = explanation

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { sanitizeAiHotspotAnalysis, getDominantElement, isAbstractLabel, validateSubjectExplanation } from '@/lib/explanations/hotspotAnalysis';
+import { sanitizeAiHotspotAnalysis, getDominantElement, isAbstractLabel, validateSubjectExplanation, isBannedGenericTitle, findNearestUnusedRegionLabel } from '@/lib/explanations/hotspotAnalysis';
 
 const chartContext = {
   sunSign: 'Scorpio',
@@ -54,6 +54,26 @@ describe('isAbstractLabel', () => {
   });
 });
 
+describe('isBannedGenericTitle', () => {
+  it('rejects banned generic fallback titles', () => {
+    expect(isBannedGenericTitle('Central Figure')).toBe(true);
+    expect(isBannedGenericTitle('Secondary Shape')).toBe(true);
+    expect(isBannedGenericTitle('Outer Edge')).toBe(true);
+    expect(isBannedGenericTitle('Lower Texture')).toBe(true);
+    expect(isBannedGenericTitle('Main Subject')).toBe(true);
+    expect(isBannedGenericTitle('central figure')).toBe(true);
+  });
+
+  it('accepts concrete titles', () => {
+    expect(isBannedGenericTitle('White Dove')).toBe(false);
+    expect(isBannedGenericTitle('Bull\'s Horns')).toBe(false);
+    expect(isBannedGenericTitle('Clock Face')).toBe(false);
+    expect(isBannedGenericTitle('Moon Disk')).toBe(false);
+    expect(isBannedGenericTitle('Lower Reflection')).toBe(false);
+    expect(isBannedGenericTitle('Right Reeds')).toBe(false);
+  });
+});
+
 describe('validateSubjectExplanation', () => {
   it('accepts a valid concrete subject explanation', () => {
     const text = 'A seated woman holding an open book dominates the center of this piece. Her posture and the surrounding stone columns reflect the grounded authority of your Capricorn Rising.';
@@ -74,6 +94,29 @@ describe('validateSubjectExplanation', () => {
   it('allows explanations between 15-50 words', () => {
     const text = 'A large horned bull stands at the center of the composition, surrounded by scattered petals and flowing water. Your Taurus Sun shaped this grounded, sturdy central figure.';
     expect(validateSubjectExplanation(text)).toBe(text);
+  });
+});
+
+describe('findNearestUnusedRegionLabel', () => {
+  it('returns nearest unused region label', () => {
+    const regions = [
+      { ...makeRegion('r1', 'Stone Archway'), position: { top: '20%', left: '50%' } },
+      { ...makeRegion('r2', 'Lower Waterline'), position: { top: '80%', left: '50%' } },
+      { ...makeRegion('r3', 'Right Reeds'), position: { top: '50%', left: '90%' } },
+    ];
+    const used = new Set(['r1']);
+    const target = { top: '75%', left: '50%' };
+    expect(findNearestUnusedRegionLabel(regions, used, target)).toBe('Lower Waterline');
+  });
+
+  it('returns null when all regions used', () => {
+    const regions = [makeRegion('r1', 'Stone Archway')];
+    const used = new Set(['r1']);
+    expect(findNearestUnusedRegionLabel(regions, used, { top: '50%', left: '50%' })).toBeNull();
+  });
+
+  it('returns null when no regions', () => {
+    expect(findNearestUnusedRegionLabel([], new Set(), { top: '50%', left: '50%' })).toBeNull();
   });
 });
 
@@ -110,12 +153,51 @@ describe('sanitizeAiHotspotAnalysis', () => {
     expect(result.observedRegions).toEqual([]);
   });
 
+  it('rejects regions with banned generic titles', () => {
+    const raw = {
+      observedRegions: [
+        makeRegion('r1', 'Central Figure'),
+        makeRegion('r2', 'Secondary Shape'),
+        makeRegion('r3', 'Outer Edge'),
+      ],
+      chartMappings: {},
+    };
+    const result = sanitizeAiHotspotAnalysis(raw, chartContext);
+    expect(result.observedRegions).toEqual([]);
+  });
+
   it('accepts 3+ valid concrete regions', () => {
     const raw = {
       observedRegions: [
         makeRegion('r1', 'Large Dark Figure'),
         makeRegion('r2', 'Scattered Flower Petals'),
         makeRegion('r3', 'Crescent Shape Upper'),
+      ],
+      chartMappings: {},
+    };
+    const result = sanitizeAiHotspotAnalysis(raw, chartContext);
+    expect(result.observedRegions.length).toBe(3);
+  });
+
+  it('accepts 1-word labels like Dove', () => {
+    const raw = {
+      observedRegions: [
+        makeRegion('r1', 'Dove'),
+        makeRegion('r2', 'Archway'),
+        makeRegion('r3', 'Waterline'),
+      ],
+      chartMappings: {},
+    };
+    const result = sanitizeAiHotspotAnalysis(raw, chartContext);
+    expect(result.observedRegions.length).toBe(3);
+  });
+
+  it('accepts labels with apostrophes', () => {
+    const raw = {
+      observedRegions: [
+        makeRegion('r1', "Bull's Horns"),
+        makeRegion('r2', 'Stone Archway'),
+        makeRegion('r3', 'Moon Disk'),
       ],
       chartMappings: {},
     };
@@ -240,6 +322,20 @@ describe('sanitizeAiHotspotAnalysis', () => {
     expect(result.slots.sun.artworkElement).toBeUndefined();
   });
 
+  it('does not preserve banned generic title when explanation fails', () => {
+    const raw = {
+      observedRegions: [
+        makeRegion('r1'), makeRegion('r2', 'Scattered Petals'), makeRegion('r3', 'Crescent Upper'),
+      ],
+      chartMappings: {
+        sun: makeSlot('r1', 'Your Aries Sun drives this figure.', 0.8, 'Central Figure'),
+      },
+    };
+    const result = sanitizeAiHotspotAnalysis(raw, chartContext);
+    expect(result.slots.sun.mapped).toBe(false);
+    expect(result.slots.sun.artworkElement).toBeUndefined();
+  });
+
   it('validates subjectExplanation and passes valid ones through', () => {
     const raw = {
       subjectExplanation: 'A seated woman with an open book dominates the center. Her composed posture and the surrounding stone columns reflect the grounded deliberation of your Capricorn Rising.',
@@ -265,7 +361,7 @@ describe('sanitizeAiHotspotAnalysis', () => {
     expect(result.subjectExplanation).toBeNull();
   });
 
-  it('produces concrete fallback labels from generateChartExplanation', async () => {
+  it('produces physical spatial fallback labels from generateChartExplanation', async () => {
     const { generateChartExplanation } = await import('@/lib/explanations/generateExplanation');
     const chart = {
       sun: { sign: 'Scorpio', house: 8 },
@@ -274,9 +370,15 @@ describe('sanitizeAiHotspotAnalysis', () => {
       element_balance: { Fire: 1, Water: 5, Earth: 3, Air: 1 },
     };
     const result = generateChartExplanation(chart);
-    expect(result.elements[0].artworkElement).toBe('Central Figure');
-    expect(result.elements[1].artworkElement).toBe('Secondary Shape');
-    expect(result.elements[2].artworkElement).toBe('Outer Edge');
-    expect(result.elements[3].artworkElement).toBe('Lower Texture');
+    // New physical spatial fallbacks, not semantic category names
+    expect(result.elements[0].artworkElement).toBe('Upper Focal Area');
+    expect(result.elements[1].artworkElement).toBe('Secondary Focal Area');
+    expect(result.elements[2].artworkElement).toBe('Outer Border');
+    expect(result.elements[3].artworkElement).toBe('Lower Ground');
+
+    // Verify none of the banned generic titles appear
+    for (const el of result.elements) {
+      expect(['Central Figure', 'Secondary Shape', 'Outer Edge', 'Lower Texture']).not.toContain(el.artworkElement);
+    }
   });
 });

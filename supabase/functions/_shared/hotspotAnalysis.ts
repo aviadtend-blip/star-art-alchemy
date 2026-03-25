@@ -22,6 +22,25 @@ const ABSTRACT_LABEL_PATTERNS = [
   /^(central focus|secondary detail|framing details|overall surface)$/i,
 ];
 
+/**
+ * Generic fallback titles that must never appear as UI-facing hotspot titles.
+ */
+const BANNED_GENERIC_TITLES = [
+  'central figure',
+  'secondary shape',
+  'outer edge',
+  'lower texture',
+  'main subject',
+  'secondary detail',
+  'framing details',
+  'overall surface',
+  'central focus',
+  'emotional atmosphere',
+  'composition & framing',
+  'overall feel & weight',
+  'primary element',
+];
+
 const SUBJECT_BANNED_WORDS = [
   'cosmic', 'celestial', 'mystical', 'ethereal', 'sacred', 'divine',
   'between worlds', 'subconscious', 'guardian', 'transcendent',
@@ -52,13 +71,19 @@ function isAbstractLabel(label: string): boolean {
   return ABSTRACT_LABEL_PATTERNS.some(p => p.test(label.trim()));
 }
 
+function isBannedGenericTitle(title: string): boolean {
+  if (!title) return true;
+  return BANNED_GENERIC_TITLES.includes(title.trim().toLowerCase());
+}
+
 function isLiteralLabel(label: string): boolean {
   if (!label || typeof label !== 'string') return false;
   const trimmed = label.trim();
   const words = trimmed.split(/\s+/);
-  if (words.length < 2 || words.length > 6) return false;
+  if (words.length < 1 || words.length > 6) return false;
   if (hasBannedNoun(trimmed)) return false;
   if (isAbstractLabel(trimmed)) return false;
+  if (isBannedGenericTitle(trimmed)) return false;
   return true;
 }
 
@@ -198,9 +223,12 @@ export function sanitizeAiHotspotAnalysis(rawAnalysis: any, chartContext: any) {
     const explanation = raw.explanation;
     const confidence = typeof raw.confidence === 'number' ? raw.confidence : 0.5;
 
-    // Validate the title (artworkElement) independently
+    // Validate the title (artworkElement) independently — reject banned generic titles
     const aiTitle = raw.artworkElement || region.literalLabel;
-    const titleValid = aiTitle && !isAbstractLabel(aiTitle) && !hasBannedNoun(aiTitle);
+    const titleValid = aiTitle
+      && !isAbstractLabel(aiTitle)
+      && !hasBannedNoun(aiTitle)
+      && !isBannedGenericTitle(aiTitle);
 
     // Validate the explanation
     const explanationValid = explanation
