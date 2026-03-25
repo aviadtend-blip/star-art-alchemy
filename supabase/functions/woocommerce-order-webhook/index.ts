@@ -69,17 +69,34 @@ async function sendKlaviyoEvent(apiKey: string, metricName: string, email: strin
 }
 
 async function subscribeToKlaviyo(email: string): Promise<void> {
+  const klaviyoKey = Deno.env.get("KLAVIYO_API_KEY");
+  if (!klaviyoKey) {
+    console.warn("wc-webhook: KLAVIYO_API_KEY not set, skipping subscription");
+    return;
+  }
   try {
-    const res = await fetch("https://a.klaviyo.com/client/subscriptions/?company_id=XEPXRf", {
+    const res = await fetch("https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json", revision: "2024-10-15" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        revision: "2024-10-15",
+        Authorization: `Klaviyo-API-Key ${klaviyoKey}`,
+      },
       body: JSON.stringify({
         data: {
-          type: "subscription",
+          type: "profile-subscription-bulk-create-job",
           attributes: {
-            custom_source: "Checkout",
-            profile: { data: { type: "profile", attributes: { email } } },
-            email_marketing: { consent: "SUBSCRIBED", custom_method_detail: "Purchase at checkout" },
+            custom_source: "Purchase",
+            profiles: {
+              data: [{
+                type: "profile",
+                attributes: {
+                  email,
+                  subscriptions: { email: { marketing: { consent: "SUBSCRIBED" } } },
+                },
+              }],
+            },
           },
           relationships: { list: { data: { type: "list", id: "UGDZis" } } },
         },
