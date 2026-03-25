@@ -7,32 +7,33 @@ const corsHeaders = {
 };
 
 /**
- * Canonical canvas sizes → WooCommerce variation IDs for Product 11.
- * Only canonical Prodigi sizes are allowed.
+ * Real WooCommerce variation mapping (queried from live API 2026-03-25):
+ *
+ *   Variation ID 12 → SKU CA-12x16 → Woo label "12x16" → price $79
+ *   Variation ID 13 → SKU CA-18x24 → Woo label "18x24" → price $129
+ *   Variation ID 14 → SKU CA-24x32 → Woo label "24x32" → price $199
+ *
+ * Our frontend uses canonical Prodigi sizes (12x18, 16x24, 20x30).
+ * The SIZE_ALIASES normalize canonical → Woo size key.
+ *
+ * ⚠️  NOTE: The Woo product labels (12x16, 18x24, 24x32) do NOT match the
+ * actual Prodigi fulfillment sizes (12x18, 16x24, 20x30). The Woo product
+ * variations should ideally be renamed in WooCommerce admin to match Prodigi,
+ * but until then this mapping bridges the gap.
  */
+
+/** Woo size label → WooCommerce variation ID (matches live product 11) */
 const VARIATION_MAP: Record<string, number> = {
-  "12x18": 12,
-  "16x24": 13,
-  "20x30": 14,
+  "12x16": 12,
+  "18x24": 13,
+  "24x32": 14,
 };
 
-/** Legacy size aliases → canonical sizes */
+/** Our canonical Prodigi sizes → Woo size keys */
 const SIZE_ALIASES: Record<string, string> = {
-  "12x16": "12x18",
-  "18x24": "16x24",
-  "24x32": "20x30",
-};
-
-/**
- * WooCommerce variation attribute values.
- * Must match the product's variation attribute slugs in WooCommerce admin.
- * The attribute taxonomy slug is "pa_size" (global) or "size" (custom).
- * We send both to cover either setup.
- */
-const VARIATION_ATTRIBUTE: Record<string, string> = {
-  "12x18": '12" x 18"',
-  "16x24": '16" x 24"',
-  "20x30": '20" x 30"',
+  "12x18": "12x16",
+  "16x24": "18x24",
+  "20x30": "24x32",
 };
 
 const PRODUCT_ID = 11;
