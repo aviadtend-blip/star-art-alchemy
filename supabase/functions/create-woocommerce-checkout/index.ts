@@ -7,32 +7,33 @@ const corsHeaders = {
 };
 
 /**
- * Canonical canvas sizes → WooCommerce variation IDs for Product 11.
- * Only canonical Prodigi sizes are allowed.
+ * Real WooCommerce variation mapping (queried from live API 2026-03-25):
+ *
+ *   Variation ID 12 → SKU CA-12x16 → Woo label "12x16" → price $79
+ *   Variation ID 13 → SKU CA-18x24 → Woo label "18x24" → price $129
+ *   Variation ID 14 → SKU CA-24x32 → Woo label "24x32" → price $199
+ *
+ * Our frontend uses canonical Prodigi sizes (12x18, 16x24, 20x30).
+ * The SIZE_ALIASES normalize canonical → Woo size key.
+ *
+ * ⚠️  NOTE: The Woo product labels (12x16, 18x24, 24x32) do NOT match the
+ * actual Prodigi fulfillment sizes (12x18, 16x24, 20x30). The Woo product
+ * variations should ideally be renamed in WooCommerce admin to match Prodigi,
+ * but until then this mapping bridges the gap.
  */
+
+/** Woo size label → WooCommerce variation ID (matches live product 11) */
 const VARIATION_MAP: Record<string, number> = {
-  "12x18": 12,
-  "16x24": 13,
-  "20x30": 14,
+  "12x16": 12,
+  "18x24": 13,
+  "24x32": 14,
 };
 
-/** Legacy size aliases → canonical sizes */
+/** Our canonical Prodigi sizes → Woo size keys */
 const SIZE_ALIASES: Record<string, string> = {
-  "12x16": "12x18",
-  "18x24": "16x24",
-  "24x32": "20x30",
-};
-
-/**
- * WooCommerce variation attribute values.
- * Must match the product's variation attribute slugs in WooCommerce admin.
- * The attribute taxonomy slug is "pa_size" (global) or "size" (custom).
- * We send both to cover either setup.
- */
-const VARIATION_ATTRIBUTE: Record<string, string> = {
-  "12x18": '12" x 18"',
-  "16x24": '16" x 24"',
-  "20x30": '20" x 30"',
+  "12x18": "12x16",
+  "16x24": "18x24",
+  "20x30": "24x32",
 };
 
 const PRODUCT_ID = 11;
@@ -62,13 +63,14 @@ serve(async (req) => {
       orderDetails?.size ||
       orderDetails?.sizeLabel?.toLowerCase().replace(/["×\s]/g, "").replace("x", "x");
 
-    // Normalize legacy sizes to canonical Prodigi sizes
-    const resolvedSize = SIZE_ALIASES[rawSize] || rawSize;
+    // Normalize canonical Prodigi sizes (12x18, 16x24, 20x30) → Woo size keys (12x16, 18x24, 24x32)
+    // Also accepts Woo size keys directly (passthrough)
+    const wooSize = SIZE_ALIASES[rawSize] || rawSize;
 
-    const variationId = VARIATION_MAP[resolvedSize];
+    const variationId = VARIATION_MAP[wooSize];
     if (!variationId) {
       return new Response(
-        JSON.stringify({ error: `Invalid variantSize: ${rawSize} (resolved: ${resolvedSize}). Valid: ${Object.keys(VARIATION_MAP).join(", ")}` }),
+        JSON.stringify({ error: `Invalid variantSize: ${rawSize} (wooSize: ${wooSize}). Valid canonical: ${Object.keys(SIZE_ALIASES).join(", ")}. Valid woo: ${Object.keys(VARIATION_MAP).join(", ")}` }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -88,14 +90,16 @@ serve(async (req) => {
     //   canvas_size, size_label, style_id, sun_sign, moon_sign,
     //   rising_sign, funnel_type
 
-    const sizeLabel = orderDetails?.sizeLabel || `${resolvedSize.replace("x", '" × "')}\"`;
+    // canvas_size uses the canonical Prodigi size for fulfillment, not the Woo label
+    const canonicalSize = rawSize;
+    const sizeLabel = orderDetails?.sizeLabel || `${canonicalSize.replace("x", '" × "')}\"`;
 
     const metaParams: Record<string, string> = {
       celestial_order_id: celestialOrderId || "",
       artwork_id: artworkId || "",
       artwork_url: artworkImageUrl || "",
       customer_name: customerName || "",
-      canvas_size: resolvedSize,
+      canvas_size: canonicalSize,
       size_label: sizeLabel,
       style_id: styleId || orderDetails?.styleId || "",
       sun_sign: chartData?.sun?.sign || "",
@@ -124,7 +128,7 @@ serve(async (req) => {
     const checkoutUrl = url.toString();
 
     console.log(`[create-woocommerce-checkout] celestialOrderId=${celestialOrderId}`);
-    console.log(`[create-woocommerce-checkout] size=${resolvedSize} variationId=${variationId}`);
+    console.log(`[create-woocommerce-checkout] canonical=${canonicalSize} wooSize=${wooSize} variationId=${variationId}`);
     console.log(`[create-woocommerce-checkout] metadata: ${JSON.stringify(metaParams)}`);
     console.log(`[create-woocommerce-checkout] checkout URL: ${checkoutUrl}`);
 
