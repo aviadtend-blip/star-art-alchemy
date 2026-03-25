@@ -107,19 +107,12 @@ serve(async (req) => {
     const affiliateId = dtId || affiliate_dt_id || "";
     if (affiliateId) metaParams.dt_id = affiliateId;
 
-    // Build URL with add-to-cart params + Celestial metadata
+    // Build URL: use variation_id directly as add-to-cart target
+    // This is the official WooCommerce pattern for variable products
+    // and avoids "Invalid value posted for Size" errors from attribute mismatches.
     const url = new URL(`${WC_STORE_URL}/`);
-    url.searchParams.set("add-to-cart", String(PRODUCT_ID));
-    url.searchParams.set("variation_id", String(variationId));
+    url.searchParams.set("add-to-cart", String(variationId));
     url.searchParams.set("quantity", "1");
-
-    // Include variation attribute so WooCommerce reliably resolves the variation
-    const attrLabel = VARIATION_ATTRIBUTE[resolvedSize];
-    if (attrLabel) {
-      // Try both global taxonomy (pa_size) and custom attribute (size)
-      url.searchParams.set("attribute_pa_size", attrLabel);
-      url.searchParams.set("attribute_size", attrLabel);
-    }
 
     // Append Celestial metadata params
     for (const [key, value] of Object.entries(metaParams)) {
