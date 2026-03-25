@@ -33,6 +33,7 @@ serve(async (req) => {
       celestialOrderId,
       dtId,
       styleId,
+      artworkId,
       orderDetails,
       affiliate_dt_id,
     } = await req.json();
@@ -64,11 +65,16 @@ serve(async (req) => {
 
     const metaData = [
       { key: "celestial_order_id", value: String(celestialOrderId || "") },
+      { key: "_celestial_order_id", value: String(celestialOrderId || "") },
       { key: "funnel_type", value: "canvas" },
       { key: "artwork_url", value: String(artworkImageUrl || "") },
+      { key: "artwork_id", value: String(artworkId || "") },
+      { key: "customer_name", value: String(resolvedCustomerName || "") },
       { key: "style_id", value: String(styleId || orderDetails?.styleId || "") },
       { key: "canvas_size", value: String(resolvedSize) },
+      { key: "_canvas_size", value: String(resolvedSize) },
       { key: "size_label", value: String(orderDetails?.sizeLabel || "") },
+      { key: "_size_label", value: String(orderDetails?.sizeLabel || "") },
       { key: "sun_sign", value: String(chartData?.sun?.sign || "") },
       { key: "moon_sign", value: String(chartData?.moon?.sign || "") },
       { key: "rising_sign", value: String(chartData?.rising || "") },
