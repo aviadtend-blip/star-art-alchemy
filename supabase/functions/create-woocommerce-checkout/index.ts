@@ -16,6 +16,25 @@ const VARIATION_MAP: Record<string, number> = {
   "20x30": 14,
 };
 
+/** Legacy size aliases → canonical sizes */
+const SIZE_ALIASES: Record<string, string> = {
+  "12x16": "12x18",
+  "18x24": "16x24",
+  "24x32": "20x30",
+};
+
+/**
+ * WooCommerce variation attribute values.
+ * Must match the product's variation attribute slugs in WooCommerce admin.
+ * The attribute taxonomy slug is "pa_size" (global) or "size" (custom).
+ * We send both to cover either setup.
+ */
+const VARIATION_ATTRIBUTE: Record<string, string> = {
+  "12x18": '12" x 18"',
+  "16x24": '16" x 24"',
+  "20x30": '20" x 30"',
+};
+
 const PRODUCT_ID = 11;
 
 serve(async (req) => {
@@ -44,30 +63,75 @@ serve(async (req) => {
       orderDetails?.sizeLabel?.toLowerCase().replace(/["×\s]/g, "").replace("x", "x");
 
     // Normalize legacy sizes to canonical Prodigi sizes
-    const SIZE_ALIASES: Record<string, string> = {
-      "12x16": "12x18",
-      "18x24": "16x24",
-      "24x32": "20x30",
-    };
     const resolvedSize = SIZE_ALIASES[rawSize] || rawSize;
 
     const variationId = VARIATION_MAP[resolvedSize];
     if (!variationId) {
       return new Response(
-        JSON.stringify({ error: `Invalid variantSize: ${rawSize} (resolved: ${resolvedSize}). Valid sizes: ${Object.keys(VARIATION_MAP).join(", ")}` }),
+        JSON.stringify({ error: `Invalid variantSize: ${rawSize} (resolved: ${resolvedSize}). Valid: ${Object.keys(VARIATION_MAP).join(", ")}` }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     const WC_STORE_URL = Deno.env.get("WC_STORE_URL")!;
 
-    // For physical/canvas products, redirect to WooCommerce standard checkout
-    // so the customer enters billing + shipping address before payment.
-    // The add-to-cart URL adds the variation to the cart and loads checkout.
-    const checkoutUrl = `${WC_STORE_URL}/checkout/?add-to-cart=${PRODUCT_ID}&variation_id=${variationId}&quantity=1`;
+    // ---- Build the checkout URL ----
+    // Standard WooCommerce add-to-cart → checkout, so the customer fills in
+    // real billing + shipping details before payment.
+    //
+    // Celestial metadata is passed as query parameters. A tiny WordPress
+    // MU plugin (celestial-order-meta.php) captures them into cart item
+    // data and copies them to order meta + line item meta at checkout.
+    //
+    // Query parameter names (must match the MU plugin's CELESTIAL_META_KEYS):
+    //   celestial_order_id, artwork_id, artwork_url, customer_name,
+    //   canvas_size, size_label, style_id, sun_sign, moon_sign,
+    //   rising_sign, funnel_type
 
-    console.log(`[create-woocommerce-checkout] celestialOrderId=${celestialOrderId} size=${resolvedSize} variationId=${variationId}`);
-    console.log(`[create-woocommerce-checkout] Redirecting to standard checkout: ${checkoutUrl}`);
+    const sizeLabel = orderDetails?.sizeLabel || `${resolvedSize.replace("x", '" × "')}\"`;
+
+    const metaParams: Record<string, string> = {
+      celestial_order_id: celestialOrderId || "",
+      artwork_id: artworkId || "",
+      artwork_url: artworkImageUrl || "",
+      customer_name: customerName || "",
+      canvas_size: resolvedSize,
+      size_label: sizeLabel,
+      style_id: styleId || orderDetails?.styleId || "",
+      sun_sign: chartData?.sun?.sign || "",
+      moon_sign: chartData?.moon?.sign || "",
+      rising_sign: chartData?.rising || "",
+      funnel_type: "canvas",
+    };
+
+    const affiliateId = dtId || affiliate_dt_id || "";
+    if (affiliateId) metaParams.dt_id = affiliateId;
+
+    // Build URL with add-to-cart params + Celestial metadata
+    const url = new URL(`${WC_STORE_URL}/`);
+    url.searchParams.set("add-to-cart", String(PRODUCT_ID));
+    url.searchParams.set("variation_id", String(variationId));
+    url.searchParams.set("quantity", "1");
+
+    // Include variation attribute so WooCommerce reliably resolves the variation
+    const attrLabel = VARIATION_ATTRIBUTE[resolvedSize];
+    if (attrLabel) {
+      // Try both global taxonomy (pa_size) and custom attribute (size)
+      url.searchParams.set("attribute_pa_size", attrLabel);
+      url.searchParams.set("attribute_size", attrLabel);
+    }
+
+    // Append Celestial metadata params
+    for (const [key, value] of Object.entries(metaParams)) {
+      if (value) url.searchParams.set(key, value);
+    }
+
+    const checkoutUrl = url.toString();
+
+    console.log(`[create-woocommerce-checkout] celestialOrderId=${celestialOrderId}`);
+    console.log(`[create-woocommerce-checkout] size=${resolvedSize} variationId=${variationId}`);
+    console.log(`[create-woocommerce-checkout] metadata: ${JSON.stringify(metaParams)}`);
+    console.log(`[create-woocommerce-checkout] checkout URL: ${checkoutUrl}`);
 
     return new Response(
       JSON.stringify({ url: checkoutUrl, orderId: null }),
