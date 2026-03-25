@@ -110,7 +110,9 @@ serve(async (req) => {
     // Build URL: use variation_id directly as add-to-cart target
     // This is the official WooCommerce pattern for variable products
     // and avoids "Invalid value posted for Size" errors from attribute mismatches.
-    const url = new URL(`${WC_STORE_URL}/`);
+    // Point to /checkout/ so WooCommerce adds to cart then renders checkout,
+    // instead of landing on the store root which shows "Nothing Found".
+    const url = new URL(`${WC_STORE_URL}/checkout/`);
     url.searchParams.set("add-to-cart", String(variationId));
     url.searchParams.set("quantity", "1");
 
