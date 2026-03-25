@@ -6,14 +6,14 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+/**
+ * Canonical canvas sizes → WooCommerce variation IDs for Product 11.
+ * Only canonical Prodigi sizes are allowed.
+ */
 const VARIATION_MAP: Record<string, number> = {
   "12x18": 12,
   "16x24": 13,
   "20x30": 14,
-  // legacy aliases
-  "12x16": 12,
-  "18x24": 13,
-  "24x32": 14,
 };
 
 const PRODUCT_ID = 11;
@@ -38,105 +38,39 @@ serve(async (req) => {
       affiliate_dt_id,
     } = await req.json();
 
-    const resolvedSize =
+    const rawSize =
       variantSize ||
       orderDetails?.size ||
       orderDetails?.sizeLabel?.toLowerCase().replace(/["×\s]/g, "").replace("x", "x");
 
+    // Normalize legacy sizes to canonical Prodigi sizes
+    const SIZE_ALIASES: Record<string, string> = {
+      "12x16": "12x18",
+      "18x24": "16x24",
+      "24x32": "20x30",
+    };
+    const resolvedSize = SIZE_ALIASES[rawSize] || rawSize;
+
     const variationId = VARIATION_MAP[resolvedSize];
     if (!variationId) {
       return new Response(
-        JSON.stringify({ error: `Invalid variantSize: ${resolvedSize}` }),
+        JSON.stringify({ error: `Invalid variantSize: ${rawSize} (resolved: ${resolvedSize}). Valid sizes: ${Object.keys(VARIATION_MAP).join(", ")}` }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     const WC_STORE_URL = Deno.env.get("WC_STORE_URL")!;
-    const WC_CONSUMER_KEY = Deno.env.get("WC_CONSUMER_KEY")!;
-    const WC_CONSUMER_SECRET = Deno.env.get("WC_CONSUMER_SECRET")!;
 
-    const resolvedCustomerEmail = customerEmail || orderDetails?.email || "";
-    const billingEmail = resolvedCustomerEmail?.trim() || "guest@celestialartworks.com";
-    const resolvedCustomerName = customerName || orderDetails?.firstName || "";
-    const nameParts = (resolvedCustomerName || "").split(" ");
-    const firstName = nameParts[0] || "";
-    const lastName = nameParts.slice(1).join(" ") || "";
-    const affiliateId = dtId || affiliate_dt_id || "";
+    // For physical/canvas products, redirect to WooCommerce standard checkout
+    // so the customer enters billing + shipping address before payment.
+    // The add-to-cart URL adds the variation to the cart and loads checkout.
+    const checkoutUrl = `${WC_STORE_URL}/checkout/?add-to-cart=${PRODUCT_ID}&variation_id=${variationId}&quantity=1`;
 
-    const metaData = [
-      { key: "celestial_order_id", value: String(celestialOrderId || "") },
-      { key: "_celestial_order_id", value: String(celestialOrderId || "") },
-      { key: "funnel_type", value: "canvas" },
-      { key: "artwork_url", value: String(artworkImageUrl || "") },
-      { key: "artwork_id", value: String(artworkId || "") },
-      { key: "customer_name", value: String(resolvedCustomerName || "") },
-      { key: "style_id", value: String(styleId || orderDetails?.styleId || "") },
-      { key: "canvas_size", value: String(resolvedSize) },
-      { key: "_canvas_size", value: String(resolvedSize) },
-      { key: "size_label", value: String(orderDetails?.sizeLabel || "") },
-      { key: "_size_label", value: String(orderDetails?.sizeLabel || "") },
-      { key: "sun_sign", value: String(chartData?.sun?.sign || "") },
-      { key: "moon_sign", value: String(chartData?.moon?.sign || "") },
-      { key: "rising_sign", value: String(chartData?.rising || "") },
-      { key: "dt_id", value: String(affiliateId) },
-    ];
-
-    const orderPayload = {
-      payment_method: "stripe",
-      payment_method_title: "Credit Card (Stripe)",
-      set_paid: false,
-      status: "pending",
-      billing: {
-        email: billingEmail,
-        first_name: firstName,
-        last_name: lastName,
-      },
-      line_items: [
-        { product_id: PRODUCT_ID, variation_id: variationId, quantity: 1 },
-      ],
-      shipping_lines: [
-        { method_id: "flat_rate", method_title: "Standard Shipping", total: "22.95" },
-      ],
-      meta_data: metaData,
-    };
-
-    console.log("[create-woocommerce-checkout] celestialOrderId:", celestialOrderId);
-    console.log("[create-woocommerce-checkout] Full payload:", JSON.stringify(orderPayload, null, 2));
-
-    const basicAuth = btoa(`${WC_CONSUMER_KEY}:${WC_CONSUMER_SECRET}`);
-
-    const wcResponse = await fetch(
-      `${WC_STORE_URL}/wp-json/wc/v3/orders`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Basic ${basicAuth}`,
-        },
-        body: JSON.stringify(orderPayload),
-      }
-    );
-
-    if (!wcResponse.ok) {
-      const errText = await wcResponse.text();
-      throw new Error(`WooCommerce API error (${wcResponse.status}): ${errText}`);
-    }
-
-    const wcData = await wcResponse.json();
-    const orderId = wcData.id;
-
-    // Use the standard checkout URL with order-pay for canvas orders too,
-    // so the meta_data is preserved on the WooCommerce order.
-    // WooCommerce will collect shipping address on the pay-for-order page
-    // if the product requires shipping.
-    let checkoutPaymentUrl = wcData.checkout_payment_url;
-    if (!checkoutPaymentUrl) {
-      const orderKey = wcData.order_key;
-      checkoutPaymentUrl = `${WC_STORE_URL}/checkout/order-pay/${orderId}/?pay_for_order=true&key=${orderKey}`;
-    }
+    console.log(`[create-woocommerce-checkout] celestialOrderId=${celestialOrderId} size=${resolvedSize} variationId=${variationId}`);
+    console.log(`[create-woocommerce-checkout] Redirecting to standard checkout: ${checkoutUrl}`);
 
     return new Response(
-      JSON.stringify({ url: checkoutPaymentUrl, orderId }),
+      JSON.stringify({ url: checkoutUrl, orderId: null }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
