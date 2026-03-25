@@ -479,6 +479,20 @@ async function processOrder(order: any) {
       return;
     }
 
+    // --- Count Celestial canvas line items ---
+    const CANVAS_PRODUCT_ID = 11;
+    const lineItems = order.line_items || [];
+    const celestialCanvasItems = lineItems.filter((li: any) =>
+      li.product_id === CANVAS_PRODUCT_ID || li.variation_id === 12 || li.variation_id === 13 || li.variation_id === 14
+    );
+    const celestialDigitalItems = lineItems.filter((li: any) =>
+      li.product_id === 15 || li.variation_id === 16 || li.variation_id === 17
+    );
+
+    if (celestialCanvasItems.length > 1) {
+      console.error(`wc-webhook: ❌ MULTI-CANVAS DETECTED | wcOrder=${wcOrderNumber} has ${celestialCanvasItems.length} Celestial canvas items. This may under-fulfill. Processing only the FIRST matching celestial_order_id.`);
+    }
+
     // --- Resolve Celestial order ID ---
     const resolved = await resolveCelestialOrderId(order);
     if (!resolved) {
@@ -497,6 +511,9 @@ async function processOrder(order: any) {
     const resolution = getMetaWithLineItems(order, "resolution") || getMetaWithLineItems(order, "_resolution");
 
     console.log(`wc-webhook: METADATA | source=${resolutionSource} | funnel=${funnelType || "canvas"} | artworkUrl=${artworkUrl ? "yes" : "no"} | celestialOrderId=${celestialOrderId}`);
+    if (celestialCanvasItems.length > 1) {
+      console.error(`wc-webhook: ⚠️ FULFILLMENT WARNING: WC order ${wcOrderNumber} has ${celestialCanvasItems.length} canvas items but only 1 celestialOrderId resolved (${celestialOrderId}). Additional items will NOT be fulfilled. Manual intervention required.`);
+    }
 
     // --- Duplicate-fulfillment guard ---
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
