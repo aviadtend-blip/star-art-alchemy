@@ -63,8 +63,9 @@ serve(async (req) => {
       orderDetails?.size ||
       orderDetails?.sizeLabel?.toLowerCase().replace(/["×\s]/g, "").replace("x", "x");
 
-    // Normalize legacy sizes to canonical Prodigi sizes
-    const resolvedSize = SIZE_ALIASES[rawSize] || rawSize;
+    // Normalize canonical Prodigi sizes (12x18, 16x24, 20x30) → Woo size keys (12x16, 18x24, 24x32)
+    // Also accepts Woo size keys directly (passthrough)
+    const wooSize = SIZE_ALIASES[rawSize] || rawSize;
 
     const variationId = VARIATION_MAP[resolvedSize];
     if (!variationId) {
