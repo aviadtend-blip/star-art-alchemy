@@ -5,10 +5,16 @@ import { generateChartExplanation } from './generateExplanation';
  * Analyzes the actual generated artwork image using AI vision,
  * producing artist's notes grounded in what's really in the image.
  *
- * Falls back to the static rule-based explanations if the AI call fails.
+ * The new schema uses a two-phase approach:
+ *   Phase 1: Gemini observes 2-4 visual regions with evidence
+ *   Phase 2: Gemini maps chart placements to those regions (nullable)
+ *
+ * When a mapping is null (no confident match), the fallback provides
+ * a chart-based personality explanation with an honest spatial label.
  *
  * @param {string} imageUrl - URL of the generated artwork
  * @param {object} chartData - The natal chart data
+ * @param {string|null} generationPrompt - The prompt used to generate the artwork
  * @returns {Promise<object>} Explanation object matching generateChartExplanation shape
  */
 export async function analyzeArtwork(imageUrl, chartData, generationPrompt = null) {
@@ -38,42 +44,40 @@ export async function analyzeArtwork(imageUrl, chartData, generationPrompt = nul
 
     console.log('🎨 AI artwork analysis received');
 
-    // Build the explanation object in the same shape as generateChartExplanation,
-    // but with AI-generated text that references the actual image
+    // Build elements array. For each of the 4 placements, use AI mapping
+    // if it was confident, otherwise fall back to chart-based explanation
+    // with honest spatial labels.
+    const placements = ['sun', 'moon', 'rising', 'element'];
+    const elements = placements.map((key, i) => {
+      const aiResult = analysis[key];
+      const fallbackEl = fallback.elements[i];
+      const isMapped = aiResult?.mapped && aiResult?.explanation && aiResult?.artworkElement;
+
+      if (isMapped) {
+        // AI confidently matched this placement to a visible region
+        return {
+          ...fallbackEl,
+          artworkElement: aiResult.artworkElement,
+          explanation: aiResult.explanation,
+          aiPosition: normalizePosition(aiResult.position),
+          focusBox: normalizeFocusBox(aiResult.focusBox),
+          source: 'ai',
+        };
+      } else {
+        // No confident AI match — use chart-based explanation with honest label
+        return {
+          ...fallbackEl,
+          source: 'fallback',
+        };
+      }
+    });
+
     return {
       analyzedImageUrl: imageUrl,
       overview: fallback.overview,
       subjectExplanation: analysis.subjectExplanation || null,
-      elements: [
-        {
-          ...fallback.elements[0],
-          artworkElement: analysis.sun.artworkElement || fallback.elements[0].artworkElement,
-          explanation: analysis.sun.explanation,
-          aiPosition: normalizePosition(analysis.sun.position),
-          focusBox: normalizeFocusBox(analysis.sun.focusBox),
-        },
-        {
-          ...fallback.elements[1],
-          artworkElement: analysis.moon.artworkElement || fallback.elements[1].artworkElement,
-          explanation: analysis.moon.explanation,
-          aiPosition: normalizePosition(analysis.moon.position),
-          focusBox: normalizeFocusBox(analysis.moon.focusBox),
-        },
-        {
-          ...fallback.elements[2],
-          artworkElement: analysis.rising.artworkElement || fallback.elements[2].artworkElement,
-          explanation: analysis.rising.explanation,
-          aiPosition: normalizePosition(analysis.rising.position),
-          focusBox: normalizeFocusBox(analysis.rising.focusBox),
-        },
-        {
-          ...fallback.elements[3],
-          artworkElement: analysis.element.artworkElement || fallback.elements[3].artworkElement,
-          explanation: analysis.element.explanation,
-          aiPosition: normalizePosition(analysis.element.position),
-          focusBox: normalizeFocusBox(analysis.element.focusBox),
-        },
-      ],
+      elements,
+      _observedRegions: analysis.observedRegions || null,
     };
   } catch (err) {
     console.error('Artwork analysis failed, using static fallback:', err);
@@ -104,6 +108,6 @@ function normalizeFocusBox(box) {
   const b = Math.max(0, Math.min(100, box.bottom)) / 100;
   const r = Math.max(0, Math.min(100, box.right)) / 100;
   if (b <= t || r <= l) return null;
-  if ((r - l) < 0.05 || (b - t) < 0.05) return null; // too small to be meaningful
+  if ((r - l) < 0.05 || (b - t) < 0.05) return null;
   return { top: t, left: l, bottom: b, right: r };
 }
