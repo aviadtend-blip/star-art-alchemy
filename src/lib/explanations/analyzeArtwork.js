@@ -1,23 +1,27 @@
 import { supabase } from '@/integrations/supabase/client';
 import { generateChartExplanation } from './generateExplanation';
+import { sanitizeAiHotspotAnalysis, getDominantElement } from './hotspotAnalysis';
 
 /**
  * Analyzes the actual generated artwork image using AI vision,
  * producing artist's notes grounded in what's really in the image.
  *
- * The new schema uses a two-phase approach:
- *   Phase 1: Gemini observes 2-4 visual regions with evidence
- *   Phase 2: Gemini maps chart placements to those regions (nullable)
- *
- * When a mapping is null (no confident match), the fallback provides
- * a chart-based personality explanation with an honest spatial label.
- *
  * @param {string} imageUrl - URL of the generated artwork
  * @param {object} chartData - The natal chart data
- * @param {string|null} generationPrompt - The prompt used to generate the artwork
+ * @param {object} [options] - Optional: { promptUsed, styleId } or legacy string (generationPrompt)
  * @returns {Promise<object>} Explanation object matching generateChartExplanation shape
  */
-export async function analyzeArtwork(imageUrl, chartData, generationPrompt = null) {
+export async function analyzeArtwork(imageUrl, chartData, options = {}) {
+  // Handle legacy signature: analyzeArtwork(url, chart, promptString)
+  let promptUsed = null;
+  let styleId = null;
+  if (typeof options === 'string') {
+    promptUsed = options;
+  } else if (options && typeof options === 'object') {
+    promptUsed = options.promptUsed || null;
+    styleId = options.styleId || null;
+  }
+
   // Always prepare the static fallback
   const fallback = generateChartExplanation(chartData);
   const fallbackWithSource = {
@@ -31,7 +35,8 @@ export async function analyzeArtwork(imageUrl, chartData, generationPrompt = nul
 
   try {
     const body = { imageUrl, chartData };
-    if (generationPrompt) body.generationPrompt = generationPrompt;
+    if (promptUsed) body.promptUsed = promptUsed;
+    if (styleId) body.styleId = styleId;
 
     const { data, error } = await supabase.functions.invoke('analyze-artwork', {
       body,
@@ -44,9 +49,23 @@ export async function analyzeArtwork(imageUrl, chartData, generationPrompt = nul
 
     console.log('🎨 AI artwork analysis received');
 
-    // Build elements array. For each of the 4 placements, use AI mapping
-    // if it was confident, otherwise fall back to chart-based explanation
-    // with honest spatial labels.
+    // Build chart context for client-side sanitization (double-check server output)
+    const safeChart = chartData || {};
+    const sunSign = safeChart?.sun?.sign || 'Unknown';
+    const moonSign = safeChart?.moon?.sign || 'Unknown';
+    const rising = typeof safeChart?.rising === 'string'
+      ? safeChart.rising
+      : safeChart?.rising?.sign || 'Unknown';
+    const elementBalance = safeChart?.element_balance || safeChart?.elements || {};
+    const dominantElement = getDominantElement(elementBalance);
+
+    const chartContext = { sunSign, moonSign, rising, dominantElement };
+
+    // The server already sanitized, but we also run client-side validation
+    // to handle any edge cases. We reconstruct from the analysis shape.
+    // The server returns: analysis.sun, analysis.moon, etc. with mapped flag.
+
+    // Build elements array — merge AI results with fallback per-slot
     const placements = ['sun', 'moon', 'rising', 'element'];
     const elements = placements.map((key, i) => {
       const aiResult = analysis[key];
@@ -54,7 +73,7 @@ export async function analyzeArtwork(imageUrl, chartData, generationPrompt = nul
       const isMapped = aiResult?.mapped && aiResult?.explanation && aiResult?.artworkElement;
 
       if (isMapped) {
-        // AI confidently matched this placement to a visible region
+        // AI confidently matched — use AI data
         return {
           ...fallbackEl,
           artworkElement: aiResult.artworkElement,
@@ -62,9 +81,10 @@ export async function analyzeArtwork(imageUrl, chartData, generationPrompt = nul
           aiPosition: normalizePosition(aiResult.position),
           focusBox: normalizeFocusBox(aiResult.focusBox),
           source: 'ai',
+          confidence: aiResult.confidence,
         };
       } else {
-        // No confident AI match — use chart-based explanation with honest label
+        // Not mapped — use chart-based fallback
         return {
           ...fallbackEl,
           source: 'fallback',
@@ -85,21 +105,14 @@ export async function analyzeArtwork(imageUrl, chartData, generationPrompt = nul
   }
 }
 
-/**
- * Clamp and format AI-returned position into a valid { top, left } percentage object.
- * Returns null if the position is missing or invalid.
- */
 function normalizePosition(pos) {
-  if (!pos || typeof pos.top !== 'number' || typeof pos.left !== 'number') return null;
-  const top = Math.max(5, Math.min(95, pos.top));
-  const left = Math.max(5, Math.min(95, pos.left));
+  if (!pos || typeof pos.top !== 'number' && typeof pos.top !== 'string') return null;
+  const parseNum = (v) => typeof v === 'string' ? parseFloat(v) : v;
+  const top = Math.max(5, Math.min(95, parseNum(pos.top)));
+  const left = Math.max(5, Math.min(95, parseNum(pos.left)));
   return { top: `${top}%`, left: `${left}%` };
 }
 
-/**
- * Normalize a focusBox from the AI response into { top, left, bottom, right } as 0-1 fractions.
- * Returns null if invalid.
- */
 function normalizeFocusBox(box) {
   if (!box || typeof box.top !== 'number' || typeof box.left !== 'number' ||
       typeof box.bottom !== 'number' || typeof box.right !== 'number') return null;

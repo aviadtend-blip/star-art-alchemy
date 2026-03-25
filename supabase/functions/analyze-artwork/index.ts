@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { getDominantElement, sanitizeAiHotspotAnalysis } from "../_shared/hotspotAnalysis.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,7 +12,7 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
 
   try {
-    const { imageUrl, chartData, generationPrompt } = await req.json();
+    const { imageUrl, chartData, generationPrompt, promptUsed, styleId } = await req.json();
 
     if (!imageUrl || !chartData) {
       return new Response(
@@ -23,7 +24,7 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    // Fetch the image and convert to base64 (chunked to avoid stack overflow)
+    // Fetch the image and convert to base64
     const imageResponse = await fetch(imageUrl);
     if (!imageResponse.ok) {
       throw new Error(`Failed to fetch image: ${imageResponse.status}`);
@@ -38,105 +39,93 @@ serve(async (req) => {
     const base64Image = btoa(binary);
     const contentType = imageResponse.headers.get("content-type") || "image/png";
 
-    // Sanitize values before interpolating into AI prompts
     const sanitize = (val: string): string => {
       if (!val || typeof val !== 'string') return 'Unknown';
       return val.replace(/[^a-zA-Z0-9\s\-.,()°]/g, '').substring(0, 100);
     };
 
-    // Build chart context for the prompt
     const sunSign = sanitize(chartData.sun?.sign);
     const moonSign = sanitize(chartData.moon?.sign);
     const rising = sanitize(chartData.rising);
     const elementBalance = chartData.element_balance || {};
-    const dominantElement = sanitize(
-      Object.keys(elementBalance).reduce(
-        (a, b) => (elementBalance[a] > elementBalance[b] ? a : b),
-        "Fire"
-      )
-    );
+    const dominantElement = sanitize(getDominantElement(elementBalance));
 
-    const creativeBriefSection = generationPrompt
-      ? `\n\nCREATIVE BRIEF (the original prompt used to generate this artwork):\n"""\n${String(generationPrompt).substring(0, 800)}\n"""\nThis tells you exactly what was requested. Use it as CANDIDATE context — but you must still verify each element is actually visible in the image. If the brief mentions something you can't see, do NOT include it.`
+    // Use promptUsed or generationPrompt (backward compat)
+    const usedPrompt = promptUsed || generationPrompt || null;
+
+    const candidateContext = usedPrompt
+      ? `\n\nCANDIDATE CONTEXT (the prompt used to generate this artwork — use as weak hints only, you MUST verify everything against the actual image):\n"""\n${String(usedPrompt).substring(0, 800)}\n"""`
       : '';
 
-    const prompt = `You are analyzing a birth chart artwork. Your job has TWO PHASES in a single response.
+    const styleHint = styleId ? `\nStyle ID: "${sanitize(styleId)}" (for context only, do NOT reference art style in explanations).` : '';
 
-PHASE 1 — OBSERVE: Look at the image carefully. Identify 2-4 distinct visual regions or elements that are clearly, unambiguously visible. For each one, give a neutral description and note its approximate position. Do NOT invent elements. If you can only confidently identify 2 regions, return 2. Never pad to 4.
+    const prompt = `You are analyzing a birth chart artwork. Respond in ONE JSON block covering three logical phases.
 
-PHASE 2 — MAP: For each of the four chart placements (Sun, Moon, Rising, Element), try to match it to one of your observed regions. If no observed region fits a placement well, set that mapping to null. It is BETTER to return null than to force a bad match.
+PHASE 1 — OBSERVE: Look at the image. Identify 3-6 distinct visible regions or elements. For each, give a short literal label (2-4 words describing what you SEE, not what it means). Include concrete visible evidence.
 
-The person's chart: Sun in ${sunSign} (House ${chartData.sun?.house || '?'}), Moon in ${moonSign} (House ${chartData.moon?.house || '?'}), ${rising} Rising, dominant ${dominantElement} (${Object.entries(elementBalance).map(([k,v]) => `${k}: ${v}`).join(", ")}).${creativeBriefSection}
+PHASE 2 — MAP: For Sun, Moon, Rising, and Element, try to connect each to one observed region. If support is weak, set regionId to null. Include a confidence score (0.0-1.0). NULL IS BETTER THAN A FORCED MATCH.
 
-Respond with ONLY valid JSON (no markdown, no backticks):
+PHASE 3 — WRITE: For each mapped slot, write a short grounded explanation (2 sentences, max 300 chars). The explanation MUST mention the exact placement (e.g. "Scorpio Sun" or "Sun in Scorpio").
+
+Chart: Sun in ${sunSign} (House ${chartData.sun?.house || '?'}), Moon in ${moonSign} (House ${chartData.moon?.house || '?'}), ${rising} Rising, dominant ${dominantElement} (${Object.entries(elementBalance).map(([k,v]) => `${k}: ${v}`).join(", ")}).${candidateContext}${styleHint}
+
+Return ONLY valid JSON:
 
 {
-  "subjectExplanation": "1-2 sentences, MAX 30 words. Describe the main visible subject/figure and briefly connect it to their ${sunSign} Sun / ${moonSign} Moon / ${rising} Rising combination. Reference what you ACTUALLY SEE.",
+  "subjectExplanation": "1-2 sentences, MAX 30 words. Name the main visible subject and connect it to their ${sunSign} Sun / ${moonSign} Moon / ${rising} Rising. Describe what you SEE.",
 
   "observedRegions": [
     {
-      "regionId": "r1",
-      "neutralLabel": "Short neutral description of what you see (e.g. 'A cloaked figure facing forward', 'Flowering vines along the left edge', 'A crescent shape in the upper sky')",
-      "visibleEvidence": "What specifically makes this visible — shape, texture, placement (e.g. 'dark silhouette occupying center 40% of image, clear head and shoulder outline')",
+      "id": "r1",
+      "literalLabel": "2-4 word literal description of what is visible (e.g. 'Large Horned Animal', 'Scattered Flower Petals', 'Crescent Shape Upper Left')",
+      "visibleEvidence": "Concrete proof: shape, outline, texture, size, placement (min 15 chars)",
       "position": { "top": <0-100>, "left": <0-100> },
-      "focusBox": { "top": <0-100>, "left": <0-100>, "bottom": <0-100>, "right": <0-100> }
+      "focusBox": { "top": <0-100>, "left": <0-100>, "bottom": <0-100>, "right": <0-100> },
+      "regionType": "figure|object|texture|background|border"
     }
   ],
 
   "chartMappings": {
     "sun": {
-      "regionId": "r1 or null if no good match",
-      "artworkElement": "3-6 word Title Case name for this element, or null",
-      "explanation": "2 sentences max, under 300 chars. How their Sun in ${sunSign} connects to THIS visible element. Written in second person ('You...'). Or null if no match."
+      "regionId": "r1 or null",
+      "artworkElement": "2-6 word literal name, or null",
+      "explanation": "2 sentences, max 300 chars. MUST contain '${sunSign} Sun' or 'Sun in ${sunSign}'. Written in second person. Or null.",
+      "confidence": 0.0-1.0
     },
     "moon": {
       "regionId": "r2 or null",
-      "artworkElement": "3-6 word Title Case name, or null",
-      "explanation": "2 sentences max, under 300 chars. How their Moon in ${moonSign} connects to THIS visible element. Or null."
+      "artworkElement": "2-6 word literal name, or null",
+      "explanation": "MUST contain '${moonSign} Moon' or 'Moon in ${moonSign}'. Or null.",
+      "confidence": 0.0-1.0
     },
     "rising": {
       "regionId": "r3 or null",
-      "artworkElement": "3-6 word Title Case name, or null",
-      "explanation": "2 sentences max, under 300 chars. How their ${rising} Rising connects to the composition/framing. Or null."
+      "artworkElement": "2-6 word literal name, or null",
+      "explanation": "MUST contain '${rising} Rising' or 'Rising in ${rising}'. Or null.",
+      "confidence": 0.0-1.0
     },
     "element": {
       "regionId": "r4 or null",
-      "artworkElement": "3-6 word Title Case name, or null",
-      "explanation": "2 sentences max, under 300 chars. How their dominant ${dominantElement} element connects to the feel/weight of the artwork. Or null."
+      "artworkElement": "2-6 word literal name, or null",
+      "explanation": "MUST contain '${dominantElement} dominant' or 'dominant ${dominantElement}' or '${dominantElement} element'. Or null.",
+      "confidence": 0.0-1.0
     }
   }
 }
 
-PHASE 1 RULES (observedRegions):
-- Return 2-4 regions. NEVER invent elements to reach 4.
-- neutralLabel must describe what is LITERALLY VISIBLE — no interpretation yet.
-- visibleEvidence must cite specific visual proof (shape, outline, texture, contrast).
-- If you cannot write convincing visibleEvidence, do NOT include that region.
-- Positions: approximate center as percentage (0=top/left, 100=bottom/right).
-- focusBox: tight bounding rectangle. top < bottom, left < right.
+RULES:
+- literalLabel must describe what is LITERALLY visible. 2-4 words. No metaphors.
+- BANNED TITLE NOUNS: guardian, messenger, sentinel, watcher, sorceress, mechanism, beacon, oracle, harbinger, vessel, tapestry, gateway, portal, emissary
+- BANNED EXPLANATION WORDS: represent, symbolize, vibrant, intricate, tapestry, journey, essence, energy, manifest, celestial, cosmic, mystical, ethereal, sacred, divine
+- Each explanation must mention the EXACT correct placement (sign + placement type). Wrong sign = instant rejection.
+- NEVER mention colors, color palette, art style, medium, or technique.
+- Write like a smart friend, not a horoscope. Plain and grounded.
+- confidence: 0.9+ = obvious match, 0.7-0.9 = good match, 0.5-0.7 = weak, below 0.5 = use null instead.
+- If you can only find 3 regions, return 3. Do NOT pad.
+- Each slot's regionId must reference an observedRegion id, or be null.
+- Multiple slots MAY map to the same region if truly justified, but prefer different regions.
 
-PHASE 2 RULES (chartMappings):
-- Each mapping's regionId MUST reference an observedRegion, or be null.
-- Multiple mappings MAY reference the same region if appropriate.
-- NULL IS GOOD. A null mapping is vastly better than a forced, unconvincing match.
-- explanation must connect the person's specific chart placement to the VISIBLE element.
-- Write in second person ("You..."). Talk about them, connect to the artwork.
-
-WRITING RULES FOR ALL "explanation" FIELDS:
-- Answer: "How did this astrological placement shape what's in the artwork?"
-- Conversational and grounded. Like a smart friend, not a horoscope.
-- Focus on SUBJECTS, OBJECTS, COMPOSITION, TEXTURES, and MOOD.${generationPrompt ? '\n- The creative brief tells you what was intended — use it to make PRECISE connections, but only for elements you can actually see.' : ''}
-- NEVER mention colors or color palette (colors come from the style, not the chart).
-- NEVER mention art style, medium, or technique (e.g. "watercolor", "collage").
-- No mystical fluff. No "the cosmos," "your journey," "celestial," "cosmic blueprint."
-- Max 2 sentences. Max 300 characters. Keep them tight.
-- BANNED WORDS: represent, symbolize, vibrant, intricate, tapestry, journey, essence, energy, manifest, celestial, cosmic
-- BAD: "The silvered linework reflects the cosmic precision of your Virgo moon."
-- BAD: "The deep blues capture your water-dominant nature." (no color references!)
-- GOOD: "You tend to notice what others miss — the small inconsistency, the better way. That's your Virgo Moon, and it's why this section is built from fine, precise lines."
-- GOOD: "Your Scorpio Rising means people sense your intensity before you say a word. That's why the composition leads with this bold, layered foreground."
-
-OUTPUT ONLY VALID JSON. No preamble, no commentary.`;
+OUTPUT ONLY VALID JSON. No preamble, no commentary, no markdown fencing.`;
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
@@ -154,18 +143,13 @@ OUTPUT ONLY VALID JSON. No preamble, no commentary.`;
               content: [
                 {
                   type: "image_url",
-                  image_url: {
-                    url: `data:${contentType};base64,${base64Image}`,
-                  },
+                  image_url: { url: `data:${contentType};base64,${base64Image}` },
                 },
-                {
-                  type: "text",
-                  text: prompt,
-                },
+                { type: "text", text: prompt },
               ],
             },
           ],
-          max_tokens: 1500,
+          max_tokens: 1800,
         }),
       }
     );
@@ -191,11 +175,8 @@ OUTPUT ONLY VALID JSON. No preamble, no commentary.`;
     const data = await response.json();
     const rawContent = data.choices?.[0]?.message?.content?.trim();
 
-    if (!rawContent) {
-      throw new Error("Empty AI response");
-    }
+    if (!rawContent) throw new Error("Empty AI response");
 
-    // Parse the JSON response — strip any markdown fencing if the model added it
     const cleaned = rawContent
       .replace(/^```json\s*/i, "")
       .replace(/^```\s*/i, "")
@@ -210,78 +191,43 @@ OUTPUT ONLY VALID JSON. No preamble, no commentary.`;
       throw new Error("AI returned invalid JSON");
     }
 
-    // ─── VALIDATE & TRANSFORM ───
-    const regions = rawAnalysis.observedRegions;
-    if (!Array.isArray(regions) || regions.length < 1) {
-      throw new Error("No observed regions returned");
-    }
+    // Server-side sanitization
+    const chartContext = { sunSign, moonSign, rising, dominantElement };
+    const sanitized = sanitizeAiHotspotAnalysis(rawAnalysis, chartContext);
 
-    // Build a lookup map of observed regions by ID
-    const regionMap: Record<string, any> = {};
-    for (const r of regions) {
-      if (r.regionId) regionMap[r.regionId] = r;
-    }
-
-    const mappings = rawAnalysis.chartMappings || {};
-
-    // Validate each mapping: reject weak evidence, unknown region refs
-    const placements = ["sun", "moon", "rising", "element"] as const;
-    for (const key of placements) {
-      const m = mappings[key];
-      if (!m) {
-        mappings[key] = { regionId: null, artworkElement: null, explanation: null };
-        continue;
-      }
-
-      if (m.regionId && !regionMap[m.regionId]) {
-        console.warn(`[analyze-artwork] ${key} references unknown region ${m.regionId}, nulling`);
-        m.regionId = null;
-        m.artworkElement = null;
-        m.explanation = null;
-      }
-
-      if (m.regionId) {
-        const region = regionMap[m.regionId];
-        if (!region.visibleEvidence || region.visibleEvidence.length < 15) {
-          console.warn(`[analyze-artwork] ${key} region ${m.regionId} has weak evidence, nulling`);
-          m.regionId = null;
-          m.artworkElement = null;
-          m.explanation = null;
-        }
-      }
-    }
-
-    // Hard-truncate explanations exceeding 300 chars
-    for (const key of placements) {
-      const text: string = mappings[key]?.explanation;
-      if (text && text.length > 300) {
-        const truncated = text.substring(0, 297).replace(/\s+\S*$/, '');
-        mappings[key].explanation = truncated + '…';
-        console.warn(`[analyze-artwork] Truncated ${key}.explanation from ${text.length} chars`);
-      }
-    }
-
-    // Build final response (backward-compatible shape)
+    // Build backward-compatible response shape
     const analysis: Record<string, any> = {
-      subjectExplanation: rawAnalysis.subjectExplanation || null,
-      observedRegions: regions,
+      subjectExplanation: sanitized.subjectExplanation,
+      observedRegions: sanitized.observedRegions,
     };
 
+    const placements = ["sun", "moon", "rising", "element"] as const;
     for (const key of placements) {
-      const m = mappings[key];
-      const region = m?.regionId ? regionMap[m.regionId] : null;
-
-      analysis[key] = {
-        artworkElement: m?.artworkElement || null,
-        explanation: m?.explanation || null,
-        visibleEvidence: region?.visibleEvidence || null,
-        position: region?.position || null,
-        focusBox: region?.focusBox || null,
-        mapped: m?.regionId !== null && m?.regionId !== undefined,
-      };
+      const slot = sanitized.slots[key];
+      if (slot?.mapped) {
+        analysis[key] = {
+          artworkElement: slot.artworkElement || null,
+          explanation: slot.explanation || null,
+          visibleEvidence: slot.visibleEvidence || null,
+          position: slot.position || null,
+          focusBox: null,
+          mapped: true,
+          confidence: slot.confidence,
+        };
+      } else {
+        analysis[key] = {
+          artworkElement: null,
+          explanation: null,
+          visibleEvidence: null,
+          position: null,
+          focusBox: null,
+          mapped: false,
+        };
+      }
     }
 
-    console.log(`[analyze-artwork] Success: ${regions.length} regions observed, ${placements.filter(k => analysis[k].mapped).length}/4 mapped`);
+    const mappedCount = placements.filter(k => analysis[k].mapped).length;
+    console.log(`[analyze-artwork] Success: ${sanitized.observedRegions.length} regions, ${mappedCount}/4 mapped`);
 
     return new Response(JSON.stringify({ analysis }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
