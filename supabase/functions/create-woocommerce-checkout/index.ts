@@ -88,6 +88,9 @@ serve(async (req) => {
       line_items: [
         { product_id: PRODUCT_ID, variation_id: variationId, quantity: 1 },
       ],
+      shipping_lines: [
+        { method_id: "flat_rate", method_title: "Standard Shipping", total: "22.95" },
+      ],
       meta_data: metaData,
     };
 
