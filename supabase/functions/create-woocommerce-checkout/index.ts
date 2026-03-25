@@ -67,10 +67,10 @@ serve(async (req) => {
     // Also accepts Woo size keys directly (passthrough)
     const wooSize = SIZE_ALIASES[rawSize] || rawSize;
 
-    const variationId = VARIATION_MAP[resolvedSize];
+    const variationId = VARIATION_MAP[wooSize];
     if (!variationId) {
       return new Response(
-        JSON.stringify({ error: `Invalid variantSize: ${rawSize} (resolved: ${resolvedSize}). Valid: ${Object.keys(VARIATION_MAP).join(", ")}` }),
+        JSON.stringify({ error: `Invalid variantSize: ${rawSize} (wooSize: ${wooSize}). Valid canonical: ${Object.keys(SIZE_ALIASES).join(", ")}. Valid woo: ${Object.keys(VARIATION_MAP).join(", ")}` }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -90,14 +90,16 @@ serve(async (req) => {
     //   canvas_size, size_label, style_id, sun_sign, moon_sign,
     //   rising_sign, funnel_type
 
-    const sizeLabel = orderDetails?.sizeLabel || `${resolvedSize.replace("x", '" × "')}\"`;
+    // canvas_size uses the canonical Prodigi size for fulfillment, not the Woo label
+    const canonicalSize = rawSize;
+    const sizeLabel = orderDetails?.sizeLabel || `${canonicalSize.replace("x", '" × "')}\"`;
 
     const metaParams: Record<string, string> = {
       celestial_order_id: celestialOrderId || "",
       artwork_id: artworkId || "",
       artwork_url: artworkImageUrl || "",
       customer_name: customerName || "",
-      canvas_size: resolvedSize,
+      canvas_size: canonicalSize,
       size_label: sizeLabel,
       style_id: styleId || orderDetails?.styleId || "",
       sun_sign: chartData?.sun?.sign || "",
