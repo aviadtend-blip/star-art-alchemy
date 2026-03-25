@@ -287,6 +287,9 @@ export function GeneratorProvider({ children }) {
   }, [navigate]);
 
   const handleCheckout = useCallback(async (details) => {
+    // Prevent double-click / repeated checkout submissions
+    if (isCheckingOut) return;
+
     const checkoutFormData = {
       ...(readSessionJSON('celestial_form_data') || {}),
       ...(formData || {}),
@@ -405,7 +408,7 @@ export function GeneratorProvider({ children }) {
       setError(err.message);
       setIsCheckingOut(false);
     }
-  }, [chartData, formData, generatedImage, artworkAnalysis, artworkId, selectedStyle]);
+  }, [chartData, formData, generatedImage, artworkAnalysis, artworkId, selectedStyle, isCheckingOut]);
 
 
   const value = {

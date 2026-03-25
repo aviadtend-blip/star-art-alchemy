@@ -116,9 +116,14 @@ serve(async (req) => {
     // and avoids "Invalid value posted for Size" errors from attribute mismatches.
     // Point to /checkout/ so WooCommerce adds to cart then renders checkout,
     // instead of landing on the store root which shows "Nothing Found".
+    //
+    // celestial_clear_cart=1 signals the WordPress MU plugin to remove any
+    // prior Celestial canvas items before adding the new one, preventing
+    // duplicate/stale items from accumulating across checkout attempts.
     const url = new URL(`${WC_STORE_URL}/checkout/`);
     url.searchParams.set("add-to-cart", String(variationId));
     url.searchParams.set("quantity", "1");
+    url.searchParams.set("celestial_clear_cart", "1");
 
     // Append Celestial metadata params
     for (const [key, value] of Object.entries(metaParams)) {
