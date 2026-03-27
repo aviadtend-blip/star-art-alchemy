@@ -92,15 +92,24 @@ export default function DigitalPreview() {
       let celestialOrderId = sessionStorage.getItem('celestial_order_id') || '';
       try {
         const customerName = formData?.name || sessionStorage.getItem('celestial_captured_first_name') || '';
-        const saveData = await invokeProjectFunction('save-order-data', {
-          customerName,
-          customerEmail,
-          chartData: displayChart,
-          artworkAnalysis: artworkAnalysis || null,
-          generatedImageUrl: artworkImageUrl,
-          subjectExplanation: artworkAnalysis?.subjectExplanation || null,
-          fulfillmentType: 'digital',
-        });
+        const saveResponse = await fetch(
+          'https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1/save-order-data',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              customerName,
+              customerEmail,
+              chartData: displayChart,
+              artworkAnalysis: artworkAnalysis || null,
+              generatedImageUrl: artworkImageUrl,
+              subjectExplanation: artworkAnalysis?.subjectExplanation || null,
+              fulfillmentType: 'digital',
+            }),
+          }
+        );
+        const saveData = await saveResponse.json();
+        console.log('[digital-checkout] save-order-data result:', saveData);
         if (saveData?.orderId) {
           celestialOrderId = saveData.orderId;
           sessionStorage.setItem('celestial_order_id', celestialOrderId);
