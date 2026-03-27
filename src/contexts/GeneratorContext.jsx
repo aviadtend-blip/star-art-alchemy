@@ -336,34 +336,41 @@ export function GeneratorProvider({ children }) {
       console.log('resolvedFormData at checkout:', resolvedFormData);
       console.log('insert card fields at checkout:', { customerName, customerEmail, birthDate, birthTime, birthPlace });
 
-      const saveResponse = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/save-order-data`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-          },
-          body: JSON.stringify({
-            customerName,
-            customerEmail,
-            chartData: {
-              ...chartData,
-              customer_name: customerName,
-              birth_date: birthDate,
-              birth_time: birthTime,
-              birth_place: birthPlace,
+      let celestialOrderId = sessionStorage.getItem('celestial_order_id') || '';
+      try {
+        const saveResponse = await fetch(
+          'https://kdfojrmzhpfphvgwgeov.supabase.co/functions/v1/save-order-data',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
             },
-            artworkAnalysis: artworkAnalysis,
-            generatedImageUrl: generatedImage,
-            subjectExplanation: artworkAnalysis?.subjectExplanation || null,
-          }),
+            body: JSON.stringify({
+              customerName,
+              customerEmail,
+              chartData: {
+                ...chartData,
+                customer_name: customerName,
+                birth_date: birthDate,
+                birth_time: birthTime,
+                birth_place: birthPlace,
+              },
+              artworkAnalysis: artworkAnalysis,
+              generatedImageUrl: generatedImage,
+              subjectExplanation: artworkAnalysis?.subjectExplanation || null,
+              fulfillmentType: 'canvas',
+            }),
+          }
+        );
+        const saveData = await saveResponse.json();
+        console.log('[canvas-checkout] save-order-data result:', saveData);
+        if (saveData?.orderId) {
+          celestialOrderId = saveData.orderId;
+          sessionStorage.setItem('celestial_order_id', celestialOrderId);
         }
-      );
-      const saveData = await saveResponse.json();
-      if (!saveData.success) throw new Error('Failed to save order: ' + saveData.error);
-      const celestialOrderId = saveData.orderId;
-      sessionStorage.setItem('celestial_order_id', celestialOrderId);
+      } catch (saveErr) {
+        console.warn('⚠️ save-order-data failed (non-blocking):', saveErr);
+      }
 
       // Step 2: Create WooCommerce checkout
       const checkoutBody = {
